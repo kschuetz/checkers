@@ -1,6 +1,7 @@
 package checkers.components
 
-import checkers.game.{Color, Dark, Light}
+import checkers.game.{BoardPosition, Color, Dark, Light}
+import checkers.geometry.Point
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.ReactAttr
 import japgolly.scalajs.react.vdom.svg.prefix_<^._
@@ -8,13 +9,16 @@ import japgolly.scalajs.react.vdom.svg.prefix_<^._
 
 object PhysicalBoard {
 
-  def coordinates(row: Int, col: Int): (Double, Double) =
-    (col - 3.5, row - 3.5)
 
-  def coordinatesForSquare(squareIndex: Int): (Double, Double) = {
-    val (row, col) = checkers.game.Board.squareIndexToRowCol(squareIndex)
-    coordinates(row, col)
-  }
+  def positionToPoint(position: BoardPosition): Point =
+    Point(position.col - 3.5, position.row - 3.5)
+
+
+//
+//  def coordinatesForSquare(squareIndex: Int): (Double, Double) = {
+//    val (row, col) = checkers.game.Board.squareIndexToRowCol(squareIndex)
+//    coordinates(row, col)
+//  }
 
   object Css {
     val dark = "dark"

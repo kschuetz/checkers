@@ -1,6 +1,7 @@
 package checkers.components
 
 import checkers.game.{Board, Color, Dark, Light}
+import checkers.geometry.Point
 import checkers.util.SvgHelpers
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.ReactAttr
@@ -20,7 +21,7 @@ object PhysicalPiece extends SvgHelpers {
     val theta = idx * math.Pi / 6
     val x = pipDistanceFromCenter * math.sin(theta)
     val y = pipDistanceFromCenter * math.cos(theta)
-    (x, y)
+    Point(x, y)
   }.toVector
 
   private val (starPathA, starPathB) = {
@@ -28,45 +29,45 @@ object PhysicalPiece extends SvgHelpers {
       val theta = 2 * idx * math.Pi / 5
       val x = outerStarRadius * math.sin(theta)
       val y = -outerStarRadius * math.cos(theta)
-      (x, y)
+      Point(x, y)
     }.toVector
 
     val innerPoints = (0 to 4).map { idx =>
       val theta = (2 * idx + 1) * math.Pi / 5
       val x = innerStarRadius * math.sin(theta)
       val y = -innerStarRadius * math.cos(theta)
-      (x, y)
+      Point(x, y)
     }.toVector
 
     val aPoints = (0 to 4).map { idx =>
       val outer = outerPoints(idx)
       val inner = innerPoints(idx)
-      pointsToPathString((0, 0), inner, outer)
+      pointsToPathString(Point.origin, inner, outer)
     }
 
     val bPoints = (0 to 4).map { idx =>
       val next = (idx + 1) % 5
       val inner = innerPoints(idx)
       val outer = outerPoints(next)
-      pointsToPathString((0, 0), inner, outer)
+      pointsToPathString(Point.origin, inner, outer)
     }
 
     (aPoints, bPoints)
   }
 
-  private val topCrownPoints: Vector[(Double, Double)] = Vector(
-    (-0.4, -0.12),
-    (-0.23, -0.28),
-    (0.0, -0.32),
-    (0.23, -0.28),
-    (0.4, -0.12))
+  private val topCrownPoints: Vector[Point] = Vector(
+    Point(-0.4, -0.12),
+    Point(-0.23, -0.28),
+    Point(0.0, -0.32),
+    Point(0.23, -0.28),
+    Point(0.4, -0.12))
 
-  private val bottomCrownPoints: Vector[(Double, Double)] = Vector(
-    (-0.3, 0.3),
-    (-0.24, 0.3),
-    (0.0, 0.3),
-    (0.24, 0.3),
-    (0.3, 0.3))
+  private val bottomCrownPoints: Vector[Point] = Vector(
+    Point(-0.3, 0.3),
+    Point(-0.24, 0.3),
+    Point(0.0, 0.3),
+    Point(0.24, 0.3),
+    Point(0.3, 0.3))
 
 
   private val crownPaths: Vector[String] = {
@@ -110,8 +111,8 @@ object PhysicalPiece extends SvgHelpers {
     }.build
 
 
-  private val Pip = ReactComponentB[(Color, Double, Double)]("Pip")
-    .render_P { case (color, cx, cy) =>
+  private val Pip = ReactComponentB[(Color, Point)]("Pip")
+    .render_P { case (color, Point(cx, cy)) =>
       val classes = color match {
         case Dark => "pip dark"
         case Light => "pip light"
@@ -126,7 +127,7 @@ object PhysicalPiece extends SvgHelpers {
 
   private val CrownPart = ReactComponentB[((String, String, String), Int)]("CrownPart")
     .render_P { case ((classesA, classesB, classesC), idx) =>
-      val (cx, cy) = topCrownPoints(idx)
+      val Point(cx, cy) = topCrownPoints(idx)
       val cl1 = if(idx > 1) classesA else classesB
       <.g(
         <.polygon(
@@ -205,8 +206,8 @@ object PhysicalPiece extends SvgHelpers {
       }
 
       val pips = (0 to 11).map { pipIndex =>
-        val (x, y) = pipCoordinates(pipIndex)
-        Pip.withKey(pipIndex)((props.color, x, y))
+        val pt = pipCoordinates(pipIndex)
+        Pip.withKey(pipIndex)((props.color, pt))
       }.toJsArray
 
       <.g(
@@ -254,13 +255,13 @@ object PhysicalPiece extends SvgHelpers {
   val DefaultPieceSetup = ReactComponentB[Unit]("DefaultPieceSetup")
     .render_P { _ =>
       val lights = Board.lightStartingSquares.map { idx =>
-        val (x, y) = PhysicalBoard.coordinatesForSquare(idx)
+        val Point(x, y) = PhysicalBoard.positionToPoint(Board.position(idx))
         val props = Properties(Light, x, y)
         if (idx < 4) King(props) else Man(props)
       }.toJsArray
 
       val darks = Board.darkStartingSquares.map { idx =>
-        val (x, y) = PhysicalBoard.coordinatesForSquare(idx)
+        val Point(x, y) = PhysicalBoard.positionToPoint(Board.position(idx))
         val props = Properties(Dark, x, y)
         if (idx > 27) King(props) else Man(props)
       }.toJsArray

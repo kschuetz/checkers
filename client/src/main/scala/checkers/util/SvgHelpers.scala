@@ -1,11 +1,13 @@
 package checkers.util
 
+import checkers.geometry.Point
+
 trait SvgHelpers {
 
-  def pointToPathString(point: (Double, Double)): String =
-    s"${point._1},${point._2}"
+  def pointToPathString(point: Point): String =
+    s"${point.x},${point.y}"
 
-  def pointsToPathString(points: (Double, Double)*): String =
+  def pointsToPathString(points: Point*): String =
     points.map(pointToPathString).mkString(" ")
 
 

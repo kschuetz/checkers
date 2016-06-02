@@ -13,7 +13,7 @@ object PlayField {
       val physicalBoard = PhysicalBoard.Board()
       val pieces = PhysicalPiece.DefaultPieceSetup()
       <.g(
-        ^.transform := "translate(400,400),scale(80)",
+        ^.transform := "translate(400,400),scale(90)",
         <.g(
           physicalBoard,
           pieces
