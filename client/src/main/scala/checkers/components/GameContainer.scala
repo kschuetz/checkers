@@ -26,11 +26,21 @@ object GameContainer {
 
     }
 
+    def handleMouseMove(event: ReactMouseEvent) = Callback {
+      if(event.altKey) {
+        val pt = Point(event.clientX, event.clientY)
+        val transformed = sceneRenderContext.cursorToLocal(pt)
+        println(s"$pt --- $transformed")
+      }
+
+    }
+
     def render(props: SceneFrame.Properties) = {
       <.svg.svg(
         ^.id := "game-container",
         ^.svg.width := "800px",
         ^.svg.height := "800px",
+        ^.onMouseMove ==> handleMouseMove,
         SceneFrame(props)
       )
     }

@@ -225,11 +225,9 @@ object PhysicalPiece extends SvgHelpers {
         pips.push(Pip.withKey(pipIndex)((props.piece.color, pt)))
       }
 
-      val transform = if (props.rotationDegrees != 0) s"rotate(${props.rotationDegrees})" else ""
-
       <.svg.g(
         ^.`class` := classes,
-        ^.svg.transform := transform,
+        (props.rotationDegrees != 0) ?= (^.svg.transform := s"rotate(${props.rotationDegrees})"),
         Disk((props.piece.color, pieceRadius)),
         pips,
         PieceDecoration((props.piece.color, props.decoration))
