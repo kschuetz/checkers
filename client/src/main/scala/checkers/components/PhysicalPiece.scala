@@ -237,7 +237,7 @@ object PhysicalPiece extends SvgHelpers {
 
     }.build
 
-  val Man = ReactComponentB[Properties]("Man")
+  private val Man = ReactComponentB[Properties]("Man")
     .render_P { props =>
       val classes = props.piece.color match {
         case Dark => "man dark"
@@ -250,7 +250,7 @@ object PhysicalPiece extends SvgHelpers {
       )
     }.build
 
-  val King = ReactComponentB[Properties]("King")
+  private val King = ReactComponentB[Properties]("King")
     .render_P { props =>
       val classes = props.piece.color match {
         case Dark => "piece king dark"
@@ -268,10 +268,17 @@ object PhysicalPiece extends SvgHelpers {
       )
     }.build
 
-  def apply(props: Properties) = props.piece.pieceType match {
-    case PieceType.Man => Man(props)
-    case PieceType.King => King(props)
-  }
+
+  val component = ReactComponentB[Properties]("PhysicalPiece")
+    .render_P { props =>
+      props.piece.pieceType match {
+        case PieceType.Man => Man(props)
+        case PieceType.King => King(props)
+      }
+    }.build
+
+  val apply = component
+
 
   val DefaultPieceSetup = ReactComponentB[Unit]("DefaultPieceSetup")
     .render_P { _ =>
@@ -287,8 +294,6 @@ object PhysicalPiece extends SvgHelpers {
         val piece = if (idx > 27) DarkKing else DarkMan
         val props = Properties(piece, x, y)
         apply(props)
-        //        val props = Properties(Dark, x, y)
-        //        if (idx > 27) King(props) else Man(props)
       }.toJsArray
 
       <.svg.g(
