@@ -12,9 +12,17 @@ sealed trait Animation {
   def hasStarted(nowTime: Double): Boolean = nowTime >= startTime
 
   def isExpired(nowTime: Double): Boolean
+
 }
 
 object Animation {
+
+  /**
+    * An animation that temporarily hides one of the static pieces on the board (such as when moving a piece)
+    */
+  trait HidesStaticPiece {
+    def hidesPieceAtSquare: Int
+  }
 
   trait OneTimeAnimation extends Animation {
     def linearProgress(nowTime: Double): Double =
@@ -27,12 +35,16 @@ object Animation {
   case class MovingPiece(fromSquare: Int,
                          toSquare: Int,
                          startTime: Double,
-                         duration: Double) extends OneTimeAnimation
+                         duration: Double) extends OneTimeAnimation with HidesStaticPiece {
+    def hidesPieceAtSquare = toSquare
+  }
 
   case class JumpingPiece(fromSquare: Int,
                           toSquare: Int,
                           startTime: Double,
-                          duration: Double) extends OneTimeAnimation
+                          duration: Double) extends OneTimeAnimation with HidesStaticPiece {
+    def hidesPieceAtSquare = toSquare
+  }
 
   case class RemovingPiece(piece: Piece,
                            fromSquare: Int,

@@ -3,8 +3,9 @@ package checkers.components
 import checkers.game.{BoardPosition, Color, Dark, Light}
 import checkers.geometry.Point
 import japgolly.scalajs.react._
-import japgolly.scalajs.react.vdom.ReactAttr
 import japgolly.scalajs.react.vdom.prefix_<^._
+
+import scala.scalajs.js
 
 object PhysicalBoard {
 
@@ -39,13 +40,15 @@ object PhysicalBoard {
 
   val BoardRow = ReactComponentB[(Double, Color)]("BoardRow")
     .render_P { case (centerY, colorOfFirst) =>
-      val (squares, _) = (0 to 7).foldLeft((Seq.empty[ReactNode], colorOfFirst)) { case ((result, color), idx) =>
+      val squares = new js.Array[ReactNode]
+      (0 to 7).foldLeft(colorOfFirst) { case (color, idx) =>
         val square: ReactNode = Square.withKey(idx)((idx - 3.5, 0.0, color))
-        (result :+ square, color.opposite)
+        squares.push(square)
+        color.opposite
       }
       <.svg.g(
         ^.svg.transform := s"translate(0,$centerY)",
-        squares.toJsArray
+        squares
       )
     }.build
 
@@ -54,7 +57,7 @@ object PhysicalBoard {
       val origin = -4 - thickness
       val width = 8 + 2 * thickness
       <.svg.rect(
-        ReactAttr.ClassName := "board-border",
+        ^.`class` := "board-border",
         ^.svg.x := origin,
         ^.svg.y := origin,
         ^.svg.width := width,
@@ -65,14 +68,16 @@ object PhysicalBoard {
   val Board = ReactComponentB[Unit]("Board")
     .render_P { _ =>
       val upperLeftColor: Color = Light
-      val (rows, _) = (0 to 7).foldLeft((Seq.empty[ReactNode], upperLeftColor)) { case ((result, color), idx) =>
+      val rows = new js.Array[ReactNode]
+      (0 to 7).foldLeft(upperLeftColor) { case (color, idx) =>
         val row: ReactNode = BoardRow.withKey(idx)((idx - 3.5, color))
-        (result :+ row, color.opposite)
+        rows.push(row)
+        color.opposite
       }
       val border = BoardBorder(0.3)
       <.svg.g(
         border,
-        rows.toJsArray
+        rows
       )
     }.build
 

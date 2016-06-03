@@ -14,9 +14,13 @@ object Board {
     BoardPosition(row, col)
   }
 
-  val position: Vector[BoardPosition] = (0 to 31).map(squareIndexToBoardPosition).toVector
+  val allSquares = 0 to 31
+
+  val position: Vector[BoardPosition] = allSquares.map(squareIndexToBoardPosition).toVector
 
   val lightStartingSquares = 0 to 11
   val darkStartingSquares = 20 to 31
+
+
 
 }

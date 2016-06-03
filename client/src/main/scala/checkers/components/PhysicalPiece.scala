@@ -1,10 +1,12 @@
 package checkers.components
 
-import checkers.game.{Board, Color, Dark, Light}
+import checkers.game._
 import checkers.geometry.Point
 import checkers.util.SvgHelpers
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
+
+import scala.scalajs.js
 
 object PhysicalPiece extends SvgHelpers {
 
@@ -70,32 +72,36 @@ object PhysicalPiece extends SvgHelpers {
 
 
   private val crownPaths: Vector[String] = {
-    Vector((0, 1, 4), (0, 3, 4), (0, 0, 4), (1, 2, 3),  (0, 4, 4)).map { case (a, b, c) =>
+    Vector((0, 1, 4), (0, 3, 4), (0, 0, 4), (1, 2, 3), (0, 4, 4)).map { case (a, b, c) =>
       pointsToPathString(bottomCrownPoints(a), topCrownPoints(b), bottomCrownPoints(c))
     }
   }
 
   sealed trait Decoration
+
   object Decoration {
+
     case object Star extends Decoration
+
     case object Crown extends Decoration
+
   }
 
 
-  case class Properties(color: Color,
+  case class Properties(piece: Piece,
                         x: Double = 0.0,
                         y: Double = 0.0,
+                        rotationDegrees: Double = 0.0,
                         scale: Double = 1.0) {
-    def toRenderProps(decoration: Decoration) = RenderProps(color, x, y, scale, decoration)
+    def toRenderProps(decoration: Decoration) = RenderProps(piece, x, y, rotationDegrees, scale, decoration)
   }
 
-  case class RenderProps(color: Color,
+  case class RenderProps(piece: Piece,
                          x: Double,
                          y: Double,
+                         rotationDegrees: Double,
                          scale: Double,
                          decoration: Decoration)
-
-
 
   private val Disk = ReactComponentB[(Color, Double)]("Disk")
     .render_P { case (color, radius) =>
@@ -127,7 +133,7 @@ object PhysicalPiece extends SvgHelpers {
   private val CrownPart = ReactComponentB[((String, String, String), Int)]("CrownPart")
     .render_P { case ((classesA, classesB, classesC), idx) =>
       val Point(cx, cy) = topCrownPoints(idx)
-      val cl1 = if(idx > 1) classesA else classesB
+      val cl1 = if (idx > 1) classesA else classesB
       <.svg.g(
         <.svg.polygon(
           ^.`class` := cl1,
@@ -148,9 +154,10 @@ object PhysicalPiece extends SvgHelpers {
         case Dark => ("crown-a dark", "crown-b dark", "crown-c dark")
         case Light => ("crown-a light", "crown-b light", "crown-c light")
       }
-      val parts = crownPaths.indices.map { idx =>
-        CrownPart.withKey(idx)((classes, idx))
-      }.toJsArray
+      val parts = new js.Array[ReactNode]
+      crownPaths.indices.foreach { idx =>
+        parts.push(CrownPart.withKey(idx)((classes, idx)))
+      }
 
       <.svg.g(
         ^.`class` := "crown",
@@ -169,30 +176,32 @@ object PhysicalPiece extends SvgHelpers {
       }
 
       var k = 0
+      val parts = new js.Array[ReactNode]
 
-      val starA = starPathA.map { points =>
+      starPathA.foreach { points =>
         k += 1
-        <.svg.polygon(
+        val part = <.svg.polygon(
           ^.key := k,
           ^.`class` := classesA,
           ^.svg.points := points
         )
-      }.toJsArray
+        parts.push(part)
+      }
 
-      val starB = starPathB.map { points =>
+      starPathB.foreach { points =>
         k += 1
-        <.svg.polygon(
+        val part = <.svg.polygon(
           ^.key := k,
           ^.`class` := classesB,
           ^.svg.points := points
         )
-      }.toJsArray
+        parts.push(part)
+      }
 
       <.svg.g(
         ^.`class` := "star",
         ^.svg.transform := s"scale($scale)",
-        starA,
-        starB
+        parts
       )
 
     }.build
@@ -203,43 +212,47 @@ object PhysicalPiece extends SvgHelpers {
       case (color, Decoration.Crown) => Crown((color, 0.55))
     }.build
 
-  private val Piece = ReactComponentB[RenderProps]("Man")
+  private val PieceBody = ReactComponentB[RenderProps]("PieceBody")
     .render_P { props =>
-      val classes = props.color match {
+      val classes = props.piece.color match {
         case Dark => "piece dark"
         case Light => "piece light"
       }
 
-      val pips = (0 to 11).map { pipIndex =>
+      val pips = new js.Array[ReactNode]
+      (0 to 11).foreach { pipIndex =>
         val pt = pipCoordinates(pipIndex)
-        Pip.withKey(pipIndex)((props.color, pt))
-      }.toJsArray
+        pips.push(Pip.withKey(pipIndex)((props.piece.color, pt)))
+      }
+
+      val transform = if (props.rotationDegrees != 0) s"rotate(${props.rotationDegrees})" else ""
 
       <.svg.g(
         ^.`class` := classes,
-        Disk((props.color, pieceRadius)),
+        ^.svg.transform := transform,
+        Disk((props.piece.color, pieceRadius)),
         pips,
-        PieceDecoration((props.color, props.decoration))
+        PieceDecoration((props.piece.color, props.decoration))
       )
 
     }.build
 
   val Man = ReactComponentB[Properties]("Man")
     .render_P { props =>
-      val classes = props.color match {
+      val classes = props.piece.color match {
         case Dark => "man dark"
         case Light => "man light"
       }
       <.svg.g(
         ^.`class` := classes,
         ^.svg.transform := s"translate(${props.x},${props.y})",
-        Piece(props.toRenderProps(Decoration.Star))
+        PieceBody(props.toRenderProps(Decoration.Star))
       )
     }.build
 
   val King = ReactComponentB[Properties]("King")
     .render_P { props =>
-      val classes = props.color match {
+      val classes = props.piece.color match {
         case Dark => "piece king dark"
         case Light => "piece king light"
       }
@@ -247,27 +260,35 @@ object PhysicalPiece extends SvgHelpers {
       <.svg.g(
         ^.`class` := classes,
         ^.svg.transform := s"translate(${props.x},${props.y})",
-        Disk((props.color, pieceRadius)),
+        Disk((props.piece.color, pieceRadius)),
         <.svg.g(
           ^.svg.transform := "translate(0.07,-0.11),scale(1.01)",
-          Piece(props.toRenderProps(Decoration.Crown))
+          PieceBody(props.toRenderProps(Decoration.Crown))
         )
       )
     }.build
 
+  def apply(props: Properties) = props.piece.pieceType match {
+    case PieceType.Man => Man(props)
+    case PieceType.King => King(props)
+  }
 
   val DefaultPieceSetup = ReactComponentB[Unit]("DefaultPieceSetup")
     .render_P { _ =>
       val lights = Board.lightStartingSquares.map { idx =>
         val Point(x, y) = PhysicalBoard.positionToPoint(Board.position(idx))
-        val props = Properties(Light, x, y)
-        if (idx < 4) King(props) else Man(props)
+        val piece = if (idx < 4) LightKing else LightMan
+        val props = Properties(piece, x, y, 53)
+        apply(props)
       }.toJsArray
 
       val darks = Board.darkStartingSquares.map { idx =>
         val Point(x, y) = PhysicalBoard.positionToPoint(Board.position(idx))
-        val props = Properties(Dark, x, y)
-        if (idx > 27) King(props) else Man(props)
+        val piece = if (idx > 27) DarkKing else DarkMan
+        val props = Properties(piece, x, y)
+        apply(props)
+        //        val props = Properties(Dark, x, y)
+        //        if (idx > 27) King(props) else Man(props)
       }.toJsArray
 
       <.svg.g(
