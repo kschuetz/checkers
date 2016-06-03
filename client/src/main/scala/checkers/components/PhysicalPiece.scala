@@ -4,8 +4,7 @@ import checkers.game.{Board, Color, Dark, Light}
 import checkers.geometry.Point
 import checkers.util.SvgHelpers
 import japgolly.scalajs.react._
-import japgolly.scalajs.react.vdom.ReactAttr
-import japgolly.scalajs.react.vdom.svg.prefix_<^._
+import japgolly.scalajs.react.vdom.prefix_<^._
 
 object PhysicalPiece extends SvgHelpers {
 
@@ -104,9 +103,9 @@ object PhysicalPiece extends SvgHelpers {
         case Dark => "disk dark"
         case Light => "disk light"
       }
-      <.circle(
-        ReactAttr.ClassName := classes,
-        ^.r := radius
+      <.svg.circle(
+        ^.`class` := classes,
+        ^.svg.r := radius
       )
     }.build
 
@@ -117,11 +116,11 @@ object PhysicalPiece extends SvgHelpers {
         case Dark => "pip dark"
         case Light => "pip light"
       }
-      <.circle(
-        ReactAttr.ClassName := classes,
-        ^.cx := cx,
-        ^.cy := cy,
-        ^.r := 0.03
+      <.svg.circle(
+        ^.`class` := classes,
+        ^.svg.cx := cx,
+        ^.svg.cy := cy,
+        ^.svg.r := 0.03
       )
     }.build
 
@@ -129,16 +128,16 @@ object PhysicalPiece extends SvgHelpers {
     .render_P { case ((classesA, classesB, classesC), idx) =>
       val Point(cx, cy) = topCrownPoints(idx)
       val cl1 = if(idx > 1) classesA else classesB
-      <.g(
-        <.polygon(
-          ReactAttr.ClassName := cl1,
-          ^.points := crownPaths(idx)
+      <.svg.g(
+        <.svg.polygon(
+          ^.`class` := cl1,
+          ^.svg.points := crownPaths(idx)
         ),
-        <.circle(
-          ReactAttr.ClassName := classesC,
-          ^.cx := cx,
-          ^.cy := cy,
-          ^.r := 0.06
+        <.svg.circle(
+          ^.`class` := classesC,
+          ^.svg.cx := cx,
+          ^.svg.cy := cy,
+          ^.svg.r := 0.06
         )
       )
     }.build
@@ -153,9 +152,9 @@ object PhysicalPiece extends SvgHelpers {
         CrownPart.withKey(idx)((classes, idx))
       }.toJsArray
 
-      <.g(
-        ReactAttr.ClassName := "crown",
-        ^.transform := s"scale($scale)",
+      <.svg.g(
+        ^.`class` := "crown",
+        ^.svg.transform := s"scale($scale)",
         parts
       )
 
@@ -169,23 +168,29 @@ object PhysicalPiece extends SvgHelpers {
         case Light => ("star-a light", "star-b light")
       }
 
+      var k = 0
+
       val starA = starPathA.map { points =>
-        <.polygon(
-          ReactAttr.ClassName := classesA,
-          ^.points := points
+        k += 1
+        <.svg.polygon(
+          ^.key := k,
+          ^.`class` := classesA,
+          ^.svg.points := points
         )
       }.toJsArray
 
       val starB = starPathB.map { points =>
-        <.polygon(
-          ReactAttr.ClassName := classesB,
-          ^.points := points
+        k += 1
+        <.svg.polygon(
+          ^.key := k,
+          ^.`class` := classesB,
+          ^.svg.points := points
         )
       }.toJsArray
 
-      <.g(
-        ReactAttr.ClassName := "star",
-        ^.transform := s"scale($scale)",
+      <.svg.g(
+        ^.`class` := "star",
+        ^.svg.transform := s"scale($scale)",
         starA,
         starB
       )
@@ -210,8 +215,8 @@ object PhysicalPiece extends SvgHelpers {
         Pip.withKey(pipIndex)((props.color, pt))
       }.toJsArray
 
-      <.g(
-        ReactAttr.ClassName := classes,
+      <.svg.g(
+        ^.`class` := classes,
         Disk((props.color, pieceRadius)),
         pips,
         PieceDecoration((props.color, props.decoration))
@@ -225,9 +230,9 @@ object PhysicalPiece extends SvgHelpers {
         case Dark => "man dark"
         case Light => "man light"
       }
-      <.g(
-        ReactAttr.ClassName := classes,
-        ^.transform := s"translate(${props.x},${props.y})",
+      <.svg.g(
+        ^.`class` := classes,
+        ^.svg.transform := s"translate(${props.x},${props.y})",
         Piece(props.toRenderProps(Decoration.Star))
       )
     }.build
@@ -239,13 +244,12 @@ object PhysicalPiece extends SvgHelpers {
         case Light => "piece king light"
       }
 
-      <.g(
-        ReactAttr.ClassName := classes,
-        ^.transform := s"translate(${props.x},${props.y})",
+      <.svg.g(
+        ^.`class` := classes,
+        ^.svg.transform := s"translate(${props.x},${props.y})",
         Disk((props.color, pieceRadius)),
-        <.g(
-          //ReactAttr.ClassName := classes,
-          ^.transform := "translate(0.07,-0.11),scale(1.01)",
+        <.svg.g(
+          ^.svg.transform := "translate(0.07,-0.11),scale(1.01)",
           Piece(props.toRenderProps(Decoration.Crown))
         )
       )
@@ -266,7 +270,7 @@ object PhysicalPiece extends SvgHelpers {
         if (idx > 27) King(props) else Man(props)
       }.toJsArray
 
-      <.g(
+      <.svg.g(
         lights, darks
       )
 

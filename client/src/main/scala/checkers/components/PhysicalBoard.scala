@@ -4,21 +4,13 @@ import checkers.game.{BoardPosition, Color, Dark, Light}
 import checkers.geometry.Point
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.ReactAttr
-import japgolly.scalajs.react.vdom.svg.prefix_<^._
-
+import japgolly.scalajs.react.vdom.prefix_<^._
 
 object PhysicalBoard {
 
 
   def positionToPoint(position: BoardPosition): Point =
     Point(position.col - 3.5, position.row - 3.5)
-
-
-//
-//  def coordinatesForSquare(squareIndex: Int): (Double, Double) = {
-//    val (row, col) = checkers.game.Board.squareIndexToRowCol(squareIndex)
-//    coordinates(row, col)
-//  }
 
   object Css {
     val dark = "dark"
@@ -36,12 +28,12 @@ object PhysicalBoard {
         case Light => Css.lightSquare
       }
 
-      <.rect(
-        ReactAttr.ClassName := classes,
-        ^.x := centerX - 0.5,
-        ^.y := centerY - 0.5,
-        ^.width := 1,
-        ^.height := 1
+      <.svg.rect(
+        ^.`class` := classes,
+        ^.svg.x := centerX - 0.5,
+        ^.svg.y := centerY - 0.5,
+        ^.svg.width := 1,
+        ^.svg.height := 1
       )
     }.build
 
@@ -51,8 +43,8 @@ object PhysicalBoard {
         val square: ReactNode = Square.withKey(idx)((idx - 3.5, 0.0, color))
         (result :+ square, color.opposite)
       }
-      <.g(
-        ^.transform := s"translate(0,$centerY)",
+      <.svg.g(
+        ^.svg.transform := s"translate(0,$centerY)",
         squares.toJsArray
       )
     }.build
@@ -61,12 +53,12 @@ object PhysicalBoard {
     .render_P { thickness =>
       val origin = -4 - thickness
       val width = 8 + 2 * thickness
-      <.rect(
+      <.svg.rect(
         ReactAttr.ClassName := "board-border",
-        ^.x := origin,
-        ^.y := origin,
-        ^.width := width,
-        ^.height := width
+        ^.svg.x := origin,
+        ^.svg.y := origin,
+        ^.svg.width := width,
+        ^.svg.height := width
       )
     }.build
 
@@ -78,7 +70,7 @@ object PhysicalBoard {
         (result :+ row, color.opposite)
       }
       val border = BoardBorder(0.3)
-      <.g(
+      <.svg.g(
         border,
         rows.toJsArray
       )
