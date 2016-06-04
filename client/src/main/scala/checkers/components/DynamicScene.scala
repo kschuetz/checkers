@@ -1,5 +1,6 @@
 package checkers.components
 
+import checkers.components.PhysicalPiece.{PieceEvents, PieceMouseEvent}
 import checkers.game.Animation.HidesStaticPiece
 import checkers.game._
 import japgolly.scalajs.react._
@@ -12,6 +13,16 @@ object DynamicScene {
   case class Properties(playFieldState: PlayFieldState,
                         rotationDegrees: Double)
 
+
+  def testCallback(tag: Int) = Callback {
+    println(s"tag $tag")
+  }
+
+  object TestPieceEvents extends PieceEvents {
+    val onMouseDown = (event: PieceMouseEvent) => Some(Callback {
+      println(event)
+    })
+  }
 
   val component = ReactComponentB[Properties]("DynamicScene")
     .render_P { props =>
@@ -36,7 +47,16 @@ object DynamicScene {
             val pos = Board.position(squareIndex)
             val pt = PhysicalBoard.positionToPoint(pos)
 
-            val pieceProps = PhysicalPiece.Properties(piece, pt.x, pt.y, pieceRotation, pieceScale)
+            val pieceProps = PhysicalPiece.Props(
+              piece = piece,
+              tag = squareIndex,
+              x = pt.x,
+              y = pt.y,
+              scale = pieceScale,
+              rotationDegrees = pieceRotation,
+              clickable = props.playFieldState.clickableSquares.contains(squareIndex),
+              highlighted = props.playFieldState.highlightedSquares.contains(squareIndex),
+              events = TestPieceEvents)
 
             val physicalPiece = PhysicalPiece.apply.withKey(k)(pieceProps)
             staticPieces.push(physicalPiece)

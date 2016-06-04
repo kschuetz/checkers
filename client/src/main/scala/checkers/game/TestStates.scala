@@ -13,17 +13,19 @@ object TestStates {
 
   val gameState1 = GameState(board1)
 
-  val playFieldState1 = PlayFieldState(gameState1,
-    BoardOrientation.Normal,
-    None,
-    Set.empty,
-    Nil)
+  val playFieldState1 = PlayFieldState(
+    gameState = gameState1,
+    orientation = BoardOrientation.Normal,
+    ghostPiece = None,
+    highlightedSquares = Set.empty,
+    clickableSquares = Set(8, 9, 10, 11, 20, 21, 22, 23),
+    animations = Nil)
 
   //List(Animation.MovingPiece(18, 22, 0, 0)))
 
-//  case class PlayFieldState(gameState: GameState,
-//                            orientation: BoardOrientation,
-//                            ghostPiece: Option[GhostPiece],
-//                            highlightedSquares: Set[Int],
-//                            animations: List[Animation])
+  //  case class PlayFieldState(gameState: GameState,
+  //                            orientation: BoardOrientation,
+  //                            ghostPiece: Option[GhostPiece],
+  //                            highlightedSquares: Set[Int],
+  //                            animations: List[Animation])
 }

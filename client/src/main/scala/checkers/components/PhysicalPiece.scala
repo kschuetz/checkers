@@ -11,6 +11,7 @@ import scala.scalajs.js
 object PhysicalPiece extends SvgHelpers {
 
   private val pieceRadius = 0.35
+  private val pieceOverlayRadius = 0.4
   private val pipDistanceFromEdge = 0.01
   private val pipDistanceFromCenter = pieceRadius - pipDistanceFromEdge
 
@@ -87,20 +88,32 @@ object PhysicalPiece extends SvgHelpers {
 
   }
 
+  case class PieceMouseEvent(event: ReactMouseEvent,
+                             piece: Piece,
+                             tag: Int)
 
-  case class Properties(piece: Piece,
-                        x: Double = 0.0,
-                        y: Double = 0.0,
-                        rotationDegrees: Double = 0.0,
-                        scale: Double = 1.0) {
-    def toRenderProps(decoration: Decoration) = RenderProps(piece, x, y, rotationDegrees, scale, decoration)
+  trait PieceEvents {
+    def onMouseDown: PieceMouseEvent => Option[Callback]
   }
 
-  case class RenderProps(piece: Piece,
-                         x: Double,
-                         y: Double,
-                         rotationDegrees: Double,
-                         scale: Double,
+  object EmptyPieceEvents extends PieceEvents {
+    override val onMouseDown: (PieceMouseEvent) => Option[Callback] = _ => None
+  }
+
+
+  case class Props(piece: Piece,
+                   tag: Int, // for events
+                   x: Double,
+                   y: Double,
+                   scale: Double,
+                   rotationDegrees: Double,
+                   clickable: Boolean,
+                   highlighted: Boolean,
+                   events: PieceEvents)
+//                   onMouseDown: Option[Int => Callback])
+//                   onMouseDown: Option[CallbackTo[Int]])
+
+  case class RenderProps(pieceProps: Props,
                          decoration: Decoration)
 
   private val Disk = ReactComponentB[(Color, Double)]("Disk")
@@ -213,7 +226,7 @@ object PhysicalPiece extends SvgHelpers {
     }.build
 
   private val PieceBody = ReactComponentB[RenderProps]("PieceBody")
-    .render_P { props =>
+    .render_P { case RenderProps(props, decoration) =>
       val classes = props.piece.color match {
         case Dark => "piece dark"
         case Light => "piece light"
@@ -230,12 +243,41 @@ object PhysicalPiece extends SvgHelpers {
         (props.rotationDegrees != 0) ?= (^.svg.transform := s"rotate(${props.rotationDegrees})"),
         Disk((props.piece.color, pieceRadius)),
         pips,
-        PieceDecoration((props.piece.color, props.decoration))
+        PieceDecoration((props.piece.color, decoration))
       )
 
     }.build
 
-  private val Man = ReactComponentB[Properties]("Man")
+  private def handleMouseDown(event: ReactMouseEvent): Callback = Callback {
+    println((event.clientX, event.clientY))
+    //js.Dynamic.global.console.log(event)
+  }
+
+  private def handleMouseDown2(tag: Int, cb: Int => Callback)(event: ReactMouseEvent): Callback = {
+    Callback { println((event.clientX, event.clientY)) } >> cb(tag)
+  }
+
+  private def handleMouseDown3(props: Props)(event: ReactMouseEvent): Option[Callback] = {
+    val pieceEvent = PieceMouseEvent(event, props.piece, props.tag)
+    props.events.onMouseDown(pieceEvent)
+  }
+
+  private val PieceOverlayButton = ReactComponentB[Props]("PieceOverlayButton")
+    .render_P { props =>
+      <.svg.circle(
+        ^.`class` := "piece-button-layer",
+        ^.svg.cx := 0,
+        ^.svg.cy := 0,
+        ^.svg.r := pieceOverlayRadius,
+        ^.onMouseDown ==>? handleMouseDown3(props)
+        //^.onMouseDown ==> handleMouseDown
+//        props.onMouseDown.map { cb =>
+//          ^.onMouseDown ==> handleMouseDown2(props.tag, cb)
+//        } getOrElse EmptyTag
+      )
+    }.build
+
+  private val Man = ReactComponentB[Props]("Man")
     .render_P { props =>
       val classes = props.piece.color match {
         case Dark => "man dark"
@@ -244,11 +286,12 @@ object PhysicalPiece extends SvgHelpers {
       <.svg.g(
         ^.`class` := classes,
         ^.svg.transform := s"translate(${props.x},${props.y})",
-        PieceBody(props.toRenderProps(Decoration.Star))
+        PieceBody(RenderProps(props, Decoration.Star)),
+        props.clickable ?= PieceOverlayButton(props)
       )
     }.build
 
-  private val King = ReactComponentB[Properties]("King")
+  private val King = ReactComponentB[Props]("King")
     .render_P { props =>
       val classes = props.piece.color match {
         case Dark => "piece king dark"
@@ -261,13 +304,14 @@ object PhysicalPiece extends SvgHelpers {
         Disk((props.piece.color, pieceRadius)),
         <.svg.g(
           ^.svg.transform := "translate(0.07,-0.11),scale(1.01)",
-          PieceBody(props.toRenderProps(Decoration.Crown))
-        )
+          PieceBody(RenderProps(props, Decoration.Crown))
+        ),
+        props.clickable ?= PieceOverlayButton(props)
       )
     }.build
 
 
-  val component = ReactComponentB[Properties]("PhysicalPiece")
+  val component = ReactComponentB[Props]("PhysicalPiece")
     .render_P { props =>
       props.piece.pieceType match {
         case PieceType.Man => Man(props)
@@ -278,26 +322,26 @@ object PhysicalPiece extends SvgHelpers {
   val apply = component
 
 
-  val DefaultPieceSetup = ReactComponentB[Unit]("DefaultPieceSetup")
-    .render_P { _ =>
-      val lights = Board.lightStartingSquares.map { idx =>
-        val Point(x, y) = PhysicalBoard.positionToPoint(Board.position(idx))
-        val piece = if (idx < 4) LightKing else LightMan
-        val props = Properties(piece, x, y, 53)
-        apply(props)
-      }.toJsArray
-
-      val darks = Board.darkStartingSquares.map { idx =>
-        val Point(x, y) = PhysicalBoard.positionToPoint(Board.position(idx))
-        val piece = if (idx > 27) DarkKing else DarkMan
-        val props = Properties(piece, x, y)
-        apply(props)
-      }.toJsArray
-
-      <.svg.g(
-        lights, darks
-      )
-
-    }.build
+//  val DefaultPieceSetup = ReactComponentB[Unit]("DefaultPieceSetup")
+//    .render_P { _ =>
+//      val lights = Board.lightStartingSquares.map { idx =>
+//        val Point(x, y) = PhysicalBoard.positionToPoint(Board.position(idx))
+//        val piece = if (idx < 4) LightKing else LightMan
+//        val props = Props(piece, idx, x, y, 1, 53, clickable=false, highlighted=false, onMouseDown = None)
+//        apply(props)
+//      }.toJsArray
+//
+//      val darks = Board.darkStartingSquares.map { idx =>
+//        val Point(x, y) = PhysicalBoard.positionToPoint(Board.position(idx))
+//        val piece = if (idx > 27) DarkKing else DarkMan
+//        val props = Props(piece, idx, x, y, 1, 0, clickable=false, highlighted=false, onMouseDown = None)
+//        apply(props)
+//      }.toJsArray
+//
+//      <.svg.g(
+//        lights, darks
+//      )
+//
+//    }.build
 
 }

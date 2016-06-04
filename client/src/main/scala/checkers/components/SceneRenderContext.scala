@@ -2,8 +2,7 @@ package checkers.components
 
 import checkers.components.SceneRenderContext.MouseTransform
 import checkers.geometry.Point
-import japgolly.scalajs.react.TopNode
-import org.scalajs.dom.raw.{SVGElement, SVGSVGElement}
+import org.scalajs.dom.raw.SVGSVGElement
 
 object SceneRenderContext {
   type MouseTransform = Point => Point
