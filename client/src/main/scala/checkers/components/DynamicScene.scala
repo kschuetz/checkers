@@ -1,6 +1,6 @@
 package checkers.components
 
-import checkers.components.PhysicalPiece.{PieceEvents, PieceMouseEvent}
+import checkers.components.piece.{PhysicalPiece, PhysicalPieceProps, PieceEvents, PieceMouseEvent}
 import checkers.game.Animation.HidesStaticPiece
 import checkers.game._
 import japgolly.scalajs.react._
@@ -47,7 +47,7 @@ object DynamicScene {
             val pos = Board.position(squareIndex)
             val pt = PhysicalBoard.positionToPoint(pos)
 
-            val pieceProps = PhysicalPiece.Props(
+            val pieceProps = PhysicalPieceProps(
               piece = piece,
               tag = squareIndex,
               x = pt.x,
