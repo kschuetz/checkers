@@ -1,5 +1,6 @@
 package checkers.components
 
+import checkers.components.board.PhysicalBoard
 import checkers.game.TestStates
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._

@@ -1,5 +1,6 @@
 package checkers.components
 
+import checkers.components.board.PhysicalBoard
 import checkers.components.piece.{PhysicalPiece, PhysicalPieceProps, PieceEvents, PieceMouseEvent}
 import checkers.game.Animation.HidesStaticPiece
 import checkers.game._

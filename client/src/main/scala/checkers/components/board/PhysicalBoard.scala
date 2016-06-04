@@ -1,4 +1,4 @@
-package checkers.components
+package checkers.components.board
 
 import checkers.game.{BoardPosition, Color, Dark, Light}
 import checkers.geometry.Point
@@ -9,9 +9,14 @@ import scala.scalajs.js
 
 object PhysicalBoard {
 
+  val squareSize: Double = 1.0
+  val boardSize: Double = 8
+
+  private val squareCenterOffset = squareSize / 2
+  private val boardCenterOffset = 3.5 * squareSize
 
   def positionToPoint(position: BoardPosition): Point =
-    Point(position.col - 3.5, position.row - 3.5)
+    Point(position.col - boardCenterOffset, position.row - boardCenterOffset)
 
   object Css {
     val dark = "dark"
@@ -31,10 +36,10 @@ object PhysicalBoard {
 
       <.svg.rect(
         ^.`class` := classes,
-        ^.svg.x := centerX - 0.5,
-        ^.svg.y := centerY - 0.5,
-        ^.svg.width := 1,
-        ^.svg.height := 1
+        ^.svg.x := centerX - squareCenterOffset,
+        ^.svg.y := centerY - squareCenterOffset,
+        ^.svg.width := squareSize,
+        ^.svg.height := squareSize
       )
     }.build
 
@@ -42,7 +47,7 @@ object PhysicalBoard {
     .render_P { case (centerY, colorOfFirst) =>
       val squares = new js.Array[ReactNode]
       (0 to 7).foldLeft(colorOfFirst) { case (color, idx) =>
-        val square: ReactNode = Square.withKey(idx)((idx - 3.5, 0.0, color))
+        val square: ReactNode = Square.withKey(idx)((idx - boardCenterOffset, 0.0, color))
         squares.push(square)
         color.opposite
       }
@@ -70,7 +75,7 @@ object PhysicalBoard {
       val upperLeftColor: Color = Light
       val rows = new js.Array[ReactNode]
       (0 to 7).foldLeft(upperLeftColor) { case (color, idx) =>
-        val row: ReactNode = BoardRow.withKey(idx)((idx - 3.5, color))
+        val row: ReactNode = BoardRow.withKey(idx)((idx - boardCenterOffset, color))
         rows.push(row)
         color.opposite
       }
