@@ -1,6 +1,8 @@
 package checkers
 
+import checkers.driver.GameScreenDriver
 import checkers.logger._
+import checkers.models.{GameScreenModel, GameSettings}
 import checkers.modules.Sandbox
 import checkers.style.GlobalStyles
 import japgolly.scalajs.react.ReactDOM
@@ -21,6 +23,17 @@ object CheckersMain extends js.JSApp {
     // create stylesheet
     GlobalStyles.addToDocument()
 
-    ReactDOM.render(Sandbox.test, dom.document.getElementById("root"))
+    val host = dom.document.getElementById("root")
+    sandbox2(host)
+  }
+
+  private def sandbox1(host: dom.Node): Unit = {
+    ReactDOM.render(Sandbox.test, host)
+  }
+
+  private def sandbox2(host: dom.Node): Unit = {
+    val model = GameScreenModel.initial(GameSettings.default)
+    val driver = new GameScreenDriver(host, model)
+    driver.run()
   }
 }

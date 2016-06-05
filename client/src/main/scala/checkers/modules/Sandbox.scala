@@ -1,6 +1,6 @@
 package checkers.modules
 
-import checkers.components.{GameScene, SceneFrame}
+import checkers.components.old.{GameSceneOld, SceneFrameOld}
 import checkers.shell.Location
 import japgolly.scalajs.react.ReactComponentB
 import japgolly.scalajs.react.extra.router.RouterCtl
@@ -15,7 +15,7 @@ object Sandbox {
         ^.`class` := "row",
         <.div(
           ^.`class` := "col-md-12",
-          GameScene(SceneFrame.Properties())
+          GameSceneOld(SceneFrameOld.Properties())
         )
       )
     }.build

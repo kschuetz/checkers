@@ -1,14 +1,15 @@
-package checkers.components
+package checkers.components.old
 
+import checkers.components.SceneRenderContext
 import checkers.geometry.Point
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
 import org.scalajs.dom.raw.SVGSVGElement
 
 
-object GameScene {
+object GameSceneOld {
 
-  class Backend($: BackendScope[SceneFrame.Properties, Unit]) {
+  class Backend($: BackendScope[SceneFrameOld.Properties, Unit]) {
 
     var sceneRenderContext = SceneRenderContext.default
 
@@ -35,22 +36,22 @@ object GameScene {
 
     }
 
-    def render(props: SceneFrame.Properties) = {
+    def render(props: SceneFrameOld.Properties) = {
       <.svg.svg(
         ^.id := "game-scene",
         ^.svg.width := "800px",
         ^.svg.height := "800px",
         ^.onMouseMove ==> handleMouseMove,
-        SceneFrame(props)
+        SceneFrameOld(props)
       )
     }
   }
 
-  val component = ReactComponentB[SceneFrame.Properties]("GameScene")
+  val component = ReactComponentB[SceneFrameOld.Properties]("GameScene")
     .renderBackend[Backend]
     .componentDidMount(_.backend.start)
     .build
 
 
-  def apply(props: SceneFrame.Properties) = component(props)
+  def apply(props: SceneFrameOld.Properties) = component(props)
 }

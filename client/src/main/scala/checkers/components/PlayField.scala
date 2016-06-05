@@ -1,6 +1,7 @@
 package checkers.components
 
 import checkers.components.board.PhysicalBoard
+import checkers.components.old.DynamicSceneOld
 import checkers.game.TestStates
 import checkers.models
 import japgolly.scalajs.react._
@@ -16,7 +17,7 @@ object PlayField {
       val physicalBoard = PhysicalBoard.Board()
       //val pieces = PhysicalPiece.DefaultPieceSetup()
       val dynamicSceneProps = models.DynamicScene(TestStates.playFieldState1, 0)
-      val dynamicScene = DynamicScene.apply(dynamicSceneProps)
+      val dynamicScene = DynamicSceneOld.apply(dynamicSceneProps)
       <.svg.g(
         ^.svg.transform := "translate(400,400),scale(90)",
         <.svg.g(
