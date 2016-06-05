@@ -2,8 +2,9 @@ package checkers.components
 
 import checkers.components.board.PhysicalBoard
 import checkers.components.piece.{PhysicalPiece, PhysicalPieceProps, PieceEvents, PieceMouseEvent}
-import checkers.game.Animation.HidesStaticPiece
 import checkers.game._
+import checkers.models.Animation.HidesStaticPiece
+import checkers.models
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
 
@@ -11,9 +12,9 @@ import scala.scalajs.js
 
 object DynamicScene {
 
-  case class Properties(playFieldState: PlayFieldState,
-                        rotationDegrees: Double)
-
+//  case class Model(playField: PlayField,
+//                   rotationDegrees: Double)
+  type Model = models.DynamicScene
 
   def testCallback(tag: Int) = Callback {
     println(s"tag $tag")
@@ -25,17 +26,17 @@ object DynamicScene {
     })
   }
 
-  val component = ReactComponentB[Properties]("DynamicScene")
+  val component = ReactComponentB[Model]("DynamicScene")
     .render_P { props =>
       val pieceRotation = if(props.rotationDegrees != 0) -props.rotationDegrees else 0
       val pieceScale = 1.0d
 
-      val piecesToHide = props.playFieldState.animations.foldLeft(Set.empty[Int]) {
+      val piecesToHide = props.playField.animations.foldLeft(Set.empty[Int]) {
         case (res, anim: HidesStaticPiece) => res + anim.hidesPieceAtSquare
         case (res, _) => res
       }
 
-      val squares = props.playFieldState.gameState.squares
+      val squares = props.playField.gameState.board.squares
 
       val staticPieces = new js.Array[ReactNode]
 
@@ -55,8 +56,8 @@ object DynamicScene {
               y = pt.y,
               scale = pieceScale,
               rotationDegrees = pieceRotation,
-              clickable = props.playFieldState.clickableSquares.contains(squareIndex),
-              highlighted = props.playFieldState.highlightedSquares.contains(squareIndex),
+              clickable = props.playField.clickableSquares.contains(squareIndex),
+              highlighted = props.playField.highlightedSquares.contains(squareIndex),
               events = TestPieceEvents)
 
             val physicalPiece = PhysicalPiece.apply.withKey(k)(pieceProps)

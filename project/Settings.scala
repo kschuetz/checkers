@@ -59,6 +59,7 @@ object Settings {
     "me.chrons" %%% "diode" % versions.diode,
     "me.chrons" %%% "diode-react" % versions.diode,
     "org.scala-js" %%% "scalajs-dom" % versions.scalaDom,
+    "com.github.japgolly.scalajs-react" %%% "ext-monocle" % "0.11.1",
     "com.lihaoyi" %%% "utest" % versions.uTest % Test
   ))
 

@@ -5,6 +5,9 @@ case class BoardPosition(row: Int, col: Int)
 
 object Board {
 
+  def isLegalSquareIndex(idx: Int): Boolean =
+    idx >= 0 && idx < 32
+
   // squareIndex: 0..31
   def squareIndexToBoardPosition(squareIndex: Int): BoardPosition = {
     val row = squareIndex / 4

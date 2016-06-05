@@ -1,6 +1,7 @@
-package checkers.game
+package checkers.models
 
-import checkers.geometry.Point
+import checkers.game.JumpPath.ValidJumpPath
+import checkers.game.Piece
 
 sealed trait Animation {
   def startTime: Double
@@ -12,6 +13,8 @@ sealed trait Animation {
   def hasStarted(nowTime: Double): Boolean = nowTime >= startTime
 
   def isExpired(nowTime: Double): Boolean
+
+  def isActive(nowTime: Double): Boolean = !isExpired(nowTime)
 
 }
 
@@ -39,31 +42,28 @@ object Animation {
     def hidesPieceAtSquare = toSquare
   }
 
-  case class JumpingPiece(fromSquare: Int,
-                          toSquare: Int,
+  case class JumpingPiece(jumpPath: ValidJumpPath,
                           startTime: Double,
                           duration: Double) extends OneTimeAnimation with HidesStaticPiece {
-    def hidesPieceAtSquare = toSquare
+    def hidesPieceAtSquare = jumpPath.endSquare
   }
 
   case class RemovingPiece(piece: Piece,
                            fromSquare: Int,
-                           exitPoint: Point,
                            startTime: Double,
+                           delay: Double,
                            duration: Double) extends OneTimeAnimation
 
-  case class PromotingPiece(square: Int,
-                            entrancePoint: Point,
-                            startTime: Double,
-                            duration: Double) extends OneTimeAnimation
+  case class CrowningPiece(square: Int,
+                           startTime: Double,
+                           duration: Double) extends OneTimeAnimation
 
   case class HintAnimation(fromSquare: Int,
                            toSquare: Int,
                            startTime: Double,
                            duration: Double) extends OneTimeAnimation
 
-  case class FlippingBoardAnimation(targetOrientation: BoardOrientation,
-                                    startTime: Double,
+  case class FlippingBoardAnimation(startTime: Double,
                                     duration: Double) extends OneTimeAnimation
 
 

@@ -3,10 +3,10 @@ package checkers.components
 import checkers.geometry.Point
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
-import org.scalajs.dom.raw.{SVGElement, SVGSVGElement}
+import org.scalajs.dom.raw.SVGSVGElement
 
 
-object GameContainer {
+object GameScene {
 
   class Backend($: BackendScope[SceneFrame.Properties, Unit]) {
 
@@ -37,7 +37,7 @@ object GameContainer {
 
     def render(props: SceneFrame.Properties) = {
       <.svg.svg(
-        ^.id := "game-container",
+        ^.id := "game-scene",
         ^.svg.width := "800px",
         ^.svg.height := "800px",
         ^.onMouseMove ==> handleMouseMove,
@@ -46,7 +46,7 @@ object GameContainer {
     }
   }
 
-  val component = ReactComponentB[SceneFrame.Properties]("GameContainer")
+  val component = ReactComponentB[SceneFrame.Properties]("GameScene")
     .renderBackend[Backend]
     .componentDidMount(_.backend.start)
     .build

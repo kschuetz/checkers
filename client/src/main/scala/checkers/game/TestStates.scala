@@ -1,5 +1,7 @@
 package checkers.game
 
+import checkers.models.{BoardOrientation, PlayField}
+
 object TestStates {
   val board1 = Vector(
     LightKing, LightKing, LightKing, LightKing,
@@ -11,9 +13,9 @@ object TestStates {
     DarkMan, DarkMan, DarkMan, DarkMan,
     DarkKing, DarkKing, DarkKing, DarkKing)
 
-  val gameState1 = GameState(board1)
+  val gameState1 = GameState(BoardState(board1), Dark)
 
-  val playFieldState1 = PlayFieldState(
+  val playFieldState1 = PlayField(
     gameState = gameState1,
     orientation = BoardOrientation.Normal,
     ghostPiece = None,
