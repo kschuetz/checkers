@@ -1,6 +1,5 @@
 package checkers.components.old
 
-import checkers.components.PlayField
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.ReactAttr
 import japgolly.scalajs.react.vdom.prefix_<^._

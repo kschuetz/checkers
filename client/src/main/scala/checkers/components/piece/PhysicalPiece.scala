@@ -108,7 +108,7 @@ object PhysicalPiece extends SvgHelpers {
 
   private def handlePieceMouseDown(props: PhysicalPieceProps)(event: ReactMouseEvent): Option[Callback] = {
     val pieceEvent = PieceMouseEvent(event, props.piece, props.tag)
-    props.events.onMouseDown(pieceEvent)
+    props.callbacks.onPieceMouseDown(pieceEvent)
   }
 
 }

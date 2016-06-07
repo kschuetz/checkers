@@ -9,6 +9,7 @@ class GameScreenDriver(val host: dom.Node,
                        initialModel: GameScreenModel) {
   var model = initialModel
 
+
   private def invalidate(): Unit = {
     dom.window.requestAnimationFrame(handleAnimationFrame _)
   }

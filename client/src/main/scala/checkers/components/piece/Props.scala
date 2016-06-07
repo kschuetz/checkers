@@ -7,13 +7,11 @@ case class PieceMouseEvent(reactEvent: ReactMouseEvent,
                            piece: Piece,
                            tag: Int)
 
-trait PieceEvents {
-  def onMouseDown: PieceMouseEvent => Option[Callback]
+trait PieceCallbacks {
+  def onPieceMouseDown: PieceMouseEvent => Option[Callback] = _ => None
 }
 
-object EmptyPieceEvents extends PieceEvents {
-  override val onMouseDown: (PieceMouseEvent) => Option[Callback] = _ => None
-}
+object EmptyPieceCallbacks extends PieceCallbacks
 
 
 case class PhysicalPieceProps(piece: Piece,
@@ -24,4 +22,4 @@ case class PhysicalPieceProps(piece: Piece,
                               rotationDegrees: Double,
                               clickable: Boolean,
                               highlighted: Boolean,
-                              events: PieceEvents)
+                              callbacks: PieceCallbacks)

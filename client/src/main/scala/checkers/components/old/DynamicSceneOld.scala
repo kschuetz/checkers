@@ -1,7 +1,7 @@
 package checkers.components.old
 
 import checkers.components.board.PhysicalBoard
-import checkers.components.piece.{PhysicalPiece, PhysicalPieceProps, PieceEvents, PieceMouseEvent}
+import checkers.components.piece.{PhysicalPiece, PhysicalPieceProps, PieceCallbacks, PieceMouseEvent}
 import checkers.game._
 import checkers.models
 import checkers.models.Animation.HidesStaticPiece
@@ -20,7 +20,7 @@ object DynamicSceneOld {
     println(s"tag $tag")
   }
 
-  object TestPieceEvents extends PieceEvents {
+  object TestPieceEvents extends PieceCallbacks {
     val onMouseDown = (event: PieceMouseEvent) => Some(Callback {
       println(event)
     })
@@ -58,7 +58,7 @@ object DynamicSceneOld {
               rotationDegrees = pieceRotation,
               clickable = props.playField.clickableSquares.contains(squareIndex),
               highlighted = props.playField.highlightedSquares.contains(squareIndex),
-              events = TestPieceEvents)
+              callbacks = TestPieceEvents)
 
             val physicalPiece = PhysicalPiece.apply.withKey(k)(pieceProps)
             staticPieces.push(physicalPiece)

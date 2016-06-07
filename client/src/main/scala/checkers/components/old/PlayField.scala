@@ -1,7 +1,6 @@
-package checkers.components
+package checkers.components.old
 
 import checkers.components.board.PhysicalBoard
-import checkers.components.old.DynamicSceneOld
 import checkers.game.TestStates
 import checkers.models
 import japgolly.scalajs.react._
