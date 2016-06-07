@@ -18,7 +18,7 @@ object DynamicScene {
 
   type Callbacks = PieceCallbacks
 
-  type Props = (Model, Callbacks)
+  type Props = (Model, Callbacks, SceneContainerContext)
 
 
   def testCallback(tag: Int) = Callback {
@@ -32,7 +32,7 @@ object DynamicScene {
   }
 
   val component = ReactComponentB[Props]("DynamicScene")
-    .render_P { case (model, callbacks) =>
+    .render_P { case (model, callbacks, sceneContainerContext) =>
 
       val boardRotation = model.getBoardRotation
 
