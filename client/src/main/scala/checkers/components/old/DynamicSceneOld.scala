@@ -58,6 +58,7 @@ object DynamicSceneOld {
               rotationDegrees = pieceRotation,
               clickable = props.playField.clickableSquares.contains(squareIndex),
               highlighted = props.playField.highlightedSquares.contains(squareIndex),
+              screenToBoard = identity,
               callbacks = TestPieceEvents)
 
             val physicalPiece = PhysicalPiece.apply.withKey(k)(pieceProps)

@@ -3,6 +3,7 @@ package checkers.components
 import checkers.components.board.PhysicalBoard
 import checkers.components.piece.{PhysicalPiece, PhysicalPieceProps, PieceCallbacks, PieceMouseEvent}
 import checkers.game._
+import checkers.geometry.Point
 import checkers.models
 import checkers.models.Animation.HidesStaticPiece
 import japgolly.scalajs.react._
@@ -18,7 +19,7 @@ object DynamicScene {
 
   type Callbacks = PieceCallbacks
 
-  type Props = (Model, Callbacks, SceneContainerContext)
+  type Props = (Model, Callbacks, SceneContainerContext, Point => Point)
 
 
   def testCallback(tag: Int) = Callback {
@@ -32,7 +33,7 @@ object DynamicScene {
   }
 
   val component = ReactComponentB[Props]("DynamicScene")
-    .render_P { case (model, callbacks, sceneContainerContext) =>
+    .render_P { case (model, callbacks, sceneContainerContext, screenToBoard) =>
 
       val boardRotation = model.getBoardRotation
 
@@ -66,6 +67,7 @@ object DynamicScene {
               rotationDegrees = pieceRotation,
               clickable = model.clickableSquares.contains(squareIndex),
               highlighted = model.highlightedSquares.contains(squareIndex),
+              screenToBoard = screenToBoard,
               callbacks = callbacks)
 
             val physicalPiece = PhysicalPiece.apply.withKey(k)(pieceProps)

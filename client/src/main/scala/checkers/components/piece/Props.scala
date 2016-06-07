@@ -1,11 +1,13 @@
 package checkers.components.piece
 
 import checkers.game.Piece
+import checkers.geometry.Point
 import japgolly.scalajs.react._
 
 case class PieceMouseEvent(reactEvent: ReactMouseEvent,
                            piece: Piece,
-                           tag: Int)
+                           tag: Int,
+                           boardPoint: Point)
 
 trait PieceCallbacks {
   def onPieceMouseDown: PieceMouseEvent => Option[Callback] = _ => None
@@ -22,4 +24,5 @@ case class PhysicalPieceProps(piece: Piece,
                               rotationDegrees: Double,
                               clickable: Boolean,
                               highlighted: Boolean,
+                              screenToBoard: Point => Point,
                               callbacks: PieceCallbacks)

@@ -14,7 +14,8 @@ class GameScreenDriver(val host: dom.Node,
   object Callbacks extends PieceCallbacks {
     override val onPieceMouseDown = (event: PieceMouseEvent) => Some(Callback {
       println("in handlePieceMouseDown")
-      println(s"${event.reactEvent.clientX}, ${event.reactEvent.clientY})")
+      println(s"(${event.reactEvent.clientX}, ${event.reactEvent.clientY})")
+      println(event)
     })
   }
 

@@ -1,6 +1,7 @@
 package checkers.components.piece
 
 import checkers.game._
+import checkers.geometry.Point
 import checkers.util.SvgHelpers
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
@@ -107,7 +108,8 @@ object PhysicalPiece extends SvgHelpers {
 
 
   private def handlePieceMouseDown(props: PhysicalPieceProps)(event: ReactMouseEvent): Option[Callback] = {
-    val pieceEvent = PieceMouseEvent(event, props.piece, props.tag)
+    val screenPoint = Point(event.clientX, event.clientY)
+    val pieceEvent = PieceMouseEvent(event, props.piece, props.tag, props.screenToBoard(screenPoint))
     props.callbacks.onPieceMouseDown(pieceEvent)
   }
 

@@ -7,7 +7,7 @@ import checkers.models.GameScreenModel
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.ReactAttr
 import japgolly.scalajs.react.vdom.prefix_<^._
-import org.scalajs.dom.raw.{SVGLocatable, SVGSVGElement}
+import org.scalajs.dom.raw.{SVGGElement, SVGLocatable}
 
 object SceneFrame {
 
@@ -27,33 +27,53 @@ object SceneFrame {
     }.build
 
 
-  def handleMouseMove(sceneContainerContext: SceneContainerContext)(event: ReactMouseEvent) = Callback {
+  class SceneFrameBackend($: BackendScope[Props, Unit]) {
+    val playfieldRef = Ref[SVGGElement]("playfield")
 
-    if(event.altKey) {
-      val pt = Point(event.clientX, event.clientY)
-//      val context = SceneRenderContext.fromSVGElement(event.target.asInstanceOf[SVGSVGElement])
-//      val transformed = context.cursorToLocal(pt)
-      val transformed = sceneContainerContext.screenToLocal(event.target.asInstanceOf[SVGLocatable])(pt)
-      println(s"screen: $pt")
-      println(s"local: $transformed")
-    }
-
-  }
-
-  val component = ReactComponentB[Props]("SceneFrame")
-    .render_P { case props@(model, callbacks, sceneContainerContext) =>
+    def render(props: Props) = {
+      val (model, callbacks, sceneContainerContext) = props
       val physicalBoard = PhysicalBoard.Board()
-      val dynamicScene = DynamicScene(props)
+      val screenToBoard = makeScreenToBoard(sceneContainerContext)
+      val dynamicScene = DynamicScene((props._1, props._2, props._3, screenToBoard))
       <.svg.g(
         Backdrop(),
         <.svg.g(
+          ^.ref := playfieldRef,
           ^.svg.transform := "translate(400,400),scale(90)",
-          ^.onMouseMove ==> handleMouseMove(sceneContainerContext),
+          //^.onMouseMove ==> handleMouseMove,
           physicalBoard,
           dynamicScene
         )
       )
-    }.build
+    }
+
+    def makeScreenToBoard(sceneContext: SceneContainerContext): Point => Point = { screen: Point =>
+      var result = screen
+      $.refs(playfieldRef.name).foreach { node =>
+        val target = node.getDOMNode().asInstanceOf[SVGLocatable]
+        result = sceneContext.screenToLocal(target)(screen)
+      }
+      result
+    }
+
+    def handleMouseMove(event: ReactMouseEvent) = $.props.map {  props =>
+      val context = props._3
+      if(event.altKey) {
+        val pt = Point(event.clientX, event.clientY)
+        $.refs(playfieldRef.name).foreach { node =>
+          val target = node.getDOMNode().asInstanceOf[SVGLocatable]
+          val transformed = context.screenToLocal(target)(pt)
+          println(s"screen: $pt")
+          println(s"local: $transformed")
+        }
+      }
+    }
+  }
+
+  val component = ReactComponentB[Props]("SceneFrame")
+      .renderBackend[SceneFrameBackend]
+      .build
+
 
   def apply(model: Props) = component(model)
 
