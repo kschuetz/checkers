@@ -16,6 +16,10 @@ object DynamicScene {
   //                   rotationDegrees: Double)
   type Model = models.GameScreenModel
 
+  type Callbacks = PieceCallbacks
+
+  type Props = (Model, Callbacks)
+
 
   def testCallback(tag: Int) = Callback {
     println(s"tag $tag")
@@ -27,8 +31,8 @@ object DynamicScene {
     })
   }
 
-  val component = ReactComponentB[Model]("DynamicScene")
-    .render_P { model =>
+  val component = ReactComponentB[Props]("DynamicScene")
+    .render_P { case (model, callbacks) =>
 
       val boardRotation = model.getBoardRotation
 
@@ -62,7 +66,7 @@ object DynamicScene {
               rotationDegrees = pieceRotation,
               clickable = model.clickableSquares.contains(squareIndex),
               highlighted = model.highlightedSquares.contains(squareIndex),
-              callbacks = TestPieceEvents)
+              callbacks = callbacks)
 
             val physicalPiece = PhysicalPiece.apply.withKey(k)(pieceProps)
             staticPieces.push(physicalPiece)
@@ -77,7 +81,7 @@ object DynamicScene {
     }.build
 
 
-  def apply(model: Model) = component(model)
+  def apply(props: Props) = component(props)
 
 
 }

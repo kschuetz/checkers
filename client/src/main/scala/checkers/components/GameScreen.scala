@@ -1,13 +1,18 @@
 package checkers.components
 
+import checkers.components.piece.PieceCallbacks
 import checkers.models.GameScreenModel
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
 
 object GameScreen {
 
-  val component = ReactComponentB[GameScreenModel]("GameScreen")
-    .render_P { model =>
+  type Callbacks = PieceCallbacks
+
+  type Props = (GameScreenModel, Callbacks)
+
+  val component = ReactComponentB[Props]("GameScreen")
+    .render_P { case props =>
       <.div(
         ^.id := "game-screen",
         <.div(
@@ -17,7 +22,7 @@ object GameScreen {
           ^.`class` := "row",
           <.div(
             ^.`class` := "col-md-12",
-            SceneContainer(model)
+            SceneContainer(props)
           )
         )
       )

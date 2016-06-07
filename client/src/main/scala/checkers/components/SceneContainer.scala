@@ -1,5 +1,6 @@
 package checkers.components
 
+import checkers.components.piece.PieceCallbacks
 import checkers.geometry.Point
 import checkers.models.GameScreenModel
 import japgolly.scalajs.react._
@@ -9,7 +10,11 @@ import org.scalajs.dom.raw.SVGSVGElement
 
 object SceneContainer {
 
-  class Backend($: BackendScope[GameScreenModel, Unit]) {
+  type Callbacks = PieceCallbacks
+
+  type Props = (GameScreenModel, Callbacks)
+
+  class Backend($: BackendScope[Props, Unit]) {
 
     var sceneRenderContext = SceneRenderContext.default
 
@@ -36,7 +41,7 @@ object SceneContainer {
 
     }
 
-    def render(props: GameScreenModel) = {
+    def render(props: Props) = {
       <.svg.svg(
         ^.id := "game-scene",
         ^.svg.width := "800px",
@@ -47,11 +52,11 @@ object SceneContainer {
     }
   }
 
-  val component = ReactComponentB[GameScreenModel]("SceneContainer")
+  val component = ReactComponentB[Props]("SceneContainer")
     .renderBackend[Backend]
     .componentDidMount(_.backend.start)
     .build
 
 
-  def apply(props: GameScreenModel) = component(props)
+  def apply(props: Props) = component(props)
 }
