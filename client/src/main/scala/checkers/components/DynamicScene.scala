@@ -45,12 +45,13 @@ object DynamicScene {
         case (res, _) => res
       }
 
-      val squares = model.gameState.board.squares
+//      val squares = model.gameState.board.data
+      val boardState = model.gameState.board
 
       val staticPieces = new js.Array[ReactNode]
 
       Board.allSquares.filterNot(piecesToHide.contains).foreach { squareIndex =>
-        val occupant = squares(squareIndex)
+        val occupant = boardState.getOccupant(squareIndex) //squares(squareIndex)
         occupant match {
           case piece: Piece =>
             val k = s"sp-$squareIndex"

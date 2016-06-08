@@ -36,7 +36,7 @@ object DynamicSceneOld {
         case (res, _) => res
       }
 
-      val squares = props.playField.gameState.board.squares
+      val squares = Vector.empty[Occupant] //props.playField.gameState.board.data
 
       val staticPieces = new js.Array[ReactNode]
 
