@@ -1,7 +1,7 @@
 package checkers.components
 
 import checkers.components.board.PhysicalBoard
-import checkers.components.piece.{PhysicalPiece, PhysicalPieceProps, PieceCallbacks, PieceMouseEvent}
+import checkers.components.piece._
 import checkers.game._
 import checkers.geometry.Point
 import checkers.models
@@ -76,8 +76,13 @@ object DynamicScene {
         }
       }
 
+      val ghostPiece = model.ghostPiece.map { gp =>
+        GhostPiece(gp)
+      }
+
       <.svg.g(
-        staticPieces
+        staticPieces,
+        ghostPiece
       )
 
     }.build

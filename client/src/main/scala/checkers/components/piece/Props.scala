@@ -1,6 +1,6 @@
 package checkers.components.piece
 
-import checkers.game.Piece
+import checkers.game.{DarkMan, Piece}
 import checkers.geometry.Point
 import japgolly.scalajs.react._
 
@@ -26,3 +26,17 @@ case class PhysicalPieceProps(piece: Piece,
                               highlighted: Boolean,
                               screenToBoard: Point => Point,
                               callbacks: PieceCallbacks)
+
+object PhysicalPieceProps {
+  val default = PhysicalPieceProps(piece = DarkMan,
+    tag = 0,
+    x = 0,
+    y = 0,
+    scale = 1,
+    rotationDegrees = 0,
+    clickable = false,
+    highlighted = false,
+    screenToBoard = identity,
+    callbacks = EmptyPieceCallbacks)
+
+}
