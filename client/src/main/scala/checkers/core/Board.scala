@@ -1,6 +1,25 @@
 package checkers.core
 
-case class BoardPosition(row: Int, col: Int)
+import scala.scalajs.js
+import org.scalajs.dom
+
+case class BoardPosition(row: Int, col: Int) {
+  // returns -1 if illegal
+  def toSquareIndex: Int = {
+    if(row < 0 || row > 7) return -1
+    if(col < 0 || col > 7) return -1
+    val r = row % 2
+    val c = col % 2
+    if (r == c) return -1
+
+    (4 * row) + (col - c) / 2
+  }
+
+  def offset(rows: Int, cols: Int): BoardPosition =
+    BoardPosition(row + rows, col + cols)
+}
+
+
 
 
 object Board {
@@ -24,6 +43,5 @@ object Board {
   val lightStartingSquares = 0 to 11
   val darkStartingSquares = 20 to 31
 
-
-
 }
+
