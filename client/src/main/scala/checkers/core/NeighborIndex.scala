@@ -48,12 +48,12 @@ object DarkNeighborIndex extends NeighborIndex {
 
 object LightNeighborIndex extends NeighborIndex {
   import NeighborIndex._
-  val forwardMoveW = moveNW
-  val forwardMoveE = moveNE
-  val forwardJumpW = jumpNW
-  val forwardJumpE = jumpNE
-  val backMoveW = moveSW
-  val backMoveE = moveSE
-  val backJumpW = jumpSW
-  val backJumpE = jumpSE
+  val forwardMoveW = moveSW
+  val forwardMoveE = moveSE
+  val forwardJumpW = jumpSW
+  val forwardJumpE = jumpSE
+  val backMoveW = moveNW
+  val backMoveE = moveNE
+  val backJumpW = jumpNW
+  val backJumpE = jumpNE
 }
