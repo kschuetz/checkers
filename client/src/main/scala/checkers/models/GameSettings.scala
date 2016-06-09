@@ -1,6 +1,6 @@
 package checkers.models
 
-import checkers.game.RulesSettings
+import checkers.core.RulesSettings
 
 case class GameSettings(rules: RulesSettings)
 

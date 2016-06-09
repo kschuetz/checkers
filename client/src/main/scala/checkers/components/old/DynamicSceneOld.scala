@@ -2,7 +2,7 @@ package checkers.components.old
 
 import checkers.components.board.PhysicalBoard
 import checkers.components.piece.{PhysicalPiece, PhysicalPieceProps, PieceCallbacks, PieceMouseEvent}
-import checkers.core.{Occupant, Piece}
+import checkers.core.{Board, Occupant, Piece}
 import checkers.game._
 import checkers.models
 import checkers.models.Animation.HidesStaticPiece

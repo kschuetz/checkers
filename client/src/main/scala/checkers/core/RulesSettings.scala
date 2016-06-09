@@ -1,6 +1,4 @@
-package checkers.game
-
-import checkers.core._
+package checkers.core
 
 
 case class RulesSettings(playsFirst: Color,

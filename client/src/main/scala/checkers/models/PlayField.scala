@@ -1,6 +1,6 @@
 package checkers.models
 
-import checkers.game.GameState
+import checkers.core.GameState
 
 case class PlayField(gameState: GameState,
                      orientation: BoardOrientation,

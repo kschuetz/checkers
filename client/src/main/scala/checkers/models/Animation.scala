@@ -1,7 +1,7 @@
 package checkers.models
 
-import checkers.core.Piece
-import checkers.game.JumpPath.ValidJumpPath
+import checkers.core.{JumpPath, Piece}
+import JumpPath.ValidJumpPath
 
 sealed trait Animation {
   def startTime: Double

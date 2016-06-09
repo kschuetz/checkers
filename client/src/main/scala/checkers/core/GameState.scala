@@ -1,6 +1,4 @@
-package checkers.game
-
-import checkers.core.{BoardState, Color}
+package checkers.core
 
 case class GameState(board: BoardState,
                      turnToPlay: Color)

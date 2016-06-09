@@ -2,7 +2,7 @@ package checkers.components
 
 import checkers.components.board.PhysicalBoard
 import checkers.components.piece._
-import checkers.core.Piece
+import checkers.core.{Board, Piece}
 import checkers.game._
 import checkers.geometry.Point
 import checkers.models

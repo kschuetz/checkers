@@ -1,4 +1,4 @@
-package checkers.game
+package checkers.core
 
 case class BoardPosition(row: Int, col: Int)
 

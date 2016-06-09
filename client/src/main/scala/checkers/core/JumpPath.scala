@@ -1,9 +1,4 @@
-package checkers.game
-
-/**
-  * Guaranteed to be a valid path
-  */
-
+package checkers.core
 
 
 object JumpPath {
@@ -11,7 +6,6 @@ object JumpPath {
     def startSquare = path.head
     def endSquare = path.last
   }
-
 
   def apply(path: Seq[Int]): ValidJumpPath = {
     if(path.lengthCompare(2) < 0) throw new IllegalArgumentException("JumpPath length must be >= 2")
