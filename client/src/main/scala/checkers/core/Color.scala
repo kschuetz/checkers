@@ -1,4 +1,4 @@
-package checkers.game
+package checkers.core
 
 sealed trait Color {
   def opposite: Color

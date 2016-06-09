@@ -1,6 +1,7 @@
 package checkers.components.board
 
-import checkers.game.{BoardPosition, Color, Dark, Light}
+import checkers.core.{Color, Dark, Light}
+import checkers.game.BoardPosition
 import checkers.geometry.Point
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._

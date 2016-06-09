@@ -1,36 +1,32 @@
-package checkers.game
+package checkers.core
 
 import scala.scalajs.js
 import scala.scalajs.js.typedarray.Uint32Array
 
-
 trait BoardStateRead {
   def getOccupant(squareIndex: Int): Occupant
+
+  def copyFrameTo(dest: Uint32Array, destIndex: Int = 0): Unit
 }
 
-trait BoardStateWrite {
-  def setOccupant(squareIndex: Int, value: Occupant): Unit
-}
-
-trait MutableBoardState extends BoardStateRead with BoardStateWrite {
+trait MutableBoardState extends BoardStateRead {
   def setOccupant(squareIndex: Int, value: Occupant): Unit
 
-  def toImmutable: BoardState
+  def setBoard(board: BoardStateRead): Unit
+
+  def toImmutable: BoardStateRead
 }
 
-trait BoardStack extends MutableBoardState {
-  def push(): Unit
-  def pop(): Unit
-}
 
 trait BoardStateReadImpl extends BoardStateRead {
   protected def data: Uint32Array
+
   protected def offset: Int
 
   def getOccupant(squareIndex: Int): Occupant = {
     var idx = squareIndex
     var bank = 0
-    if(idx >= 24) {
+    if (idx >= 24) {
       idx -= 24
       bank = 3
     } else if (idx >= 16) {
@@ -44,21 +40,25 @@ trait BoardStateReadImpl extends BoardStateRead {
     BoardState.decode(code)
   }
 
-  def copyFrame: Uint32Array = {
+  def copyFrameTo(dest: Uint32Array, destIndex: Int = 0): Unit = {
+    dest(destIndex) = data(offset)
+    dest(destIndex + 1) = data(offset + 1)
+    dest(destIndex + 2) = data(offset + 2)
+    dest(destIndex + 3) = data(offset + 3)
+  }
+
+  protected def copyFrame: Uint32Array = {
     val result = new Uint32Array(4)
-    result(0) = data(offset)
-    result(1) = data(offset + 1)
-    result(2) = data(offset + 2)
-    result(3) = data(offset + 3)
+    copyFrameTo(result)
     result
   }
 }
 
-trait BoardStateWriteImpl extends BoardStateReadImpl with BoardStateWrite {
+trait BoardStateWriteImpl extends BoardStateReadImpl {
   def setOccupant(squareIndex: Int, value: Occupant): Unit = {
     var idx = squareIndex
     var bank = 0
-    if(idx >= 24) {
+    if (idx >= 24) {
       idx -= 24
       bank = 3
     } else if (idx >= 16) {
@@ -74,10 +74,14 @@ trait BoardStateWriteImpl extends BoardStateReadImpl with BoardStateWrite {
     val code = value.code << idx
     data(bank) = (data(bank).asInstanceOf[Int] & complement) | code
   }
+
+  def setBoard(board: BoardStateRead): Unit = {
+    board.copyFrameTo(data, offset)
+  }
 }
 
 
-class BoardState protected[game](protected val data: Uint32Array) extends BoardStateReadImpl {
+class BoardState protected[core](protected val data: Uint32Array) extends BoardStateReadImpl {
   protected val offset = 0
 
   def updateMany(piece: Occupant)(indices: Seq[Int]): BoardState = {
@@ -89,7 +93,7 @@ class BoardState protected[game](protected val data: Uint32Array) extends BoardS
   }
 
   def updated(squareIndex: Int, piece: Occupant): BoardState = {
-    if(getOccupant(squareIndex) == piece) this
+    if (getOccupant(squareIndex) == piece) this
     else {
       val mb = new MutableState(copyFrame)
       mb.setOccupant(squareIndex, piece)
@@ -106,41 +110,15 @@ class BoardState protected[game](protected val data: Uint32Array) extends BoardS
   }
 }
 
-class BoardStackImpl(val initialCapacity: Int, initial: BoardStateRead) extends BoardStack with BoardStateWriteImpl {
-  private val frameSize = 4
-  protected var size = frameSize * initialCapacity
-  protected var data = new Uint32Array(size)
-  protected var offset = 0
-
-  private def ensureSize(minSize: Int): Unit = {
-    if(minSize > size) {
-      val newSize = minSize * 2
-      val newData = new Uint32Array(newSize)
-      Array.copy(data, 0, newData, 0, size)
-      data = newData
-      size = newSize
-    }
-  }
-
-  def push(): Unit = {
-    val nextOffset = offset + frameSize
-    ensureSize(nextOffset)
-    Array.copy(data, offset, data, nextOffset, frameSize)
-    offset = nextOffset
-  }
-
-  def pop(): Unit = {
-    offset = offset - frameSize
-    if(offset < 0) offset = 0
-  }
-
-  def toImmutable: BoardState = new BoardState(copyFrame)
-}
-
 
 
 object BoardState {
-  val empty = new BoardState(new Uint32Array(4))
+  val frameSize = 4
+
+  def createFrame: Uint32Array =
+    new Uint32Array(frameSize)
+
+  val empty = new BoardState(createFrame)
 
   val decode = js.Array[Occupant](Empty, Empty, Empty, Empty, LightMan, DarkMan, LightKing, DarkKing)
 }

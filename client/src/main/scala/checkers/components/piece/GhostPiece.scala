@@ -1,12 +1,9 @@
 package checkers.components.piece
 
-import checkers.game._
-import checkers.geometry.Point
+import checkers.core.{Dark, Light}
 import checkers.util.SvgHelpers
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
-
-import scala.scalajs.js
 
 object GhostPiece extends SvgHelpers {
 

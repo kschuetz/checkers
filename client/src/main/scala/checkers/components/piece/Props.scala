@@ -1,6 +1,6 @@
 package checkers.components.piece
 
-import checkers.game.{DarkMan, Piece}
+import checkers.core.{DarkMan, Piece}
 import checkers.geometry.Point
 import japgolly.scalajs.react._
 

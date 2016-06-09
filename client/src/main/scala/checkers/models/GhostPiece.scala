@@ -1,6 +1,6 @@
 package checkers.models
 
-import checkers.game.Piece
+import checkers.core.Piece
 import checkers.geometry.Point
 
 case class GhostPiece(piece: Piece,

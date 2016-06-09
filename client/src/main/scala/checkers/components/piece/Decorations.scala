@@ -1,10 +1,10 @@
 package checkers.components.piece
 
-import checkers.game.{Color, Dark, Light}
+import checkers.core.{Color, Dark, Light}
 import checkers.geometry.Point
 import checkers.util.SvgHelpers
-import japgolly.scalajs.react.{ReactComponentB, ReactNode}
 import japgolly.scalajs.react.vdom.prefix_<^._
+import japgolly.scalajs.react.{ReactComponentB, ReactNode}
 
 import scala.scalajs.js
 

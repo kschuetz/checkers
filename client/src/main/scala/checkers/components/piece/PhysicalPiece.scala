@@ -1,6 +1,6 @@
 package checkers.components.piece
 
-import checkers.game._
+import checkers.core.{Color, Dark, Light, PieceType}
 import checkers.geometry.Point
 import checkers.util.SvgHelpers
 import japgolly.scalajs.react._
