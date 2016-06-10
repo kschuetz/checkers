@@ -4,11 +4,6 @@ import checkers.core.PieceType.King
 
 import scala.scalajs.js
 
-sealed trait Move
-case class SimpleMove(from: Int, to: Int) extends Move
-case class Jump(from: Int, to: Int) extends Move
-
-
 
 class MoveGenerator(rulesSettings: RulesSettings) {
 
