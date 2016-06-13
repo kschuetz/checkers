@@ -2,14 +2,20 @@ package checkers.core
 
 import scala.scalajs.js
 
-sealed trait Move
-
-class SimpleMove(val code: Int) extends AnyVal {
-  def fromSquare: Int = code & 31
-  def toSquare: Int = (code >> 5) & 31
+sealed trait Move {
+  def isCompound: Boolean
+  def isJump: Boolean
 }
 
-class CompoundMove(path: js.Array[Int]) extends Move
+case class SimpleMove(fromSquare: Int, toSquare: Int, isJump: Boolean) extends Move {
+  def isCompound = false
+}
+
+class CompoundMove(path: js.Array[Int]) extends Move {
+  def isCompound = true
+  def isJump = true
+}
+
 
 class CompoundMoveBuilder(fromSquare: Int) {
   var path = new js.Array[Int]
@@ -25,13 +31,48 @@ class CompoundMoveBuilder(fromSquare: Int) {
   }
 }
 
-class MoveList(val simpleMoves: js.Array[SimpleMove],
-               val compoundMoves: js.Array[CompoundMove]) {
-  def isEmpty = false
-  def size = simpleMoves.length + compoundMoves.length
+object SimpleMoveIndex {
+  private def encode(toSquare: Int, fromSquare: Int): Int =
+    (toSquare << 5) | fromSquare
+
+  private val index = {
+    var result = Map.empty[Int, SimpleMove]
+
+    def addMove(fromSquare: Int, toSquare: Int, isJump: Boolean): Unit =
+      if(toSquare >= 0) {
+        val move = SimpleMove(fromSquare, toSquare, isJump)
+        result += (encode(fromSquare, toSquare) -> move)
+      }
+
+    Board.allSquares.foreach { i =>
+      import NeighborIndex._
+      addMove(i, moveNW(i), isJump=false)
+      addMove(i, moveNE(i), isJump=false)
+      addMove(i, moveSE(i), isJump=false)
+      addMove(i, moveSW(i), isJump=false)
+      addMove(i, jumpNW(i), isJump=true)
+      addMove(i, jumpNE(i), isJump=true)
+      addMove(i, jumpSE(i), isJump=true)
+      addMove(i, jumpSW(i), isJump=true)
+    }
+
+    result
+  }
+
+  def apply(fromSquare: Int, toSquare: Int): SimpleMove = {
+    val code = encode(fromSquare, toSquare)
+    index.getOrElse(code, throw new Exception("Invalid SimpleMove"))
+  }
 }
 
-object EmptyMoveList extends MoveList(SimpleMove.empty, CompoundMove.empty) {
+
+class MoveList(val moves: js.Array[Move]) {
+  def isEmpty = false
+  def size = moves.length
+}
+
+
+object EmptyMoveList extends MoveList(new js.Array[Move]) {
   override def isEmpty = true
 }
 
@@ -39,44 +80,34 @@ object EmptyMoveList extends MoveList(SimpleMove.empty, CompoundMove.empty) {
 
 class MoveListBuilder {
   private var empty = true
-  private var simpleMoves: js.Array[SimpleMove] = SimpleMove.empty
-  private var compoundMoves: js.Array[CompoundMove] = CompoundMove.empty
+  private var moves: js.Array[Move] = null
 
   def addSimpleMove(from: Int, to: Int): Unit = {
-    if(simpleMoves.isEmpty) {
-      simpleMoves = new js.Array[SimpleMove]
+    if(moves.isEmpty) {
+      moves = new js.Array[Move]
     }
     empty = false
-    simpleMoves.push(SimpleMove(from, to))
+    moves.push(SimpleMoveIndex(from, to))
   }
 
   def addCompoundMove(path: js.Array[Int]): Unit = {
-    if(compoundMoves.isEmpty) {
-      compoundMoves = new js.Array[CompoundMove]
+    if(moves.isEmpty) {
+      moves = new js.Array[Move]
     }
     empty = false
-    compoundMoves.push(new CompoundMove(path))
+    moves.push(new CompoundMove(path))
   }
 
   def result: MoveList = {
     if(empty) EmptyMoveList
     else {
-      val retval = new MoveList(simpleMoves, compoundMoves)
-      simpleMoves = null
-      compoundMoves = null
+      val retval = new MoveList(moves)
+      moves = null
       retval
     }
   }
 }
 
-object SimpleMove {
-  @inline
-  def apply(from: Int, to: Int): SimpleMove =
-    new SimpleMove((to << 5) | from)
-
-  val empty = new js.Array[SimpleMove]
-
-}
 
 object CompoundMove {
   val empty = new js.Array[CompoundMove]
