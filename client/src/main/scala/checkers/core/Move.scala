@@ -7,29 +7,17 @@ sealed trait Move {
   def isJump: Boolean
 }
 
+
+
 case class SimpleMove(fromSquare: Int, toSquare: Int, isJump: Boolean) extends Move {
   def isCompound = false
 }
 
-class CompoundMove(path: js.Array[Int]) extends Move {
+case class CompoundMove(reversePath: List[Int]) extends Move {
   def isCompound = true
   def isJump = true
 }
 
-
-class CompoundMoveBuilder(fromSquare: Int) {
-  var path = new js.Array[Int]
-  path.push(fromSquare)
-
-  def add(square: Int): Unit =
-    path.push(square)
-
-  def result: js.Array[Int] = {
-    val retval = path
-    path = null
-    retval
-  }
-}
 
 object SimpleMoveIndex {
   private def encode(toSquare: Int, fromSquare: Int): Int =
@@ -74,8 +62,8 @@ class MoveList(val moves: js.Array[Move]) {
 
 object EmptyMoveList extends MoveList(new js.Array[Move]) {
   override def isEmpty = true
+  override def size = 0
 }
-
 
 
 class MoveListBuilder {
@@ -90,12 +78,12 @@ class MoveListBuilder {
     moves.push(SimpleMoveIndex(from, to))
   }
 
-  def addCompoundMove(path: js.Array[Int]): Unit = {
+  def addCompoundMove(reversePath: List[Int]): Unit = {
     if(moves.isEmpty) {
       moves = new js.Array[Move]
     }
     empty = false
-    moves.push(new CompoundMove(path))
+    moves.push(new CompoundMove(reversePath))
   }
 
   def result: MoveList = {
@@ -108,7 +96,3 @@ class MoveListBuilder {
   }
 }
 
-
-object CompoundMove {
-  val empty = new js.Array[CompoundMove]
-}

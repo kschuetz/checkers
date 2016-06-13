@@ -1,8 +1,5 @@
 package checkers.core
 
-import scala.scalajs.js
-import org.scalajs.dom
-
 case class BoardPosition(row: Int, col: Int) {
   // returns -1 if illegal
   def toSquareIndex: Int = {
@@ -18,8 +15,6 @@ case class BoardPosition(row: Int, col: Int) {
   def offset(rows: Int, cols: Int): BoardPosition =
     BoardPosition(row + rows, col + cols)
 }
-
-
 
 
 object Board {
@@ -42,6 +37,15 @@ object Board {
 
   val lightStartingSquares = 0 to 11
   val darkStartingSquares = 20 to 31
+
+  val lightCrowningSquares = (28 to 31).toSet
+  val darkCrowningSquares = (0 to 3).toSet
+
+  def crowningSquares(color: Color): Set[Int] = color match {
+    case Light => lightCrowningSquares
+    case Dark => darkCrowningSquares
+  }
+
 
 }
 

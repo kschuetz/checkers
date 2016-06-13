@@ -32,6 +32,11 @@ object NeighborIndex {
     }
     result
   }
+
+  def forColor(color: Color): NeighborIndex = color match {
+    case Dark => DarkNeighborIndex
+    case Light => LightNeighborIndex
+  }
 }
 
 object DarkNeighborIndex extends NeighborIndex {
