@@ -1,5 +1,6 @@
 package checkers
 
+import checkers.benchmark.MoveGeneratorBenchmarks
 import checkers.core.SimpleMoveIndex
 import checkers.driver.GameScreenDriver
 import checkers.logger._
@@ -20,6 +21,8 @@ object CheckersMain extends js.JSApp {
   def main(): Unit = {
     log.warn("Application starting")
 
+    MoveGeneratorBenchmarks.test1()
+
     // create stylesheet
     GlobalStyles.addToDocument()
 
@@ -28,9 +31,6 @@ object CheckersMain extends js.JSApp {
   }
 
   private def sandbox1(host: dom.Node): Unit = {
-    DebugUtils.log(SimpleMoveIndex.index)
-    DebugUtils.log(SimpleMoveIndex(0, 4).toString)
-
     val model = GameScreenModel.initial(GameSettings.default)
     val driver = new GameScreenDriver(host, model)
     driver.run()

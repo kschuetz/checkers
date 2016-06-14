@@ -19,7 +19,7 @@ class MoveListBuilder {
   private var moves: js.Array[Move] = null
 
   def addSimpleMove(move: SimpleMove): Unit = {
-    if(moves.isEmpty) {
+    if(moves == null) {
       moves = new js.Array[Move]
       empty = false
     }
@@ -32,7 +32,7 @@ class MoveListBuilder {
       case one :: Nil => addSimpleMove(one)
       case many =>
         val compoundMove = CompoundMove(many)
-        if(moves.isEmpty) {
+        if(moves == null) {
           moves = new js.Array[Move]
           empty = false
         }

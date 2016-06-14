@@ -46,4 +46,10 @@ object BoardStack {
 
   def apply(initialCapacity: Int = defaultInitialCapacity): BoardStack =
     new BoardStackImpl(initialCapacity)
+
+  def fromBoard(boardState: BoardStateRead): BoardStack = {
+    val result = apply(defaultInitialCapacity)
+    result.setBoard(boardState)
+    result
+  }
 }
