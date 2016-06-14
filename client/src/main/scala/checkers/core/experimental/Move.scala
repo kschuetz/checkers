@@ -1,6 +1,7 @@
 package checkers.core.experimental
 
 import checkers.core.{Board, NeighborIndex}
+import checkers.util.{DebugUtils, NativeMap}
 
 
 sealed trait Move
@@ -14,19 +15,19 @@ object SimpleMoveIndex {
   private def encode(toSquare: Int, fromSquare: Int): Int =
     (toSquare << 5) | fromSquare
 
-  private val index = {
-    var result = Map.empty[Int, SimpleMove]
+  val index = {
+    val result = new NativeMap[Int, SimpleMove]
 
     def addMove(fromSquare: Int, toSquare: Int): Unit =
       if(toSquare >= 0) {
         val move = SimpleMove(fromSquare, -1, toSquare)
-        result += (encode(fromSquare, toSquare) -> move)
+        result.set(encode(fromSquare, toSquare), move)
       }
 
     def addJump(fromSquare: Int, overSquare: Int, toSquare: Int): Unit =
       if(toSquare >= 0 && overSquare >= 0) {
         val move = SimpleMove(fromSquare, overSquare, toSquare)
-        result += (encode(fromSquare, toSquare) -> move)
+        result.set(encode(fromSquare, toSquare), move)
       }
 
     Board.allSquares.foreach { i =>
@@ -44,8 +45,14 @@ object SimpleMoveIndex {
     result
   }
 
+  /**
+    * Throws an exception if move is invalid
+    */
   def apply(fromSquare: Int, toSquare: Int): SimpleMove = {
     val code = encode(fromSquare, toSquare)
-    index.getOrElse(code, throw new Exception("Invalid SimpleMove"))
+    val result = index.get(code)
+    result.get
   }
+
+
 }
