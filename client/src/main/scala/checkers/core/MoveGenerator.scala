@@ -1,104 +1,77 @@
 package checkers.core
 
-import checkers.core.PieceType.King
-import checkers.core.old.{Move, MoveListBuilder}
-
 import scala.scalajs.js
 
 
-class MoveGenerator(rulesSettings: RulesSettings) {
-
-  type MoveList = Seq[Move]
+class MoveGenerator(rulesSettings: RulesSettings,
+                    moveExecutor: MoveExecutor) {
 
   private val jumpsCompulsory = true
 
   def generateMoves(boardState: BoardStack, turnToMove: Color): MoveList = {
-
-
     val opponent = turnToMove.opposite
-    var processNormalMoves = true
-    val builder = new MoveListBuilder
-
-    def squareEmpty(target: Int): Boolean =
-      (target >= 0) && boardState.isSquareEmpty(target)
-
-    def hasOpponent(target: Int): Boolean =
-      (target >= 0) && boardState.squareHasColor(opponent, target)
-
-    val crowningSquares = Board.crowningSquares(turnToMove)
     val neighborIndex = NeighborIndex.forColor(turnToMove)
     import neighborIndex._
 
-    def tryJump(square: Int, moveNeighbor: js.Array[Int], jumpNeighbor: js.Array[Int]): Unit = {
-      val over = moveNeighbor(square)
-      val target = jumpNeighbor(square)
-      if(over < 0 || target < 0) return
-      if(!boardState.isSquareEmpty(target)) return
-      if(!boardState.squareHasColor(opponent, over)) return
-      // TODO: add jump to move list
-    }
+    var processNormalMoves = true
+    val builder = new MoveListBuilder
 
-    def canJump(square: Int, over: Int, target: Int): Boolean = {
-      if(over < 0 || target < 0) return false
-      if(!boardState.isSquareEmpty(target)) return false
-      if(!boardState.squareHasColor(opponent, over)) return false
+    def tryJump(moveStack: List[SimpleMove], piece: Piece, from: Int, over: Int, target: Int): Boolean = {
+      if (over < 0 || target < 0) return false
+      if (!boardState.isSquareEmpty(target)) return false
+      if (!boardState.squareHasColor(opponent, over)) return false
+      boardState.push()
+      val move = SimpleMoveIndex(from, target)
+      val newStack = move :: moveStack
+      val crowned = moveExecutor.fastExecute(boardState, move)
+      if (!crowned) {
+        val haveMore = !tryJumps(newStack, piece, target)
+        if (!(haveMore && jumpsCompulsory)) {
+          builder.addMoveStack(newStack)
+        }
+      }
+      if (jumpsCompulsory) {
+        processNormalMoves = false
+      }
+      boardState.pop()
       true
     }
 
-    def tryJumps(path: List[Int], isKing: Boolean): Int = {
-
-      def go(square: Int, moveNeighbor: js.Array[Int], jumpNeighbor: js.Array[Int]): Int = {
-        val over = moveNeighbor(square)
-        val target = jumpNeighbor(square)
-        if(canJump(square, over, target)) {
-          val newPath = square :: path
-          if(jumpsCompulsory) {
-            processNormalMoves = false
-          }
-          if(!isKing && crowningSquares.contains(square)) {
-
-          }
-          //builder.addCompoundMove()
-          ???
-        }
-        0  // TODO
+    def tryJumps(moveStack: List[SimpleMove], piece: Piece, from: Int): Boolean = {
+      var result = false
+      result = tryJump(moveStack, piece, from, forwardMoveW(from), forwardJumpW(from))
+      result ||= tryJump(moveStack, piece, from, forwardMoveE(from), forwardJumpE(from))
+      if (piece.isKing) {
+        result ||= tryJump(moveStack, piece, from, backMoveW(from), backJumpW(from))
+        result ||= tryJump(moveStack, piece, from, backMoveE(from), backJumpE(from))
       }
-
-      path match {
-        case first :: Nil =>
-      }
-      0
+      result
     }
 
-    def tryMove(square: Int, moveNeighbor: js.Array[Int]): Unit = {
-      val target = moveNeighbor(square)
-      if(target < 0) return
-      if(!boardState.isSquareEmpty(target)) return
-      builder.addSimpleMove(square, target)
+    def tryMove(from: Int, moveNeighbor: js.Array[Int]): Unit = {
+      val target = moveNeighbor(from)
+      if (target < 0) return
+      if (!boardState.isSquareEmpty(target)) return
+      builder.addSimpleMove(SimpleMoveIndex(from, target))
     }
 
     Board.allSquares.foreach { square =>
       val occupant = boardState.getOccupant(square)
       occupant.getPiece.foreach { piece =>
-        if(piece.color == turnToMove) {
-          tryJump(square, forwardMoveW, forwardJumpW)
-          tryJump(square, forwardMoveE, forwardJumpE)
-          if(piece.pieceType == King) {
-            tryJump(square, backMoveW, backJumpW)
-            tryJump(square, backMoveE, backJumpE)
-          }
+        if (piece.color == turnToMove) {
+          tryJumps(Nil, piece, square)
         }
       }
     }
 
-    if(processNormalMoves) {
+    if (processNormalMoves) {
       Board.allSquares.foreach { square =>
         val occupant = boardState.getOccupant(square)
         occupant.getPiece.foreach { piece =>
-          if(piece.color == turnToMove) {
+          if (piece.color == turnToMove) {
             tryMove(square, forwardMoveW)
             tryMove(square, forwardMoveE)
-            if(piece.pieceType == King) {
+            if (piece.isKing) {
               tryMove(square, backMoveW)
               tryMove(square, backMoveE)
             }
@@ -106,9 +79,106 @@ class MoveGenerator(rulesSettings: RulesSettings) {
         }
       }
     }
-    List.empty[Move]
+
+    builder.result
   }
 
+  //  def generateMovesOld(boardState: BoardStack, turnToMove: Color): MoveList = {
+  //
+  //
+  //    val opponent = turnToMove.opposite
+  //    var processNormalMoves = true
+  //    val builder = new MoveListBuilder
+  //
+  //    def squareEmpty(target: Int): Boolean =
+  //      (target >= 0) && boardState.isSquareEmpty(target)
+  //
+  //    def hasOpponent(target: Int): Boolean =
+  //      (target >= 0) && boardState.squareHasColor(opponent, target)
+  //
+  //    val crowningSquares = Board.crowningSquares(turnToMove)
+  //    val neighborIndex = NeighborIndex.forColor(turnToMove)
+  //    import neighborIndex._
+  //
+  //    def tryJump(square: Int, moveNeighbor: js.Array[Int], jumpNeighbor: js.Array[Int]): Unit = {
+  //      val over = moveNeighbor(square)
+  //      val target = jumpNeighbor(square)
+  //      if(over < 0 || target < 0) return
+  //      if(!boardState.isSquareEmpty(target)) return
+  //      if(!boardState.squareHasColor(opponent, over)) return
+  //      // TODO: add jump to move list
+  //    }
+  //
+  //    def canJump(square: Int, over: Int, target: Int): Boolean = {
+  //      if(over < 0 || target < 0) return false
+  //      if(!boardState.isSquareEmpty(target)) return false
+  //      if(!boardState.squareHasColor(opponent, over)) return false
+  //      true
+  //    }
+  //
+  //    def tryJumps(path: List[Int], isKing: Boolean): Int = {
+  //
+  //      def go(square: Int, moveNeighbor: js.Array[Int], jumpNeighbor: js.Array[Int]): Int = {
+  //        val over = moveNeighbor(square)
+  //        val target = jumpNeighbor(square)
+  //        if(canJump(square, over, target)) {
+  //          val newPath = square :: path
+  //          if(jumpsCompulsory) {
+  //            processNormalMoves = false
+  //          }
+  //          if(!isKing && crowningSquares.contains(square)) {
+  //
+  //          }
+  //          //builder.addCompoundMove()
+  //          ???
+  //        }
+  //        0  // TODO
+  //      }
+  //
+  //      path match {
+  //        case first :: Nil =>
+  //      }
+  //      0
+  //    }
+  //
+  //    def tryMove(square: Int, moveNeighbor: js.Array[Int]): Unit = {
+  //      val target = moveNeighbor(square)
+  //      if(target < 0) return
+  //      if(!boardState.isSquareEmpty(target)) return
+  //      builder.addSimpleMove(square, target)
+  //    }
+  //
+  //    Board.allSquares.foreach { square =>
+  //      val occupant = boardState.getOccupant(square)
+  //      occupant.getPiece.foreach { piece =>
+  //        if(piece.color == turnToMove) {
+  //          tryJump(square, forwardMoveW, forwardJumpW)
+  //          tryJump(square, forwardMoveE, forwardJumpE)
+  //          if(piece.pieceType == King) {
+  //            tryJump(square, backMoveW, backJumpW)
+  //            tryJump(square, backMoveE, backJumpE)
+  //          }
+  //        }
+  //      }
+  //    }
+  //
+  //    if(processNormalMoves) {
+  //      Board.allSquares.foreach { square =>
+  //        val occupant = boardState.getOccupant(square)
+  //        occupant.getPiece.foreach { piece =>
+  //          if(piece.color == turnToMove) {
+  //            tryMove(square, forwardMoveW)
+  //            tryMove(square, forwardMoveE)
+  //            if(piece.pieceType == King) {
+  //              tryMove(square, backMoveW)
+  //              tryMove(square, backMoveE)
+  //            }
+  //          }
+  //        }
+  //      }
+  //    }
+  //    List.empty[Move]
+  //  }
 
 
 }

@@ -56,45 +56,4 @@ object SimpleMoveIndex {
 }
 
 
-class MoveList(val moves: js.Array[Move]) {
-  def isEmpty = false
-  def size = moves.length
-}
-
-
-object EmptyMoveList extends MoveList(new js.Array[Move]) {
-  override def isEmpty = true
-  override def size = 0
-}
-
-
-class MoveListBuilder {
-  private var empty = true
-  private var moves: js.Array[Move] = null
-
-  def addSimpleMove(from: Int, to: Int): Unit = {
-    if(moves.isEmpty) {
-      moves = new js.Array[Move]
-    }
-    empty = false
-    moves.push(SimpleMoveIndex(from, to))
-  }
-
-  def addCompoundMove(reversePath: List[Int]): Unit = {
-    if(moves.isEmpty) {
-      moves = new js.Array[Move]
-    }
-    empty = false
-    moves.push(new CompoundMove(reversePath))
-  }
-
-  def result: MoveList = {
-    if(empty) EmptyMoveList
-    else {
-      val retval = new MoveList(moves)
-      moves = null
-      retval
-    }
-  }
-}
 
