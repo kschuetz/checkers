@@ -10,7 +10,11 @@ trait BoardStateRead {
 
   def squareHasColor(color: Color, squareIndex: Int): Boolean
 
+  def foreach(color: Color)(f: (Int, Piece) => Unit): Unit
+
   def copyFrameTo(dest: Uint32Array, destIndex: Int = 0): Unit
+
+
 }
 
 trait MutableBoardState extends BoardStateRead {
@@ -58,6 +62,19 @@ trait BoardStateReadImpl extends BoardStateRead {
     color match {
       case Dark => BoardState.codeIsDark(code)
       case Light => BoardState.codeIsLight(code)
+    }
+  }
+
+  def foreach(color: Color)(f: (Int, Piece) => Unit): Unit = {
+    var i = 0
+    val check = color match {
+      case Dark => BoardState.codeIsDark
+      case Light => BoardState.codeIsLight
+    }
+    while(i < 31) {
+      val code = getCodeAt(i)
+      if(check(code)) { f(i, BoardState.piece(code)) }
+      i += 1
     }
   }
 
@@ -143,9 +160,12 @@ object BoardState {
 
   val decode = js.Array[Occupant](Empty, Empty, Empty, Empty, LightMan, DarkMan, LightKing, DarkKing)
 
+  val piece = js.Array[Piece](null, null, null, null, LightMan, DarkMan, LightKing, DarkKing)
+
   val codeIsEmpty = js.Array[Boolean](true, true, true, true, false, false, false, false)
 
   val codeIsLight = js.Array[Boolean](false, false, false, false, true, false, true, false)
 
   val codeIsDark = js.Array[Boolean](false, false, false, false, false, true, false, true)
+
 }

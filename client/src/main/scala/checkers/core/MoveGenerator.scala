@@ -55,30 +55,22 @@ class MoveGenerator(rulesSettings: RulesSettings,
       builder.addSimpleMove(SimpleMoveIndex(from, target))
     }
 
-    Board.allSquares.foreach { square =>
-      val occupant = boardState.getOccupant(square)
-      occupant.getPiece.foreach { piece =>
-        if (piece.color == turnToMove) {
-          tryJumps(Nil, piece, square)
-        }
-      }
+    boardState.foreach(turnToMove){ case (square, piece) =>
+      tryJumps(Nil, piece, square)
     }
 
-    if (processNormalMoves) {
-      Board.allSquares.foreach { square =>
-        val occupant = boardState.getOccupant(square)
-        occupant.getPiece.foreach { piece =>
-          if (piece.color == turnToMove) {
-            tryMove(square, forwardMoveW)
-            tryMove(square, forwardMoveE)
-            if (piece.isKing) {
-              tryMove(square, backMoveW)
-              tryMove(square, backMoveE)
-            }
-          }
-        }
-      }
-    }
+//    if(processNormalMoves) {
+//      boardState.foreach(turnToMove){ case (square, piece) =>
+//        tryMove(square, forwardMoveW)
+//        tryMove(square, forwardMoveE)
+//        if (piece.isKing) {
+//          tryMove(square, backMoveW)
+//          tryMove(square, backMoveE)
+//        }
+//      }
+//    }
+
+
 
     builder.result
   }

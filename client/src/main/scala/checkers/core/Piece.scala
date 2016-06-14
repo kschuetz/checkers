@@ -17,6 +17,7 @@ sealed trait Occupant {
   def isKing: Boolean
   def code: Int
   def crowned: Occupant
+  def foreach[A](f: Piece => A): Unit
 }
 
 case object Empty extends Occupant {
@@ -26,6 +27,7 @@ case object Empty extends Occupant {
   val isKing = false
   val code: Int = 0
   val crowned = Empty
+  def foreach[A](f: Piece => A): Unit = { }
 }
 
 sealed trait Piece extends Occupant {
@@ -33,6 +35,7 @@ sealed trait Piece extends Occupant {
   def pieceType: PieceType
   val getPiece = Some(this)
   val isEmpty = false
+  def foreach[A](f: Piece => A): Unit = f(this)
 }
 
 case object LightMan extends Piece {
@@ -69,4 +72,24 @@ case object DarkKing extends Piece {
   val isMan = false
   val isKing = true
   val crowned = DarkKing
+}
+
+class NewOccupant(val code: Int) extends AnyVal {
+  def isEmpty = (code & 4) == 0
+  def isMan = (code & 6) == 4
+  def isKing = (code & 6) == 6
+  def isLight = (code & 5) == 4
+  def isDark = (code & 5) == 5
+  def crowned = if(isMan) {
+    if(isDark) NewOccupant.DarkKing
+    else NewOccupant.LightKing
+  } else this
+}
+
+object NewOccupant {
+  val Empty = new NewOccupant(0)
+  val LightMan = new NewOccupant(4)
+  val DarkMan = new NewOccupant(5)
+  val LightKing = new NewOccupant(6)
+  val DarkKing = new NewOccupant(7)
 }
