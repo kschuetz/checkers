@@ -19,9 +19,17 @@ class MoveExecutor(rulesSettings: RulesSettings) {
       }
     }
 
+    // runs reverse of path
+    def runCompound(path: List[SimpleMove]): Unit = path match {
+      case Nil => ()
+      case x :: xs =>
+        runCompound(xs)
+        runSimple(x)
+    }
+
     move match {
       case move: SimpleMove => runSimple(move)
-      case CompoundMove(moves) => moves.foreach(runSimple)
+      case CompoundMove(path) => runCompound(path)
     }
     crowned
   }

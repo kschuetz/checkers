@@ -16,18 +16,18 @@ class MoveGenerator(rulesSettings: RulesSettings,
     var processNormalMoves = true
     val builder = new MoveListBuilder
 
-    def tryJump(moveStack: List[SimpleMove], piece: Piece, from: Int, over: Int, target: Int): Boolean = {
+    def tryJump(path: List[SimpleMove], piece: Piece, from: Int, over: Int, target: Int): Boolean = {
       if (over < 0 || target < 0) return false
       if (!boardState.isSquareEmpty(target)) return false
       if (!boardState.squareHasColor(opponent, over)) return false
       boardState.push()
       val move = SimpleMoveIndex(from, target)
-      val newStack = move :: moveStack
+      val newPath = move :: path
       val crowned = moveExecutor.fastExecute(boardState, move)
       if (!crowned) {
-        val haveMore = !tryJumps(newStack, piece, target)
+        val haveMore = !tryJumps(newPath, piece, target)
         if (!(haveMore && jumpsCompulsory)) {
-          builder.addMoveStack(newStack)
+          builder.addPath(newPath)
         }
       }
       if (jumpsCompulsory) {
@@ -37,13 +37,13 @@ class MoveGenerator(rulesSettings: RulesSettings,
       true
     }
 
-    def tryJumps(moveStack: List[SimpleMove], piece: Piece, from: Int): Boolean = {
+    def tryJumps(path: List[SimpleMove], piece: Piece, from: Int): Boolean = {
       var result = false
-      result = tryJump(moveStack, piece, from, forwardMoveW(from), forwardJumpW(from))
-      result ||= tryJump(moveStack, piece, from, forwardMoveE(from), forwardJumpE(from))
+      result = tryJump(path, piece, from, forwardMoveW(from), forwardJumpW(from))
+      result ||= tryJump(path, piece, from, forwardMoveE(from), forwardJumpE(from))
       if (piece.isKing) {
-        result ||= tryJump(moveStack, piece, from, backMoveW(from), backJumpW(from))
-        result ||= tryJump(moveStack, piece, from, backMoveE(from), backJumpE(from))
+        result ||= tryJump(path, piece, from, backMoveW(from), backJumpW(from))
+        result ||= tryJump(path, piece, from, backMoveE(from), backJumpE(from))
       }
       result
     }

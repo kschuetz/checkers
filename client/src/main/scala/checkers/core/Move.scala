@@ -7,7 +7,11 @@ sealed trait Move
 
 case class SimpleMove(from: Int, over: Int, to: Int) extends Move
 
-case class CompoundMove(path: List[SimpleMove]) extends Move
+/**
+  * @param history - a list of simple moves (in reverse order).
+  *                They are stored in reverse order
+  */
+case class CompoundMove(history: List[SimpleMove]) extends Move
 
 
 object SimpleMoveIndex {

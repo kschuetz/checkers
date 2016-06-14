@@ -26,12 +26,12 @@ class MoveListBuilder {
     moves.push(move)
   }
 
-  def addMoveStack(moveStack: List[SimpleMove]): Unit = {
-    moveStack match {
+  def addPath(path: List[SimpleMove]): Unit = {
+    path match {
       case Nil => ()
-      case move :: Nil => addSimpleMove(move)
+      case one :: Nil => addSimpleMove(one)
       case many =>
-        val compoundMove = CompoundMove(many.reverse)
+        val compoundMove = CompoundMove(many)
         if(moves.isEmpty) {
           moves = new js.Array[Move]
           empty = false
