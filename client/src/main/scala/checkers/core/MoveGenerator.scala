@@ -1,6 +1,7 @@
 package checkers.core
 
 import checkers.core.PieceType.King
+import checkers.core.old.{Move, MoveListBuilder}
 
 import scala.scalajs.js
 

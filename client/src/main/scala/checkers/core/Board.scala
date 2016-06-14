@@ -46,6 +46,14 @@ object Board {
     case Dark => darkCrowningSquares
   }
 
+  def isCrowningMove(piece: Occupant, destSquare: Int): Boolean = {
+    piece match {
+      case LightMan => lightCrowningSquares.contains(destSquare)
+      case DarkMan => darkCrowningSquares.contains(destSquare)
+      case _ => false
+    }
+  }
+
 
 }
 
