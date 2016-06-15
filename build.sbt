@@ -17,6 +17,12 @@ lazy val sharedJS = shared.js.settings(name := "sharedJS")
 // use eliding to drop some debug code in the production build
 lazy val elideOptions = settingKey[Seq[String]]("Set limit for elidable functions")
 
+lazy val macros: Project = (project in file("macros"))
+  .settings(
+    scalaVersion := Settings.versions.scala,
+    libraryDependencies ++= Settings.macrosDependencies.value
+  )
+
 // instantiate the JS project for SBT with some additional settings
 lazy val client: Project = (project in file("client"))
   .settings(
@@ -41,6 +47,7 @@ lazy val client: Project = (project in file("client"))
   )
   .enablePlugins(ScalaJSPlugin, ScalaJSPlay)
   .dependsOn(sharedJS)
+  .dependsOn(macros)
 
 // Client projects (just one in this case)
 lazy val clients = Seq(client)

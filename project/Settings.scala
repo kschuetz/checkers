@@ -1,5 +1,5 @@
-import sbt._
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
+import sbt._
 
 /**
  * Application settings. Configure the build for your application here.
@@ -70,5 +70,9 @@ object Settings {
     "org.webjars" % "jquery" % versions.jQuery / "jquery.js" minified "jquery.min.js",
     "org.webjars" % "bootstrap" % versions.bootstrap / "bootstrap.js" minified "bootstrap.min.js" dependsOn "jquery.js",
     "org.webjars" % "log4javascript" % versions.log4js / "js/log4javascript_uncompressed.js" minified "js/log4javascript.js"
+  ))
+
+  val macrosDependencies = Def.setting(Seq(
+    "org.scala-lang" % "scala-reflect" % versions.scala
   ))
 }
