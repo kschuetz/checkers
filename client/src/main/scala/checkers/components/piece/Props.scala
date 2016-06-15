@@ -1,11 +1,11 @@
 package checkers.components.piece
 
-import checkers.core.{DarkMan, Piece}
+import checkers.consts._
 import checkers.geometry.Point
 import japgolly.scalajs.react._
 
 case class PieceMouseEvent(reactEvent: ReactMouseEvent,
-                           piece: Piece,
+                           piece: Occupant,
                            tag: Int,
                            boardPoint: Point)
 
@@ -16,7 +16,7 @@ trait PieceCallbacks {
 object EmptyPieceCallbacks extends PieceCallbacks
 
 
-case class PhysicalPieceProps(piece: Piece,
+case class PhysicalPieceProps(piece: Occupant,
                               tag: Int, // for events
                               x: Double,
                               y: Double,

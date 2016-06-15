@@ -2,8 +2,7 @@ package checkers.components
 
 import checkers.components.board.PhysicalBoard
 import checkers.components.piece._
-import checkers.core.{Board, Piece}
-import checkers.game._
+import checkers.core.{Board, Occupant}
 import checkers.geometry.Point
 import checkers.models
 import checkers.models.Animation.HidesStaticPiece
@@ -53,15 +52,14 @@ object DynamicScene {
 
       Board.allSquares.filterNot(piecesToHide.contains).foreach { squareIndex =>
         val occupant = boardState.getOccupant(squareIndex) //squares(squareIndex)
-        occupant match {
-          case piece: Piece =>
+        if(Occupant.isPiece(occupant)) {
             val k = s"sp-$squareIndex"
 
             val pos = Board.position(squareIndex)
             val pt = PhysicalBoard.positionToPoint(pos)
 
             val pieceProps = PhysicalPieceProps(
-              piece = piece,
+              piece = occupant,
               tag = squareIndex,
               x = pt.x,
               y = pt.y,
@@ -74,7 +72,6 @@ object DynamicScene {
 
             val physicalPiece = PhysicalPiece.apply.withKey(k)(pieceProps)
             staticPieces.push(physicalPiece)
-          case _ =>
         }
       }
 

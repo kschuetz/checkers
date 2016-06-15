@@ -1,7 +1,8 @@
 package checkers.models
 
-import checkers.core.{JumpPath, Piece}
-import JumpPath.ValidJumpPath
+import checkers.core.JumpPath
+import checkers.consts._
+import checkers.core.JumpPath.ValidJumpPath
 
 sealed trait Animation {
   def startTime: Double
@@ -48,7 +49,7 @@ object Animation {
     def hidesPieceAtSquare = jumpPath.endSquare
   }
 
-  case class RemovingPiece(piece: Piece,
+  case class RemovingPiece(piece: Occupant,
                            fromSquare: Int,
                            startTime: Double,
                            delay: Double,

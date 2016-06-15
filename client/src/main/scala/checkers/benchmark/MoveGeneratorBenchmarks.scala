@@ -2,6 +2,7 @@ package checkers.benchmark
 
 import org.scalajs.dom
 import checkers.core._
+import checkers.consts._
 import dom.window.performance
 
 
@@ -32,12 +33,11 @@ object MoveGeneratorBenchmarks {
     val t = testBoard(500000)(BoardStack.fromBoard(board), Dark)
     println(s"test1: $t")
 
-    val foo = NewOccupant.DarkKing
-    println(foo.isEmpty)
-    println(foo.isDark)
-    println(foo.isLight)
-    println(foo.isMan)
-    println(foo.isKing)
+    println(Empty)
+    println(Dark)
+    println(Light)
+    println(Man)
+    println(King)
 
   }
 

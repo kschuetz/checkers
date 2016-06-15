@@ -1,6 +1,7 @@
 package checkers.game
 
 import checkers.core._
+import checkers.consts._
 import checkers.models.{BoardOrientation, PlayField}
 
 object TestStates {

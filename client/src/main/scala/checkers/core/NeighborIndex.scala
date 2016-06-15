@@ -2,6 +2,8 @@ package checkers.core
 
 import scala.scalajs.js
 
+import checkers.consts._
+
 trait NeighborIndex {
   val forwardMoveW: js.Array[Int]
   val forwardMoveE: js.Array[Int]
@@ -33,10 +35,9 @@ object NeighborIndex {
     result
   }
 
-  def forColor(color: Color): NeighborIndex = color match {
-    case Dark => DarkNeighborIndex
-    case Light => LightNeighborIndex
-  }
+  def forColor(color: Color): NeighborIndex =
+    if(color == Dark) DarkNeighborIndex
+    else LightNeighborIndex
 }
 
 object DarkNeighborIndex extends NeighborIndex {

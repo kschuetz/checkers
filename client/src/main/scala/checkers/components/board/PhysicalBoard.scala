@@ -1,6 +1,7 @@
 package checkers.components.board
 
-import checkers.core.{BoardPosition, Color, Dark, Light}
+import checkers.consts._
+import checkers.core.BoardPosition
 import checkers.geometry.Point
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
@@ -29,10 +30,9 @@ object PhysicalBoard {
 
   val Square = ReactComponentB[(Double, Double, Color)]("Square")
     .render_P { case (centerX, centerY, color) =>
-      val classes =  color match {
-        case Dark => Css.darkSquare
-        case Light => Css.lightSquare
-      }
+      val classes =
+        if (color == Dark) Css.darkSquare
+        else Css.lightSquare
 
       <.svg.rect(
         ^.`class` := classes,
@@ -49,7 +49,7 @@ object PhysicalBoard {
       (0 to 7).foldLeft(colorOfFirst) { case (color, idx) =>
         val square: ReactNode = Square.withKey(idx)((idx - boardCenterOffset, 0.0, color))
         squares.push(square)
-        color.opposite
+        if(color == Dark) Light else Dark
       }
       <.svg.g(
         ^.svg.transform := s"translate(0,$centerY)",
@@ -77,7 +77,7 @@ object PhysicalBoard {
       (0 to 7).foldLeft(upperLeftColor) { case (color, idx) =>
         val row: ReactNode = BoardRow.withKey(idx)((idx - boardCenterOffset, color))
         rows.push(row)
-        color.opposite
+        if(color == Dark) Light else Dark
       }
       val border = BoardBorder(0.3)
       <.svg.g(

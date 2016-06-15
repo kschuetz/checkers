@@ -3,6 +3,8 @@ package checkers.core
 import scala.scalajs.js
 import scala.scalajs.js.typedarray.Uint32Array
 
+import checkers.consts._
+
 trait BoardStateRead {
   def getOccupant(squareIndex: Int): Occupant
 
@@ -10,7 +12,7 @@ trait BoardStateRead {
 
   def squareHasColor(color: Color, squareIndex: Int): Boolean
 
-  def foreach(color: Color)(f: (Int, Piece) => Unit): Unit
+  def foreach(color: Color)(f: (Int, Occupant) => Unit): Unit
 
   def copyFrameTo(dest: Uint32Array, destIndex: Int = 0): Unit
 
@@ -59,21 +61,22 @@ trait BoardStateReadImpl extends BoardStateRead {
 
   def squareHasColor(color: Color, squareIndex: Int): Boolean = {
     val code = getCodeAt(squareIndex)
-    color match {
-      case Dark => BoardState.codeIsDark(code)
-      case Light => BoardState.codeIsLight(code)
-    }
+    Occupant.color(code) == color
+//    color match {
+//      case Dark => BoardState.codeIsDark(code)
+//      case Light => BoardState.codeIsLight(code)
+//    }
   }
 
-  def foreach(color: Color)(f: (Int, Piece) => Unit): Unit = {
+  def foreach(color: Color)(f: (Int, Occupant) => Unit): Unit = {
     var i = 0
-    val check = color match {
-      case Dark => BoardState.codeIsDark
-      case Light => BoardState.codeIsLight
-    }
+//    val check = color match {
+//      case Dark => BoardState.codeIsDark
+//      case Light => BoardState.codeIsLight
+//    }
     while(i < 31) {
       val code = getCodeAt(i)
-      if(check(code)) { f(i, BoardState.piece(code)) }
+      if(Occupant.color(code) == color) { f(i, code) }
       i += 1
     }
   }
@@ -109,7 +112,7 @@ trait BoardStateWriteImpl extends BoardStateReadImpl {
     idx = idx * 3
     bank += offset
     val complement = ~(7 << idx)
-    val code = value.code << idx
+    val code = Occupant.code(value) << idx
     data(bank) = (data(bank).asInstanceOf[Int] & complement) | code
   }
 
@@ -160,7 +163,7 @@ object BoardState {
 
   val decode = js.Array[Occupant](Empty, Empty, Empty, Empty, LightMan, DarkMan, LightKing, DarkKing)
 
-  val piece = js.Array[Piece](null, null, null, null, LightMan, DarkMan, LightKing, DarkKing)
+  //val piece = js.Array[Occupant](null, null, null, null, LightMan, DarkMan, LightKing, DarkKing)
 
   val codeIsEmpty = js.Array[Boolean](true, true, true, true, false, false, false, false)
 

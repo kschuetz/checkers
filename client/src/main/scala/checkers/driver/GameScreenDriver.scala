@@ -2,7 +2,7 @@ package checkers.driver
 
 import checkers.components.GameScreen
 import checkers.components.piece.{PieceCallbacks, PieceMouseEvent}
-import checkers.core.DarkMan
+import checkers.consts._
 import checkers.geometry.Point
 import checkers.models.{GameScreenModel, GhostPiece}
 import japgolly.scalajs.react.{Callback, ReactDOM}

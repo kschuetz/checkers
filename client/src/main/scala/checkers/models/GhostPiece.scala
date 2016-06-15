@@ -1,9 +1,9 @@
 package checkers.models
 
-import checkers.core.Piece
+import checkers.consts._
 import checkers.geometry.Point
 
-case class GhostPiece(piece: Piece,
+case class GhostPiece(piece: Occupant,
                       parentSquare: Int,
                       grabOffset: Point,
                       movePos: Point)

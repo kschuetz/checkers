@@ -1,5 +1,7 @@
 package checkers.core
 
+import checkers.consts._
+
 case class BoardPosition(row: Int, col: Int) {
   // returns -1 if illegal
   def toSquareIndex: Int = {
@@ -41,17 +43,14 @@ object Board {
   val lightCrowningSquares = (28 to 31).toSet
   val darkCrowningSquares = (0 to 3).toSet
 
-  def crowningSquares(color: Color): Set[Int] = color match {
-    case Light => lightCrowningSquares
-    case Dark => darkCrowningSquares
-  }
+  def crowningSquares(color: Color): Set[Int] =
+    if(color == Dark) darkCrowningSquares
+    else lightCrowningSquares
 
   def isCrowningMove(piece: Occupant, destSquare: Int): Boolean = {
-    piece match {
-      case LightMan => lightCrowningSquares.contains(destSquare)
-      case DarkMan => darkCrowningSquares.contains(destSquare)
-      case _ => false
-    }
+    if(piece == LightMan) lightCrowningSquares.contains(destSquare)
+    else if(piece == DarkMan) darkCrowningSquares.contains(destSquare)
+    else false
   }
 
 

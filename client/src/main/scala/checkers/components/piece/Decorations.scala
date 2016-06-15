@@ -1,6 +1,6 @@
 package checkers.components.piece
 
-import checkers.core.{Color, Dark, Light}
+import checkers.consts.{ Color, Dark, Light }
 import checkers.geometry.Point
 import checkers.util.SvgHelpers
 import japgolly.scalajs.react.vdom.prefix_<^._
@@ -86,10 +86,7 @@ object Decorations extends SvgHelpers {
 
   val Pip = ReactComponentB[(Color, Point)]("Pip")
     .render_P { case (color, Point(cx, cy)) =>
-      val classes = color match {
-        case Dark => "pip dark"
-        case Light => "pip light"
-      }
+      val classes = if(color == Dark) "pip dark" else "pip light"
       <.svg.circle(
         ^.`class` := classes,
         ^.svg.cx := cx,
@@ -118,10 +115,8 @@ object Decorations extends SvgHelpers {
 
   val Crown = ReactComponentB[(Color, Double)]("Crown")
     .render_P { case (color, scale) =>
-      val classes = color match {
-        case Dark => ("crown-a dark", "crown-b dark", "crown-c dark")
-        case Light => ("crown-a light", "crown-b light", "crown-c light")
-      }
+      val classes = if (color == Dark) ("crown-a dark", "crown-b dark", "crown-c dark")
+        else ("crown-a light", "crown-b light", "crown-c light")
       val parts = new js.Array[ReactNode]
       crownPaths.indices.foreach { idx =>
         parts.push(CrownPart.withKey(idx)((classes, idx)))
@@ -138,10 +133,10 @@ object Decorations extends SvgHelpers {
 
   val Star = ReactComponentB[(Color, Double)]("Star")
     .render_P { case (color, scale) =>
-      val (classesA, classesB) = color match {
-        case Dark => ("star-a dark", "star-b dark")
-        case Light => ("star-a light", "star-b light")
-      }
+      val (classesA, classesB) =
+        if(color == Dark) ("star-a dark", "star-b dark")
+        else ("star-a light", "star-b light")
+
 
       var k = 0
       val parts = new js.Array[ReactNode]

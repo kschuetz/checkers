@@ -1,6 +1,7 @@
 package checkers.components.piece
 
-import checkers.core.{Dark, Light}
+import checkers.core.Occupant
+import checkers.consts._
 import checkers.util.SvgHelpers
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
@@ -22,10 +23,8 @@ object GhostPiece extends SvgHelpers {
 
       val physicalPiece = PhysicalPiece.apply(physicalPieceProps)
 
-      val classes = model.piece.color match {
-        case Dark => "ghost-piece dark"
-        case Light => "ghost-piece light"
-      }
+      val color = Occupant.color(model.piece)
+      val classes = if(color == Dark) "ghost-piece dark" else "ghost-piece light"
 
       <.svg.g(
         ^.`class` := classes,

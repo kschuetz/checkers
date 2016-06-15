@@ -1,7 +1,8 @@
 package checkers.components.piece
 
-import checkers.core.{Color, Dark, Light, PieceType}
 import checkers.geometry.Point
+import checkers.consts._
+import checkers.core.Occupant
 import checkers.util.SvgHelpers
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
@@ -18,10 +19,7 @@ object PhysicalPiece extends SvgHelpers {
 
   private val Disk = ReactComponentB[(Color, Double)]("Disk")
     .render_P { case (color, radius) =>
-      val classes = color match {
-        case Dark => "disk dark"
-        case Light => "disk light"
-      }
+      val classes = if(color == Dark) "disk dark" else "disk light"
       <.svg.circle(
         ^.`class` := classes,
         ^.svg.r := radius
@@ -30,23 +28,22 @@ object PhysicalPiece extends SvgHelpers {
 
   private val PieceBody = ReactComponentB[RenderProps]("PieceBody")
     .render_P { case RenderProps(props, decoration) =>
-      val classes = props.piece.color match {
-        case Dark => "piece dark"
-        case Light => "piece light"
-      }
+      val color = Occupant.color(props.piece)
+      val classes =
+        if(color == Dark) "piece dark" else "piece light"
 
       val pips = new js.Array[ReactNode]
       (0 to 11).foreach { pipIndex =>
         val pt = Decorations.pipCoordinates(pipIndex)
-        pips.push(Decorations.Pip.withKey(pipIndex)((props.piece.color, pt)))
+        pips.push(Decorations.Pip.withKey(pipIndex)((color, pt)))
       }
 
       <.svg.g(
         ^.`class` := classes,
         (props.rotationDegrees != 0) ?= (^.svg.transform := s"rotate(${props.rotationDegrees})"),
-        Disk((props.piece.color, pieceRadius)),
+        Disk((color, pieceRadius)),
         pips,
-        Decorations.PieceDecoration((props.piece.color, decoration))
+        Decorations.PieceDecoration((color, decoration))
       )
 
     }.build
@@ -62,12 +59,10 @@ object PhysicalPiece extends SvgHelpers {
       )
     }.build
 
-  private val Man = ReactComponentB[PhysicalPieceProps]("Man")
+  private val PieceMan = ReactComponentB[PhysicalPieceProps]("Man")
     .render_P { props =>
-      val classes = props.piece.color match {
-        case Dark => "man dark"
-        case Light => "man light"
-      }
+      val color = Occupant.color(props.piece)
+      val classes = if(color == Dark) "man dark" else "man light"
       <.svg.g(
         ^.`class` := classes,
         ^.svg.transform := s"translate(${props.x},${props.y})",
@@ -76,17 +71,15 @@ object PhysicalPiece extends SvgHelpers {
       )
     }.build
 
-  private val King = ReactComponentB[PhysicalPieceProps]("King")
+  private val PieceKing = ReactComponentB[PhysicalPieceProps]("King")
     .render_P { props =>
-      val classes = props.piece.color match {
-        case Dark => "piece king dark"
-        case Light => "piece king light"
-      }
+      val color = Occupant.color(props.piece)
+      val classes = if(color == Dark) "piece king dark" else "piece king light"
 
       <.svg.g(
         ^.`class` := classes,
         ^.svg.transform := s"translate(${props.x},${props.y})",
-        Disk((props.piece.color, pieceRadius)),
+        Disk((color, pieceRadius)),
         <.svg.g(
           ^.svg.transform := "translate(0.07,-0.11),scale(1.01)",
           PieceBody(RenderProps(props, Decoration.Crown))
@@ -98,10 +91,7 @@ object PhysicalPiece extends SvgHelpers {
 
   val component = ReactComponentB[PhysicalPieceProps]("PhysicalPiece")
     .render_P { props =>
-      props.piece.pieceType match {
-        case PieceType.Man => Man(props)
-        case PieceType.King => King(props)
-      }
+      if(Occupant.pieceType(props.piece) == Man) PieceMan(props) else PieceKing(props)
     }.build
 
   val apply = component

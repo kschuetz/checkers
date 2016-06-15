@@ -1,5 +1,6 @@
 package checkers.core
 
+import checkers.consts._
 
 case class RulesSettings(playsFirst: Color,
                          giveaway: Boolean)

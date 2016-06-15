@@ -1,4 +1,4 @@
-package main.scala.checkers
+package checkers
 
 import language.experimental.macros
 import scala.reflect.macros.blackbox

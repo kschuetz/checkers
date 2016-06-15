@@ -2,6 +2,8 @@ package checkers.core
 
 import scala.scalajs.js
 
+import checkers.consts._
+
 
 class MoveGenerator(rulesSettings: RulesSettings,
                     moveExecutor: MoveExecutor) {
@@ -9,14 +11,14 @@ class MoveGenerator(rulesSettings: RulesSettings,
   private val jumpsCompulsory = true
 
   def generateMoves(boardState: BoardStack, turnToMove: Color): MoveList = {
-    val opponent = turnToMove.opposite
+    val opponent = if(turnToMove == Light) Dark else Light
     val neighborIndex = NeighborIndex.forColor(turnToMove)
     import neighborIndex._
 
     var processNormalMoves = true
     val builder = new MoveListBuilder
 
-    def tryJump(path: List[SimpleMove], piece: Piece, from: Int, over: Int, target: Int): Boolean = {
+    def tryJump(path: List[SimpleMove], piece: Occupant, from: Int, over: Int, target: Int): Boolean = {
       if (over < 0 || target < 0) return false
       if (!boardState.isSquareEmpty(target)) return false
       if (!boardState.squareHasColor(opponent, over)) return false
@@ -37,11 +39,11 @@ class MoveGenerator(rulesSettings: RulesSettings,
       true
     }
 
-    def tryJumps(path: List[SimpleMove], piece: Piece, from: Int): Boolean = {
+    def tryJumps(path: List[SimpleMove], piece: Occupant, from: Int): Boolean = {
       var result = false
       result = tryJump(path, piece, from, forwardMoveW(from), forwardJumpW(from))
       result ||= tryJump(path, piece, from, forwardMoveE(from), forwardJumpE(from))
-      if (piece.isKing) {
+      if (Occupant.isKing(piece)) {
         result ||= tryJump(path, piece, from, backMoveW(from), backJumpW(from))
         result ||= tryJump(path, piece, from, backMoveE(from), backJumpE(from))
       }

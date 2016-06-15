@@ -1,5 +1,7 @@
 package checkers.core
 
+import checkers.consts._
+
 class MoveExecutor(rulesSettings: RulesSettings) {
 
   /**
@@ -15,7 +17,7 @@ class MoveExecutor(rulesSettings: RulesSettings) {
       boardState.setOccupant(move.from, Empty)
       if(Board.isCrowningMove(piece, move.to)) {
         crowned = true
-        boardState.setOccupant(move.to, piece.crowned)
+        boardState.setOccupant(move.to, Occupant.crowned(piece))
       }
     }
 
