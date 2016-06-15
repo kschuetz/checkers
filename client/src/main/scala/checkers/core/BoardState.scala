@@ -61,7 +61,7 @@ trait BoardStateReadImpl extends BoardStateRead {
 
   def squareHasColor(color: Color, squareIndex: Int): Boolean = {
     val code = getCodeAt(squareIndex)
-    Occupant.colorOf(code) == color
+    COLOR(code) == color
 //    color match {
 //      case Dark => BoardState.codeIsDark(code)
 //      case Light => BoardState.codeIsLight(code)
@@ -76,7 +76,7 @@ trait BoardStateReadImpl extends BoardStateRead {
 //    }
     while(i < 31) {
       val code = getCodeAt(i)
-      if(Occupant.colorOf(code) == color) { f(i, code) }
+      if(COLOR(code) == color) { f(i, code) }
       i += 1
     }
   }
@@ -112,7 +112,7 @@ trait BoardStateWriteImpl extends BoardStateReadImpl {
     idx = idx * 3
     bank += offset
     val complement = ~(7 << idx)
-    val code = Occupant.code(value) << idx
+    val code = OCCUPANTENCODE(value) << idx
     data(bank) = (data(bank).asInstanceOf[Int] & complement) | code
   }
 

@@ -43,7 +43,7 @@ class MoveGenerator(rulesSettings: RulesSettings,
       var result = false
       result = tryJump(path, piece, from, forwardMoveW(from), forwardJumpW(from))
       result ||= tryJump(path, piece, from, forwardMoveE(from), forwardJumpE(from))
-      if (Occupant.isKing(piece)) {
+      if (ISKING(piece)) {
         result ||= tryJump(path, piece, from, backMoveW(from), backJumpW(from))
         result ||= tryJump(path, piece, from, backMoveE(from), backJumpE(from))
       }
@@ -61,16 +61,16 @@ class MoveGenerator(rulesSettings: RulesSettings,
       tryJumps(Nil, piece, square)
     }
 
-//    if(processNormalMoves) {
-//      boardState.foreach(turnToMove){ case (square, piece) =>
-//        tryMove(square, forwardMoveW)
-//        tryMove(square, forwardMoveE)
-//        if (piece.isKing) {
-//          tryMove(square, backMoveW)
-//          tryMove(square, backMoveE)
-//        }
-//      }
-//    }
+    if(processNormalMoves) {
+      boardState.foreach(turnToMove){ case (square, piece) =>
+        tryMove(square, forwardMoveW)
+        tryMove(square, forwardMoveE)
+        if (ISKING(piece)) {
+          tryMove(square, backMoveW)
+          tryMove(square, backMoveE)
+        }
+      }
+    }
 
 
 

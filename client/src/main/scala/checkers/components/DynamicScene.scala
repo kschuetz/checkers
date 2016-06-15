@@ -2,7 +2,8 @@ package checkers.components
 
 import checkers.components.board.PhysicalBoard
 import checkers.components.piece._
-import checkers.core.{Board, Occupant}
+import checkers.consts._
+import checkers.core.Board
 import checkers.geometry.Point
 import checkers.models
 import checkers.models.Animation.HidesStaticPiece
@@ -52,7 +53,7 @@ object DynamicScene {
 
       Board.allSquares.filterNot(piecesToHide.contains).foreach { squareIndex =>
         val occupant = boardState.getOccupant(squareIndex) //squares(squareIndex)
-        if(Occupant.isPiece(occupant)) {
+        if(ISPIECE(occupant)) {
             val k = s"sp-$squareIndex"
 
             val pos = Board.position(squareIndex)

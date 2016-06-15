@@ -31,7 +31,7 @@ object MoveGeneratorBenchmarks {
   def test1(): Unit = {
     val board = RulesSettings.initialBoard(rulesSettings)
     val stack = BoardStack.fromBoard(board)
-    val t = testBoard(500000)(BoardStack.fromBoard(board), DARK)
+    val t = testBoard(100000)(BoardStack.fromBoard(board), DARK)
     println(s"test1: $t")
 
     println(EMPTY)

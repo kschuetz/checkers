@@ -77,13 +77,13 @@ import checkers.consts._
 //}
 
 object Occupant {
-  def colorOf(occupant: Occupant): Color = occupant & 1
-  def pieceType(occupant: Occupant): PieceType = occupant & 2
-  def code(occupant: Occupant): Int = occupant
-  def isMan(occupant: Occupant): Boolean = (occupant & 6) == 4
-  def isKing(occupant: Occupant): Boolean = (occupant & 6) == 6
-  def isEmpty(occupant: Occupant): Boolean = occupant < 4
-  def isPiece(occupant: Occupant): Boolean = occupant >= 4
-  def crowned(occupant: Occupant): Occupant = if(isMan(occupant)) occupant & 2 else occupant
+//  def COLOR(occupant: Occupant): Color = occupant & 1
+//  def PIECETYPE(occupant: Occupant): PieceType = occupant & 2
+//  def OCCUPANTENCODE(occupant: Occupant): Int = occupant
+//  def ISMAN(occupant: Occupant): Boolean = (occupant & 6) == 4
+//  def ISKING(occupant: Occupant): Boolean = (occupant & 6) == 6
+//  def ISEMPTY(occupant: Occupant): Boolean = occupant < 4
+//  def ISPIECE(occupant: Occupant): Boolean = occupant >= 4
+  def crowned(occupant: Occupant): Occupant = if(ISMAN(occupant)) occupant & 2 else occupant
 }
 
