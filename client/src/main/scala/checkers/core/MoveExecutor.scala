@@ -17,7 +17,7 @@ class MoveExecutor(rulesSettings: RulesSettings) {
       boardState.setOccupant(move.from, EMPTY)
       if(Board.isCrowningMove(piece, move.to)) {
         crowned = true
-        boardState.setOccupant(move.to, Occupant.crowned(piece))
+        boardState.setOccupant(move.to, Piece.crowned(piece))
       }
     }
 

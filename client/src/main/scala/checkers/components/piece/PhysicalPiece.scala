@@ -2,7 +2,7 @@ package checkers.components.piece
 
 import checkers.geometry.Point
 import checkers.consts._
-import checkers.core.Occupant
+import checkers.core.Piece
 import checkers.util.SvgHelpers
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
