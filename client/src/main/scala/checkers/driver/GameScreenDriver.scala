@@ -12,7 +12,7 @@ class GameScreenDriver(val host: dom.Node,
                        initialModel: GameScreenModel) {
   var model = initialModel
     .copy(clickableSquares = (0 to 31).toSet,
-      ghostPiece = Some(GhostPiece(DarkMan, 21, Point(-0.15, -0.13), Point(1.0, 1.0))))
+      ghostPiece = Some(GhostPiece(DARKMAN, 21, Point(-0.15, -0.13), Point(1.0, 1.0))))
 
 
 

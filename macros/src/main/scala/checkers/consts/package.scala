@@ -6,21 +6,29 @@ import scala.reflect.macros.blackbox
 package object consts {
   type Color = Int
 
-  def Dark: Color = macro darkImpl
-  def Light: Color = macro lightImpl
+  def DARK: Color = macro darkImpl
+  def LIGHT: Color = macro lightImpl
 
   type PieceType = Int
 
-  def Man: PieceType = macro manImpl
-  def King: PieceType = macro kingImpl
+  def MAN: PieceType = macro manImpl
+  def KING: PieceType = macro kingImpl
 
   type Occupant = Int
 
-  def Empty: Occupant = macro emptyImpl
-  def LightMan: Occupant  = macro lightManImpl
-  def DarkMan: Occupant  = macro darkManImpl
-  def LightKing: Occupant  = macro lightKingImpl
-  def DarkKing: Occupant  = macro darkKingImpl
+  def EMPTY: Occupant = macro emptyImpl
+  def LIGHTMAN: Occupant  = macro lightManImpl
+  def DARKMAN: Occupant  = macro darkManImpl
+  def LIGHTKING: Occupant  = macro lightKingImpl
+  def DARKKING: Occupant  = macro darkKingImpl
+
+  def COLOR(occupant: Occupant): Color = macro colorImpl
+  def PIECETYPE(occupant: Occupant): PieceType = macro pieceTypeImpl
+  def ISMAN(occupant: Occupant): Boolean = macro isManImpl
+  def ISKING(occupant: Occupant): Boolean = macro isKingImpl
+  def ISPIECE(occupant: Occupant): Boolean = macro isPieceImpl
+  def ISEMPTY(occupant: Occupant): Boolean = macro isEmptyImpl
+  def OCCUPANTENCODE(occupant: Occupant): Int = macro occupantEncodeImpl
 
   def darkImpl(c: blackbox.Context): c.Expr[Color] = c.universe.reify(0)
   def lightImpl(c: blackbox.Context): c.Expr[Color] = c.universe.reify(1)
@@ -34,10 +42,38 @@ package object consts {
   def lightKingImpl(c: blackbox.Context): c.Expr[Occupant] = c.universe.reify(6)
   def darkKingImpl(c: blackbox.Context): c.Expr[Occupant] = c.universe.reify(7)
 
-  def colorOf2(occupant: Occupant): Color = macro colorOfImpl
-
-  def colorOfImpl(c: blackbox.Context)(occupant: c.Expr[Occupant]): c.Expr[Color] = {
+  def colorImpl(c: blackbox.Context)(occupant: c.Expr[Occupant]): c.Expr[Color] = {
     import c.universe._
     c.Expr[Color](q"$occupant & 1")
+  }
+
+  def pieceTypeImpl(c: blackbox.Context)(occupant: c.Expr[Occupant]): c.Expr[PieceType] = {
+    import c.universe._
+    c.Expr[PieceType](q"$occupant & 2")
+  }
+
+  def isManImpl(c: blackbox.Context)(occupant: c.Expr[Occupant]): c.Expr[Boolean] = {
+    import c.universe._
+    c.Expr[Boolean](q"($occupant & 6) == 4")
+  }
+
+  def isKingImpl(c: blackbox.Context)(occupant: c.Expr[Occupant]): c.Expr[Boolean] = {
+    import c.universe._
+    c.Expr[Boolean](q"($occupant & 6) == 6")
+  }
+
+  def isEmptyImpl(c: blackbox.Context)(occupant: c.Expr[Occupant]): c.Expr[Boolean] = {
+    import c.universe._
+    c.Expr[Boolean](q"$occupant < 4")
+  }
+
+  def isPieceImpl(c: blackbox.Context)(occupant: c.Expr[Occupant]): c.Expr[Boolean] = {
+    import c.universe._
+    c.Expr[Boolean](q"$occupant >= 4")
+  }
+
+  def occupantEncodeImpl(c: blackbox.Context)(occupant: c.Expr[Occupant]): c.Expr[Int] = {
+    import c.universe._
+    occupant
   }
 }

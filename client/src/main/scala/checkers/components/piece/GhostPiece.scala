@@ -23,8 +23,8 @@ object GhostPiece extends SvgHelpers {
 
       val physicalPiece = PhysicalPiece.apply(physicalPieceProps)
 
-      val color = colorOf2(model.piece)
-      val classes = if(color == Dark) "ghost-piece dark" else "ghost-piece light"
+      val color = COLOR(model.piece)
+      val classes = if(color == DARK) "ghost-piece dark" else "ghost-piece light"
 
       <.svg.g(
         ^.`class` := classes,

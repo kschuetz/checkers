@@ -9,13 +9,13 @@ case class RulesSettings(playsFirst: Color,
 object RulesSettings {
 
   val default = RulesSettings(
-    playsFirst = Dark,
+    playsFirst = DARK,
     giveaway = false)
 
   def initialBoard(settings: RulesSettings): BoardState = {
     val board = BoardState.empty
-        .updateMany(LightMan)(Board.lightStartingSquares)
-        .updateMany(DarkMan)(Board.darkStartingSquares)
+        .updateMany(LIGHTMAN)(Board.lightStartingSquares)
+        .updateMany(DARKMAN)(Board.darkStartingSquares)
 
     board
   }

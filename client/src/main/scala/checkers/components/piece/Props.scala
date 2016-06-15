@@ -28,7 +28,7 @@ case class PhysicalPieceProps(piece: Occupant,
                               callbacks: PieceCallbacks)
 
 object PhysicalPieceProps {
-  val default = PhysicalPieceProps(piece = DarkMan,
+  val default = PhysicalPieceProps(piece = DARKMAN,
     tag = 0,
     x = 0,
     y = 0,

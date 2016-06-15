@@ -11,7 +11,7 @@ class MoveGenerator(rulesSettings: RulesSettings,
   private val jumpsCompulsory = true
 
   def generateMoves(boardState: BoardStack, turnToMove: Color): MoveList = {
-    val opponent = if(turnToMove == Light) Dark else Light
+    val opponent = if(turnToMove == LIGHT) DARK else LIGHT
     val neighborIndex = NeighborIndex.forColor(turnToMove)
     import neighborIndex._
 

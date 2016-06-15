@@ -19,7 +19,7 @@ object PhysicalPiece extends SvgHelpers {
 
   private val Disk = ReactComponentB[(Color, Double)]("Disk")
     .render_P { case (color, radius) =>
-      val classes = if(color == Dark) "disk dark" else "disk light"
+      val classes = if(color == DARK) "disk dark" else "disk light"
       <.svg.circle(
         ^.`class` := classes,
         ^.svg.r := radius
@@ -30,7 +30,7 @@ object PhysicalPiece extends SvgHelpers {
     .render_P { case RenderProps(props, decoration) =>
       val color = Occupant.colorOf(props.piece)
       val classes =
-        if(color == Dark) "piece dark" else "piece light"
+        if(color == DARK) "piece dark" else "piece light"
 
       val pips = new js.Array[ReactNode]
       (0 to 11).foreach { pipIndex =>
@@ -62,7 +62,7 @@ object PhysicalPiece extends SvgHelpers {
   private val PieceMan = ReactComponentB[PhysicalPieceProps]("Man")
     .render_P { props =>
       val color = Occupant.colorOf(props.piece)
-      val classes = if(color == Dark) "man dark" else "man light"
+      val classes = if(color == DARK) "man dark" else "man light"
       <.svg.g(
         ^.`class` := classes,
         ^.svg.transform := s"translate(${props.x},${props.y})",
@@ -74,7 +74,7 @@ object PhysicalPiece extends SvgHelpers {
   private val PieceKing = ReactComponentB[PhysicalPieceProps]("King")
     .render_P { props =>
       val color = Occupant.colorOf(props.piece)
-      val classes = if(color == Dark) "piece king dark" else "piece king light"
+      val classes = if(color == DARK) "piece king dark" else "piece king light"
 
       <.svg.g(
         ^.`class` := classes,
@@ -91,7 +91,7 @@ object PhysicalPiece extends SvgHelpers {
 
   val component = ReactComponentB[PhysicalPieceProps]("PhysicalPiece")
     .render_P { props =>
-      if(Occupant.pieceType(props.piece) == Man) PieceMan(props) else PieceKing(props)
+      if(Occupant.pieceType(props.piece) == MAN) PieceMan(props) else PieceKing(props)
     }.build
 
   val apply = component

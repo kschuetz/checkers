@@ -161,7 +161,7 @@ object BoardState {
 
   val empty = new BoardState(createFrame)
 
-  val decode = js.Array[Occupant](Empty, Empty, Empty, Empty, LightMan, DarkMan, LightKing, DarkKing)
+  val decode = js.Array[Occupant](EMPTY, EMPTY, EMPTY, EMPTY, LIGHTMAN, DARKMAN, LIGHTKING, DARKKING)
 
   //val piece = js.Array[Occupant](null, null, null, null, LightMan, DarkMan, LightKing, DarkKing)
 

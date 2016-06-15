@@ -36,7 +36,7 @@ object NeighborIndex {
   }
 
   def forColor(color: Color): NeighborIndex =
-    if(color == Dark) DarkNeighborIndex
+    if(color == DARK) DarkNeighborIndex
     else LightNeighborIndex
 }
 

@@ -13,8 +13,8 @@ class MoveExecutor(rulesSettings: RulesSettings) {
 
     def runSimple(move: SimpleMove): Unit = {
       val piece = boardState.getOccupant(move.from)
-      if(move.over >= 0) boardState.setOccupant(move.over, Empty)
-      boardState.setOccupant(move.from, Empty)
+      if(move.over >= 0) boardState.setOccupant(move.over, EMPTY)
+      boardState.setOccupant(move.from, EMPTY)
       if(Board.isCrowningMove(piece, move.to)) {
         crowned = true
         boardState.setOccupant(move.to, Occupant.crowned(piece))

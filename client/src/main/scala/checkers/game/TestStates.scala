@@ -6,16 +6,16 @@ import checkers.models.{BoardOrientation, PlayField}
 
 object TestStates {
   val board1 = Vector(
-    LightKing, LightKing, LightKing, LightKing,
-    LightMan, LightMan, LightMan, LightMan,
-    LightMan, LightMan, LightMan, LightMan,
-    Empty, Empty, Empty, Empty,
-    Empty, Empty, Empty, Empty,
-    DarkMan, DarkMan, DarkMan, DarkMan,
-    DarkMan, DarkMan, DarkMan, DarkMan,
-    DarkKing, DarkKing, DarkKing, DarkKing)
+    LIGHTKING, LIGHTKING, LIGHTKING, LIGHTKING,
+    LIGHTMAN, LIGHTMAN, LIGHTMAN, LIGHTMAN,
+    LIGHTMAN, LIGHTMAN, LIGHTMAN, LIGHTMAN,
+    EMPTY, EMPTY, EMPTY, EMPTY,
+    EMPTY, EMPTY, EMPTY, EMPTY,
+    DARKMAN, DARKMAN, DARKMAN, DARKMAN,
+    DARKMAN, DARKMAN, DARKMAN, DARKMAN,
+    DARKKING, DARKKING, DARKKING, DARKKING)
 
-  val gameState1 = GameState(BoardState.empty, Dark)
+  val gameState1 = GameState(BoardState.empty, DARK)
 
   val playFieldState1 = PlayField(
     gameState = gameState1,

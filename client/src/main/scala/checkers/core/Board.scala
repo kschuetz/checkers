@@ -44,12 +44,12 @@ object Board {
   val darkCrowningSquares = (0 to 3).toSet
 
   def crowningSquares(color: Color): Set[Int] =
-    if(color == Dark) darkCrowningSquares
+    if(color == DARK) darkCrowningSquares
     else lightCrowningSquares
 
   def isCrowningMove(piece: Occupant, destSquare: Int): Boolean = {
-    if(piece == LightMan) lightCrowningSquares.contains(destSquare)
-    else if(piece == DarkMan) darkCrowningSquares.contains(destSquare)
+    if(piece == LIGHTMAN) lightCrowningSquares.contains(destSquare)
+    else if(piece == DARKMAN) darkCrowningSquares.contains(destSquare)
     else false
   }
 
