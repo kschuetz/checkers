@@ -77,7 +77,7 @@ import checkers.consts._
 //}
 
 object Occupant {
-  def color(occupant: Occupant): Color = occupant & 1
+  def colorOf(occupant: Occupant): Color = occupant & 1
   def pieceType(occupant: Occupant): PieceType = occupant & 2
   def code(occupant: Occupant): Int = occupant
   def isMan(occupant: Occupant): Boolean = (occupant & 6) == 4

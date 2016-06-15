@@ -3,6 +3,7 @@ package checkers.benchmark
 import org.scalajs.dom
 import checkers.core._
 import checkers.consts._
+import checkers.game.TestStates
 import dom.window.performance
 
 
@@ -38,6 +39,8 @@ object MoveGeneratorBenchmarks {
     println(Light)
     println(Man)
     println(King)
+
+    println(TestStates.board1)
 
   }
 

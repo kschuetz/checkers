@@ -34,4 +34,10 @@ package object consts {
   def lightKingImpl(c: blackbox.Context): c.Expr[Occupant] = c.universe.reify(6)
   def darkKingImpl(c: blackbox.Context): c.Expr[Occupant] = c.universe.reify(7)
 
+  def colorOf2(occupant: Occupant): Color = macro colorOfImpl
+
+  def colorOfImpl(c: blackbox.Context)(occupant: c.Expr[Occupant]): c.Expr[Color] = {
+    import c.universe._
+    c.Expr[Color](q"$occupant & 1")
+  }
 }

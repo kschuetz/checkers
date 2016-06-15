@@ -28,7 +28,7 @@ object PhysicalPiece extends SvgHelpers {
 
   private val PieceBody = ReactComponentB[RenderProps]("PieceBody")
     .render_P { case RenderProps(props, decoration) =>
-      val color = Occupant.color(props.piece)
+      val color = Occupant.colorOf(props.piece)
       val classes =
         if(color == Dark) "piece dark" else "piece light"
 
@@ -61,7 +61,7 @@ object PhysicalPiece extends SvgHelpers {
 
   private val PieceMan = ReactComponentB[PhysicalPieceProps]("Man")
     .render_P { props =>
-      val color = Occupant.color(props.piece)
+      val color = Occupant.colorOf(props.piece)
       val classes = if(color == Dark) "man dark" else "man light"
       <.svg.g(
         ^.`class` := classes,
@@ -73,7 +73,7 @@ object PhysicalPiece extends SvgHelpers {
 
   private val PieceKing = ReactComponentB[PhysicalPieceProps]("King")
     .render_P { props =>
-      val color = Occupant.color(props.piece)
+      val color = Occupant.colorOf(props.piece)
       val classes = if(color == Dark) "piece king dark" else "piece king light"
 
       <.svg.g(
