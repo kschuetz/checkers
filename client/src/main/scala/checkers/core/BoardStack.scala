@@ -1,6 +1,6 @@
 package checkers.core
 
-import scala.scalajs.js.typedarray.Uint32Array
+import scala.scalajs.js.typedarray.Int32Array
 
 trait BoardStack extends MutableBoardState {
   def push(): Unit
@@ -13,13 +13,13 @@ class BoardStackImpl(val initialCapacity: Int) extends BoardStack with BoardStat
   import BoardState.frameSize
 
   protected var size = frameSize * initialCapacity
-  protected var data = new Uint32Array(size)
+  protected var data = new Int32Array(size)
   protected var offset = 0
 
   private def ensureSize(minSize: Int): Unit = {
     if (minSize > size) {
       val newSize = minSize * 2
-      val newData = new Uint32Array(newSize)
+      val newData = new Int32Array(newSize)
       Array.copy(data, 0, newData, 0, size)
       data = newData
       size = newSize
