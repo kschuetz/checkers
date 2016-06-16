@@ -34,42 +34,44 @@ package object consts {
   def lightImpl(c: blackbox.Context): c.Expr[Color] = c.universe.reify(1)
 
   def manImpl(c: blackbox.Context): c.Expr[PieceType] = c.universe.reify(0)
-  def kingImpl(c: blackbox.Context): c.Expr[PieceType] = c.universe.reify(2)
+  def kingImpl(c: blackbox.Context): c.Expr[PieceType] = c.universe.reify(1)
 
   def emptyImpl(c: blackbox.Context): c.Expr[Occupant] = c.universe.reify(0)
-  def lightManImpl(c: blackbox.Context): c.Expr[Occupant] = c.universe.reify(4)
-  def darkManImpl(c: blackbox.Context): c.Expr[Occupant] = c.universe.reify(5)
-  def lightKingImpl(c: blackbox.Context): c.Expr[Occupant] = c.universe.reify(6)
-  def darkKingImpl(c: blackbox.Context): c.Expr[Occupant] = c.universe.reify(7)
+  def darkManImpl(c: blackbox.Context): c.Expr[Occupant] = c.universe.reify(1)
+  def lightManImpl(c: blackbox.Context): c.Expr[Occupant] = c.universe.reify(2)
+  def darkKingImpl(c: blackbox.Context): c.Expr[Occupant] = c.universe.reify(4)
+  def lightKingImpl(c: blackbox.Context): c.Expr[Occupant] = c.universe.reify(5)
 
   def colorImpl(c: blackbox.Context)(occupant: c.Expr[Occupant]): c.Expr[Color] = {
     import c.universe._
-    c.Expr[Color](q"$occupant & 1")
+    c.Expr[Color](q"($occupant >> 1) & 1")
   }
 
   def pieceTypeImpl(c: blackbox.Context)(occupant: c.Expr[Occupant]): c.Expr[PieceType] = {
     import c.universe._
-    c.Expr[PieceType](q"$occupant & 2")
+    c.Expr[PieceType](q"($occupant >> 2) & 2")
   }
 
+  // TODO: remove this
   def isManImpl(c: blackbox.Context)(occupant: c.Expr[Occupant]): c.Expr[Boolean] = {
     import c.universe._
-    c.Expr[Boolean](q"($occupant & 6) == 4")
+    c.Expr[Boolean](q"PIECETYPE($occupant) == MAN")
   }
 
+  // TODO: remove this
   def isKingImpl(c: blackbox.Context)(occupant: c.Expr[Occupant]): c.Expr[Boolean] = {
     import c.universe._
-    c.Expr[Boolean](q"($occupant & 6) == 6")
+    c.Expr[Boolean](q"PIECETYPE($occupant) == KING")
   }
 
   def isEmptyImpl(c: blackbox.Context)(occupant: c.Expr[Occupant]): c.Expr[Boolean] = {
     import c.universe._
-    c.Expr[Boolean](q"$occupant < 4")
+    c.Expr[Boolean](q"$occupant == 0")
   }
 
   def isPieceImpl(c: blackbox.Context)(occupant: c.Expr[Occupant]): c.Expr[Boolean] = {
     import c.universe._
-    c.Expr[Boolean](q"$occupant >= 4")
+    c.Expr[Boolean](q"$occupant > 0")
   }
 
   def occupantEncodeImpl(c: blackbox.Context)(occupant: c.Expr[Occupant]): c.Expr[Int] = {

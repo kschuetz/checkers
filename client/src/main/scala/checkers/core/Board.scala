@@ -38,7 +38,7 @@ object Board {
   val position: Vector[BoardPosition] = allSquares.map(squareIndexToBoardPosition).toVector
 
   val lightStartingSquares = 0 to 11
-  val darkStartingSquares = 20 to 31
+  val darkStartingSquares = 20 to 30
 
   val lightCrowningSquares = (28 to 31).toSet
   val darkCrowningSquares = (0 to 3).toSet

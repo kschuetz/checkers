@@ -32,6 +32,9 @@ object CheckersMain extends js.JSApp {
 
   private def sandbox1(host: dom.Node): Unit = {
     val model = GameScreenModel.initial(GameSettings.default)
+    println(model.gameState.board.data)
+    DebugUtils.printOccupants(model.gameState.board)
+
     val driver = new GameScreenDriver(host, model)
     driver.run()
   }

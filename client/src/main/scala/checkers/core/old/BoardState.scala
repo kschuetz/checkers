@@ -1,9 +1,9 @@
-package checkers.core
+package checkers.core.old
 
 import scala.scalajs.js
 import scala.scalajs.js.typedarray.Uint32Array
+
 import checkers.consts._
-import checkers.util.DebugUtils
 
 trait BoardStateRead {
   def getOccupant(squareIndex: Int): Occupant
@@ -33,37 +33,49 @@ trait BoardStateReadImpl extends BoardStateRead {
 
   protected def offset: Int
 
-  def getOccupant(squareIndex: Int): Occupant = {
-    val k = (data(offset).asInstanceOf[Int] >> squareIndex) & 1
-    val lp = (data(offset + 1).asInstanceOf[Int] >> squareIndex) & 1
-    val dp = (data(offset + 2).asInstanceOf[Int] >> squareIndex) & 1
+  protected def getCodeAt(squareIndex: Int): Int = {
+    var idx = squareIndex
+    var bank = 0
+    if (idx >= 24) {
+      idx -= 24
+      bank = 3
+    } else if (idx >= 16) {
+      idx -= 16
+      bank = 2
+    } else if (idx >= 8) {
+      idx -= 8
+      bank = 1
+    }
+    (data(offset + bank).asInstanceOf[Int] >>> (idx * 3)) & 7
+  }
 
-    //(k << 2) | (lp << 1) | dp
-    if(lp != 0) {
-      if(k != 0) LIGHTKING
-      else LIGHTMAN
-    } else if (dp != 0) {
-      if(k != 0) DARKKING
-      else DARKMAN
-    } else EMPTY
+  def getOccupant(squareIndex: Int): Occupant = {
+    val code = getCodeAt(squareIndex)
+    BoardState.decode(code)
   }
 
   def isSquareEmpty(squareIndex: Int): Boolean = {
-    val p = (data(offset).asInstanceOf[Int] | data(offset + 1).asInstanceOf[Int]) >>> squareIndex
-    p == 0
+    val code = getCodeAt(squareIndex)
+    BoardState.codeIsEmpty(code)
   }
 
   def squareHasColor(color: Color, squareIndex: Int): Boolean = {
-    val lp = (data(offset + 1).asInstanceOf[Int] >> squareIndex) & 1
-    val dp = (data(offset + 2).asInstanceOf[Int] >> squareIndex) & 1
-
-    COLOR((lp << 1) | dp) == color
+    val code = getCodeAt(squareIndex)
+    COLOR(code) == color
+    //    color match {
+    //      case Dark => BoardState.codeIsDark(code)
+    //      case Light => BoardState.codeIsLight(code)
+    //    }
   }
 
   def foreach(color: Color)(f: (Int, Occupant) => Unit): Unit = {
     var i = 0
+    //    val check = color match {
+    //      case Dark => BoardState.codeIsDark
+    //      case Light => BoardState.codeIsLight
+    //    }
     while(i < 31) {
-      val code = getOccupant(i)
+      val code = getCodeAt(i)
       if(COLOR(code) == color) { f(i, code) }
       i += 1
     }
@@ -73,10 +85,11 @@ trait BoardStateReadImpl extends BoardStateRead {
     dest(destIndex) = data(offset)
     dest(destIndex + 1) = data(offset + 1)
     dest(destIndex + 2) = data(offset + 2)
+    dest(destIndex + 3) = data(offset + 3)
   }
 
   protected def copyFrame: Uint32Array = {
-    val result = new Uint32Array(3)
+    val result = new Uint32Array(4)
     copyFrameTo(result)
     result
   }
@@ -84,42 +97,23 @@ trait BoardStateReadImpl extends BoardStateRead {
 
 trait BoardStateWriteImpl extends BoardStateReadImpl {
   def setOccupant(squareIndex: Int, value: Occupant): Unit = {
-    var k = data(offset).asInstanceOf[Int]
-    var lp = data(offset + 1).asInstanceOf[Int]
-    var dp = data(offset + 2).asInstanceOf[Int]
-    val setMask = BoardState.setMasks(squareIndex).asInstanceOf[Int]
-    val clearMask = ~setMask
-
-    println(s"setting $squareIndex to ${DebugUtils.occupantToString(value)} $setMask $clearMask")
-    println(s"  before: $k  $lp  $dp")
-
-    if(value == LIGHTMAN) {
-      k &= clearMask
-      lp |= setMask
-      dp &= clearMask
-    } else if (value == DARKMAN) {
-      k &= clearMask
-      lp &= clearMask
-      dp |= setMask
-    } else if (value == LIGHTKING) {
-      k |= setMask
-      lp |= setMask
-      dp &= clearMask
-    }else if (value == DARKKING) {
-      k |= setMask
-      lp &= clearMask
-      dp |= setMask
-    } else {
-      k &= clearMask
-      lp &= clearMask
-      dp &= clearMask
+    var idx = squareIndex
+    var bank = 0
+    if (idx >= 24) {
+      idx -= 24
+      bank = 3
+    } else if (idx >= 16) {
+      idx -= 16
+      bank = 2
+    } else if (idx >= 8) {
+      idx -= 8
+      bank = 1
     }
-
-    println(s"  after: $k  $lp  $dp")
-
-    data(offset) = k >>> 0
-    data(offset + 1) = lp >>> 0
-    data(offset + 2) = dp >>> 0
+    idx = idx * 3
+    bank += offset
+    val complement = ~(7 << idx)
+    val code = OCCUPANTENCODE(value) << idx
+    data(bank) = (data(bank).asInstanceOf[Int] & complement) | code
   }
 
   def setBoard(board: BoardStateRead): Unit = {
@@ -128,7 +122,7 @@ trait BoardStateWriteImpl extends BoardStateReadImpl {
 }
 
 
-class BoardState protected[core](val data: Uint32Array) extends BoardStateReadImpl {
+class BoardState protected[core](protected val data: Uint32Array) extends BoardStateReadImpl {
   protected val offset = 0
 
   def updateMany(piece: Occupant)(indices: Seq[Int]): BoardState = {
@@ -160,29 +154,21 @@ class BoardState protected[core](val data: Uint32Array) extends BoardStateReadIm
 
 
 object BoardState {
-  val frameSize = 3
+  val frameSize = 4
 
   def createFrame: Uint32Array =
     new Uint32Array(frameSize)
 
   val empty = new BoardState(createFrame)
 
-//  val decode = js.Array[Occupant](EMPTY, EMPTY, EMPTY, EMPTY, LIGHTMAN, DARKMAN, LIGHTKING, DARKKING)
+  val decode = js.Array[Occupant](EMPTY, EMPTY, EMPTY, EMPTY, LIGHTMAN, DARKMAN, LIGHTKING, DARKKING)
 
   //val piece = js.Array[Occupant](null, null, null, null, LightMan, DarkMan, LightKing, DarkKing)
 
-//  val codeIsEmpty = js.Array[Boolean](true, true, true, true, false, false, false, false)
+  val codeIsEmpty = js.Array[Boolean](true, true, true, true, false, false, false, false)
 
-//  val codeIsLight = js.Array[Boolean](false, false, false, false, true, false, true, false)
+  val codeIsLight = js.Array[Boolean](false, false, false, false, true, false, true, false)
 
-//  val codeIsDark = js.Array[Boolean](false, false, false, false, false, true, false, true)
+  val codeIsDark = js.Array[Boolean](false, false, false, false, false, true, false, true)
 
-  val setMasks = {
-    val s = new Uint32Array(32)
-    for(i <- 0 to 31) {
-      s(i) = 1 << i
-    }
-    println(s)
-    s
-  }
 }
