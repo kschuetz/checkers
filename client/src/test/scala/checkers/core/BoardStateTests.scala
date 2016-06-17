@@ -1,5 +1,7 @@
 package checkers.core
 
+
+import checkers.consts._
 import utest._
 import utest.framework.Test
 import utest.util.Tree
@@ -8,7 +10,7 @@ import scala.util.Random
 
 object BoardStateTests extends TestSuite {
 
-  val allPieces = List(LightMan, DarkMan, LightKing, DarkKing)
+  val allPieces = List(LIGHTMAN, DARKMAN, LIGHTKING, DARKKING)
   val allSquares = Board.allSquares.toSet
 
   private def shuffledSquares() = Random.shuffle(Board.allSquares.toList)

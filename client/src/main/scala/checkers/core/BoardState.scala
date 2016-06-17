@@ -1,11 +1,16 @@
 package checkers.core
 
-import scala.scalajs.js
-import scala.scalajs.js.typedarray.Int32Array
 import checkers.consts._
-import checkers.util.DebugUtils
+
+import scala.scalajs.js.typedarray.Int32Array
 
 trait BoardStateRead {
+  def lightPieces: Int
+
+  def darkPieces: Int
+
+  def kings: Int
+
   def getOccupant(squareIndex: Int): Occupant
 
   def isSquareEmpty(squareIndex: Int): Boolean
@@ -20,6 +25,12 @@ trait BoardStateRead {
 }
 
 trait MutableBoardState extends BoardStateRead {
+  def setLightPieces(value: Int): Unit
+
+  def setDarkPieces(value: Int): Unit
+
+  def setKings(value: Int): Unit
+
   def setOccupant(squareIndex: Int, value: Occupant): Unit
 
   def setBoard(board: BoardStateRead): Unit
@@ -33,29 +44,32 @@ trait BoardStateReadImpl extends BoardStateRead {
 
   protected def offset: Int
 
-  def getOccupant(squareIndex: Int): Occupant = {
-    val k = (data(offset).asInstanceOf[Int] >>> squareIndex) & 1
-    val lp = (data(offset + 1).asInstanceOf[Int] >>> squareIndex) & 1
-    val dp = (data(offset + 2).asInstanceOf[Int] >>> squareIndex) & 1
+  override def kings: PieceType = data(offset)
 
-    //(k << 2) | (lp << 1) | dp
-    if(lp != 0) {
-      if(k != 0) LIGHTKING
-      else LIGHTMAN
-    } else if (dp != 0) {
-      if(k != 0) DARKKING
-      else DARKMAN
-    } else EMPTY
+  override def lightPieces: PieceType = data(offset + 1)
+
+
+  override def darkPieces: PieceType = data(offset + 2)
+
+  def getOccupant(squareIndex: Int): Occupant = {
+    val k = (kings >>> squareIndex) & 1
+    val lp = (lightPieces >>> squareIndex) & 1
+    val dp = (darkPieces >>> squareIndex) & 1
+
+    (k << 2) | (lp << 1) | dp
   }
 
   def isSquareEmpty(squareIndex: Int): Boolean = {
-    val p = (data(offset).asInstanceOf[Int] | data(offset + 1).asInstanceOf[Int]) >>> squareIndex
-    p == 0
+//    val p = (data(offset + 1).asInstanceOf[Int] | data(offset + 2).asInstanceOf[Int]) >>> squareIndex
+    val p = (lightPieces | darkPieces) >>> squareIndex
+    (p & 1) == 0
   }
 
   def squareHasColor(color: Color, squareIndex: Int): Boolean = {
-    val lp = (data(offset + 1).asInstanceOf[Int] >>> squareIndex) & 1
-    val dp = (data(offset + 2).asInstanceOf[Int] >>> squareIndex) & 1
+//    val lp = (data(offset + 1).asInstanceOf[Int] >>> squareIndex) & 1
+//    val dp = (data(offset + 2).asInstanceOf[Int] >>> squareIndex) & 1
+    val lp = (lightPieces >>> squareIndex) & 1
+    val dp = (darkPieces >>> squareIndex) & 1
 
     COLOR((lp << 1) | dp) == color
   }
@@ -83,44 +97,50 @@ trait BoardStateReadImpl extends BoardStateRead {
 }
 
 trait BoardStateWriteImpl extends BoardStateReadImpl {
+  def setLightPieces(value: Int): Unit = {
+    data(offset + 1) = value
+  }
+
+  def setDarkPieces(value: Int): Unit = {
+    data(offset + 2) = value
+  }
+
+  def setKings(value: Int): Unit = {
+    data(offset) = value
+  }
+
   def setOccupant(squareIndex: Int, value: Occupant): Unit = {
-    var k = data(offset).asInstanceOf[Int]
-    var lp = data(offset + 1).asInstanceOf[Int]
-    var dp = data(offset + 2).asInstanceOf[Int]
-    val setMask = BoardState.setMasks(squareIndex).asInstanceOf[Int] >>> 0
-    val clearMask = (~setMask) >>> 0
-
-
-    println(s"setting $squareIndex to ${DebugUtils.occupantToString(value)} $setMask $clearMask")
-    println(s"  before: $k  $lp  $dp")
+    var k = kings
+    var lp = lightPieces
+    var dp = darkPieces
+    val setMask = BoardState.setMasks(squareIndex)
+    val clearMask = ~setMask
 
     if(value == LIGHTMAN) {
       k &= clearMask
-      lp = (lp | setMask) >>> 0
+      lp |= setMask
       dp &= clearMask
     } else if (value == DARKMAN) {
       k &= clearMask
       lp &= clearMask
-      dp = (dp | setMask) >>> 0
+      dp |= setMask
     } else if (value == LIGHTKING) {
-      k  = (k | setMask) >>> 0
-      lp  = (lp | setMask) >>> 0
+      k |= setMask
+      lp |= setMask
       dp &= clearMask
     }else if (value == DARKKING) {
-      k  = (k | setMask) >>> 0
+      k |= setMask
       lp &= clearMask
-      dp  = (dp | setMask) >>> 0
+      dp |= setMask
     } else {
       k &= clearMask
       lp &= clearMask
       dp &= clearMask
     }
 
-    println(s"  after: $k  $lp  $dp")
-
-    data(offset) = k
-    data(offset + 1) = lp
-    data(offset + 2) = dp
+    setKings(k)
+    setLightPieces(lp)
+    setDarkPieces(dp)
   }
 
   def setBoard(board: BoardStateRead): Unit = {
@@ -183,7 +203,6 @@ object BoardState {
     for(i <- 0 to 31) {
       s(i) = (1 << i) >>> 0
     }
-    println(s)
     s
   }
 }
