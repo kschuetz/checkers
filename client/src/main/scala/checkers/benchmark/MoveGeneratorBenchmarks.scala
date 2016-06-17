@@ -3,6 +3,7 @@ package checkers.benchmark
 import org.scalajs.dom
 import checkers.core._
 import checkers.consts._
+import checkers.core.old.MoveGenerator
 import checkers.game.TestStates
 import dom.window.performance
 

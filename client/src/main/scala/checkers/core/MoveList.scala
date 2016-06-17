@@ -1,51 +1,109 @@
 package checkers.core
 
-import scala.scalajs.js
-
-class MoveList(val moves: js.Array[Move]) {
-  def isEmpty = false
-  def size = moves.length
-}
+import scala.scalajs.js.typedarray.Int8Array
 
 
-object EmptyMoveList extends MoveList(new js.Array[Move]) {
-  override def isEmpty = true
-  override def size = 0
-}
-
-
-class MoveListBuilder {
-  private var empty = true
-  private var moves: js.Array[Move] = null
-
-  def addSimpleMove(move: SimpleMove): Unit = {
-    if(moves == null) {
-      moves = new js.Array[Move]
-      empty = false
+class MoveList(val data: Int8Array,
+               val count: Int) {
+  def foreach(f: MoveDecoder => Unit): Unit = {
+    val decoder = new MoveDecoder
+    var i = 0
+    while(i < count) {
+      decoder.load(this, i)
+      f(decoder)
+      i += 1
     }
-    moves.push(move)
+  }
+}
+
+/**
+  * MoveDecoder:
+  *
+  * Contains one move.
+  * pathLength is the length of the path (2 for simple moves and jumps)
+  * data is an array containing the squares in the path.
+  *
+  * Can be reused by calling load.
+  */
+class MoveDecoder {
+  val data = new Int8Array(MoveList.frameSize)
+  private var _pathLength = 0
+
+  def load(moveList: MoveList, index: Int): Unit = {
+    val src = moveList.data
+    var i = index * MoveList.frameSize
+    _pathLength = 0
+    while(_pathLength < MoveList.frameSize) {
+      if(src(i) > 0) {
+        data(_pathLength) = src(i)
+        i += 1
+        _pathLength += 1
+      } else return
+    }
   }
 
-  def addPath(path: List[SimpleMove]): Unit = {
-    path match {
-      case Nil => ()
-      case one :: Nil => addSimpleMove(one)
-      case many =>
-        val compoundMove = CompoundMove(many)
-        if(moves == null) {
-          moves = new js.Array[Move]
-          empty = false
-        }
-        moves.push(compoundMove)
+  def pathLength: Int = _pathLength
+}
+
+/**
+  * MovePathStack:
+  *
+  * Used for building compound moves.
+  */
+class MovePathStack {
+  private val data = new Int8Array(MoveList.frameSize)
+  private var ptr: Int = 0
+
+  def push(square: Byte): Unit = {
+    data(ptr) = (square | 128).asInstanceOf[Byte]
+    ptr += 1
+  }
+
+  def pop(): Unit = ptr -= 1
+
+  def clear(): Unit = ptr = 0
+
+  def emit(dest: Int8Array, destPtr: Int): Unit = {
+    var i = ptr - 1
+    var j = destPtr
+    while (i >= 0) {
+      dest(j) = data(i)
+      j += 1
+      i -= 1
     }
+  }
+}
+
+class MoveListBuilder {
+  private val pathSize = MoveList.frameSize
+  private var data = new Int8Array(MoveList.bufferSize)
+  private var ptr = 0
+  private var count = 0
+
+  def addMove(src: Byte, dest: Byte): Unit = {
+    data(ptr) = (src | 128).asInstanceOf[Byte]
+    data(ptr + 1) = (dest | 128).asInstanceOf[Byte]
+    data(ptr + 2) = 0
+    ptr += pathSize
+  }
+
+  def addPath(path: MovePathStack): Unit = {
+    path.emit(data, ptr)
+    ptr += pathSize
   }
 
   def result: MoveList = {
-    if(empty) EmptyMoveList
-    else {
-      val retval = new MoveList(moves)
-      moves = null
-      retval
-    }
+    val retval = new MoveList(data, count)
+    data = null
+    retval
   }
+}
+
+
+
+
+object MoveList {
+  val frameSize = 12
+  val maxMoveCount = 36
+  val bufferSize = frameSize * maxMoveCount
 }

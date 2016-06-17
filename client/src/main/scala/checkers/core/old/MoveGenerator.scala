@@ -1,14 +1,16 @@
-package checkers.core
-
-import scala.scalajs.js
+package checkers.core.old
 
 import checkers.consts._
+import checkers.core.{SimpleMoveIndex, _}
+
+import scala.scalajs.js
 
 
 class MoveGenerator(rulesSettings: RulesSettings,
                     moveExecutor: MoveExecutor) {
 
   private val jumpsCompulsory = true
+
 
   def generateMoves(boardState: BoardStack, turnToMove: Color): MoveList = {
     val opponent = if(turnToMove == LIGHT) DARK else LIGHT
