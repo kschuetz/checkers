@@ -48,7 +48,6 @@ trait BoardStateReadImpl extends BoardStateRead {
 
   override def lightPieces: PieceType = data(offset + 1)
 
-
   override def darkPieces: PieceType = data(offset + 2)
 
   def getOccupant(squareIndex: Int): Occupant = {
@@ -60,14 +59,11 @@ trait BoardStateReadImpl extends BoardStateRead {
   }
 
   def isSquareEmpty(squareIndex: Int): Boolean = {
-//    val p = (data(offset + 1).asInstanceOf[Int] | data(offset + 2).asInstanceOf[Int]) >>> squareIndex
     val p = (lightPieces | darkPieces) >>> squareIndex
     (p & 1) == 0
   }
 
   def squareHasColor(color: Color, squareIndex: Int): Boolean = {
-//    val lp = (data(offset + 1).asInstanceOf[Int] >>> squareIndex) & 1
-//    val dp = (data(offset + 2).asInstanceOf[Int] >>> squareIndex) & 1
     val lp = (lightPieces >>> squareIndex) & 1
     val dp = (darkPieces >>> squareIndex) & 1
 
@@ -128,7 +124,7 @@ trait BoardStateWriteImpl extends BoardStateReadImpl {
       k |= setMask
       lp |= setMask
       dp &= clearMask
-    }else if (value == DARKKING) {
+    } else if (value == DARKKING) {
       k |= setMask
       lp &= clearMask
       dp |= setMask
@@ -188,20 +184,10 @@ object BoardState {
 
   val empty = new BoardState(createFrame)
 
-//  val decode = js.Array[Occupant](EMPTY, EMPTY, EMPTY, EMPTY, LIGHTMAN, DARKMAN, LIGHTKING, DARKKING)
-
-  //val piece = js.Array[Occupant](null, null, null, null, LightMan, DarkMan, LightKing, DarkKing)
-
-//  val codeIsEmpty = js.Array[Boolean](true, true, true, true, false, false, false, false)
-
-//  val codeIsLight = js.Array[Boolean](false, false, false, false, true, false, true, false)
-
-//  val codeIsDark = js.Array[Boolean](false, false, false, false, false, true, false, true)
-
   val setMasks = {
     val s = new Int32Array(32)
     for(i <- 0 to 31) {
-      s(i) = (1 << i) >>> 0
+      s(i) = 1 << i
     }
     s
   }

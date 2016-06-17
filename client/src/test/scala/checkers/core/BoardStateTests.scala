@@ -30,7 +30,8 @@ object BoardStateTests extends TestSuite {
         // pieces in correct place
         placements.foreach {
           case (square, piece) =>
-            assert(bs.getOccupant(square) == piece)
+            val occupant = bs.getOccupant(square)
+            assert(occupant == piece)
         }
 
         // all other squares are empty

@@ -39,8 +39,8 @@ package object consts {
   def emptyImpl(c: blackbox.Context): c.Expr[Occupant] = c.universe.reify(0)
   def darkManImpl(c: blackbox.Context): c.Expr[Occupant] = c.universe.reify(1)
   def lightManImpl(c: blackbox.Context): c.Expr[Occupant] = c.universe.reify(2)
-  def darkKingImpl(c: blackbox.Context): c.Expr[Occupant] = c.universe.reify(4)
-  def lightKingImpl(c: blackbox.Context): c.Expr[Occupant] = c.universe.reify(5)
+  def darkKingImpl(c: blackbox.Context): c.Expr[Occupant] = c.universe.reify(5)
+  def lightKingImpl(c: blackbox.Context): c.Expr[Occupant] = c.universe.reify(6)
 
   def colorImpl(c: blackbox.Context)(occupant: c.Expr[Occupant]): c.Expr[Color] = {
     import c.universe._
