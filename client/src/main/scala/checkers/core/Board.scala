@@ -11,7 +11,7 @@ case class BoardPosition(row: Int, col: Int) {
     val c = col % 2
     if (r == c) return -1
 
-    (4 * row) + (col - c) / 2
+    (4 * (7 - row)) + (col - c) / 2
   }
 
   def offset(rows: Int, cols: Int): BoardPosition =
@@ -27,21 +27,21 @@ object Board {
   // squareIndex: 0..31
   def squareIndexToBoardPosition(squareIndex: Int): BoardPosition = {
     val row = squareIndex / 4
-    val col = if (row % 2 == 0) 1 + 2 * (squareIndex % 4)
-              else 2 * (squareIndex % 4)
+    val col = if (row % 2 == 0) 2 * (squareIndex % 4)
+              else 1 + 2 * (squareIndex % 4)
 
-    BoardPosition(row, col)
+    BoardPosition(7 - row, col)
   }
 
   val allSquares = 0 to 31
 
   val position: Vector[BoardPosition] = allSquares.map(squareIndexToBoardPosition).toVector
 
-  val lightStartingSquares = 0 to 11
-  val darkStartingSquares = 20 to 31
+  val lightStartingSquares = 20 to 31
+  val darkStartingSquares = 0 to 11
 
-  val lightCrowningSquares = (28 to 31).toSet
-  val darkCrowningSquares = (0 to 3).toSet
+  val lightCrowningSquares = (0 to 3).toSet
+  val darkCrowningSquares = (28 to 31).toSet
 
   def crowningSquares(color: Color): Set[Int] =
     if(color == DARK) darkCrowningSquares
