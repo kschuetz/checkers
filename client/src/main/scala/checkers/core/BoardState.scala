@@ -109,7 +109,7 @@ trait BoardStateWriteImpl extends BoardStateReadImpl {
     var k = kings
     var lp = lightPieces
     var dp = darkPieces
-    val setMask = BoardState.setMasks(squareIndex)
+    val setMask = Masks.squares(squareIndex)
     val clearMask = ~setMask
 
     if(value == LIGHTMAN) {
@@ -184,11 +184,5 @@ object BoardState {
 
   val empty = new BoardState(createFrame)
 
-  val setMasks = {
-    val s = new Int32Array(32)
-    for(i <- 0 to 31) {
-      s(i) = 1 << i
-    }
-    s
-  }
+
 }

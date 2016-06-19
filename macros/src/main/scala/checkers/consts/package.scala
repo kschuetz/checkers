@@ -78,4 +78,5 @@ package object consts {
     import c.universe._
     occupant
   }
+
 }
