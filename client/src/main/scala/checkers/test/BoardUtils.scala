@@ -1,6 +1,7 @@
 package checkers.test
 
-import checkers.core.{BoardState, BoardStateRead}
+import checkers.consts._
+import checkers.core.{BoardState, BoardStateRead, NeighborIndex}
 
 object BoardUtils {
 
@@ -19,5 +20,46 @@ object BoardUtils {
     }
     result
   }
+
+  def squareMaskToSet(mask: Int): Set[Int] = {
+    var board = mask
+    var result = Set.empty[Int]
+    var i = 0
+    while (i < 31) {
+      if((board & 1) == 1) result += i
+      board = board >> 1
+      i += 1
+    }
+    result
+  }
+
+  def isJumperOfColor(boardState: BoardStateRead, color: Color)(squareIndex: Int): Boolean = {
+    val piece = boardState.getOccupant(squareIndex)
+    if(! (ISPIECE(piece) && COLOR(piece) == color)) return false
+
+    val opponent = if(color == LIGHT) DARK else LIGHT
+
+    def checkJump(m: Int, j: Int): Boolean = {
+      m >= 0 && j >= 0 && {
+        val over = boardState.getOccupant(m)
+        boardState.getOccupant(j) == EMPTY && ISPIECE(over) && COLOR(over) == opponent
+      }
+    }
+
+
+    val neighborIndex = NeighborIndex.forColor(color)
+    import neighborIndex._
+
+    if(checkJump(forwardMoveW(squareIndex), forwardJumpW(squareIndex))) return true
+    if(checkJump(forwardMoveE(squareIndex), forwardJumpE(squareIndex))) return true
+    if(PIECETYPE(piece) == KING) {
+      if(checkJump(backMoveW(squareIndex), backJumpW(squareIndex))) return true
+      if(checkJump(backMoveE(squareIndex), backJumpE(squareIndex))) return true
+    }
+    false
+  }
+
+  val allSquares = Set(0 to 31)
+
 
 }

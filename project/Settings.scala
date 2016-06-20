@@ -29,6 +29,7 @@ object Settings {
     val log4js = "1.4.10"
     val diode = "0.5.1"
     val uTest = "0.3.1"
+    val nyaya = "0.7.0"
 
     val react = "15.0.1"
     val jQuery = "1.11.1"
@@ -60,7 +61,8 @@ object Settings {
     "me.chrons" %%% "diode-react" % versions.diode,
     "org.scala-js" %%% "scalajs-dom" % versions.scalaDom,
     "com.github.japgolly.scalajs-react" %%% "ext-monocle" % "0.11.1",
-    "com.lihaoyi" %%% "utest" % versions.uTest % Test
+    "com.lihaoyi" %%% "utest" % versions.uTest % Test,
+    "com.github.japgolly.nyaya" %%% "nyaya-test" % versions.nyaya % Test
   ))
 
   /** Dependencies for external JS libs that are bundled into a single .js file according to dependency order */
