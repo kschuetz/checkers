@@ -1,19 +1,18 @@
 package checkers.benchmark
 
-import org.scalajs.dom
-import checkers.core._
 import checkers.consts._
-import checkers.core.old.MoveGenerator
-import checkers.game.TestStates
-import dom.window.performance
+import checkers.core.{MoveGenerator, _}
+import checkers.util.MoveListPrinter
+import org.scalajs.dom
+import org.scalajs.dom.window.performance
 
 
 
 object MoveGeneratorBenchmarks {
 
   val rulesSettings = RulesSettings.default
-  val executor = new MoveExecutor(rulesSettings)
-  val generator = new MoveGenerator(rulesSettings, executor)
+//  val executor = new MoveExecutor(rulesSettings)
+  val generator = new MoveGenerator(rulesSettings)
 
   def testBoard(repetitions: Int)(boardState: BoardStack, turnToMove: Color): Double = {
     val startTime = performance.now()
@@ -27,22 +26,28 @@ object MoveGeneratorBenchmarks {
     endTime - startTime
   }
 
-
-
   def test1(): Unit = {
     val board = RulesSettings.initialBoard(rulesSettings)
     val stack = BoardStack.fromBoard(board)
-    val t = testBoard(100000)(BoardStack.fromBoard(board), DARK)
-    println(s"test1: $t")
+//    val t = testBoard(100000)(stack, DARK)
+//    println(s"test1: $t")
 
-    println(EMPTY)
-    println(DARK)
-    println(LIGHT)
-    println(MAN)
-    println(KING)
+    val darkMoves = generator.generateMoves(stack, DARK)
+    var moveStr = MoveListPrinter.moveListToString(darkMoves)
+    println(s"dark: $moveStr")
 
-    println(TestStates.board1)
+    val lightMoves = generator.generateMoves(stack, LIGHT)
+    moveStr = MoveListPrinter.moveListToString(lightMoves)
+    println(s"light: $moveStr")
 
+    println("--------------")
+
+    dom.console.log(NeighborIndex.moveNE)
+    dom.console.log(NeighborIndex.moveNW)
+    dom.console.log(NeighborIndex.moveSE)
+    dom.console.log(NeighborIndex.moveSW)
+
+    println("--------------")
   }
 
 }

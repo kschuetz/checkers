@@ -34,8 +34,9 @@ class MoveDecoder {
     var i = index * MoveList.frameSize
     _pathLength = 0
     while(_pathLength < MoveList.frameSize) {
-      if(src(i) > 0) {
-        data(_pathLength) = src(i)
+      val b = src(i)
+      if(b < 0) {
+        data(_pathLength) = (b & 127).toByte
         i += 1
         _pathLength += 1
       } else return
@@ -43,6 +44,16 @@ class MoveDecoder {
   }
 
   def pathLength: Int = _pathLength
+
+  def pathToList: List[Int] = {
+    var result = List.empty[Int]
+    var i = 0
+    while(i < _pathLength) {
+      result = data(i) :: result
+      i += 1
+    }
+    result.reverse
+  }
 }
 
 /**
@@ -84,11 +95,13 @@ class MoveListBuilder {
     data(ptr) = (src | 128).asInstanceOf[Byte]
     data(ptr + 1) = (dest | 128).asInstanceOf[Byte]
     data(ptr + 2) = 0
+    count += 1
     ptr += pathSize
   }
 
   def addPath(path: MovePathStack): Unit = {
     path.emit(data, ptr)
+    count += 1
     ptr += pathSize
   }
 
@@ -98,7 +111,6 @@ class MoveListBuilder {
     retval
   }
 }
-
 
 
 

@@ -22,8 +22,6 @@ object CheckersMain extends js.JSApp {
     log.warn("Application starting")
 
     MoveGeneratorBenchmarks.test1()
-    println("masks:")
-    println(masks.squares)
 
     // create stylesheet
     GlobalStyles.addToDocument()
