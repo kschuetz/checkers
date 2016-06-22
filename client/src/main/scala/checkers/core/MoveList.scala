@@ -14,6 +14,15 @@ class MoveList(val data: Int8Array,
       i += 1
     }
   }
+
+  // for tests
+  def toSet: Set[List[Int]] = {
+    var result = Set.empty[List[Int]]
+    foreach { decoder =>
+      result += decoder.pathToList
+    }
+    result
+  }
 }
 
 /**

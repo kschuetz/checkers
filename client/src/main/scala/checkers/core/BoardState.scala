@@ -206,5 +206,9 @@ object BoardState {
 
   val empty = new BoardState(createFrame)
 
+  def create(occupants: (Occupant, Seq[Int])*): BoardState =
+    occupants.foldLeft(empty) { case (result, (occ, squares)) =>
+      result.updateMany(occ)(squares)
+    }
 
 }
