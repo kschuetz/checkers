@@ -61,5 +61,26 @@ object BoardUtils {
 
   val allSquares = Set(0 to 31)
 
+  private val parseSquareIndex = List(
+    28, 29, 30, 31, 24, 25, 26, 27, 20, 21, 22, 23, 16, 17, 18, 19,
+    12, 13, 14, 15, 8, 9, 10, 11, 4, 5, 6, 7, 0, 1, 2, 3)
+
+  def parseBoard(source: String): BoardState = {
+    val occupants = source.collect {
+      case '-' => EMPTY
+      case 'd' => DARKMAN
+      case 'l' => LIGHTMAN
+      case 'D' => DARKKING
+      case 'L' => LIGHTKING
+    }.toVector
+
+    if(occupants.length != 32) throw new Exception("Input must have 32 squares")
+
+    occupants.zip(parseSquareIndex).foldLeft(BoardState.empty){ case (result, (occ, idx)) =>
+      result.updated(idx, occ)
+    }
+
+  }
+
 
 }

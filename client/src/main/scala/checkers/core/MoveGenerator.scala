@@ -269,6 +269,7 @@ class MoveGenerator(rulesSettings: RulesSettings) {
         noBE2 = shiftSE(noBE)
 
         oppBW = shiftSW(opponentPieces)
+        oppBE = shiftSE(opponentPieces)
 
       } else {
 

@@ -1,6 +1,7 @@
 package checkers.core
 
 import checkers.consts._
+import checkers.test.BoardUtils
 import utest._
 import utest.framework.Test
 import utest.util.Tree
@@ -34,11 +35,20 @@ object MoveGeneratorTests extends TestSuite {
 
   override def tests: Tree[Test] = TestSuite {
     'MoveGenerator {
-      'Board1 {
-        val board1 = BoardState.create(DARKMAN -> (0 to 11), LIGHTMAN -> (20 to 31))
+      'EmptyBoard {
+        'Dark {
+          testBoard(BoardState.empty, DARK, Set.empty)
+        }
+        'Light {
+          testBoard(BoardState.empty, LIGHT, Set.empty)
+        }
+      }
+
+      'OpeningBoard {
+        val board = BoardState.create(DARKMAN -> (0 to 11), LIGHTMAN -> (20 to 31))
 
         'Dark {
-          testBoard(board1, DARK, Set(
+          testBoard(board, DARK, Set(
             s(8 -> 12),
             s(9 -> 12),
             s(9 -> 13),
@@ -49,7 +59,7 @@ object MoveGeneratorTests extends TestSuite {
         }
 
         'Light {
-          testBoard(board1, LIGHT, Set(
+          testBoard(board, LIGHT, Set(
             s(20 -> 16),
             s(20 -> 17),
             s(21 -> 17),
@@ -57,6 +67,36 @@ object MoveGeneratorTests extends TestSuite {
             s(22 -> 18),
             s(22 -> 19),
             s(23 -> 19)))
+        }
+      }
+
+      'Board1 {
+        val board = BoardUtils.parseBoard(
+          """
+              l l - -
+             - - - -
+              - - - -
+             - l - -
+              - l l -
+             d d d d
+              l - - -
+             - - - -
+          """)
+
+        'Dark {
+          testBoard(board, DARK, Set(
+            s(9 -> 18),
+            s(10 -> 19),
+            s(11 -> 18)
+          ))
+        }
+
+        'Light {
+          testBoard(board, LIGHT, Set(
+            s(13 -> 6),
+            s(14 -> 5),
+            s(14 -> 7)
+          ))
         }
       }
     }
