@@ -18,7 +18,7 @@ object MoveGeneratorBenchmarks {
     val startTime = performance.now()
     var i = repetitions
     while (i > 0) {
-      generator.generateMoves(boardState, turnToMove)
+      generator.generateMoves3(boardState, turnToMove)
       i -= 1
     }
 
@@ -32,11 +32,11 @@ object MoveGeneratorBenchmarks {
 //    val t = testBoard(100000)(stack, DARK)
 //    println(s"test1: $t")
 
-    val darkMoves = generator.generateMoves(stack, DARK)
+    val darkMoves = generator.generateMoves3(stack, DARK)
     var moveStr = MoveListPrinter.moveListToString(darkMoves)
     println(s"dark: $moveStr")
 
-    val lightMoves = generator.generateMoves(stack, LIGHT)
+    val lightMoves = generator.generateMoves3(stack, LIGHT)
     moveStr = MoveListPrinter.moveListToString(lightMoves)
     println(s"light: $moveStr")
 

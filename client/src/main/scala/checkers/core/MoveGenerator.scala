@@ -142,7 +142,7 @@ class MoveGenerator(rulesSettings: RulesSettings) {
 
     val hasJumps = (jumpSE | jumpSW | jumpNE | jumpNW) != 0
     if(hasJumps) {
-      addJumps(builder, DARK, jumpNW, jumpNE, jumpSW, jumpSE)
+      addJumps(builder, LIGHT, jumpNW, jumpNE, jumpSW, jumpSE)
     } else {
 
       moveSE = myPieces & noNW
@@ -228,6 +228,124 @@ class MoveGenerator(rulesSettings: RulesSettings) {
 
     builder.result
   }
+
+  def generateMoves3(boardState: BoardStack, turnToMove: Color): MoveList = {
+    val builder = new MoveListBuilder
+    var dark = turnToMove == DARK
+
+    import masks._
+
+    def go(): Unit = {
+      val myPieces = if(dark) boardState.darkPieces else boardState.lightPieces
+      val opponentPieces = if(dark) boardState.lightPieces else boardState.darkPieces
+      val kings = boardState.kings
+      val notOccupied = ~(myPieces | opponentPieces)
+      val myKings = myPieces & kings
+
+      var moveFE = 0
+      var moveFW = 0
+      var moveBE = 0
+      var moveBW = 0
+
+      var noBW = 0
+      var noBW2 = 0
+      var noBE = 0
+      var noBE2 = 0
+      var noFW = 0
+      var noFW2 = 0
+      var noFE = 0
+      var noFE2 = 0
+
+      var oppFW = 0
+      var oppBW = 0
+      var oppFE = 0
+      var oppBE = 0
+
+      if(dark) {
+        noBW = shiftSW(notOccupied)
+        noBW2 = shiftSW(noBW)
+        noBE = shiftSE(notOccupied)
+        noBE2 = shiftSE(noBE)
+
+        oppBW = shiftSW(opponentPieces)
+
+
+      } else {
+
+        noBW = shiftNW(notOccupied)
+        noBW2 = shiftNW(noBW)
+        noBE = shiftNE(notOccupied)
+        noBE2 = shiftNE(noBE)
+
+        oppBW = shiftNW(opponentPieces)
+        oppBE = shiftNE(opponentPieces)
+      }
+
+      val jumpFE = myPieces & oppBW & noBW2
+      val jumpFW = myPieces & oppBE & noBE2
+
+      var jumpBE = 0
+      var jumpBW = 0
+
+      if (myKings != 0) {
+
+
+        if(dark) {
+          noFW = shiftNW(notOccupied)
+          noFE = shiftNE(notOccupied)
+
+          noFW2 = shiftNW(noFW)
+          noFE2 = shiftNE(noFE)
+
+          oppFW = shiftNW(opponentPieces)
+          oppFE = shiftNE(opponentPieces)
+        } else {
+          noFW = shiftSW(notOccupied)
+          noFE = shiftSE(notOccupied)
+
+          noFW2 = shiftSW(noFW)
+          noFE2 = shiftSE(noFE)
+
+          oppFW = shiftSW(opponentPieces)
+          oppFE = shiftSE(opponentPieces)
+        }
+
+        jumpBE = myKings & oppFW & noFW2
+        jumpBW = myKings & oppFE & noFE2
+      }
+
+      val hasJumps = (jumpFW | jumpFE | jumpBW | jumpBE) != 0
+      if (hasJumps) {
+        if(dark) {
+          addJumps(builder, DARK, jumpFW, jumpFE, jumpBW, jumpBE)
+        } else {
+          addJumps(builder, LIGHT, jumpBW, jumpBE, jumpFW, jumpFE)
+        }
+      } else {
+
+        moveFE = myPieces & noBW
+        moveFW = myPieces & noBE
+
+        if (myKings != 0) {
+          moveBE = myKings & noFW
+          moveBW = myKings & noFE
+        }
+
+        val hasMoves = (moveFE | moveFW | moveBW | moveBW) != 0
+        if (hasMoves) {
+          if(dark) {
+            addMoves(builder, DARK, moveFW, moveFE, moveBW, moveBE)
+          } else {
+            addMoves(builder, DARK, moveBW, moveBE, moveFW, moveFE)
+          }
+        }
+      }
+    }
+
+    go()
+    builder.result
+  }
+
 
   def generateMoves(boardState: BoardStack, turnToMove: Color): MoveList =
     if(turnToMove == DARK) generateMovesDark(boardState)
