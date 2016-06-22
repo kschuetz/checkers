@@ -229,7 +229,8 @@ class MoveGenerator(rulesSettings: RulesSettings) {
     builder.result
   }
 
-  def generateMoves3(boardState: BoardStack, turnToMove: Color): MoveList = {
+
+  def generateMoves(boardState: BoardStack, turnToMove: Color): MoveList = {
     val builder = new MoveListBuilder
     var dark = turnToMove == DARK
 
@@ -268,7 +269,6 @@ class MoveGenerator(rulesSettings: RulesSettings) {
         noBE2 = shiftSE(noBE)
 
         oppBW = shiftSW(opponentPieces)
-
 
       } else {
 
@@ -347,22 +347,11 @@ class MoveGenerator(rulesSettings: RulesSettings) {
   }
 
 
-  def generateMoves(boardState: BoardStack, turnToMove: Color): MoveList =
+  def generateMoves2(boardState: BoardStack, turnToMove: Color): MoveList =
     if(turnToMove == DARK) generateMovesDark(boardState)
     else generateMovesLight(boardState)
 
 
-  def generateMoves2(boardState: BoardStack, turnToMove: Color): MoveList = {
-    val builder = new MoveListBuilder
 
-    val (myPieces, opponentPieces, f3, f5, b3, b5) = if(turnToMove == DARK) {
-      (boardState.darkPieces, boardState.lightPieces, masks.r3, masks.r5, masks.l3, masks.l5)
-    } else {
-      (boardState.lightPieces, boardState.darkPieces, masks.l3, masks.l5, masks.r3, masks.r5)
-    }
-    val kings = boardState.kings
-
-    builder.result
-  }
 }
 
