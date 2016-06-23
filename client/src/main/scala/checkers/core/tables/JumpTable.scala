@@ -1,14 +1,12 @@
 package checkers.core.tables
 
-import checkers.core.NeighborIndex
-
 import scala.scalajs.js.typedarray.Int8Array
 
 
-class JumpTable(neighborIndex: NeighborIndex) {
+class JumpTable(neighborTable: NeighborTable) {
   val data = {
     val result = new Int8Array(1024)
-    JumpTable.init(result, neighborIndex)
+    JumpTable.init(result, neighborTable)
     result
   }
 
@@ -21,19 +19,19 @@ class JumpTable(neighborIndex: NeighborIndex) {
 }
 
 object JumpTable {
-  private[tables] def init(data: Int8Array, neighborIndex: NeighborIndex): Unit = {
+  private[tables] def init(data: Int8Array, neighborIndex: NeighborTable): Unit = {
     def addJump(from: Int, to: Int, over: Int): Unit = {
       if(from >= 0 && to >= 0 && over >= 0) {
         val encodeOver = (128 | (over & 127)).toByte
         val code1 = (from << 5) | (to & 31)
         data(code1) = encodeOver
-        val code2 = (to << 5) | (to & 31)
+        val code2 = (to << 5) | (from & 31)
         data(code2) = encodeOver
       }
     }
     for(square <- 0 to 31) {
-      addJump(neighborIndex.backMoveE(square), neighborIndex.forwardMoveW(square), square)
-      addJump(neighborIndex.backMoveW(square), neighborIndex.forwardMoveE(square), square)
+      addJump(neighborIndex.moveSE(square), neighborIndex.moveNW(square), square)
+      addJump(neighborIndex.moveSW(square), neighborIndex.moveNE(square), square)
     }
   }
 }

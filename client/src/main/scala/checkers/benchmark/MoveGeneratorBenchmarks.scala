@@ -1,7 +1,7 @@
 package checkers.benchmark
 
 import checkers.consts._
-import checkers.core.tables.JumpTable
+import checkers.core.tables.{JumpTable, NeighborTable}
 import checkers.core.{MoveGenerator, _}
 import checkers.util.MoveListPrinter
 import org.scalajs.dom
@@ -13,7 +13,9 @@ object MoveGeneratorBenchmarks {
 
   lazy val rulesSettings = RulesSettings.default
 
-  lazy val jumpTable: JumpTable = new JumpTable(DarkNeighborIndex)
+  lazy val neighborTable: NeighborTable = wire[NeighborTable]
+
+  lazy val jumpTable: JumpTable = wire[JumpTable]
 
   lazy val moveExecutor: MoveExecutor = wire[MoveExecutor]
 
@@ -51,10 +53,10 @@ object MoveGeneratorBenchmarks {
 
     dom.console.log(jumpTable.data)
 
-    dom.console.log(NeighborIndex.moveNE)
-    dom.console.log(NeighborIndex.moveNW)
-    dom.console.log(NeighborIndex.moveSE)
-    dom.console.log(NeighborIndex.moveSW)
+    dom.console.log(neighborTable.moveNE)
+    dom.console.log(neighborTable.moveNW)
+    dom.console.log(neighborTable.moveSE)
+    dom.console.log(neighborTable.moveSW)
 
     println("--------------")
   }
