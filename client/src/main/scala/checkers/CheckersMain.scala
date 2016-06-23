@@ -1,7 +1,6 @@
 package checkers
 
 import checkers.benchmark.MoveGeneratorBenchmarks
-import checkers.core.{SimpleMoveIndex, masks}
 import checkers.driver.GameScreenDriver
 import checkers.logger._
 import checkers.models.{GameScreenModel, GameSettings}
