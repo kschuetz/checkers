@@ -1,25 +1,14 @@
 package checkers.core
 
 import checkers.consts._
-import checkers.core.tables.{JumpTable, NeighborTable}
-import checkers.test.BoardUtils
+import checkers.test.{BoardUtils, DefaultGameLogicTestModule}
 import utest._
 import utest.framework.Test
 import utest.util.Tree
 
-object MoveGeneratorTests extends TestSuite {
+object MoveGeneratorTests extends TestSuite with DefaultGameLogicTestModule {
 
-  import com.softwaremill.macwire._
-
-  lazy val rulesSettings = RulesSettings.default
-
-  lazy val neighborTable: NeighborTable = wire[NeighborTable]
-
-  lazy val jumpTable: JumpTable = wire[JumpTable]
-
-  lazy val moveExecutor: MoveExecutor = wire[MoveExecutor]
-
-  lazy val moveGenerator: MoveGenerator = wire[MoveGenerator]
+  lazy val moveGenerator = gameLogicModule.moveGenerator
 
   private def testBoard(board: BoardState, color: Color, expectedResult: Set[List[Int]]): Unit = {
     val stack = BoardStack.fromBoard(board)
