@@ -1,9 +1,11 @@
 package checkers.core
 
 import checkers.consts._
+import checkers.core.tables.JumpTable
 
 
-class MoveExecutor(rulesSettings: RulesSettings) {
+class MoveExecutor(rulesSettings: RulesSettings,
+                   jumpTable: JumpTable) {
 
   /**
     * Updates the board in place.  Does not return metadata, other than a flag indicating a crowning event.

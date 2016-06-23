@@ -1,6 +1,7 @@
 package checkers.benchmark
 
 import checkers.consts._
+import checkers.core.tables.JumpTable
 import checkers.core.{MoveGenerator, _}
 import checkers.util.MoveListPrinter
 import org.scalajs.dom
@@ -11,6 +12,8 @@ object MoveGeneratorBenchmarks {
   import com.softwaremill.macwire._
 
   lazy val rulesSettings = RulesSettings.default
+
+  lazy val jumpTable: JumpTable = new JumpTable(DarkNeighborIndex)
 
   lazy val moveExecutor: MoveExecutor = wire[MoveExecutor]
 
@@ -45,6 +48,8 @@ object MoveGeneratorBenchmarks {
     println(s"light: $moveStr")
 
     println("--------------")
+
+    dom.console.log(jumpTable.data)
 
     dom.console.log(NeighborIndex.moveNE)
     dom.console.log(NeighborIndex.moveNW)

@@ -1,6 +1,7 @@
 package checkers.core
 
 import checkers.consts._
+import checkers.core.tables.JumpTable
 import checkers.test.BoardUtils
 import utest._
 import utest.framework.Test
@@ -11,6 +12,8 @@ object MoveGeneratorTests extends TestSuite {
   import com.softwaremill.macwire._
 
   lazy val rulesSettings = RulesSettings.default
+
+  lazy val jumpTable: JumpTable = new JumpTable(DarkNeighborIndex)
 
   lazy val moveExecutor: MoveExecutor = wire[MoveExecutor]
 
