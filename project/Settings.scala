@@ -30,6 +30,7 @@ object Settings {
     val diode = "0.5.1"
     val uTest = "0.3.1"
     val nyaya = "0.7.0"
+    val macwire = "2.2.3"
 
     val react = "15.0.1"
     val jQuery = "1.11.1"
@@ -42,7 +43,8 @@ object Settings {
    * These dependencies are shared between JS and JVM projects
    * the special %%% function selects the correct version for each project
    */
-  val sharedDependencies = Def.setting(Seq.empty)
+  val sharedDependencies = Def.setting(Seq(
+  ))
 
   /** Dependencies only used by the JVM project */
   val jvmDependencies = Def.setting(Seq(
@@ -61,6 +63,7 @@ object Settings {
     "me.chrons" %%% "diode-react" % versions.diode,
     "org.scala-js" %%% "scalajs-dom" % versions.scalaDom,
     "com.github.japgolly.scalajs-react" %%% "ext-monocle" % "0.11.1",
+    "com.softwaremill.macwire" %% "macros" % versions.macwire % Provided,
     "com.lihaoyi" %%% "utest" % versions.uTest % Test,
     "com.github.japgolly.nyaya" %%% "nyaya-test" % versions.nyaya % Test
   ))

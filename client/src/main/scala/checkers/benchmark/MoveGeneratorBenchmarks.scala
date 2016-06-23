@@ -7,14 +7,17 @@ import org.scalajs.dom
 import org.scalajs.dom.window.performance
 
 
-
 object MoveGeneratorBenchmarks {
+  import com.softwaremill.macwire._
 
-  val rulesSettings = RulesSettings.default
-//  val executor = new MoveExecutor(rulesSettings)
-  val generator = new MoveGenerator(rulesSettings)
+  lazy val rulesSettings = RulesSettings.default
+
+  lazy val moveExecutor: MoveExecutor = wire[MoveExecutor]
+
+  lazy val moveGenerator: MoveGenerator = wire[MoveGenerator]
 
   def testBoard(repetitions: Int)(boardState: BoardStack, turnToMove: Color): Double = {
+    val generator = moveGenerator
     val startTime = performance.now()
     var i = repetitions
     while (i > 0) {
@@ -27,6 +30,7 @@ object MoveGeneratorBenchmarks {
   }
 
   def test1(): Unit = {
+    val generator = moveGenerator
     val board = RulesSettings.initialBoard(rulesSettings)
     val stack = BoardStack.fromBoard(board)
     val t = testBoard(100000)(stack, DARK)

@@ -2,7 +2,8 @@ package checkers.core
 
 import checkers.consts._
 
-class MoveGenerator(rulesSettings: RulesSettings) {
+class MoveGenerator(rulesSettings: RulesSettings,
+                    moveExecutor: MoveExecutor) {
 
 
   def getJumpersDark(boardState: BoardStateRead): Int = {

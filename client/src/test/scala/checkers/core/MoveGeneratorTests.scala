@@ -8,8 +8,13 @@ import utest.util.Tree
 
 object MoveGeneratorTests extends TestSuite {
 
-  private val moveGenerator = new MoveGenerator(RulesSettings.default)
+  import com.softwaremill.macwire._
 
+  lazy val rulesSettings = RulesSettings.default
+
+  lazy val moveExecutor: MoveExecutor = wire[MoveExecutor]
+
+  lazy val moveGenerator: MoveGenerator = wire[MoveGenerator]
 
   private def testBoard(board: BoardState, color: Color, expectedResult: Set[List[Int]]): Unit = {
     val stack = BoardStack.fromBoard(board)

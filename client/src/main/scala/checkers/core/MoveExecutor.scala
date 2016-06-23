@@ -2,6 +2,7 @@ package checkers.core
 
 import checkers.consts._
 
+
 class MoveExecutor(rulesSettings: RulesSettings) {
 
   /**
