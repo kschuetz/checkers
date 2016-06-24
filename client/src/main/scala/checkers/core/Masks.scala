@@ -23,6 +23,11 @@ object masks {
   val seventh = squareMaskFromSeq(24 to 27)
   val edges = squareMask(24, 20, 16, 12, 8, 4, 0, 7, 11, 15, 19, 23, 27, 31)
 
+  //******
+
+  val crownLight = squareMaskFromSeq(0 to 4)
+  val crownDark = squareMaskFromSeq(27 to 31)
+
   val nw3 = squareMask(4, 5, 6, 12, 13, 14, 20, 21, 22, 28, 29, 30)
   val nw4 = squareMask(8, 9, 10, 11, 16, 17, 18, 19, 24, 25, 26, 27)
 

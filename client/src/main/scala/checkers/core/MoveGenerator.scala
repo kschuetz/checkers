@@ -62,6 +62,7 @@ class MoveGenerator(rulesSettings: RulesSettings,
   private def addMoves(moveListBuilder: MoveListBuilder, neighborIndex: NeighborIndex, moveFW: Int, moveFE: Int, moveBW: Int, moveBE: Int): Unit = {
     var i = 0
     var b = 1
+
     while(i < 32) {
       if((moveFE & b) != 0) {
         moveListBuilder.addMove(i.toByte, neighborIndex.forwardMoveE(i).toByte)
@@ -202,7 +203,31 @@ class MoveGenerator(rulesSettings: RulesSettings,
 
         val hasMoves = (moveFE | moveFW | moveBW | moveBW) != 0
         if (hasMoves) {
-          addMoves(builder, neighborIndex, moveFW, moveFE, moveBW, moveBE)
+          // add moves
+          var i = 0
+          var b = 1
+
+          val forwardMoveE = neighborIndex.forwardMoveE
+          val forwardMoveW = neighborIndex.forwardMoveW
+          val backMoveW = neighborIndex.backMoveW
+          val backMoveE = neighborIndex.backMoveE
+
+          while(i < 32) {
+            if((moveFE & b) != 0) {
+              builder.addMove(i.toByte, forwardMoveE(i).toByte)
+            }
+            if((moveBE & b) != 0) {
+              builder.addMove(i.toByte, backMoveE(i).toByte)
+            }
+            if((moveFW & b) != 0) {
+              builder.addMove(i.toByte, forwardMoveW(i).toByte)
+            }
+            if((moveBW & b) != 0) {
+              builder.addMove(i.toByte, backMoveE(i).toByte)
+            }
+            b = b << 1
+            i += 1
+          }
         }
       }
     }
