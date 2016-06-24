@@ -7,7 +7,7 @@ class MoveGenerator(rulesSettings: RulesSettings,
                     moveExecutor: MoveExecutor,
                     neighborTable: NeighborTable) {
 
-
+  // TODO: remove
   def getJumpersDark(boardState: BoardStateRead): Int = {
     val (myPieces, opponentPieces) = (boardState.darkPieces, boardState.lightPieces)
     val kings = boardState.kings
@@ -32,6 +32,7 @@ class MoveGenerator(rulesSettings: RulesSettings,
     result
   }
 
+  // TODO: remove
   def getJumpersLight(boardState: BoardStateRead): Int = {
     val (myPieces, opponentPieces) = (boardState.lightPieces, boardState.darkPieces)
     val kings = boardState.kings
@@ -56,9 +57,7 @@ class MoveGenerator(rulesSettings: RulesSettings,
     result
   }
 
-
-
-
+  // TODO: remove
   private def addMoves(moveListBuilder: MoveListBuilder, neighborIndex: NeighborIndex, moveFW: Int, moveFE: Int, moveBW: Int, moveBE: Int): Unit = {
     var i = 0
     var b = 1
@@ -81,6 +80,7 @@ class MoveGenerator(rulesSettings: RulesSettings,
     }
   }
 
+  // TODO: remove
   private def addJumps(moveListBuilder: MoveListBuilder, neighborIndex: NeighborIndex, jumpFW: Int, jumpFE: Int, jumpBW: Int, jumpBE: Int): Unit = {
     var i = 0
     var b = 1

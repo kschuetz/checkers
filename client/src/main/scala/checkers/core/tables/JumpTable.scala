@@ -13,7 +13,7 @@ class JumpTable(neighborTable: NeighborTable) {
   def getMiddle(from: Int, to: Int): Int = {
     val code = (from << 5) | (to & 31)
     val over = data(code)
-    if(over < 0) over | 127
+    if(over < 0) over & 127
     else -1
   }
 }

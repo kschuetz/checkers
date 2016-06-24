@@ -71,7 +71,7 @@ object MoveGeneratorTests extends TestSuite with DefaultGameLogicTestModule {
         }
       }
 
-      'Board1 {
+      'SimpleJumps1 {
         val board = BoardUtils.parseBoard(
           """
               l l - -
@@ -97,6 +97,39 @@ object MoveGeneratorTests extends TestSuite with DefaultGameLogicTestModule {
             s(13 -> 6),
             s(14 -> 5),
             s(14 -> 7)
+          ))
+        }
+      }
+
+      'CompoundJumps1 {
+        val board = BoardUtils.parseBoard(
+          """
+              l l - -
+             - - - -
+              - l l -
+             - l - -
+              - l L -
+             D d d d
+              l - - -
+             - - - -
+          """)
+
+        'Dark {
+          testBoard(board, DARK, Set(
+            s(8 -> 1),
+            List(9, 18, 27),
+            List(9, 18, 25),
+            List(10, 19, 26),
+            List(11, 18, 25),
+            List(11, 18, 27)
+          ))
+        }
+
+        'Light {
+          testBoard(board, LIGHT, Set(
+            s(13 -> 6),
+            s(14 -> 7),
+            List(14, 5, 12)
           ))
         }
       }
