@@ -115,7 +115,7 @@ class MoveGenerator(rulesSettings: RulesSettings,
       val myPiecesOfInterest = myPieces & limitToPieces
       val opponentPieces = if(dark) boardState.lightPieces else boardState.darkPieces
       val kings = boardState.kings
-      val notOccupied = ~(myPiecesOfInterest | opponentPieces)
+      val notOccupied = ~(myPieces | opponentPieces)
       val myKings = myPiecesOfInterest & kings
 
       var moveFE = 0

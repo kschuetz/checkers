@@ -101,6 +101,36 @@ object MoveGeneratorTests extends TestSuite with DefaultGameLogicTestModule {
         }
       }
 
+      'SimpleMoves1 {
+        val board = BoardUtils.parseBoard(
+          """
+              - - - l
+             - - - l
+              - - d -
+             - - l -
+              - - - -
+             - - - -
+              - - - -
+             - - - -
+          """)
+
+        'Dark {
+          testBoard(board, DARK, Set(
+            s(22 -> 26)
+          ))
+        }
+
+        'Light {
+          testBoard(board, LIGHT, Set(
+            s(18 -> 14),
+            s(18 -> 13),
+            s(27 -> 23)
+          ))
+
+          // Set( List(11, 18, 27),  List(11, 2, 9, 18, 27))
+        }
+      }
+
       'CompoundJumps1 {
         val board = BoardUtils.parseBoard(
           """
@@ -130,6 +160,40 @@ object MoveGeneratorTests extends TestSuite with DefaultGameLogicTestModule {
             s(13 -> 6),
             s(14 -> 7),
             List(14, 5, 12)
+          ))
+        }
+      }
+
+      'CompoundJumps2 {
+        val board = BoardUtils.parseBoard(
+          """
+              - - - -
+             - l l l
+              - - d -
+             - - - -
+              d d d -
+             - - - L
+              - d d -
+             - - - -
+          """)
+
+        'Dark {
+          testBoard(board, DARK, Set(
+            s(6 -> 15),
+            s(22 -> 29),      // terminated by crowning
+            s(22 -> 31)       // terminated by crowning
+          ))
+        }
+
+        'Light {
+          testBoard(board, LIGHT, Set(
+            List(27, 18, 9, 2),
+            List(26, 19, 10, 1),
+            List(26, 19, 10, 3),
+            List(11, 2, 9, 16),
+            List(11, 18, 9, 2, 11),
+            List(11, 2, 9, 18, 11),
+            List(11, 18, 9, 16)
           ))
         }
       }
