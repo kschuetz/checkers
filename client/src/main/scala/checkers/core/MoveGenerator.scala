@@ -104,12 +104,13 @@ class MoveGenerator(rulesSettings: RulesSettings,
 
   def generateMoves(boardState: BoardStack, turnToMove: Color): MoveList = {
     val builder = new MoveListBuilder
+    val movePath = new MovePathStack
     var dark = turnToMove == DARK
     val neighborIndex = neighborTable.forColor(turnToMove)
 
     import masks._
 
-    def go(limitToPieces: Int, jumpsOnly: Boolean): Unit = {
+    def go(limitToPieces: Int, jumpsOnly: Boolean): Boolean = {
       val myPieces = if(dark) boardState.darkPieces else boardState.lightPieces
       val myPiecesOfInterest = myPieces & limitToPieces
       val opponentPieces = if(dark) boardState.lightPieces else boardState.darkPieces
@@ -192,20 +193,47 @@ class MoveGenerator(rulesSettings: RulesSettings,
       if (hasJumps) {
         // add jumps
 
+        def followJump(from: Byte, to: Byte): Unit = {
+          movePath.push(from)
+          boardState.push()
+          val endOfMove = {
+            val crowned = moveExecutor.fastExecute(boardState, from, to)
+            if (crowned) {
+              // when a piece is crowned, it is immediately the end of the move
+              false
+            } else {
+              // on the next check, only check for jumps occurring on the 'to' square from this jump
+              go(limitToPieces = 1 << to, jumpsOnly = true)
+            }
+          }
+
+          if(endOfMove) {
+            movePath.push(to)
+            builder.addPath(movePath)
+            movePath.clear()
+          }
+          boardState.pop()
+        }
+
+        val forwardJumpE = neighborIndex.forwardJumpE
+        val forwardJumpW = neighborIndex.forwardJumpW
+        val backJumpW = neighborIndex.backJumpW
+        val backJumpE = neighborIndex.backJumpE
+
         var i = 0
         var b = 1
         while(i < 32) {
           if((jumpFE & b) != 0) {
-            builder.addMove(i.toByte, neighborIndex.forwardJumpE(i).toByte)
+            followJump(i.toByte, forwardJumpE(i).toByte)
           }
           if((jumpBE & b) != 0) {
-            builder.addMove(i.toByte, neighborIndex.backJumpE(i).toByte)
+            followJump(i.toByte, backJumpE(i).toByte)
           }
           if((jumpFW & b) != 0) {
-            builder.addMove(i.toByte, neighborIndex.forwardJumpW(i).toByte)
+            followJump(i.toByte, forwardJumpW(i).toByte)
           }
           if((jumpBW & b) != 0) {
-            builder.addMove(i.toByte, neighborIndex.backJumpW(i).toByte)
+            followJump(i.toByte, backJumpW(i).toByte)
           }
           b = b << 1
           i += 1
@@ -224,13 +252,14 @@ class MoveGenerator(rulesSettings: RulesSettings,
         val hasMoves = (moveFE | moveFW | moveBW | moveBW) != 0
         if (hasMoves) {
           // add moves
-          var i = 0
-          var b = 1
 
           val forwardMoveE = neighborIndex.forwardMoveE
           val forwardMoveW = neighborIndex.forwardMoveW
           val backMoveW = neighborIndex.backMoveW
           val backMoveE = neighborIndex.backMoveE
+
+          var i = 0
+          var b = 1
 
           while(i < 32) {
             if((moveFE & b) != 0) {
@@ -250,6 +279,8 @@ class MoveGenerator(rulesSettings: RulesSettings,
           }
         }
       }
+
+      hasJumps
     }
 
     go(limitToPieces = -1, jumpsOnly = false)

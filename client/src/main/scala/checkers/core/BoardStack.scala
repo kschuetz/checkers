@@ -20,7 +20,11 @@ class BoardStackImpl(val initialCapacity: Int) extends BoardStack with BoardStat
     if (minSize > size) {
       val newSize = minSize * 2
       val newData = new Int32Array(newSize)
-      Array.copy(data, 0, newData, 0, size)
+      var i = 0
+      while(i < size) {
+        newData(i) = data(i)
+        i += 1
+      }
       data = newData
       size = newSize
     }
@@ -29,7 +33,13 @@ class BoardStackImpl(val initialCapacity: Int) extends BoardStack with BoardStat
   def push(): Unit = {
     val nextOffset = offset + frameSize
     ensureSize(nextOffset)
-    Array.copy(data, offset, data, nextOffset, frameSize)
+    var i = offset
+    var j = nextOffset
+    while(i < nextOffset) {
+      data(j) = data(i)
+      i += 1
+      j += 1
+    }
     offset = nextOffset
   }
 
