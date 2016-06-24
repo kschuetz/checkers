@@ -109,12 +109,13 @@ class MoveGenerator(rulesSettings: RulesSettings,
 
     import masks._
 
-    def go(): Unit = {
+    def go(limitToPieces: Int, jumpsOnly: Boolean): Unit = {
       val myPieces = if(dark) boardState.darkPieces else boardState.lightPieces
+      val myPiecesOfInterest = myPieces & limitToPieces
       val opponentPieces = if(dark) boardState.lightPieces else boardState.darkPieces
       val kings = boardState.kings
-      val notOccupied = ~(myPieces | opponentPieces)
-      val myKings = myPieces & kings
+      val notOccupied = ~(myPiecesOfInterest | opponentPieces)
+      val myKings = myPiecesOfInterest & kings
 
       var moveFE = 0
       var moveFW = 0
@@ -155,14 +156,13 @@ class MoveGenerator(rulesSettings: RulesSettings,
         oppBE = shiftNE(opponentPieces)
       }
 
-      val jumpFE = myPieces & oppBW & noBW2
-      val jumpFW = myPieces & oppBE & noBE2
+      val jumpFE = myPiecesOfInterest & oppBW & noBW2
+      val jumpFW = myPiecesOfInterest & oppBE & noBE2
 
       var jumpBE = 0
       var jumpBW = 0
 
       if (myKings != 0) {
-
 
         if(dark) {
           noFW = shiftNW(notOccupied)
@@ -190,11 +190,31 @@ class MoveGenerator(rulesSettings: RulesSettings,
 
       val hasJumps = (jumpFW | jumpFE | jumpBW | jumpBE) != 0
       if (hasJumps) {
-        addJumps(builder, neighborIndex, jumpFW, jumpFE, jumpBW, jumpBE)
-      } else {
+        // add jumps
 
-        moveFE = myPieces & noBW
-        moveFW = myPieces & noBE
+        var i = 0
+        var b = 1
+        while(i < 32) {
+          if((jumpFE & b) != 0) {
+            builder.addMove(i.toByte, neighborIndex.forwardJumpE(i).toByte)
+          }
+          if((jumpBE & b) != 0) {
+            builder.addMove(i.toByte, neighborIndex.backJumpE(i).toByte)
+          }
+          if((jumpFW & b) != 0) {
+            builder.addMove(i.toByte, neighborIndex.forwardJumpW(i).toByte)
+          }
+          if((jumpBW & b) != 0) {
+            builder.addMove(i.toByte, neighborIndex.backJumpW(i).toByte)
+          }
+          b = b << 1
+          i += 1
+        }
+
+      } else if(!jumpsOnly) {
+
+        moveFE = myPiecesOfInterest & noBW
+        moveFW = myPiecesOfInterest & noBE
 
         if (myKings != 0) {
           moveBE = myKings & noFW
@@ -232,7 +252,7 @@ class MoveGenerator(rulesSettings: RulesSettings,
       }
     }
 
-    go()
+    go(limitToPieces = -1, jumpsOnly = false)
     builder.result
   }
 
