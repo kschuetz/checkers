@@ -3,12 +3,13 @@ package checkers.core
 
 import checkers.consts._
 import utest._
-import utest.framework.Test
-import utest.util.Tree
+import utest.framework._
 
 import scala.util.Random
 
 object BoardStateTests extends TestSuite {
+
+  override def formatColor: Boolean = false
 
   val allPieces = List(LIGHTMAN, DARKMAN, LIGHTKING, DARKKING)
   val allSquares = Board.allSquares.toSet

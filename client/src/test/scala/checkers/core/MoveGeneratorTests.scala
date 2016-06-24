@@ -3,10 +3,12 @@ package checkers.core
 import checkers.consts._
 import checkers.test.{BoardUtils, DefaultGameLogicTestModule}
 import utest._
-import utest.framework.Test
-import utest.util.Tree
+import utest.framework._
 
 object MoveGeneratorTests extends TestSuite with DefaultGameLogicTestModule {
+
+
+  override def formatColor: Boolean = false
 
   lazy val moveGenerator = gameLogicModule.moveGenerator
 
