@@ -194,6 +194,7 @@ class MoveGenerator(rulesSettings: RulesSettings,
         // add jumps
 
         def followJump(from: Byte, to: Byte): Unit = {
+          val pathMarker = movePath.mark
           movePath.push(from)
           boardState.push()
           val endOfMove = {
@@ -211,8 +212,8 @@ class MoveGenerator(rulesSettings: RulesSettings,
           if(endOfMove) {
             movePath.push(to)
             builder.addPath(movePath)
-            movePath.clear()
           }
+          movePath.reset(pathMarker)
           boardState.pop()
         }
 

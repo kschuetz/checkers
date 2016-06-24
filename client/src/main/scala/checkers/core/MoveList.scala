@@ -74,6 +74,10 @@ class MovePathStack {
   private val data = new Int8Array(MoveList.frameSize)
   private var ptr: Int = 0
 
+  def mark: Int = ptr
+
+  def reset(marker: Int): Unit = ptr = marker
+
   def push(square: Byte): Unit = {
     data(ptr) = (square | 128).asInstanceOf[Byte]
     ptr += 1
