@@ -200,10 +200,11 @@ class MoveGenerator(rulesSettings: RulesSettings,
             val crowned = moveExecutor.fastExecute(boardState, from, to)
             if (crowned) {
               // when a piece is crowned, it is immediately the end of the move
-              false
+              true
             } else {
               // on the next check, only check for jumps occurring on the 'to' square from this jump
-              go(limitToPieces = 1 << to, jumpsOnly = true)
+              val more = go(limitToPieces = 1 << to, jumpsOnly = true)
+              !more
             }
           }
 

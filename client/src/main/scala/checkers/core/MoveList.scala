@@ -84,12 +84,12 @@ class MovePathStack {
   def clear(): Unit = ptr = 0
 
   def emit(dest: Int8Array, destPtr: Int): Unit = {
-    var i = ptr - 1
+    var i = 0
     var j = destPtr
-    while (i >= 0) {
+    while (i < ptr) {
       dest(j) = data(i)
       j += 1
-      i -= 1
+      i += 1
     }
   }
 }
