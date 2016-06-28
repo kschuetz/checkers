@@ -20,7 +20,7 @@ object Settings {
     "-feature"
   )
 
-  /** Declare global dependency versions here to avoid mismaftches in multi part dependencies */
+  /** Declare global dependency versions here to avoid mismatches in multi part dependencies */
   object versions {
     val scala = "2.11.8"
     val scalaDom = "0.9.0"

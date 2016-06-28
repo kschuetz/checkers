@@ -6,6 +6,7 @@
 .history
 .lib/
 dist/*
+production/*
 target/
 lib_managed/
 src_managed/

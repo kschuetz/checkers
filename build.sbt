@@ -49,6 +49,7 @@ lazy val client: Project = (project in file("client"))
   .dependsOn(sharedJS)
   .dependsOn(macros)
 
+
 // Client projects (just one in this case)
 lazy val clients = Seq(client)
 
@@ -75,14 +76,33 @@ lazy val server = (project in file("server"))
 // Command for building a release
 lazy val ReleaseCmd = Command.command("release") {
   state => "set elideOptions in client := Seq(\"-Xelide-below\", \"WARNING\")" ::
+    "production/clean" ::
     "client/clean" ::
-    "client/test" ::
     "server/clean" ::
-    "server/test" ::
-    "server/dist" ::
+    "client/fullOptJS" ::
+    "server/assets" ::
+    "production/deploy" ::
     "set elideOptions in client := Seq()" ::
     state
 }
+
+lazy val production = (project in file("production"))
+  .settings(
+      deploy := {
+         IO.copyFile(file("server/target/web/public/main/stylesheets/main.min.css"),
+                     file("production/dist/stylesheets/main.min.css"), false)
+         IO.copyFile(file("client/target/scala-2.11/client-opt.js"),
+                     file("production/dist/scripts/main.js"))
+         IO.copyFile(file("client/target/scala-2.11/client-jsdeps.min.js"),
+                     file("production/dist/scripts/deps.js"))
+      },
+
+      clean := {
+        println("cleaning production")
+      }
+  )
+
+lazy val deploy = TaskKey[Unit]("deploy", "Foobar!")
 
 // lazy val root = (project in file(".")).aggregate(client, server)
 
