@@ -73,38 +73,48 @@ lazy val server = (project in file("server"))
   .aggregate(clients.map(projectToRef): _*)
   .dependsOn(sharedJVM)
 
+
+lazy val deploy = TaskKey[Unit]("deploy", "Copy files into dist directory")
+
+lazy val root = (project in file(".")).settings(
+  deploy := {
+    val clientTarget = (crossTarget in client).value
+    val clientProjectName = (name in client).value
+    val mainJsSource = clientTarget / (clientProjectName + "-opt.js")
+    val depsJsSource = clientTarget / (clientProjectName + "-jsdeps.min.js")
+    //val cssSource = WebKeys.public.value
+
+
+    println(mainJsSource)
+    println(depsJsSource)
+    //println(cssSource)
+
+    IO.copyFile(file("server/target/web/public/main/stylesheets/main.min.css"),
+      file("dist/stylesheets/main.min.css"), false)
+    IO.copyFile(mainJsSource, file("dist/scripts/main.js"))
+    IO.copyFile(depsJsSource, file("dist/scripts/deps.js"))
+  }
+
+)
+
+
+lazy val DevServerCmd = Command.args("devServer", "<port>") { case (state, args) =>
+  val cmd = ("server/run" +: args).mkString(" ")
+  cmd :: state
+}
+
 // Command for building a release
 lazy val ReleaseCmd = Command.command("release") {
   state => "set elideOptions in client := Seq(\"-Xelide-below\", \"WARNING\")" ::
-    "production/clean" ::
+    //"production/clean" ::
     "client/clean" ::
     "server/clean" ::
     "client/fullOptJS" ::
     "server/assets" ::
-    "production/deploy" ::
+    "deploy" ::
     "set elideOptions in client := Seq()" ::
     state
 }
 
-lazy val production = (project in file("production"))
-  .settings(
-      deploy := {
-         IO.copyFile(file("server/target/web/public/main/stylesheets/main.min.css"),
-                     file("production/dist/stylesheets/main.min.css"), false)
-         IO.copyFile(file("client/target/scala-2.11/client-opt.js"),
-                     file("production/dist/scripts/main.js"))
-         IO.copyFile(file("client/target/scala-2.11/client-jsdeps.min.js"),
-                     file("production/dist/scripts/deps.js"))
-      },
+commands ++= Seq(DevServerCmd, ReleaseCmd)
 
-      clean := {
-        println("cleaning production")
-      }
-  )
-
-lazy val deploy = TaskKey[Unit]("deploy", "Foobar!")
-
-// lazy val root = (project in file(".")).aggregate(client, server)
-
-// loads the Play server project at sbt startup
-onLoad in Global := (Command.process("project server", _: State)) compose (onLoad in Global).value
