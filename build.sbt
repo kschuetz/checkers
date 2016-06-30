@@ -55,13 +55,13 @@ lazy val clients = Seq(client)
 
 // instantiate the JVM project for SBT with some additional settings
 lazy val server = (project in file("server"))
+
   .settings(
     name := "server",
     version := Settings.version,
     scalaVersion := Settings.versions.scala,
     scalacOptions ++= Settings.scalacOptions,
     libraryDependencies ++= Settings.jvmDependencies.value,
-    commands += ReleaseCmd,
     // connect to the client project
     scalaJSProjects := clients,
     pipelineStages := Seq(scalaJSProd, digest, gzip),
@@ -75,50 +75,51 @@ lazy val server = (project in file("server"))
 
 
 lazy val deploy = TaskKey[Unit]("deploy", "Copy files into dist directory")
+lazy val cleanDist = TaskKey[Unit]("cleanDist", "Clean the dist directory")
 
 lazy val root = (project in file(".")).settings(
   deploy := {
     val clientTarget = (crossTarget in client).value
     val clientProjectName = (name in client).value
+
     val mainJsSource = clientTarget / (clientProjectName + "-opt.js")
     val depsJsSource = clientTarget / (clientProjectName + "-jsdeps.min.js")
     val launcherJsSource = clientTarget / (clientProjectName + "-launcher.js")
-    //val cssSource = WebKeys.public.value
+    val mainCssSource = file("server/target/web/public/main/stylesheets/main.min.css")
+    val indexHtmlSource = file("server/target/web/public/main/index.html")
 
-
-    println(mainJsSource)
-    println(depsJsSource)
-    //println(cssSource)
-
-    IO.copyFile(file("server/target/web/public/main/stylesheets/main.min.css"),
-      file("dist/stylesheets/main.min.css"))
-    IO.copyFile(file("server/target/web/public/main/index.html"),
-      file("dist/index.html"))
+    IO.copyFile(mainCssSource, file("dist/stylesheets/main.min.css"))
+    IO.copyFile(indexHtmlSource, file("dist/index.html"))
     IO.copyFile(mainJsSource, file("dist/scripts/main.js"))
     IO.copyFile(depsJsSource, file("dist/scripts/deps.js"))
     IO.copyFile(launcherJsSource, file("dist/scripts/launcher.js"))
-  }
+  },
+
+  cleanDist := {
+    IO.delete(file("dist"))
+  },
+
+  commands ++= Seq(DevServerCmd, ReleaseCmd)
 
 )
 
-
-lazy val DevServerCmd = Command.args("devServer", "<port>") { case (state, args) =>
+lazy val DevServerCmd = Command.args("devServer", "<port>") { case (st, args) =>
   val cmd = ("server/run" +: args).mkString(" ")
-  cmd :: state
+  cmd :: st
 }
 
 // Command for building a release
 lazy val ReleaseCmd = Command.command("release") {
   state => "set elideOptions in client := Seq(\"-Xelide-below\", \"WARNING\")" ::
-    //"production/clean" ::
     "client/clean" ::
     "server/clean" ::
     "client/fullOptJS" ::
     "server/assets" ::
+    "cleanDist" ::
     "deploy" ::
     "set elideOptions in client := Seq()" ::
     state
 }
 
-commands ++= Seq(DevServerCmd, ReleaseCmd)
+
 
