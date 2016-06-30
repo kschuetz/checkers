@@ -82,6 +82,7 @@ lazy val root = (project in file(".")).settings(
     val clientProjectName = (name in client).value
     val mainJsSource = clientTarget / (clientProjectName + "-opt.js")
     val depsJsSource = clientTarget / (clientProjectName + "-jsdeps.min.js")
+    val launcherJsSource = clientTarget / (clientProjectName + "-launcher.js")
     //val cssSource = WebKeys.public.value
 
 
@@ -90,9 +91,12 @@ lazy val root = (project in file(".")).settings(
     //println(cssSource)
 
     IO.copyFile(file("server/target/web/public/main/stylesheets/main.min.css"),
-      file("dist/stylesheets/main.min.css"), false)
+      file("dist/stylesheets/main.min.css"))
+    IO.copyFile(file("server/target/web/public/main/index.html"),
+      file("dist/index.html"))
     IO.copyFile(mainJsSource, file("dist/scripts/main.js"))
     IO.copyFile(depsJsSource, file("dist/scripts/deps.js"))
+    IO.copyFile(launcherJsSource, file("dist/scripts/launcher.js"))
   }
 
 )
