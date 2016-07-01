@@ -25,9 +25,9 @@ object MoveTree {
       val pathMap = choices.foldLeft(Map.empty[Int, Seq[List[Int]]]) { case (m, moves) =>
         moves match {
           case Nil => m
-          case square :: rest =>
-            val path = m.getOrElse(square, Nil)
-            m + (square -> (path :+ rest))
+          case square :: path =>
+            val paths = m.getOrElse(square, Seq.empty)
+            m + (square -> (paths :+ path))
         }
       }
       MoveTree(pathMap.mapValues(makeTree))
