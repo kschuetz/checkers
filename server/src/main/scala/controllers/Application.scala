@@ -1,8 +1,10 @@
 package controllers
 
+import com.google.inject.Inject
+import play.api.{Configuration, Environment}
 import play.api.mvc._
 
-class Application extends Controller {
+class Application @Inject()(implicit val config: Configuration, env: Environment) extends Controller {
 
   def index = Action {
     Ok(views.html.index("Checkers"))

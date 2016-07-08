@@ -23,8 +23,8 @@ object Settings {
   /** Declare global dependency versions here to avoid mismatches in multi part dependencies */
   object versions {
     val scala = "2.11.8"
-    val scalaDom = "0.9.0"
-    val scalajsReact = "0.11.0"
+    val scalaDom = "0.9.1"
+    val scalajsReact = "0.11.1"
     val scalaCSS = "0.4.1"
     val log4js = "1.4.10"
     val diode = "0.5.1"
@@ -32,11 +32,11 @@ object Settings {
     val nyaya = "0.7.0"
     val macwire = "2.2.3"
 
-    val react = "15.0.1"
+    val react = "15.2.0"
     val jQuery = "1.11.1"
     val bootstrap = "3.3.2"
 
-    val playScripts = "0.4.0"
+    val playScripts = "0.5.0"
   }
 
   /**
