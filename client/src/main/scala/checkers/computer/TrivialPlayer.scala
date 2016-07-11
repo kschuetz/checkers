@@ -1,9 +1,8 @@
 package checkers.computer
 
 import checkers.experiments._
-
 import checkers.computer.TrivialPlayer._
-import checkers.core.{BoardStack, MoveDecoder, MoveGenerator}
+import checkers.core.{BoardStack, MoveDecoder, MoveGenerator, Play}
 import checkers.util.Random
 
 object TrivialPlayer {

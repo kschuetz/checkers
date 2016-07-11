@@ -1,5 +1,6 @@
 package checkers.computer
 
+import checkers.core.Play
 import checkers.experiments._
 
 /**

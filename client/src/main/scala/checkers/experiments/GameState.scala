@@ -1,7 +1,7 @@
 package checkers.experiments
 
 import checkers.consts._
-import checkers.core.{BoardState, RulesSettings}
+import checkers.core.{BoardState, Play, RulesSettings}
 
 
 sealed trait DrawStatus
