@@ -1,12 +1,9 @@
 package checkers.experiments
 
-import checkers.core.BoardState
-import checkers.consts.Color
+import checkers.computer.Program
 
 trait HumanState
 case object HumanState extends HumanState
-
-case class PlayInput(boardState: BoardState, color: Color)
 
 case class Play(move: List[Int], proposeDraw: Boolean, acceptDraw: Boolean)
 
@@ -16,21 +13,6 @@ object Play {
   def move(path: List[Int]) = Play(path, proposeDraw=false, acceptDraw=false)
 }
 
-trait PlayComputation[S] {
-  def run(maxCycles: Int): Int
-
-  def interrupt(): Unit
-
-  def isReady: Boolean
-
-  def result: (Play, S)
-}
-
-trait Program[S] {
-  def initialState: S
-
-  def play(state: S, playInput: PlayInput): PlayComputation[S]
-}
 
 sealed trait Player[S] {
   type State = S
