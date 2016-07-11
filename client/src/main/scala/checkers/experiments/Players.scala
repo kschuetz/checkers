@@ -8,7 +8,13 @@ case object HumanState extends HumanState
 
 case class PlayInput(boardState: BoardState, color: Color)
 
-case class Play(move: List[Int])
+case class Play(move: List[Int], proposeDraw: Boolean, acceptDraw: Boolean)
+
+object Play {
+  val empty = Play(Nil, proposeDraw=false, acceptDraw=false)
+
+  def move(path: List[Int]) = Play(path, proposeDraw=false, acceptDraw=false)
+}
 
 trait PlayComputation[S] {
   def run(maxCycles: Int): Int
@@ -37,29 +43,3 @@ case class Computer[S](program: Program[S]) extends Player[S] {
   def initialState = program.initialState
 }
 
-case class PlayersState[DS, LS](dark: DS, light: LS)
-
-
-/**
-  * Provides a framework for very simple computations that will return
-  * an answer almost immediately.
-  */
-abstract class SimplePlayComputation[S] extends PlayComputation[S] {
-  private var answer: Option[(Play, S)] = None
-
-  protected def compute: (Play, S)
-
-  override def run(maxCycles: Int): Int = {
-    if(isReady) 0
-    else {
-      answer = Some(compute)
-      1
-    }
-  }
-
-  override def result: (Play, S) = answer.get
-
-  override def isReady: Boolean = answer.isDefined
-
-  override def interrupt(): Unit = { }
-}
