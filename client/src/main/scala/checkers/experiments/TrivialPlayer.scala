@@ -14,7 +14,7 @@ class TrivialPlayer(moveGenerator: MoveGenerator)
   // Can be shared between all computations
   private val moveDecoder = new MoveDecoder
 
-  override def initialize = initialSeed.fold(Random())(seed => Random.apply(seed))
+  override def initialState = initialSeed.fold(Random())(seed => Random.apply(seed))
 
   class TrivialPlayerComputation(stateIn: State, input: PlayInput) extends SimplePlayComputation[State] {
     override protected def compute: (Play, State) = {
@@ -34,5 +34,6 @@ class TrivialPlayer(moveGenerator: MoveGenerator)
     }
   }
 
-  override def play(state: State, playInput: PlayInput): PlayComputation[State] = ???
+  override def play(state: State, playInput: PlayInput): PlayComputation[State] =
+    new TrivialPlayerComputation(state, playInput)
 }

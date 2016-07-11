@@ -21,19 +21,20 @@ trait PlayComputation[S] {
 }
 
 trait Program[S] {
-  def initialize: S
+  def initialState: S
 
   def play(state: S, playInput: PlayInput): PlayComputation[S]
 }
 
 sealed trait Player[S] {
-  def initialize: S
+  type State = S
+  def initialState: S
 }
 case object Human extends Player[HumanState] {
-  val initialize = HumanState
+  val initialState = HumanState
 }
 case class Computer[S](program: Program[S]) extends Player[S] {
-  def initialize = program.initialize
+  def initialState = program.initialState
 }
 
 case class PlayersState[DS, LS](dark: DS, light: LS)
