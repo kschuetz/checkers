@@ -68,4 +68,5 @@ object GameScreenModel {
       animations = List.empty)
   }
 
+
 }
