@@ -1,8 +1,8 @@
 package checkers.models
 
-import checkers.core.GameState
+import checkers.core.OldGameState
 
-case class PlayField(gameState: GameState,
+case class PlayField(gameState: OldGameState,
                      orientation: BoardOrientation,
                      ghostPiece: Option[GhostPiece],
                      clickableSquares: Set[Int],

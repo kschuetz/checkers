@@ -1,10 +1,10 @@
 package checkers.models
 
-import checkers.core.{GameState, RulesSettings}
+import checkers.core.{OldGameState, RulesSettings}
 import checkers.models.Animation.{FlippingBoardAnimation, MovingPiece}
 
 case class GameScreenModel(nowTime: Double,
-                           gameState: GameState,
+                           gameState: OldGameState,
                            boardOrientation: BoardOrientation,
                            ghostPiece: Option[GhostPiece],
                            clickableSquares: Set[Int],

@@ -1,7 +1,6 @@
 package checkers.computer
 
 import checkers.core.Play
-import checkers.experiments._
 
 /**
   * Provides a framework for very simple computations that will return

@@ -1,14 +1,9 @@
-package checkers.experiments
+package checkers.core
 
 import checkers.computer.Program
 
 trait HumanState
 case object HumanState extends HumanState
-
-
-
-
-
 
 sealed trait Player[S] {
   type State = S

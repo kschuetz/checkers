@@ -1,6 +1,5 @@
 package checkers.computer
 
-import checkers.experiments._
 import checkers.computer.TrivialPlayer._
 import checkers.core.{BoardStack, MoveDecoder, MoveGenerator, Play}
 import checkers.util.Random
@@ -20,7 +19,7 @@ class TrivialPlayer(moveGenerator: MoveGenerator)
   class TrivialPlayerComputation(stateIn: State, input: PlayInput) extends SimplePlayComputation[State] {
     override protected def compute: (Play, State) = {
       val boardStack = BoardStack.fromBoard(input.boardState)
-      val choices = moveGenerator.generateMoves(boardStack, input.color)
+      val choices = moveGenerator.generateMoves(boardStack, input.turnToMove)
       if(choices.count == 0) (Play.empty, stateIn)
       else {
         val (moveIndex, nextState) = {

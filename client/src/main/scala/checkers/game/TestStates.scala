@@ -15,7 +15,7 @@ object TestStates {
     DARKMAN, DARKMAN, DARKMAN, DARKMAN,
     DARKKING, DARKKING, DARKKING, DARKKING)
 
-  val gameState1 = GameState(BoardState.empty, DARK)
+  val gameState1 = OldGameState(BoardState.empty, DARK)
 
   val playFieldState1 = PlayField(
     gameState = gameState1,
