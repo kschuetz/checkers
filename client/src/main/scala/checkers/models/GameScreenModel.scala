@@ -1,10 +1,10 @@
 package checkers.models
 
-import checkers.core.{OldGameState, RulesSettings}
+import checkers.core.{GameConfig, GameState, RulesSettings}
 import checkers.models.Animation.{FlippingBoardAnimation, MovingPiece}
 
-case class GameScreenModel(nowTime: Double,
-                           gameState: OldGameState,
+case class GameScreenModel[DS, LS](nowTime: Double,
+                           gameState: GameState[DS, LS],
                            boardOrientation: BoardOrientation,
                            ghostPiece: Option[GhostPiece],
                            clickableSquares: Set[Int],
@@ -24,13 +24,13 @@ case class GameScreenModel(nowTime: Double,
     boardOrientation.angle + offset
   }
 
-  def updateNowTime(newTime: Double): GameScreenModel = {
+  def updateNowTime(newTime: Double): GameScreenModel[DS, LS] = {
     val newAnimations = animations.filterNot(_.isExpired(newTime))
     val newFlip = flipAnimation.filterNot(_.isExpired(newTime))
     copy(nowTime = newTime, animations = newAnimations, flipAnimation = newFlip)
   }
 
-  def startFlipBoard(duration: Double): GameScreenModel = {
+  def startFlipBoard(duration: Double): GameScreenModel[DS, LS] = {
     if(flipAnimation.nonEmpty) this           // ignore if flip is already in progress
     else {
       val target = boardOrientation.opposite
@@ -39,12 +39,12 @@ case class GameScreenModel(nowTime: Double,
     }
   }
 
-  def startMovePiece(fromSquare: Int, toSquare: Int, duration: Double): GameScreenModel = {
+  def startMovePiece(fromSquare: Int, toSquare: Int, duration: Double): GameScreenModel[DS, LS] = {
     val anim = MovingPiece(fromSquare, toSquare, nowTime, duration)
     copy(animations = anim :: animations)
   }
 
-  def startJumpPath(path: Seq[Int], durationPerStep: Double): GameScreenModel = {
+  def startJumpPath(path: Seq[Int], durationPerStep: Double): GameScreenModel[DS, LS] = {
     ???
 
 
@@ -55,8 +55,8 @@ case class GameScreenModel(nowTime: Double,
 
 object GameScreenModel {
 
-  def initial(settings: GameSettings): GameScreenModel = {
-    val gameState = RulesSettings.initialGameState(settings.rules)
+  def initial[DS, LS](config: GameConfig[DS, LS]): GameScreenModel[DS, LS] = {
+    val gameState = GameState.create(config)
     GameScreenModel(
       nowTime = 0d,
       gameState = gameState,

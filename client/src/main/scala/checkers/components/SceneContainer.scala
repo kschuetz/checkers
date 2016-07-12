@@ -12,7 +12,7 @@ object SceneContainer {
 
   type Callbacks = PieceCallbacks
 
-  type Props = (GameScreenModel, Callbacks)
+  type Props = (GameScreenModel[_, _], Callbacks)
 
   class Backend($: BackendScope[Props, SceneContainerContext]) {
 

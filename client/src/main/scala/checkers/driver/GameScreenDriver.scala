@@ -8,9 +8,11 @@ import checkers.models.{GameScreenModel, GhostPiece}
 import japgolly.scalajs.react.{Callback, ReactDOM}
 import org.scalajs.dom
 
-class GameScreenDriver(val host: dom.Node,
-                       initialModel: GameScreenModel) {
-  var model = initialModel
+class GameScreenDriver[DS, LS](val host: dom.Node,
+                       initialModel: GameScreenModel[DS, LS]) {
+  type Model = GameScreenModel[DS, LS]
+
+  var model: Model = initialModel
     .copy(clickableSquares = (0 to 31).toSet,
       ghostPiece = Some(GhostPiece(DARKMAN, 21, Point(-0.15, -0.13), Point(1.0, 1.0))))
 
@@ -35,7 +37,7 @@ class GameScreenDriver(val host: dom.Node,
     if(model.hasActiveAnimations) invalidate()
   }
 
-  private def renderModel(model: GameScreenModel): Unit = {
+  private def renderModel(model: Model): Unit = {
     val screen = GameScreen.apply((model, Callbacks))
     ReactDOM.render(screen, host)
   }

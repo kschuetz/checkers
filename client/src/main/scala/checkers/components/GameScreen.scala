@@ -9,7 +9,7 @@ object GameScreen {
 
   type Callbacks = PieceCallbacks
 
-  type Props = (GameScreenModel, Callbacks)
+  type Props = (GameScreenModel[_, _], Callbacks)
 
   val component = ReactComponentB[Props]("GameScreen")
     .render_P { case props =>

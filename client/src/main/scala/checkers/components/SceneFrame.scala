@@ -13,7 +13,7 @@ object SceneFrame {
 
   type Callbacks = PieceCallbacks
 
-  type Props = (GameScreenModel, Callbacks, SceneContainerContext)
+  type Props = (GameScreenModel[_, _], Callbacks, SceneContainerContext)
 
   val Backdrop = ReactComponentB[Unit]("Backdrop")
     .render_P { _ =>
