@@ -1,11 +1,14 @@
 package checkers.core
 
+import checkers.computer.PlayComputation
 import checkers.consts._
 import checkers.geometry.Point
 
 sealed trait Phase
 
 object Phase {
+
+  case object GameStart extends Phase
 
   case class BeginHumanTurn(color: Color, moves: MoveTree) extends Phase
 
@@ -20,6 +23,10 @@ object Phase {
   case class MovePartiallyCompleted(piece: Occupant,
                                     square: Int,
                                     moves: MoveTree) extends Phase
+
+  case class ComputerThinking[S](startTime: Double, playComputation: PlayComputation[S]) extends Phase
+
+  case class GameOver(winner: Option[Color]) extends Phase
 
 
 }

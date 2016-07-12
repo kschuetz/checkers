@@ -1,11 +1,14 @@
 package checkers.models
 
 import checkers.consts._
+import checkers.core.Phase.GameStart
 import checkers.core._
 import checkers.models.Animation.{FlippingBoardAnimation, MovingPiece}
 
 trait GameScreenModelReader {
   def nowTime: Double
+
+  def phase: Phase
 
   def ruleSettings: RulesSettings
 
@@ -41,6 +44,7 @@ trait GameScreenModelReader {
 }
 
 case class GameScreenModel[DS, LS](nowTime: Double,
+                                   phase: Phase,
                                    gameState: GameState[DS, LS],
                                    boardOrientation: BoardOrientation,
                                    ghostPiece: Option[GhostPiece],
@@ -113,6 +117,7 @@ object GameScreenModel {
     val gameState = GameState.create(config)
     GameScreenModel(
       nowTime = 0d,
+      phase = GameStart,
       gameState = gameState,
       boardOrientation = BoardOrientation.Normal,
       ghostPiece = None,

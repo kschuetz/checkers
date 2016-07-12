@@ -3,6 +3,7 @@ package checkers.driver
 import checkers.components.GameScreen
 import checkers.components.piece.{PieceCallbacks, PieceMouseEvent}
 import checkers.consts._
+import checkers.core.Phase.GameStart
 import checkers.geometry.Point
 import checkers.models.{GameScreenModel, GhostPiece}
 import japgolly.scalajs.react.{Callback, ReactDOM}
@@ -46,6 +47,12 @@ class GameScreenDriver[DS, LS](val host: dom.Node,
     invalidate()
   }
 
+  def loop(): Unit = {
+    model.phase match {
+      //case GameStart => startGame(model)
+      case _ => ()
+    }
+  }
 
 
 }
