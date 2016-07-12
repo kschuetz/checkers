@@ -2,19 +2,19 @@ package checkers
 
 import checkers.benchmark.MoveGeneratorBenchmarks
 import checkers.core.tables.TablesModule
-import checkers.core.{GameConfig, GameLogicModuleFactory, MoveGenerator, RulesSettings}
+import checkers.core.{GameConfig, GameLogicModuleFactory, RulesSettings}
 import checkers.driver.GameScreenDriver
 import checkers.logger._
-import checkers.models.{GameScreenModel, GameSettings}
+import checkers.models.GameScreenModel
 import checkers.style.GlobalStyles
 import checkers.util.DebugUtils
+import com.softwaremill.macwire._
 import org.scalajs.dom
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSExport
 import scalacss.Defaults._
 import scalacss.ScalaCssReact._
-import com.softwaremill.macwire._
 
 @JSExport("CheckersMain")
 object CheckersMain extends js.JSApp {
