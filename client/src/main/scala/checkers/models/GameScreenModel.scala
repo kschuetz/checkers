@@ -6,33 +6,48 @@ import checkers.models.Animation.{FlippingBoardAnimation, MovingPiece}
 
 trait GameScreenModelReader {
   def nowTime: Double
+
   def ruleSettings: RulesSettings
+
   def darkPlayer: PlayerDescription
+
   def lightPlayer: PlayerDescription
+
   def board: BoardState
+
   def turnToMove: Color
+
   def turnIndex: Int
+
   def drawStatus: DrawStatus
+
   def playHistory: List[Play]
+
   def boardHistory: List[BoardState]
+
   def boardOrientation: BoardOrientation
+
   def ghostPiece: Option[GhostPiece]
+
   def clickableSquares: Set[Int]
+
   def highlightedSquares: Set[Int]
+
   def flipAnimation: Option[FlippingBoardAnimation]
+
   def animations: List[Animation]
+
   def getBoardRotation: Double
 }
 
-
 case class GameScreenModel[DS, LS](nowTime: Double,
-                           gameState: GameState[DS, LS],
-                           boardOrientation: BoardOrientation,
-                           ghostPiece: Option[GhostPiece],
-                           clickableSquares: Set[Int],
-                           highlightedSquares: Set[Int],
-                           flipAnimation: Option[FlippingBoardAnimation],
-                           animations: List[Animation]) extends GameScreenModelReader {
+                                   gameState: GameState[DS, LS],
+                                   boardOrientation: BoardOrientation,
+                                   ghostPiece: Option[GhostPiece],
+                                   clickableSquares: Set[Int],
+                                   highlightedSquares: Set[Int],
+                                   flipAnimation: Option[FlippingBoardAnimation],
+                                   animations: List[Animation]) extends GameScreenModelReader {
   def hasActiveAnimations: Boolean =
     animations.exists(_.isActive(nowTime)) || flipAnimation.exists(_.isActive(nowTime))
 
@@ -53,7 +68,7 @@ case class GameScreenModel[DS, LS](nowTime: Double,
   }
 
   def startFlipBoard(duration: Double): GameScreenModel[DS, LS] = {
-    if(flipAnimation.nonEmpty) this           // ignore if flip is already in progress
+    if (flipAnimation.nonEmpty) this // ignore if flip is already in progress
     else {
       val target = boardOrientation.opposite
       val anim = FlippingBoardAnimation(nowTime, duration)
