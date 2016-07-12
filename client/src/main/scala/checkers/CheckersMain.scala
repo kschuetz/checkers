@@ -44,8 +44,8 @@ object CheckersMain extends js.JSApp {
     val config = GameConfig.createSimple1(rulesSettings, gameLogicModule.moveGenerator)
 
     val model = GameScreenModel.initial(config)
-    println(model.gameState.board.data)
-    DebugUtils.printOccupants(model.gameState.board)
+    println(model.board.data)
+    DebugUtils.printOccupants(model.board)
 
     val driver = new GameScreenDriver(host, model)
     driver.run()

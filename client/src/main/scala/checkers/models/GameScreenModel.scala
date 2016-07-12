@@ -1,7 +1,29 @@
 package checkers.models
 
-import checkers.core.{GameConfig, GameState, RulesSettings}
+import checkers.consts._
+import checkers.core._
 import checkers.models.Animation.{FlippingBoardAnimation, MovingPiece}
+
+trait GameScreenModelReader {
+  def nowTime: Double
+  def ruleSettings: RulesSettings
+  def darkPlayer: PlayerDescription
+  def lightPlayer: PlayerDescription
+  def board: BoardState
+  def turnToMove: Color
+  def turnIndex: Int
+  def drawStatus: DrawStatus
+  def playHistory: List[Play]
+  def boardHistory: List[BoardState]
+  def boardOrientation: BoardOrientation
+  def ghostPiece: Option[GhostPiece]
+  def clickableSquares: Set[Int]
+  def highlightedSquares: Set[Int]
+  def flipAnimation: Option[FlippingBoardAnimation]
+  def animations: List[Animation]
+  def getBoardRotation: Double
+}
+
 
 case class GameScreenModel[DS, LS](nowTime: Double,
                            gameState: GameState[DS, LS],
@@ -10,7 +32,7 @@ case class GameScreenModel[DS, LS](nowTime: Double,
                            clickableSquares: Set[Int],
                            highlightedSquares: Set[Int],
                            flipAnimation: Option[FlippingBoardAnimation],
-                           animations: List[Animation]) {
+                           animations: List[Animation]) extends GameScreenModelReader {
   def hasActiveAnimations: Boolean =
     animations.exists(_.isActive(nowTime)) || flipAnimation.exists(_.isActive(nowTime))
 
@@ -50,6 +72,23 @@ case class GameScreenModel[DS, LS](nowTime: Double,
 
   }
 
+  override def ruleSettings: RulesSettings = gameState.config.rulesSettings
+
+  override def turnToMove: Color = gameState.turnToMove
+
+  override def turnIndex: Int = gameState.turnIndex
+
+  override def playHistory: List[Play] = gameState.playHistory
+
+  override def boardHistory: List[BoardState] = gameState.boardHistory
+
+  override def board: BoardState = gameState.board
+
+  override def darkPlayer: PlayerDescription = gameState.config.darkPlayer
+
+  override def lightPlayer: PlayerDescription = gameState.config.lightPlayer
+
+  override def drawStatus: DrawStatus = gameState.drawStatus
 }
 
 

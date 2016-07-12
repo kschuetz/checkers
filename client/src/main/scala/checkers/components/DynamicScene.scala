@@ -16,7 +16,7 @@ object DynamicScene {
 
   //  case class Model(playField: PlayField,
   //                   rotationDegrees: Double)
-  type Model = models.GameScreenModel[_, _]
+  type Model = models.GameScreenModelReader
 
   type Callbacks = PieceCallbacks
 
@@ -47,7 +47,7 @@ object DynamicScene {
       }
 
 //      val squares = model.gameState.board.data
-      val boardState = model.gameState.board
+      val boardState = model.board
 
       val staticPieces = new js.Array[ReactNode]
 

@@ -3,7 +3,7 @@ package checkers.components
 import checkers.components.board.PhysicalBoard
 import checkers.components.piece.PieceCallbacks
 import checkers.geometry.Point
-import checkers.models.GameScreenModel
+import checkers.models.{GameScreenModel, GameScreenModelReader}
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.ReactAttr
 import japgolly.scalajs.react.vdom.prefix_<^._
@@ -13,7 +13,7 @@ object SceneFrame {
 
   type Callbacks = PieceCallbacks
 
-  type Props = (GameScreenModel[_, _], Callbacks, SceneContainerContext)
+  type Props = (GameScreenModelReader, Callbacks, SceneContainerContext)
 
   val Backdrop = ReactComponentB[Unit]("Backdrop")
     .render_P { _ =>
