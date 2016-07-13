@@ -16,6 +16,12 @@ class JumpTable(neighborTable: NeighborTable) {
     if(over < 0) over & 127
     else -1
   }
+
+  def isJump(path: List[Int]): Boolean = path match {
+    case Nil => false
+    case _ :: Nil => false
+    case from :: to :: _ => getMiddle(from, to) >= 0
+  }
 }
 
 object JumpTable {

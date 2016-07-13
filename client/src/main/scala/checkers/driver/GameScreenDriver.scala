@@ -17,8 +17,6 @@ class GameScreenDriver[DS, LS](val host: dom.Node,
     .copy(clickableSquares = (0 to 31).toSet,
       ghostPiece = Some(GhostPiece(DARKMAN, 21, Point(-0.15, -0.13), Point(1.0, 1.0))))
 
-
-
   object Callbacks extends PieceCallbacks {
     override val onPieceMouseDown = (event: PieceMouseEvent) => Some(Callback {
       println("in handlePieceMouseDown")
