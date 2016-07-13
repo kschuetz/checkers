@@ -5,7 +5,7 @@ import checkers.core.Phase.GameStart
 import checkers.core._
 import checkers.models.Animation.{FlippingBoardAnimation, MovingPiece}
 
-trait GameScreenModelReader {
+trait GameModelReader {
   def nowTime: Double
 
   def phase: Phase
@@ -43,15 +43,15 @@ trait GameScreenModelReader {
   def getBoardRotation: Double
 }
 
-case class GameScreenModel[DS, LS](nowTime: Double,
-                                   phase: Phase,
-                                   gameState: GameState[DS, LS],
-                                   boardOrientation: BoardOrientation,
-                                   ghostPiece: Option[GhostPiece],
-                                   clickableSquares: Set[Int],
-                                   highlightedSquares: Set[Int],
-                                   flipAnimation: Option[FlippingBoardAnimation],
-                                   animations: List[Animation]) extends GameScreenModelReader {
+case class GameModel[DS, LS](nowTime: Double,
+                             phase: Phase,
+                             gameState: GameState[DS, LS],
+                             boardOrientation: BoardOrientation,
+                             ghostPiece: Option[GhostPiece],
+                             clickableSquares: Set[Int],
+                             highlightedSquares: Set[Int],
+                             flipAnimation: Option[FlippingBoardAnimation],
+                             animations: List[Animation]) extends GameModelReader {
   def hasActiveAnimations: Boolean =
     animations.exists(_.isActive(nowTime)) || flipAnimation.exists(_.isActive(nowTime))
 
@@ -65,13 +65,13 @@ case class GameScreenModel[DS, LS](nowTime: Double,
     boardOrientation.angle + offset
   }
 
-  def updateNowTime(newTime: Double): GameScreenModel[DS, LS] = {
+  def updateNowTime(newTime: Double): GameModel[DS, LS] = {
     val newAnimations = animations.filterNot(_.isExpired(newTime))
     val newFlip = flipAnimation.filterNot(_.isExpired(newTime))
     copy(nowTime = newTime, animations = newAnimations, flipAnimation = newFlip)
   }
 
-  def startFlipBoard(duration: Double): GameScreenModel[DS, LS] = {
+  def startFlipBoard(duration: Double): GameModel[DS, LS] = {
     if (flipAnimation.nonEmpty) this // ignore if flip is already in progress
     else {
       val target = boardOrientation.opposite
@@ -80,12 +80,12 @@ case class GameScreenModel[DS, LS](nowTime: Double,
     }
   }
 
-  def startMovePiece(fromSquare: Int, toSquare: Int, duration: Double): GameScreenModel[DS, LS] = {
+  def startMovePiece(fromSquare: Int, toSquare: Int, duration: Double): GameModel[DS, LS] = {
     val anim = MovingPiece(fromSquare, toSquare, nowTime, duration)
     copy(animations = anim :: animations)
   }
 
-  def startJumpPath(path: Seq[Int], durationPerStep: Double): GameScreenModel[DS, LS] = {
+  def startJumpPath(path: Seq[Int], durationPerStep: Double): GameModel[DS, LS] = {
     ???
 
 
@@ -111,11 +111,11 @@ case class GameScreenModel[DS, LS](nowTime: Double,
 }
 
 
-object GameScreenModel {
+object GameModel {
 
-  def initial[DS, LS](config: GameConfig[DS, LS]): GameScreenModel[DS, LS] = {
+  def initial[DS, LS](config: GameConfig[DS, LS]): GameModel[DS, LS] = {
     val gameState = GameState.create(config)
-    GameScreenModel(
+    GameModel(
       nowTime = 0d,
       phase = GameStart,
       gameState = gameState,

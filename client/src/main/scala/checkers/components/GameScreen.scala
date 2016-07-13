@@ -1,7 +1,7 @@
 package checkers.components
 
 import checkers.components.piece.PieceCallbacks
-import checkers.models.{GameScreenModel, GameScreenModelReader}
+import checkers.models.{GameModel$, GameModelReader}
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
 
@@ -9,7 +9,7 @@ object GameScreen {
 
   type Callbacks = PieceCallbacks
 
-  type Props = (GameScreenModelReader, Callbacks)
+  type Props = (GameModelReader, Callbacks)
 
   val component = ReactComponentB[Props]("GameScreen")
     .render_P { case props =>

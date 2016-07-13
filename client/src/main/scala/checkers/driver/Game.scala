@@ -4,17 +4,16 @@ import checkers.components.GameScreen
 import checkers.components.piece.{PieceCallbacks, PieceMouseEvent}
 import checkers.consts._
 import checkers.core.GameLogicModule
-import checkers.core.Phase.GameStart
 import checkers.geometry.Point
-import checkers.models.{GameScreenModel, GhostPiece}
+import checkers.models.{GameModel, GhostPiece}
 import japgolly.scalajs.react.{Callback, ReactDOM}
 import org.scalajs.dom
 
 
 class Game[DS, LS](gameLogicModule: GameLogicModule)
                   (val host: dom.Node,
-                   initialModel: GameScreenModel[DS, LS]) {
-  type Model = GameScreenModel[DS, LS]
+                   initialModel: GameModel[DS, LS]) {
+  type Model = GameModel[DS, LS]
 
   protected val moveGenerator = gameLogicModule.moveGenerator
   protected val moveExecutor = gameLogicModule.moveExecutor

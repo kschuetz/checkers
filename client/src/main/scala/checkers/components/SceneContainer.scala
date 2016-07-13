@@ -2,7 +2,7 @@ package checkers.components
 
 import checkers.components.piece.PieceCallbacks
 import checkers.geometry.Point
-import checkers.models.{GameScreenModel, GameScreenModelReader}
+import checkers.models.{GameModel$, GameModelReader}
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
 import org.scalajs.dom.raw.SVGSVGElement
@@ -12,7 +12,7 @@ object SceneContainer {
 
   type Callbacks = PieceCallbacks
 
-  type Props = (GameScreenModelReader, Callbacks)
+  type Props = (GameModelReader, Callbacks)
 
   class Backend($: BackendScope[Props, SceneContainerContext]) {
 

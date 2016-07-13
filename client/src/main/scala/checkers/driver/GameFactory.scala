@@ -2,7 +2,7 @@ package checkers.driver
 
 import checkers.computer.TrivialPlayer
 import checkers.core._
-import checkers.models.GameScreenModel
+import checkers.models.GameModel
 import org.scalajs.dom
 
 class GameFactory(gameLogicModuleFactory: GameLogicModuleFactory) {
@@ -22,7 +22,7 @@ class GameFactory(gameLogicModuleFactory: GameLogicModuleFactory) {
   }
 
   private def createGame[DS, LS](gameLogicModule: GameLogicModule, gameConfig: GameConfig[DS, LS], host: dom.Node): Game[DS, LS] = {
-    val model = GameScreenModel.initial(gameConfig)
+    val model = GameModel.initial(gameConfig)
     new Game(gameLogicModule)(host, model)
   }
 

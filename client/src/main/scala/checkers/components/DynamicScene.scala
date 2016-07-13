@@ -16,7 +16,7 @@ object DynamicScene {
 
   //  case class Model(playField: PlayField,
   //                   rotationDegrees: Double)
-  type Model = models.GameScreenModelReader
+  type Model = models.GameModelReader
 
   type Callbacks = PieceCallbacks
 
