@@ -3,20 +3,26 @@ package checkers.driver
 import checkers.components.GameScreen
 import checkers.components.piece.{PieceCallbacks, PieceMouseEvent}
 import checkers.consts._
+import checkers.core.GameLogicModule
 import checkers.core.Phase.GameStart
 import checkers.geometry.Point
 import checkers.models.{GameScreenModel, GhostPiece}
 import japgolly.scalajs.react.{Callback, ReactDOM}
 import org.scalajs.dom
 
-class GameScreenDriverFactory {
+class GameScreenDriverFactory(gameLogicModule: GameLogicModule) {
   def create[DS, LS](host: dom.Node, initialModel: GameScreenModel[DS, LS]): GameScreenDriver[DS, LS] =
-    new GameScreenDriver(host, initialModel)
+    new GameScreenDriver[DS, LS](gameLogicModule)(host, initialModel)
 }
 
-class GameScreenDriver[DS, LS](val host: dom.Node,
-                       initialModel: GameScreenModel[DS, LS]) {
+class GameScreenDriver[DS, LS](gameLogicModule: GameLogicModule)
+                              (val host: dom.Node,
+                               initialModel: GameScreenModel[DS, LS]) {
   type Model = GameScreenModel[DS, LS]
+
+  protected val moveGenerator = gameLogicModule.moveGenerator
+  protected val moveExecutor = gameLogicModule.moveExecutor
+  protected val moveTreeFactory = gameLogicModule.moveTreeFactory
 
   var model: Model = initialModel
     .copy(clickableSquares = (0 to 31).toSet,

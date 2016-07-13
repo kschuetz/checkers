@@ -41,7 +41,7 @@ object CheckersMain extends js.JSApp {
 
     lazy val gameLogicModule = makeGameLogicModule(rulesSettings)
 
-    lazy val gameScreenDriverFactory = wire[GameScreenDriverFactory]
+    lazy val gameScreenDriverFactory: GameScreenDriverFactory = wire[GameScreenDriverFactory]
 
     val config = GameConfig.createSimple1(rulesSettings, gameLogicModule.moveGenerator)
 
