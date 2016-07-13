@@ -3,7 +3,7 @@ package checkers
 import checkers.benchmark.MoveGeneratorBenchmarks
 import checkers.core.tables.TablesModule
 import checkers.core.{GameConfig, GameLogicModuleFactory, RulesSettings}
-import checkers.driver.GameScreenDriver
+import checkers.driver.{GameScreenDriver, GameScreenDriverFactory}
 import checkers.logger._
 import checkers.models.GameScreenModel
 import checkers.style.GlobalStyles
@@ -37,9 +37,11 @@ object CheckersMain extends js.JSApp {
 
     lazy val tablesModule = wire[TablesModule]
 
-    lazy val gameLogicModuleFactory: GameLogicModuleFactory = wire[GameLogicModuleFactory]
+    lazy val makeGameLogicModule: GameLogicModuleFactory = wire[GameLogicModuleFactory]
 
-    lazy val gameLogicModule = gameLogicModuleFactory.apply(rulesSettings)
+    lazy val gameLogicModule = makeGameLogicModule(rulesSettings)
+
+    lazy val gameScreenDriverFactory = wire[GameScreenDriverFactory]
 
     val config = GameConfig.createSimple1(rulesSettings, gameLogicModule.moveGenerator)
 
@@ -47,7 +49,7 @@ object CheckersMain extends js.JSApp {
     println(model.board.data)
     DebugUtils.printOccupants(model.board)
 
-    val driver = new GameScreenDriver(host, model)
+    val driver = gameScreenDriverFactory.create(host, model)
     driver.run()
   }
 }

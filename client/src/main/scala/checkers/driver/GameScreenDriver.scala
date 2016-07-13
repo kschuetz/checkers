@@ -9,6 +9,11 @@ import checkers.models.{GameScreenModel, GhostPiece}
 import japgolly.scalajs.react.{Callback, ReactDOM}
 import org.scalajs.dom
 
+class GameScreenDriverFactory {
+  def create[DS, LS](host: dom.Node, initialModel: GameScreenModel[DS, LS]): GameScreenDriver[DS, LS] =
+    new GameScreenDriver(host, initialModel)
+}
+
 class GameScreenDriver[DS, LS](val host: dom.Node,
                        initialModel: GameScreenModel[DS, LS]) {
   type Model = GameScreenModel[DS, LS]
