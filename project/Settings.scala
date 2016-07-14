@@ -27,7 +27,7 @@ object Settings {
     val scalajsReact = "0.11.1"
     val scalaCSS = "0.4.1"
     val log4js = "1.4.10"
-    val diode = "0.5.1"
+    val diode = "1.0.0"
     val uTest = "0.4.3"
     val nyaya = "0.7.0"
     val macwire = "2.2.3"
