@@ -21,6 +21,7 @@ case class GameState[DS, LS](config: GameConfig[DS, LS],
     case DrawProposed(_, endTurnIndex) => Some(endTurnIndex - turnIndex)
     case _ => None
   }
+
 }
 
 

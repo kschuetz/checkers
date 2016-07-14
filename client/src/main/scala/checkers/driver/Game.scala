@@ -61,11 +61,19 @@ class Game[DS, LS](gameLogicModule: GameLogicModule)
   }
 
   private def startGame(model: Model): Unit = {
+  }
+
+  private def beginTurn(model: Model): Unit = {
+  }
+
+  private def endTurn(model: Model): Unit = {
 
   }
 
-  private def beginTurn(model: Model, color: Color): Unit = {
 
+  private def replaceModel(newModel: Model): Unit = {
+    model = newModel
+    invalidate()
   }
 
 //  private def nextTurn(model: GameModel[DS, LS]): GameModel[DS, LS] = {

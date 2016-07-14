@@ -109,6 +109,7 @@ case class GameModel[DS, LS](nowTime: Double,
   override def drawStatus: DrawStatus = gameState.drawStatus
 
   lazy val clickableSquares: Set[Int] = phase.clickableSquares
+
 }
 
 
