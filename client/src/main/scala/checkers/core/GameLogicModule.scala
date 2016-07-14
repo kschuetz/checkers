@@ -9,6 +9,8 @@ trait GameLogicModule {
   def moveGenerator: MoveGenerator
 
   def moveTreeFactory: MoveTreeFactory
+
+  def turnEvaluator: TurnEvaluator
 }
 
 class GameLogicModuleFactory(tablesModule: TablesModule) extends (RulesSettings => GameLogicModule) {
@@ -25,6 +27,8 @@ class GameLogicModuleFactory(tablesModule: TablesModule) extends (RulesSettings 
       lazy val moveGenerator = wire[MoveGenerator]
 
       lazy val moveTreeFactory = wire[MoveTreeFactory]
+
+      lazy val turnEvaluator = wire[TurnEvaluator]
     }
   }
 

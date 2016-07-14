@@ -48,7 +48,6 @@ case class GameModel[DS, LS](nowTime: Double,
                              gameState: GameState[DS, LS],
                              boardOrientation: BoardOrientation,
                              ghostPiece: Option[GhostPiece],
-                             clickableSquares: Set[Int],
                              highlightedSquares: Set[Int],
                              flipAnimation: Option[FlippingBoardAnimation],
                              animations: List[Animation]) extends GameModelReader {
@@ -108,6 +107,8 @@ case class GameModel[DS, LS](nowTime: Double,
   override def lightPlayer: PlayerDescription = gameState.config.lightPlayer
 
   override def drawStatus: DrawStatus = gameState.drawStatus
+
+  lazy val clickableSquares: Set[Int] = phase.clickableSquares
 }
 
 
@@ -121,7 +122,7 @@ object GameModel {
       gameState = gameState,
       boardOrientation = BoardOrientation.Normal,
       ghostPiece = None,
-      clickableSquares = Set.empty,
+//      clickableSquares = Set.empty,
       highlightedSquares = Set.empty,
       flipAnimation = None,
       animations = List.empty)

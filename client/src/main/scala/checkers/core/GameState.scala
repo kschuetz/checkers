@@ -5,7 +5,7 @@ import checkers.consts._
 
 sealed trait DrawStatus
 case object NoDraw extends DrawStatus
-case class DrawProposed(color: Color, turnIndex: Int) extends DrawStatus
+case class DrawProposed(color: Color, endTurnIndex: Int) extends DrawStatus
 
 case class GameState[DS, LS](config: GameConfig[DS, LS],
                              board: BoardState,
@@ -16,7 +16,12 @@ case class GameState[DS, LS](config: GameConfig[DS, LS],
                              drawStatus: DrawStatus,
                              playHistory: List[Play],
                              boardHistory: List[BoardState],
-                             history: List[GameState[DS, LS]])
+                             history: List[GameState[DS, LS]]) {
+  def turnsUntilDraw: Option[Int] = drawStatus match {
+    case DrawProposed(_, endTurnIndex) => Some(endTurnIndex - turnIndex)
+    case _ => None
+  }
+}
 
 
 object GameState {

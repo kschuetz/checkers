@@ -18,10 +18,11 @@ class Game[DS, LS](gameLogicModule: GameLogicModule)
   protected val moveGenerator = gameLogicModule.moveGenerator
   protected val moveExecutor = gameLogicModule.moveExecutor
   protected val moveTreeFactory = gameLogicModule.moveTreeFactory
+  protected val turnEvaluator = gameLogicModule.turnEvaluator
 
   var model: Model = initialModel
-    .copy(clickableSquares = (0 to 31).toSet,
-      ghostPiece = Some(GhostPiece(DARKMAN, 21, Point(-0.15, -0.13), Point(1.0, 1.0))))
+//    .copy(clickableSquares = (0 to 31).toSet,
+//      ghostPiece = Some(GhostPiece(DARKMAN, 21, Point(-0.15, -0.13), Point(1.0, 1.0))))
 
   object Callbacks extends PieceCallbacks {
     override val onPieceMouseDown = (event: PieceMouseEvent) => Some(Callback {
@@ -51,11 +52,20 @@ class Game[DS, LS](gameLogicModule: GameLogicModule)
     invalidate()
   }
 
-  def loop(): Unit = {
+  def tick(): Unit = {
+    import checkers.core.Phase._
     model.phase match {
-      //case GameStart => startGame(model)
+      case GameStart => startGame(model)
       case _ => ()
     }
+  }
+
+  private def startGame(model: Model): Unit = {
+
+  }
+
+  private def beginTurn(model: Model, color: Color): Unit = {
+
   }
 
 //  private def nextTurn(model: GameModel[DS, LS]): GameModel[DS, LS] = {
