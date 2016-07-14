@@ -34,5 +34,6 @@ class MoveExecutor(rulesSettings: RulesSettings,
     crowned
   }
 
-
+  // TODO: apply Play
+  // TODO: apply partial move
 }
