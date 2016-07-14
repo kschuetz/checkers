@@ -58,5 +58,8 @@ class Game[DS, LS](gameLogicModule: GameLogicModule)
     }
   }
 
+//  private def nextTurn(model: GameModel[DS, LS]): GameModel[DS, LS] = {
+//
+//  }
 
 }

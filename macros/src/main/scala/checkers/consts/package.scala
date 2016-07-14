@@ -28,6 +28,8 @@ package object consts {
   def ISKING(occupant: Occupant): Boolean = macro isKingImpl
   def ISPIECE(occupant: Occupant): Boolean = macro isPieceImpl
   def ISEMPTY(occupant: Occupant): Boolean = macro isEmptyImpl
+  def OPPONENT(color: Color): Color = macro opponentImpl
+
   def OCCUPANTENCODE(occupant: Occupant): Int = macro occupantEncodeImpl
 
   def darkImpl(c: blackbox.Context): c.Expr[Color] = c.universe.reify(0)
@@ -45,6 +47,11 @@ package object consts {
   def colorImpl(c: blackbox.Context)(occupant: c.Expr[Occupant]): c.Expr[Color] = {
     import c.universe._
     c.Expr[Color](q"($occupant >> 1) & 1")
+  }
+
+  def opponentImpl(c: blackbox.Context)(color: c.Expr[Color]): c.Expr[Color] = {
+    import c.universe._
+    c.Expr[Color](q"(~$color) & 1")
   }
 
   def pieceTypeImpl(c: blackbox.Context)(occupant: c.Expr[Occupant]): c.Expr[PieceType] = {
