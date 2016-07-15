@@ -4,7 +4,9 @@ import checkers.consts._
 
 
 sealed trait DrawStatus
+
 case object NoDraw extends DrawStatus
+
 case class DrawProposed(color: Color, endTurnIndex: Int) extends DrawStatus
 
 case class GameState[DS, LS](config: GameConfig[DS, LS],
@@ -21,6 +23,19 @@ case class GameState[DS, LS](config: GameConfig[DS, LS],
     case DrawProposed(_, endTurnIndex) => Some(endTurnIndex - turnIndex)
     case _ => None
   }
+
+  def wasDrawProposedBy(color: Color): Boolean = drawStatus match {
+    case DrawProposed(c, _) if c == color => true
+    case _ => false
+  }
+
+  def acceptDraw: GameState[DS, LS] = {
+    copy(playHistory = Play.AcceptDraw :: playHistory,
+      turnIndex = turnIndex + 1,
+      turnToMove = OPPONENT(turnToMove),
+      history = this :: history)
+  }
+
 
 }
 

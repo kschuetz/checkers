@@ -1,9 +1,14 @@
 package checkers.core
 
-case class Play(move: List[Int], proposeDraw: Boolean, acceptDraw: Boolean)
-
+sealed trait Play
 object Play {
-  val empty = Play(Nil, proposeDraw=false, acceptDraw=false)
+  case object NoPlay extends Play
+  case class Move(path: List[Int], proposeDraw: Boolean = false) extends Play
+  case object AcceptDraw extends Play
 
-  def move(path: List[Int]) = Play(path, proposeDraw=false, acceptDraw=false)
+  val empty = NoPlay
+
+  def move(path: List[Int]) = Play.Move(path)
 }
+
+

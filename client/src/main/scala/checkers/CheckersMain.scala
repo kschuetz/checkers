@@ -2,7 +2,7 @@ package checkers
 
 import checkers.benchmark.MoveGeneratorBenchmarks
 import checkers.core.tables.TablesModule
-import checkers.core.{GameLogicModuleFactory, RulesSettings}
+import checkers.core.{DrawLogic, GameLogicModuleFactory, RulesSettings}
 import checkers.driver.GameFactory
 import checkers.logger._
 import checkers.style.GlobalStyles
@@ -34,6 +34,8 @@ object CheckersMain extends js.JSApp {
     lazy val rulesSettings = RulesSettings.default
 
     lazy val tablesModule = wire[TablesModule]
+
+    lazy val drawLogic = wire[DrawLogic]
 
     lazy val makeGameLogicModule: GameLogicModuleFactory = wire[GameLogicModuleFactory]
 

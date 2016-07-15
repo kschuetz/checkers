@@ -22,6 +22,8 @@ class GameLogicModuleFactory(tablesModule: TablesModule) extends (RulesSettings 
 
       val rulesSettings = mySettings
 
+      lazy val drawLogic = wire[DrawLogic]
+
       lazy val moveExecutor = wire[MoveExecutor]
 
       lazy val moveGenerator = wire[MoveGenerator]
@@ -29,6 +31,10 @@ class GameLogicModuleFactory(tablesModule: TablesModule) extends (RulesSettings 
       lazy val moveTreeFactory = wire[MoveTreeFactory]
 
       lazy val turnEvaluator = wire[TurnEvaluator]
+
+      lazy val animationPlanner = wire[AnimationPlanner]
+
+      lazy val playExecutor = wire[PlayExecutor]
     }
   }
 
