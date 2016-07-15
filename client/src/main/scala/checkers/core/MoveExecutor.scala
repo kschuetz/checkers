@@ -4,6 +4,12 @@ import checkers.consts._
 import checkers.core.tables.JumpTable
 
 
+case class RemovedPiece(piece: Occupant, squareIndex: Int)
+
+case class MoveInfo(piece: Occupant,
+                    removedPiece: Option[RemovedPiece],
+                    crowned: Boolean)
+
 class MoveExecutor(rulesSettings: RulesSettings,
                    jumpTable: JumpTable) {
 
@@ -34,6 +40,24 @@ class MoveExecutor(rulesSettings: RulesSettings,
     crowned
   }
 
-  // TODO: apply Play
-  // TODO: apply partial move
+  /**
+    * Updates the board in place.  Returns metadata describing the move.
+    * Not as efficient as fastExecute.
+    * @return
+    */
+  def execute(boardState: MutableBoardState, from: Int, to: Int): MoveInfo = {
+    val piece = boardState.getOccupant(from)
+    var removedPiece = Option.empty[RemovedPiece]
+    val overSquare = jumpTable.getMiddle(from, to)
+    if(overSquare >= 0) {
+      val overPiece = boardState.getOccupant(overSquare)
+      if(ISPIECE(overPiece)) {
+        removedPiece = Some(RemovedPiece(overPiece, overSquare))
+      }
+    }
+
+    val crowned = fastExecute(boardState, from, to)
+    MoveInfo(piece, removedPiece, crowned)
+  }
+
 }
