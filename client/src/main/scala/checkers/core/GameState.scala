@@ -16,9 +16,7 @@ case class GameState[DS, LS](config: GameConfig[DS, LS],
                              darkState: DS,
                              lightState: LS,
                              drawStatus: DrawStatus,
-                             playHistory: List[Play],
-                             boardHistory: List[BoardState],
-                             history: List[GameState[DS, LS]]) {
+                             history: List[HistoryEntry]) {
   def turnsUntilDraw: Option[Int] = drawStatus match {
     case DrawProposed(_, endTurnIndex) => Some(endTurnIndex - turnIndex)
     case _ => None
@@ -30,12 +28,31 @@ case class GameState[DS, LS](config: GameConfig[DS, LS],
   }
 
   def acceptDraw: GameState[DS, LS] = {
-    copy(playHistory = Play.AcceptDraw :: playHistory,
-      turnIndex = turnIndex + 1,
+    val entry = HistoryEntry(turnIndex, turnToMove, board, drawStatus, Play.AcceptDraw)
+    copy(turnIndex = turnIndex + 1,
       turnToMove = OPPONENT(turnToMove),
-      history = this :: history)
+      history = entry :: history)
   }
 
+  /**
+    * For plays that don't end the current turn
+    */
+  def applyPartialPlay(play: Play, newBoard: BoardState, newDrawStatus: DrawStatus): GameState[DS, LS] = {
+    val entry = HistoryEntry(turnIndex, turnToMove, board, drawStatus, play)
+    copy(board = newBoard, drawStatus = newDrawStatus, history = entry :: history)
+  }
+
+  /**
+    * For plays that end the current turn
+    */
+  def applyPlay(play: Play, newBoard: BoardState, newDrawStatus: DrawStatus): GameState[DS, LS] = {
+    val entry = HistoryEntry(turnIndex, turnToMove, board, drawStatus, play)
+    copy(turnIndex = turnIndex + 1,
+      turnToMove = OPPONENT(turnToMove),
+      board = newBoard,
+      drawStatus = newDrawStatus,
+      history = entry :: history)
+  }
 
 }
 
@@ -46,6 +63,6 @@ object GameState {
     val lightState = config.lightPlayer.initialState
     val turnToMove = config.rulesSettings.playsFirst
     val boardState = RulesSettings.initialBoard(config.rulesSettings)
-    GameState(config, boardState, turnToMove, 0, darkState, lightState, NoDraw, Nil, Nil, Nil)
+    GameState(config, boardState, turnToMove, 0, darkState, lightState, NoDraw, Nil)
   }
 }

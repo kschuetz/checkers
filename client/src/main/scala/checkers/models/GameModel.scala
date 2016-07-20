@@ -24,9 +24,7 @@ trait GameModelReader {
 
   def drawStatus: DrawStatus
 
-  def playHistory: List[Play]
-
-  def boardHistory: List[BoardState]
+  def history: List[HistoryEntry]
 
   def boardOrientation: BoardOrientation
 
@@ -96,9 +94,7 @@ case class GameModel[DS, LS](nowTime: Double,
 
   override def turnIndex: Int = gameState.turnIndex
 
-  override def playHistory: List[Play] = gameState.playHistory
-
-  override def boardHistory: List[BoardState] = gameState.boardHistory
+  override def history: List[HistoryEntry] = gameState.history
 
   override def board: BoardState = gameState.board
 

@@ -1,14 +1,13 @@
 package checkers.computer
 
 import checkers.consts._
-import checkers.core.{BoardState, DrawStatus, Play, RulesSettings}
+import checkers.core._
 
 case class PlayInput(boardState: BoardState,
                      rulesSettings: RulesSettings,
                      turnToMove: Color,
                      drawStatus: DrawStatus,
-                     playHistory: List[Play],
-                     boardHistory: List[BoardState])
+                     history: List[HistoryEntry])
 
 trait Program[S] {
   def initialState: S

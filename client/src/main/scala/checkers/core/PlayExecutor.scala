@@ -10,6 +10,7 @@ sealed trait PlayEvent
 
 object PlayEvent {
   case object NoEvent extends PlayEvent
+  case object DrawProposed extends PlayEvent
   case object DrawAccepted extends PlayEvent
 }
 
@@ -35,9 +36,19 @@ class PlayExecutor(jumpTable: JumpTable,
         } else None
 
       case Play.Move(path, proposeDraw) =>
-        None
+        val boardState = gameState.board.toMutable
 
-
+        def go(path: List[Int], result: List[MoveInfo]): List[MoveInfo] = {
+          path match {
+            case Nil => result
+            case from :: (more@(to :: _)) =>
+              val info = moveExecutor.execute(boardState, from, to)
+              go(more, info :: result)
+          }
+        }
+        val moveInfo = go(path, Nil)
+        val newBoard = boardState.toImmutable
+        ???
     }
 
   }
