@@ -108,22 +108,3 @@ case class GameModel[DS, LS](nowTime: Double,
 
 }
 
-
-object GameModel {
-
-  def initial[DS, LS](config: GameConfig[DS, LS]): GameModel[DS, LS] = {
-    val gameState = GameState.create(config)
-    GameModel(
-      nowTime = 0d,
-      phase = GameStart,
-      gameState = gameState,
-      boardOrientation = BoardOrientation.Normal,
-      ghostPiece = None,
-//      clickableSquares = Set.empty,
-      highlightedSquares = Set.empty,
-      flipAnimation = None,
-      animations = List.empty)
-  }
-
-
-}

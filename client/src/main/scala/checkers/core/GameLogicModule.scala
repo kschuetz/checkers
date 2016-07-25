@@ -11,6 +11,8 @@ trait GameLogicModule {
   def moveTreeFactory: MoveTreeFactory
 
   def turnEvaluator: TurnEvaluator
+
+  def gameDriver: GameDriver
 }
 
 class GameLogicModuleFactory(tablesModule: TablesModule) extends (RulesSettings => GameLogicModule) {
