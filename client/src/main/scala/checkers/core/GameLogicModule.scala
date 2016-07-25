@@ -6,6 +6,8 @@ import com.softwaremill.macwire._
 trait GameLogicModule {
   def rulesSettings: RulesSettings
 
+  def drawLogic: DrawLogic
+
   def moveExecutor: MoveExecutor
 
   def moveGenerator: MoveGenerator

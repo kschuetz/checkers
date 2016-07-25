@@ -1,6 +1,6 @@
 package checkers.core
 
-class DrawLogic {
+class DrawLogic(rulesSettings: RulesSettings) {
   def canProposeDraw[DS, LS](gameState: GameState[DS, LS]): Option[Int] = {
     None
   }

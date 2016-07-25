@@ -12,6 +12,8 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
   private val rulesSettings = gameLogicModule.rulesSettings
   private val moveGenerator = gameLogicModule.moveGenerator
   private val moveTreeFactory = gameLogicModule.moveTreeFactory
+  private val moveExecutor = gameLogicModule.moveExecutor
+  private val drawLogic = gameLogicModule.drawLogic
 
   def createInitialModel: GameModel[DS, LS] = {
     val gameState = createInitialState
@@ -24,6 +26,40 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
       highlightedSquares = Set.empty,
       flipAnimation = None,
       animations = List.empty)
+  }
+
+  def applyPlay(gameModel: GameModel[DS, LS], play: Play): Option[(PlayEvents, GameModel[DS, LS])] = {
+    val myself = gameModel.turnToMove
+    val opponent = OPPONENT(myself)
+    val gameState = gameModel.gameState
+
+    play match {
+      case Play.NoPlay => None
+
+      case Play.AcceptDraw =>
+        if(drawLogic.canAcceptDraw(gameState)) {
+          val newState = gameState.acceptDraw
+          val newModel = gameModel.copy(gameState = newState, phase = Phase.GameOver(None))
+          Some((PlayEvents.acceptedDraw, newModel))
+
+        } else None
+
+      case Play.Move(path, proposeDraw) =>
+        val boardState = gameState.board.toMutable
+
+        def go(path: List[Int], result: List[MoveInfo]): List[MoveInfo] = {
+          path match {
+            case Nil => result
+            case from :: (more@(to :: _)) =>
+              val info = moveExecutor.execute(boardState, from, to)
+              go(more, info :: result)
+          }
+        }
+        val moveInfo = go(path, Nil)
+        val newBoard = boardState.toImmutable
+        ???
+    }
+
   }
 
   private def createInitialState: GameState[DS, LS] = {
@@ -52,11 +88,4 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
     }
   }
 
-}
-
-
-class GameDriverFactory(gameLogicModule: GameLogicModule) {
-  def createGameDriver[DS, LS](playerConfig: PlayerConfig[DS, LS]): GameDriver[DS, LS] = {
-    new GameDriver(gameLogicModule)(playerConfig)
-  }
 }

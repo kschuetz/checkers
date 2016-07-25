@@ -1,7 +1,6 @@
 package checkers.models
 
 import checkers.consts._
-import checkers.core.Phase.GameStart
 import checkers.core._
 import checkers.models.Animation.{FlippingBoardAnimation, MovingPiece}
 
