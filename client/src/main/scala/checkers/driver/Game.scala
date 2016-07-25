@@ -18,7 +18,6 @@ class Game[DS, LS](gameLogicModule: GameLogicModule)
   protected val moveGenerator = gameLogicModule.moveGenerator
   protected val moveExecutor = gameLogicModule.moveExecutor
   protected val moveTreeFactory = gameLogicModule.moveTreeFactory
-  protected val turnEvaluator = gameLogicModule.turnEvaluator
 
   var model: Model = initialModel
 //    .copy(clickableSquares = (0 to 31).toSet,

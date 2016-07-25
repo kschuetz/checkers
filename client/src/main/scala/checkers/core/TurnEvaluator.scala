@@ -20,25 +20,3 @@ case class BeginTurnState(board: BoardState,
   }
 }
 
-
-class TurnEvaluator(moveGenerator: MoveGenerator,
-                    moveTreeFactory: MoveTreeFactory) {
-  import BeginTurnEvaluation._
-
-  def evaluateBeginTurn[DS, LS](gameState: GameState[DS, LS]): BeginTurnEvaluation = {
-    if(gameState.turnsUntilDraw.exists(_ <= 0)) Draw
-    else {
-      val turnToMove = gameState.turnToMove
-      val boardStack = BoardStack.fromBoard(gameState.board)
-      val moveList = moveGenerator.generateMoves(boardStack, gameState.turnToMove)
-      val moveTree = moveTreeFactory.fromMoveList(moveList)
-      if (moveTree.isEmpty) {
-        if (gameState.config.rulesSettings.giveaway) Win(turnToMove)
-        else Win(OPPONENT(turnToMove))
-      } else {
-        CanMove(moveTree)
-      }
-    }
-  }
-
-}
