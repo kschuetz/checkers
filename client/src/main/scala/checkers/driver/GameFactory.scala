@@ -16,13 +16,14 @@ class GameFactory(gameLogicModuleFactory: GameLogicModuleFactory) {
     val gameLogicModule = gameLogicModuleFactory.apply(rulesSettings)
     val light = Computer(new TrivialPlayer(gameLogicModule.moveGenerator)(None))
     val dark = Human
-    val gameConfig = GameConfig(rulesSettings, dark, light)
+    val gameConfig = GameConfig(rulesSettings, PlayerConfig(dark, light))
     createGame(gameLogicModule, gameConfig, host)
   }
 
   private def createGame[DS, LS](gameLogicModule: GameLogicModule, gameConfig: GameConfig[DS, LS], host: dom.Node): Game[DS, LS] = {
-    val model = gameLogicModule.gameDriver.createInitialModel(gameConfig)
-    new Game(gameLogicModule)(host, model)
+    val driver = new GameDriver(gameLogicModule)(gameConfig.playerConfig)
+    val model = driver.createInitialModel
+    new Game(gameLogicModule, driver)(host, model)
   }
 
 }

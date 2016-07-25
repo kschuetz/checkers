@@ -9,7 +9,8 @@ case object NoDraw extends DrawStatus
 
 case class DrawProposed(color: Color, endTurnIndex: Int) extends DrawStatus
 
-case class GameState[DS, LS](config: GameConfig[DS, LS],
+case class GameState[DS, LS](rulesSettings: RulesSettings,
+                             playerConfig: PlayerConfig[DS, LS],
                              board: BoardState,
                              turnToMove: Color,
                              turnIndex: Int,

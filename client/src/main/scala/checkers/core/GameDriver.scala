@@ -6,12 +6,15 @@ import checkers.core.Phase.GameStart
 import checkers.models.{BoardOrientation, GameModel}
 
 
-class GameDriver(rulesSettings: RulesSettings,
-                 moveGenerator: MoveGenerator,
-                 moveTreeFactory: MoveTreeFactory) {
+class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
+                        (playerConfig: PlayerConfig[DS, LS]) {
 
-  def createInitialModel[DS, LS](config: GameConfig[DS, LS]): GameModel[DS, LS] = {
-    val gameState = createInitialState(config)
+  private val rulesSettings = gameLogicModule.rulesSettings
+  private val moveGenerator = gameLogicModule.moveGenerator
+  private val moveTreeFactory = gameLogicModule.moveTreeFactory
+
+  def createInitialModel: GameModel[DS, LS] = {
+    val gameState = createInitialState
     GameModel(
       nowTime = 0d,
       phase = GameStart,
@@ -23,14 +26,14 @@ class GameDriver(rulesSettings: RulesSettings,
       animations = List.empty)
   }
 
-  private def createInitialState[DS, LS](config: GameConfig[DS, LS]): GameState[DS, LS] = {
-    val darkState = config.darkPlayer.initialState
-    val lightState = config.lightPlayer.initialState
-    val turnToMove = config.rulesSettings.playsFirst
-    val boardState = RulesSettings.initialBoard(config.rulesSettings)
+  private def createInitialState: GameState[DS, LS] = {
+    val darkState = playerConfig.darkPlayer.initialState
+    val lightState = playerConfig.lightPlayer.initialState
+    val turnToMove = rulesSettings.playsFirst
+    val boardState = RulesSettings.initialBoard(rulesSettings)
     val beginTurnState = BeginTurnState(boardState, turnToMove, 0, NoDraw)
     val turnEvaluation = evaluateBeginTurn(beginTurnState)
-    GameState(config, boardState, turnToMove, 0, darkState, lightState, NoDraw, turnEvaluation, Nil)
+    GameState(rulesSettings, playerConfig, boardState, turnToMove, 0, darkState, lightState, NoDraw, turnEvaluation, Nil)
   }
 
   private def evaluateBeginTurn(beginTurnState: BeginTurnState): BeginTurnEvaluation = {
@@ -49,4 +52,11 @@ class GameDriver(rulesSettings: RulesSettings,
     }
   }
 
+}
+
+
+class GameDriverFactory(gameLogicModule: GameLogicModule) {
+  def createGameDriver[DS, LS](playerConfig: PlayerConfig[DS, LS]): GameDriver[DS, LS] = {
+    new GameDriver(gameLogicModule)(playerConfig)
+  }
 }

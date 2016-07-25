@@ -4,13 +4,13 @@ import checkers.core.tables.TablesModule
 import com.softwaremill.macwire._
 
 trait GameLogicModule {
+  def rulesSettings: RulesSettings
+
   def moveExecutor: MoveExecutor
 
   def moveGenerator: MoveGenerator
 
   def moveTreeFactory: MoveTreeFactory
-
-  def gameDriver: GameDriver
 }
 
 class GameLogicModuleFactory(tablesModule: TablesModule) extends (RulesSettings => GameLogicModule) {
@@ -33,8 +33,6 @@ class GameLogicModuleFactory(tablesModule: TablesModule) extends (RulesSettings 
       lazy val animationPlanner = wire[AnimationPlanner]
 
       lazy val playExecutor = wire[PlayExecutor]
-
-      lazy val gameDriver = wire[GameDriver]
     }
   }
 

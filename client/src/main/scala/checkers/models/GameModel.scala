@@ -88,7 +88,7 @@ case class GameModel[DS, LS](nowTime: Double,
 
   }
 
-  override def ruleSettings: RulesSettings = gameState.config.rulesSettings
+  override def ruleSettings: RulesSettings = gameState.rulesSettings
 
   override def turnToMove: Color = gameState.turnToMove
 
@@ -98,9 +98,9 @@ case class GameModel[DS, LS](nowTime: Double,
 
   override def board: BoardState = gameState.board
 
-  override def darkPlayer: PlayerDescription = gameState.config.darkPlayer
+  override def darkPlayer: PlayerDescription = gameState.playerConfig.darkPlayer
 
-  override def lightPlayer: PlayerDescription = gameState.config.lightPlayer
+  override def lightPlayer: PlayerDescription = gameState.playerConfig.lightPlayer
 
   override def drawStatus: DrawStatus = gameState.drawStatus
 

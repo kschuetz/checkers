@@ -2,15 +2,14 @@ package checkers.driver
 
 import checkers.components.GameScreen
 import checkers.components.piece.{PieceCallbacks, PieceMouseEvent}
-import checkers.consts._
-import checkers.core.GameLogicModule
-import checkers.geometry.Point
-import checkers.models.{GameModel, GhostPiece}
+import checkers.core.{GameDriver, GameLogicModule}
+import checkers.models.GameModel
 import japgolly.scalajs.react.{Callback, ReactDOM}
 import org.scalajs.dom
 
 
-class Game[DS, LS](gameLogicModule: GameLogicModule)
+class Game[DS, LS](gameLogicModule: GameLogicModule,
+                   gameDriver: GameDriver[DS, LS])
                   (val host: dom.Node,
                    initialModel: GameModel[DS, LS]) {
   type Model = GameModel[DS, LS]
