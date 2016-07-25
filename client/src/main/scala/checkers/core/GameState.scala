@@ -2,13 +2,6 @@ package checkers.core
 
 import checkers.consts._
 
-
-sealed trait DrawStatus
-
-case object NoDraw extends DrawStatus
-
-case class DrawProposed(color: Color, endTurnIndex: Int) extends DrawStatus
-
 case class GameState[DS, LS](rulesSettings: RulesSettings,
                              playerConfig: PlayerConfig[DS, LS],
                              board: BoardState,

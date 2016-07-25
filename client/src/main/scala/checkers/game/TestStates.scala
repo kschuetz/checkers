@@ -1,8 +1,6 @@
 package checkers.game
 
-import checkers.core._
 import checkers.consts._
-import checkers.models.{BoardOrientation, PlayField}
 
 object TestStates {
   val board1 = Vector(
@@ -15,15 +13,15 @@ object TestStates {
     DARKMAN, DARKMAN, DARKMAN, DARKMAN,
     DARKKING, DARKKING, DARKKING, DARKKING)
 
-  val gameState1 = OldGameState(BoardState.empty, DARK)
-
-  val playFieldState1 = PlayField(
-    gameState = gameState1,
-    orientation = BoardOrientation.Normal,
-    ghostPiece = None,
-    highlightedSquares = Set.empty,
-    clickableSquares = Set(8, 9, 10, 11, 20, 21, 22, 23),
-    animations = Nil)
+//  val gameState1 = OldGameState(BoardState.empty, DARK)
+//
+//  val playFieldState1 = PlayField(
+//    gameState = gameState1,
+//    orientation = BoardOrientation.Normal,
+//    ghostPiece = None,
+//    highlightedSquares = Set.empty,
+//    clickableSquares = Set(8, 9, 10, 11, 20, 21, 22, 23),
+//    animations = Nil)
 
   //List(Animation.MovingPiece(18, 22, 0, 0)))
 

@@ -20,6 +20,4 @@ object RulesSettings {
     board
   }
 
-  def initialGameState(settings: RulesSettings): OldGameState =
-    OldGameState(initialBoard(settings), settings.playsFirst)
 }
