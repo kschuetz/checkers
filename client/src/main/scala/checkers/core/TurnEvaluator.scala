@@ -10,6 +10,16 @@ object BeginTurnEvaluation {
   case class Win(color: Color) extends BeginTurnEvaluation
 }
 
+case class BeginTurnState(board: BoardState,
+                          turnToMove: Color,
+                          turnIndex: Int,
+                          drawStatus: DrawStatus) {
+  def turnsUntilDraw: Option[Int] = drawStatus match {
+    case DrawProposed(_, endTurnIndex) => Some(endTurnIndex - turnIndex)
+    case _ => None
+  }
+}
+
 
 class TurnEvaluator(moveGenerator: MoveGenerator,
                     moveTreeFactory: MoveTreeFactory) {
