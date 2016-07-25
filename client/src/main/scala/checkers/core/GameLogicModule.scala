@@ -33,8 +33,6 @@ class GameLogicModuleFactory(tablesModule: TablesModule) extends (RulesSettings 
       lazy val moveTreeFactory = wire[MoveTreeFactory]
 
       lazy val animationPlanner = wire[AnimationPlanner]
-
-      lazy val playExecutor = wire[PlayExecutor]
     }
   }
 
