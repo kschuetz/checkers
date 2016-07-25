@@ -29,7 +29,8 @@ class GameDriver(rulesSettings: RulesSettings,
     val turnToMove = config.rulesSettings.playsFirst
     val boardState = RulesSettings.initialBoard(config.rulesSettings)
     val beginTurnState = BeginTurnState(boardState, turnToMove, 0, NoDraw)
-    GameState(config, boardState, turnToMove, 0, darkState, lightState, NoDraw, Nil)
+    val turnEvaluation = evaluateBeginTurn(beginTurnState)
+    GameState(config, boardState, turnToMove, 0, darkState, lightState, NoDraw, turnEvaluation, Nil)
   }
 
   private def evaluateBeginTurn(beginTurnState: BeginTurnState): BeginTurnEvaluation = {

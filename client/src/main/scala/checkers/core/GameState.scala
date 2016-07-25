@@ -16,6 +16,7 @@ case class GameState[DS, LS](config: GameConfig[DS, LS],
                              darkState: DS,
                              lightState: LS,
                              drawStatus: DrawStatus,
+                             beginTurnEvaluation: BeginTurnEvaluation,
                              history: List[HistoryEntry]) {
   def turnsUntilDraw: Option[Int] = drawStatus match {
     case DrawProposed(_, endTurnIndex) => Some(endTurnIndex - turnIndex)
@@ -58,11 +59,11 @@ case class GameState[DS, LS](config: GameConfig[DS, LS],
 
 
 object GameState {
-  def create[DS, LS](config: GameConfig[DS, LS]): GameState[DS, LS] = {
-    val darkState = config.darkPlayer.initialState
-    val lightState = config.lightPlayer.initialState
-    val turnToMove = config.rulesSettings.playsFirst
-    val boardState = RulesSettings.initialBoard(config.rulesSettings)
-    GameState(config, boardState, turnToMove, 0, darkState, lightState, NoDraw, Nil)
-  }
+//  def create[DS, LS](config: GameConfig[DS, LS]): GameState[DS, LS] = {
+//    val darkState = config.darkPlayer.initialState
+//    val lightState = config.lightPlayer.initialState
+//    val turnToMove = config.rulesSettings.playsFirst
+//    val boardState = RulesSettings.initialBoard(config.rulesSettings)
+//    GameState(config, boardState, turnToMove, 0, darkState, lightState, NoDraw, Nil)
+//  }
 }
