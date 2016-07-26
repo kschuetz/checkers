@@ -34,7 +34,7 @@ trait MutableBoardState extends BoardStateRead {
 
   def setBoard(board: BoardStateRead): Unit
 
-  def toImmutable: BoardStateRead
+  def toImmutable: BoardState
 }
 
 

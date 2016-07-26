@@ -1,6 +1,7 @@
 package checkers.core
 
 import checkers.consts._
+import checkers.core.BeginTurnEvaluation.CanMove
 
 case class GameState[DS, LS](rulesSettings: RulesSettings,
                              playerConfig: PlayerConfig[DS, LS],
@@ -47,6 +48,11 @@ case class GameState[DS, LS](rulesSettings: RulesSettings,
       board = newBoard,
       drawStatus = newDrawStatus,
       history = entry :: history)
+  }
+
+  def moveTree: MoveTree = beginTurnEvaluation match {
+    case CanMove(tree) => tree
+    case _ => MoveTree.empty
   }
 
 }

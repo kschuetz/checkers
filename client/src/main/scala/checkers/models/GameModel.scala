@@ -38,6 +38,8 @@ trait GameModelReader {
   def animations: List[Animation]
 
   def getBoardRotation: Double
+
+  def moveTree: MoveTree
 }
 
 case class GameModel[DS, LS](nowTime: Double,
@@ -102,6 +104,8 @@ case class GameModel[DS, LS](nowTime: Double,
   override def lightPlayer: PlayerDescription = gameState.playerConfig.lightPlayer
 
   override def drawStatus: DrawStatus = gameState.drawStatus
+
+  lazy val moveTree: MoveTree = gameState.moveTree
 
   lazy val clickableSquares: Set[Int] = phase.clickableSquares
 

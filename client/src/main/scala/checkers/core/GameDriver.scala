@@ -44,22 +44,53 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
 
         } else None
 
-      case Play.Move(path, proposeDraw) =>
-        val boardState = gameState.board.toMutable
-
-        def go(path: List[Int], result: List[MoveInfo]): List[MoveInfo] = {
-          path match {
-            case Nil => result
-            case from :: (more@(to :: _)) =>
-              val info = moveExecutor.execute(boardState, from, to)
-              go(more, info :: result)
-          }
+      case move: Play.Move =>
+        val moveTree = gameState.moveTree
+        moveTree.walk(move.path).map { newMoveTree =>
+          applyMove(gameModel, move, newMoveTree)
         }
-        val moveInfo = go(path, Nil)
-        val newBoard = boardState.toImmutable
-        ???
+    }
+  }
+
+  private def applyMove(gameModel: GameModel[DS, LS], move: Play.Move, newMoveTree: MoveTree): (PlayEvents, GameModel[DS, LS]) = {
+    val gameState = gameModel.gameState
+    val boardState = gameState.board.toMutable
+    val endsTurn = newMoveTree.isEmpty
+
+    def go(path: List[Int], result: List[MoveInfo]): List[MoveInfo] = {
+      path match {
+        case Nil => result
+        case _ :: Nil => result
+        case from :: (more@(to :: _)) =>
+          val info = moveExecutor.execute(boardState, from, to)
+          go(more, info :: result)
+      }
+    }
+    val moveInfo = go(move.path, Nil)
+    val newBoard = boardState.toImmutable
+    // TODO: schedule animations
+
+    val entry = HistoryEntry(gameState.turnIndex, gameState.turnToMove, gameState.board, gameState.drawStatus, move)
+    val newGameState = if(endsTurn) {
+      val beginTurnState = BeginTurnState(board = newBoard,
+        turnIndex = gameState.turnIndex + 1,
+        turnToMove = OPPONENT(gameState.turnToMove),
+        drawStatus = gameState.drawStatus)
+      val turnEvaluation = evaluateBeginTurn(beginTurnState)
+      gameState.copy(board = newBoard,
+        turnIndex = beginTurnState.turnIndex,
+        turnToMove = beginTurnState.turnToMove,
+        drawStatus = beginTurnState.drawStatus,
+        history = entry :: gameState.history)
+    } else {
+      // partial
+      val turnEvaluation = CanMove(newMoveTree)
+      gameState.copy(board = newBoard, history = entry :: gameState.history)
     }
 
+    val playEvents = if(endsTurn) PlayEvents.turnEnded else PlayEvents.partialTurn
+    val newModel = gameModel.copy(gameState = newGameState)
+    (playEvents, newModel)
   }
 
   private def createInitialState: GameState[DS, LS] = {

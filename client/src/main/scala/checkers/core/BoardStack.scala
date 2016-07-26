@@ -48,7 +48,7 @@ class BoardStackImpl(val initialCapacity: Int) extends BoardStack with BoardStat
     if (offset < 0) offset = 0
   }
 
-  def toImmutable: BoardStateRead = new BoardState(copyFrame)
+  def toImmutable: BoardState = new BoardState(copyFrame)
 }
 
 object BoardStack {
