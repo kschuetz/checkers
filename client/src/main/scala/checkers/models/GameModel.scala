@@ -7,7 +7,7 @@ import checkers.models.Animation.{FlippingBoardAnimation, MovingPiece}
 trait GameModelReader {
   def nowTime: Double
 
-  def phase: Phase
+  def inputPhase: InputPhase
 
   def ruleSettings: RulesSettings
 
@@ -43,7 +43,7 @@ trait GameModelReader {
 }
 
 case class GameModel[DS, LS](nowTime: Double,
-                             phase: Phase,
+                             inputPhase: InputPhase,
                              gameState: GameState[DS, LS],
                              boardOrientation: BoardOrientation,
                              ghostPiece: Option[GhostPiece],
@@ -107,7 +107,14 @@ case class GameModel[DS, LS](nowTime: Double,
 
   lazy val moveTree: MoveTree = gameState.moveTree
 
-  lazy val clickableSquares: Set[Int] = phase.clickableSquares
+  lazy val clickableSquares: Set[Int] = inputPhase match {
+    case InputPhase.BeginHumanTurn => gameState.moveTree.squares
+    case ps: InputPhase.PieceSelected =>
+      val sourceSquares = gameState.moveTree.squares
+      val destSquares = gameState.moveTree.walk(List(ps.square)).fold(Set.empty[Int])(_.squares)
+      sourceSquares ++ destSquares
+    case _ => Set.empty
+  }
 
 }
 

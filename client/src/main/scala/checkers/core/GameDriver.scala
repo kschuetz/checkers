@@ -2,7 +2,7 @@ package checkers.core
 
 import checkers.consts._
 import checkers.core.BeginTurnEvaluation._
-import checkers.core.Phase.GameStart
+import checkers.core.InputPhase.{BeginHumanTurn, GameStart}
 import checkers.models.{BoardOrientation, GameModel}
 
 
@@ -19,7 +19,7 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
     val gameState = createInitialState
     GameModel(
       nowTime = 0d,
-      phase = GameStart,
+      inputPhase = BeginHumanTurn,
       gameState = gameState,
       boardOrientation = BoardOrientation.Normal,
       ghostPiece = None,
@@ -39,7 +39,7 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
       case Play.AcceptDraw =>
         if(drawLogic.canAcceptDraw(gameState)) {
           val newState = gameState.acceptDraw
-          val newModel = gameModel.copy(gameState = newState, phase = Phase.GameOver(None))
+          val newModel = gameModel.copy(gameState = newState, inputPhase = InputPhase.GameOver(None))
           Some((PlayEvents.acceptedDraw, newModel))
 
         } else None

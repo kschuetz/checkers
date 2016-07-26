@@ -51,8 +51,8 @@ class Game[DS, LS](gameLogicModule: GameLogicModule,
   }
 
   def tick(): Unit = {
-    import checkers.core.Phase._
-    model.phase match {
+    import checkers.core.InputPhase._
+    model.inputPhase match {
       case GameStart => startGame(model)
       case _ => ()
     }
