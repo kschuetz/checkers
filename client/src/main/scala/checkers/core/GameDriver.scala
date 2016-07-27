@@ -21,6 +21,7 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
     val model = GameModel(
       nowTime = nowTime,
       gameStartTime = nowTime,
+      turnStartTime = nowTime,
       inputPhase = BeginHumanTurn,
       gameState = gameState,
       boardOrientation = BoardOrientation.Normal,
@@ -145,15 +146,16 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
 
   private def initTurn(gameModel: GameModel[DS, LS], newState: GameState[DS, LS]): GameModel[DS, LS] = {
     val turnToMove = newState.turnToMove
+    val nowTime = gameModel.nowTime
     val inputPhase = if(turnToMove == LIGHT) {
-      getInputPhase(gameModel.nowTime, playerConfig.lightPlayer, newState.lightState, getPlayInput(newState))
+      getInputPhase(nowTime, playerConfig.lightPlayer, newState.lightState, getPlayInput(newState))
     } else {
-      getInputPhase(gameModel.nowTime, playerConfig.darkPlayer, newState.darkState, getPlayInput(newState))
+      getInputPhase(nowTime, playerConfig.darkPlayer, newState.darkState, getPlayInput(newState))
     }
 
     val clickableSquares = getClickableSquares(inputPhase, newState.moveTree)
 
-    gameModel.copy(inputPhase = inputPhase, gameState = newState, clickableSquares = clickableSquares)
+    gameModel.copy(inputPhase = inputPhase, turnStartTime = nowTime, gameState = newState, clickableSquares = clickableSquares)
   }
 
   private def getPlayInput(gameState: GameState[DS, LS]): PlayInput = {
