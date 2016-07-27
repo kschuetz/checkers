@@ -12,6 +12,8 @@ case class GameState[DS, LS](rulesSettings: RulesSettings,
                              lightState: LS,
                              drawStatus: DrawStatus,
                              beginTurnEvaluation: BeginTurnEvaluation,
+                             darkClock: Double,
+                             lightClock: Double,
                              history: List[HistoryEntry]) {
   def turnsUntilDraw: Option[Int] = drawStatus match {
     case DrawProposed(_, endTurnIndex) => Some(endTurnIndex - turnIndex)

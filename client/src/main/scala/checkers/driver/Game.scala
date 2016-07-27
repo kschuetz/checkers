@@ -6,19 +6,22 @@ import checkers.core.{GameDriver, GameLogicModule}
 import checkers.models.GameModel
 import japgolly.scalajs.react.{Callback, ReactDOM}
 import org.scalajs.dom
+import org.scalajs.dom.window.performance
 
 
 class Game[DS, LS](gameLogicModule: GameLogicModule,
                    gameDriver: GameDriver[DS, LS])
-                  (val host: dom.Node,
-                   initialModel: GameModel[DS, LS]) {
+                  (val host: dom.Node) {
   type Model = GameModel[DS, LS]
 
   protected val moveGenerator = gameLogicModule.moveGenerator
   protected val moveExecutor = gameLogicModule.moveExecutor
   protected val moveTreeFactory = gameLogicModule.moveTreeFactory
 
-  var model: Model = initialModel
+  var model: Model = {
+    val nowTime = performance.now()
+    gameDriver.createInitialModel(nowTime)
+  }
 //    .copy(clickableSquares = (0 to 31).toSet,
 //      ghostPiece = Some(GhostPiece(DARKMAN, 21, Point(-0.15, -0.13), Point(1.0, 1.0))))
 

@@ -42,7 +42,8 @@ trait GameModelReader {
   def moveTree: MoveTree
 }
 
-case class GameModel[DS, LS](nowTime: Double,
+case class GameModel[DS, LS](gameStartTime: Double,
+                             nowTime: Double,
                              inputPhase: InputPhase,
                              gameState: GameState[DS, LS],
                              boardOrientation: BoardOrientation,

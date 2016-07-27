@@ -16,10 +16,11 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
   private val moveExecutor = gameLogicModule.moveExecutor
   private val drawLogic = gameLogicModule.drawLogic
 
-  def createInitialModel: GameModel[DS, LS] = {
+  def createInitialModel(nowTime: Double): GameModel[DS, LS] = {
     val gameState = createInitialState
     val model = GameModel(
-      nowTime = 0d,
+      nowTime = nowTime,
+      gameStartTime = nowTime,
       inputPhase = BeginHumanTurn,
       gameState = gameState,
       boardOrientation = BoardOrientation.Normal,
@@ -103,7 +104,7 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
     val boardState = RulesSettings.initialBoard(rulesSettings)
     val beginTurnState = BeginTurnState(boardState, turnToMove, 0, NoDraw)
     val turnEvaluation = evaluateBeginTurn(beginTurnState)
-    GameState(rulesSettings, playerConfig, boardState, turnToMove, 0, darkState, lightState, NoDraw, turnEvaluation, Nil)
+    GameState(rulesSettings, playerConfig, boardState, turnToMove, 0, darkState, lightState, NoDraw, turnEvaluation, 0, 0, Nil)
   }
 
   private def evaluateBeginTurn(beginTurnState: BeginTurnState): BeginTurnEvaluation = {
