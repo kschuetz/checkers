@@ -47,6 +47,7 @@ case class GameModel[DS, LS](nowTime: Double,
                              gameState: GameState[DS, LS],
                              boardOrientation: BoardOrientation,
                              ghostPiece: Option[GhostPiece],
+                             clickableSquares: Set[Int],
                              highlightedSquares: Set[Int],
                              flipAnimation: Option[FlippingBoardAnimation],
                              animations: List[Animation]) extends GameModelReader {
@@ -107,14 +108,14 @@ case class GameModel[DS, LS](nowTime: Double,
 
   lazy val moveTree: MoveTree = gameState.moveTree
 
-  lazy val clickableSquares: Set[Int] = inputPhase match {
-    case InputPhase.BeginHumanTurn => gameState.moveTree.squares
-    case ps: InputPhase.PieceSelected =>
-      val sourceSquares = gameState.moveTree.squares
-      val destSquares = gameState.moveTree.walk(List(ps.square)).fold(Set.empty[Int])(_.squares)
-      sourceSquares ++ destSquares
-    case _ => Set.empty
-  }
+//  lazy val clickableSquares: Set[Int] = inputPhase match {
+//    case InputPhase.BeginHumanTurn => gameState.moveTree.squares
+//    case ps: InputPhase.PieceSelected =>
+//      val sourceSquares = gameState.moveTree.squares
+//      val destSquares = gameState.moveTree.walk(List(ps.square)).fold(Set.empty[Int])(_.squares)
+//      sourceSquares ++ destSquares
+//    case _ => Set.empty
+//  }
 
 }
 

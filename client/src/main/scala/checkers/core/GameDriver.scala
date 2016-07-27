@@ -1,8 +1,9 @@
 package checkers.core
 
+import checkers.computer.PlayInput
 import checkers.consts._
 import checkers.core.BeginTurnEvaluation._
-import checkers.core.InputPhase.{BeginHumanTurn, GameStart}
+import checkers.core.InputPhase.{BeginHumanTurn, ComputerThinking, GameStart}
 import checkers.models.{BoardOrientation, GameModel}
 
 
@@ -17,15 +18,17 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
 
   def createInitialModel: GameModel[DS, LS] = {
     val gameState = createInitialState
-    GameModel(
+    val model = GameModel(
       nowTime = 0d,
       inputPhase = BeginHumanTurn,
       gameState = gameState,
       boardOrientation = BoardOrientation.Normal,
       ghostPiece = None,
+      clickableSquares = Set.empty,
       highlightedSquares = Set.empty,
       flipAnimation = None,
       animations = List.empty)
+    initTurn(model, gameState)
   }
 
   def applyPlay(gameModel: GameModel[DS, LS], play: Play): Option[(PlayEvents, GameModel[DS, LS])] = {
@@ -117,6 +120,44 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
         CanMove(moveTree)
       }
     }
+  }
+
+  private def getClickableSquares(inputPhase: InputPhase, moveTree: MoveTree): Set[Int] = {
+    inputPhase match {
+      case InputPhase.BeginHumanTurn => moveTree.squares
+      case ps: InputPhase.PieceSelected =>
+        val sourceSquares = moveTree.squares
+        val destSquares = moveTree.walk(List(ps.square)).fold(Set.empty[Int])(_.squares)
+        sourceSquares ++ destSquares
+      case _ => Set.empty
+    }
+  }
+
+  private def getInputPhase[A](nowTime: Double, player: Player[A], playerState: A, playInput: => PlayInput): InputPhase = {
+    player match {
+      case Human => BeginHumanTurn
+      case Computer(program) =>
+        val playComputation = program.play(playerState, playInput)
+        ComputerThinking(nowTime, playComputation)
+    }
+  }
+
+  private def initTurn(gameModel: GameModel[DS, LS], newState: GameState[DS, LS]): GameModel[DS, LS] = {
+    val turnToMove = newState.turnToMove
+    val inputPhase = if(turnToMove == LIGHT) {
+      getInputPhase(gameModel.nowTime, playerConfig.lightPlayer, newState.lightState, getPlayInput(newState))
+    } else {
+      getInputPhase(gameModel.nowTime, playerConfig.darkPlayer, newState.darkState, getPlayInput(newState))
+    }
+
+    val clickableSquares = getClickableSquares(inputPhase, newState.moveTree)
+
+    gameModel.copy(inputPhase = inputPhase, gameState = newState, clickableSquares = clickableSquares)
+  }
+
+  private def getPlayInput(gameState: GameState[DS, LS]): PlayInput = {
+    import gameState._
+    PlayInput(board, gameState.rulesSettings, turnToMove, drawStatus, history)
   }
 
 }
