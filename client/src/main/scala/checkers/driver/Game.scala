@@ -2,7 +2,7 @@ package checkers.driver
 
 import checkers.components.GameScreen
 import checkers.components.piece.{PieceCallbacks, PieceMouseEvent}
-import checkers.core.{GameDriver, GameLogicModule}
+import checkers.core.GameDriver
 import checkers.models.GameModel
 import japgolly.scalajs.react.{Callback, ReactDOM}
 import org.scalajs.dom
@@ -21,9 +21,10 @@ class Game[DS, LS](gameDriver: GameDriver[DS, LS])
 
   object Callbacks extends PieceCallbacks {
     override val onPieceMouseDown = (event: PieceMouseEvent) => Some(Callback {
-      println("in handlePieceMouseDown")
-      println(s"(${event.reactEvent.clientX}, ${event.reactEvent.clientY})")
-      println(event)
+//      println("in handlePieceMouseDown")
+//      println(s"(${event.reactEvent.clientX}, ${event.reactEvent.clientY})")
+//      println(event)
+      gameDriver.handlePieceMouseDown(model, event).foreach(replaceModel)
     })
   }
 

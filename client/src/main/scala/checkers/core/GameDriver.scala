@@ -1,10 +1,11 @@
 package checkers.core
 
+import checkers.components.piece.PieceMouseEvent
 import checkers.computer.PlayInput
 import checkers.consts._
 import checkers.core.BeginTurnEvaluation._
-import checkers.core.InputPhase.{BeginHumanTurn, ComputerThinking, GameStart}
-import checkers.models.{BoardOrientation, GameModel}
+import checkers.core.InputPhase.{BeginHumanTurn, ComputerThinking, GameStart, PieceSelected}
+import checkers.models.{BoardOrientation, GameModel, GhostPiece}
 
 
 class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
@@ -148,6 +149,14 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
   }
 
   private def initTurn(gameModel: Model, newState: State): Model = {
+    restartTurn(gameModel, newState).copy(turnStartTime = gameModel.nowTime)
+  }
+
+  /**
+    * Reverts back to beginning of current turn (e.g, in case of cancelling a piece selection),
+    * but does not update the turnStartTime.
+    */
+  private def restartTurn(gameModel: Model, newState: State): Model = {
     val turnToMove = newState.turnToMove
     val nowTime = gameModel.nowTime
     val inputPhase = if(turnToMove == LIGHT) {
@@ -157,8 +166,7 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
     }
 
     val clickableSquares = getClickableSquares(inputPhase, newState.moveTree)
-
-    gameModel.copy(inputPhase = inputPhase, turnStartTime = nowTime, gameState = newState, clickableSquares = clickableSquares)
+    gameModel.copy(inputPhase = inputPhase, gameState = newState, clickableSquares = clickableSquares, ghostPiece = None)
   }
 
   private def getPlayInput(gameState: State): PlayInput = {
@@ -166,4 +174,24 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
     PlayInput(board, gameState.rulesSettings, turnToMove, drawStatus, history)
   }
 
+  def handlePieceMouseDown(model: Model, event: PieceMouseEvent): Option[Model] = {
+    model.inputPhase match {
+      case BeginHumanTurn => selectPiece(model, event)
+      case PieceSelected(piece, squareIndex, _, true) => Some(cancelPieceSelected(model))
+      case _ => None
+    }
+  }
+
+  private def selectPiece(model: Model, event: PieceMouseEvent): Option[Model] = {
+    val selectedSquare = event.tag
+    if(model.moveTree.squares.contains(selectedSquare)) {
+      val inputPhase = PieceSelected(event.piece, selectedSquare, event.boardPoint, true)
+      val ghostPiece = GhostPiece(event.piece, selectedSquare, event.boardPoint, event.boardPoint)
+      Some(model.copy(inputPhase = inputPhase, ghostPiece = Some(ghostPiece)))
+    } else None
+  }
+
+  private def cancelPieceSelected(model: Model): Model = {
+    restartTurn(model, model.gameState)
+  }
 }
