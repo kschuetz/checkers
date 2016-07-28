@@ -10,7 +10,30 @@ case class PieceMouseEvent(reactEvent: ReactMouseEvent,
                            boardPoint: Point)
 
 trait PieceCallbacks {
-  def onPieceMouseDown: PieceMouseEvent => Option[Callback] = _ => None
+  def onPieceMouseDown: PieceMouseEvent => Option[Callback]
 }
 
-object EmptyPieceCallbacks extends PieceCallbacks
+object EmptyPieceCallbacks extends PieceCallbacks {
+  override def onPieceMouseDown: (PieceMouseEvent) => Option[Callback] = _ => {
+    println("empty callback!")
+    None
+  }
+}
+
+
+case class SquareMouseEvent(reactEvent: ReactMouseEvent,
+                            squareIndex: Int,
+                            boardPoint: Point)
+
+
+// Events that might occur on the board, but are not in game squares
+case class BoardMouseEvent(reactEvent: ReactMouseEvent,
+                           boardPoint: Point)
+
+
+trait BoardCallbacks {
+  def onSquareMouseDown: SquareMouseEvent => Option[Callback]
+  def onBoardMouseDown: BoardMouseEvent => Option[Callback]
+}
+
+//object EmptyBoardCallbacks extends BoardCallbacks

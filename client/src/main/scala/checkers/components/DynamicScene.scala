@@ -27,11 +27,11 @@ object DynamicScene {
     println(s"tag $tag")
   }
 
-  object TestPieceEvents extends PieceCallbacks {
-    val onMouseDown = (event: PieceMouseEvent) => Some(Callback {
-      println(event)
-    })
-  }
+//  object TestPieceEvents extends PieceCallbacks {
+//    val onMouseDown = (event: PieceMouseEvent) => Some(Callback {
+//      println(event)
+//    })
+//  }
 
   val component = ReactComponentB[Props]("DynamicScene")
     .render_P { case (model, callbacks, sceneContainerContext, screenToBoard) =>

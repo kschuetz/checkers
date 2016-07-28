@@ -5,6 +5,7 @@ import checkers.computer.PlayInput
 import checkers.consts._
 import checkers.core.BeginTurnEvaluation._
 import checkers.core.InputPhase.{BeginHumanTurn, ComputerThinking, PieceSelected}
+import checkers.geometry.Point
 import checkers.models.{BoardOrientation, GameModel, GhostPiece}
 
 
@@ -187,7 +188,8 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
     if(model.moveTree.squares.contains(selectedSquare)) {
       val inputPhase = PieceSelected(event.piece, selectedSquare, event.boardPoint, true)
       val squareCenter = Board.squareCenter(selectedSquare)
-      val grabOffset = squareCenter - event.boardPoint
+//      val grabOffset = squareCenter - event.boardPoint
+     val grabOffset = Point(-0.13, -0.15) // event.boardPoint - squareCenter     // temp
       val ghostPiece = GhostPiece(event.piece, selectedSquare, grabOffset, event.boardPoint)
       Some(model.copy(inputPhase = inputPhase, ghostPiece = Some(ghostPiece)))
     } else None
