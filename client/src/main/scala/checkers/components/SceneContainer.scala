@@ -1,8 +1,6 @@
 package checkers.components
 
-import checkers.components.piece.PieceCallbacks
-import checkers.geometry.Point
-import checkers.models.{GameModel$, GameModelReader}
+import checkers.models.GameModelReader
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
 import org.scalajs.dom.raw.SVGSVGElement

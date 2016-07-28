@@ -1,7 +1,6 @@
 package checkers.driver
 
-import checkers.components.GameScreen
-import checkers.components.piece.{PieceCallbacks, PieceMouseEvent}
+import checkers.components.{GameScreen, PieceCallbacks, PieceMouseEvent}
 import checkers.core.GameDriver
 import checkers.models.GameModel
 import japgolly.scalajs.react.{Callback, ReactDOM}

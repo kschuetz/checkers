@@ -1,5 +1,7 @@
 package checkers.core
 
+import checkers.components.board.PhysicalBoard
+import checkers.geometry.Point
 import checkers.consts._
 
 case class BoardPosition(row: Int, col: Int) {
@@ -36,6 +38,7 @@ object Board {
   val allSquares = 0 to 31
 
   val position: Vector[BoardPosition] = allSquares.map(squareIndexToBoardPosition).toVector
+  val squareCenter: Vector[Point] = position.map(PhysicalBoard.positionToPoint)
 
   val lightStartingSquares = 20 to 31
   val darkStartingSquares = 0 to 11
