@@ -10,13 +10,16 @@ import checkers.models.{BoardOrientation, GameModel}
 class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
                         (playerConfig: PlayerConfig[DS, LS]) {
 
+  type Model = GameModel[DS, LS]
+  type State = GameState[DS, LS]
+
   private val rulesSettings = gameLogicModule.rulesSettings
   private val moveGenerator = gameLogicModule.moveGenerator
   private val moveTreeFactory = gameLogicModule.moveTreeFactory
   private val moveExecutor = gameLogicModule.moveExecutor
   private val drawLogic = gameLogicModule.drawLogic
 
-  def createInitialModel(nowTime: Double): GameModel[DS, LS] = {
+  def createInitialModel(nowTime: Double): Model = {
     val gameState = createInitialState
     val model = GameModel(
       nowTime = nowTime,
@@ -33,7 +36,7 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
     initTurn(model, gameState)
   }
 
-  def applyPlay(gameModel: GameModel[DS, LS], play: Play): Option[(PlayEvents, GameModel[DS, LS])] = {
+  def applyPlay(gameModel: Model, play: Play): Option[(PlayEvents, Model)] = {
     val myself = gameModel.turnToMove
     val opponent = OPPONENT(myself)
     val gameState = gameModel.gameState
@@ -57,7 +60,7 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
     }
   }
 
-  private def applyMove(gameModel: GameModel[DS, LS], move: Play.Move, newMoveTree: MoveTree): (PlayEvents, GameModel[DS, LS]) = {
+  private def applyMove(gameModel: Model, move: Play.Move, newMoveTree: MoveTree): (PlayEvents, Model) = {
     val gameState = gameModel.gameState
     val boardState = gameState.board.toMutable
     val endsTurn = newMoveTree.isEmpty
@@ -98,7 +101,7 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
     (playEvents, newModel)
   }
 
-  private def createInitialState: GameState[DS, LS] = {
+  private def createInitialState: State = {
     val darkState = playerConfig.darkPlayer.initialState
     val lightState = playerConfig.lightPlayer.initialState
     val turnToMove = rulesSettings.playsFirst
@@ -144,7 +147,7 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
     }
   }
 
-  private def initTurn(gameModel: GameModel[DS, LS], newState: GameState[DS, LS]): GameModel[DS, LS] = {
+  private def initTurn(gameModel: Model, newState: State): Model = {
     val turnToMove = newState.turnToMove
     val nowTime = gameModel.nowTime
     val inputPhase = if(turnToMove == LIGHT) {
@@ -158,7 +161,7 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
     gameModel.copy(inputPhase = inputPhase, turnStartTime = nowTime, gameState = newState, clickableSquares = clickableSquares)
   }
 
-  private def getPlayInput(gameState: GameState[DS, LS]): PlayInput = {
+  private def getPlayInput(gameState: State): PlayInput = {
     import gameState._
     PlayInput(board, gameState.rulesSettings, turnToMove, drawStatus, history)
   }

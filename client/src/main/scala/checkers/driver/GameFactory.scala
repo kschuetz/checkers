@@ -22,7 +22,7 @@ class GameFactory(gameLogicModuleFactory: GameLogicModuleFactory) {
 
   private def createGame[DS, LS](gameLogicModule: GameLogicModule, gameConfig: GameConfig[DS, LS], host: dom.Node): Game[DS, LS] = {
     val driver = new GameDriver(gameLogicModule)(gameConfig.playerConfig)
-    new Game(gameLogicModule, driver)(host)
+    new Game(driver)(host)
   }
 
 }

@@ -9,21 +9,15 @@ import org.scalajs.dom
 import org.scalajs.dom.window.performance
 
 
-class Game[DS, LS](gameLogicModule: GameLogicModule,
-                   gameDriver: GameDriver[DS, LS])
+class Game[DS, LS](gameDriver: GameDriver[DS, LS])
                   (val host: dom.Node) {
   type Model = GameModel[DS, LS]
 
-  protected val moveGenerator = gameLogicModule.moveGenerator
-  protected val moveExecutor = gameLogicModule.moveExecutor
-  protected val moveTreeFactory = gameLogicModule.moveTreeFactory
 
   var model: Model = {
     val nowTime = performance.now()
     gameDriver.createInitialModel(nowTime)
   }
-//    .copy(clickableSquares = (0 to 31).toSet,
-//      ghostPiece = Some(GhostPiece(DARKMAN, 21, Point(-0.15, -0.13), Point(1.0, 1.0))))
 
   object Callbacks extends PieceCallbacks {
     override val onPieceMouseDown = (event: PieceMouseEvent) => Some(Callback {
@@ -53,32 +47,10 @@ class Game[DS, LS](gameLogicModule: GameLogicModule,
     invalidate()
   }
 
-  def tick(): Unit = {
-    import checkers.core.InputPhase._
-    model.inputPhase match {
-      case GameStart => startGame(model)
-      case _ => ()
-    }
-  }
-
-  private def startGame(model: Model): Unit = {
-  }
-
-  private def beginTurn(model: Model): Unit = {
-  }
-
-  private def endTurn(model: Model): Unit = {
-
-  }
-
-
   private def replaceModel(newModel: Model): Unit = {
     model = newModel
     invalidate()
   }
 
-//  private def nextTurn(model: GameModel[DS, LS]): GameModel[DS, LS] = {
-//
-//  }
 
 }
