@@ -10,7 +10,7 @@ import org.scalajs.dom.raw.{SVGGElement, SVGLocatable}
 
 object SceneFrame {
 
-  type Callbacks = PieceCallbacks
+  type Callbacks = PieceCallbacks with BoardCallbacks
 
   type Props = (GameModelReader, Callbacks, SceneContainerContext)
 

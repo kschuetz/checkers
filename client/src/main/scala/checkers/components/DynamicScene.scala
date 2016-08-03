@@ -18,7 +18,7 @@ object DynamicScene {
   //                   rotationDegrees: Double)
   type Model = models.GameModelReader
 
-  type Callbacks = PieceCallbacks
+  type Callbacks = PieceCallbacks with BoardCallbacks
 
   type Props = (Model, Callbacks, SceneContainerContext, Point => Point)
 

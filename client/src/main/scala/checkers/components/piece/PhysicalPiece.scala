@@ -51,7 +51,7 @@ object PhysicalPiece extends SvgHelpers {
   private val PieceOverlayButton = ReactComponentB[PhysicalPieceProps]("PieceOverlayButton")
     .render_P { props =>
       <.svg.circle(
-        ^.`class` := "piece-button-layer",
+        ^.classSet1("piece-button-layer", "welcome" -> props.clickable),
         ^.svg.cx := 0,
         ^.svg.cy := 0,
         ^.svg.r := pieceOverlayRadius,
