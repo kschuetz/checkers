@@ -59,10 +59,7 @@ object Settings {
     "com.github.japgolly.scalajs-react" %%% "core" % versions.scalajsReact,
     "com.github.japgolly.scalajs-react" %%% "extra" % versions.scalajsReact,
     "com.github.japgolly.scalacss" %%% "ext-react" % versions.scalaCSS,
-    "me.chrons" %%% "diode" % versions.diode,
-    "me.chrons" %%% "diode-react" % versions.diode,
     "org.scala-js" %%% "scalajs-dom" % versions.scalaDom,
-    "com.github.japgolly.scalajs-react" %%% "ext-monocle" % "0.11.1",
     "com.softwaremill.macwire" %% "macros" % versions.macwire % Provided,
     "com.lihaoyi" %%% "utest" % versions.uTest % Test,
     "com.github.japgolly.nyaya" %%% "nyaya-test" % versions.nyaya % Test
