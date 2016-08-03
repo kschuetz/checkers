@@ -24,7 +24,8 @@ object SquareOverlayButton {
         ^.svg.y := props.y - PhysicalBoard.squareCenterOffset,
         ^.svg.width := PhysicalBoard.squareSize,
         ^.svg.height := PhysicalBoard.squareSize,
-        ^.onMouseDown ==>? handleMouseDown(props)
+        ^.onMouseDown ==>? handleMouseDown(props),
+        ^.onMouseMove ==>? handleMouseMove(props)
       )
 
     }.build
@@ -32,16 +33,24 @@ object SquareOverlayButton {
   def apply(props: Props) = component(props)
 
   private def handleMouseDown(props: Props)(event: ReactMouseEvent): Option[Callback] = {
+    val boardEvent = makeBoardEvent(props, event)
+    props.callbacks.onBoardMouseDown(boardEvent)
+  }
+
+  private def handleMouseMove(props: Props)(event: ReactMouseEvent): Option[Callback] = {
+    val boardEvent = makeBoardEvent(props, event)
+    props.callbacks.onBoardMouseMove(boardEvent)
+  }
+
+  private def makeBoardEvent(props: Props, event: ReactMouseEvent): BoardMouseEvent = {
     val screenPoint = Point(event.clientX, event.clientY)
     val boardPoint = props.screenToBoard(screenPoint)
     val squareIndex = props.squareIndex
-    val boardEvent = BoardMouseEvent(reactEvent = event,
+    BoardMouseEvent(reactEvent = event,
       squareIndex = squareIndex,
       onPiece = false,
       piece = props.occupant,
       boardPoint = boardPoint)
-
-    props.callbacks.onBoardMouseDown(boardEvent)
   }
 
 }

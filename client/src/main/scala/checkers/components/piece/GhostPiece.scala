@@ -15,7 +15,7 @@ object GhostPiece extends SvgHelpers {
   class GhostPieceBackend($: BackendScope[Props, Unit]) {
     def render(props: Props) = {
       val model = props
-      val center = model.movePos + model.grabOffset
+      val center = model.movePos // + model.grabOffset
 
       val physicalPieceProps = PhysicalPieceProps.default.copy(piece = model.piece,
         x = center.x,

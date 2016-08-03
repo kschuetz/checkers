@@ -13,24 +13,14 @@ case class BoardMouseEvent(reactEvent: ReactMouseEvent,
 
 trait BoardCallbacks {
   def onBoardMouseDown: BoardMouseEvent => Option[Callback]
+  def onBoardMouseMove: BoardMouseEvent => Option[Callback]
 }
 
 object EmptyBoardCallbacks extends BoardCallbacks {
-  override def onBoardMouseDown: (BoardMouseEvent) => Option[Callback] = _ => {
-    println("empty callback!")
+  override val onBoardMouseDown: (BoardMouseEvent) => Option[Callback] = _ => {
     None
   }
+
+  override val onBoardMouseMove = onBoardMouseDown
 }
 
-
-// squareIndex will be < 0 if not a playable square
-case class OldSquareMouseEvent(reactEvent: ReactMouseEvent,
-                               squareIndex: Int,
-                               boardPoint: Point)
-
-
-trait OldBoardCallbacks {
-  def onSquareMouseDown: OldSquareMouseEvent => Option[Callback]
-}
-
-//object EmptyBoardCallbacks extends BoardCallbacks

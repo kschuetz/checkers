@@ -183,13 +183,23 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
     }
   }
 
+  def handleBoardMouseMove(model: Model, event: BoardMouseEvent): Option[Model] = {
+    model.inputPhase match {
+      case PieceSelected(piece, squareIndex, grabOffset, _) =>
+        val ghostPiece = GhostPiece(piece, squareIndex, grabOffset, event.boardPoint)
+        Some(model.copy(ghostPiece = Some(ghostPiece)))
+      case _ => None
+    }
+  }
+
   private def selectPiece(model: Model, event: BoardMouseEvent): Option[Model] = {
     val selectedSquare = event.squareIndex
     if (model.moveTree.squares.contains(selectedSquare)) {
       val inputPhase = PieceSelected(event.piece, selectedSquare, event.boardPoint, true)
       val squareCenter = Board.squareCenter(selectedSquare)
-      //      val grabOffset = squareCenter - event.boardPoint
-      val grabOffset = Point(-0.13, -0.15) // event.boardPoint - squareCenter     // temp
+            val grabOffset = squareCenter - event.boardPoint
+//      val grabOffset = Point(-0.13, -0.15) // event.boardPoint - squareCenter     // temp
+//      val grabOffset = event.boardPoint - squareCenter
       val ghostPiece = GhostPiece(event.piece, selectedSquare, grabOffset, event.boardPoint)
       Some(model.copy(inputPhase = inputPhase, ghostPiece = Some(ghostPiece)))
     } else None

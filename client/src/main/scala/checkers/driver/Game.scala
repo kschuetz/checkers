@@ -23,6 +23,10 @@ class Game[DS, LS](gameDriver: GameDriver[DS, LS])
       println(s"pieceMouseDown ${event.squareIndex}")
       gameDriver.handleBoardMouseDown(model, event).foreach(replaceModel)
     })
+
+    override val onBoardMouseMove = (event: BoardMouseEvent) => Some(Callback {
+      gameDriver.handleBoardMouseMove(model, event).foreach(replaceModel)
+    })
   }
 
   private def invalidate(): Unit = {
