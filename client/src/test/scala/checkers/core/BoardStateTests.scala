@@ -12,9 +12,9 @@ object BoardStateTests extends TestSuite {
   override def formatColor: Boolean = false
 
   val allPieces = List(LIGHTMAN, DARKMAN, LIGHTKING, DARKKING)
-  val allSquares = Board.allSquares.toSet
+  val allSquares = Board.playableSquares.toSet
 
-  private def shuffledSquares() = Random.shuffle(Board.allSquares.toList)
+  private def shuffledSquares() = Random.shuffle(Board.playableSquares.toList)
 
   private def randomSquares(count: Int) = shuffledSquares().take(count)
 

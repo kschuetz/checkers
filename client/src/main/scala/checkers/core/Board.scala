@@ -35,10 +35,18 @@ object Board {
     BoardPosition(7 - row, col)
   }
 
-  val allSquares = 0 to 31
+  val playableSquares = 0 to 31
 
-  val position: Vector[BoardPosition] = allSquares.map(squareIndexToBoardPosition).toVector
+  val position: Vector[BoardPosition] = playableSquares.map(squareIndexToBoardPosition).toVector
   val squareCenter: Vector[Point] = position.map(PhysicalBoard.positionToPoint)
+
+  lazy val allSquares: Seq[(BoardPosition, Int, Point)] = for {
+    row <- 0 to 7
+    col <- 0 to 7
+  } yield {
+    val boardPos = BoardPosition(row, col)
+    (boardPos, boardPos.toSquareIndex, PhysicalBoard.positionToPoint(boardPos))
+  }
 
   val lightStartingSquares = 20 to 31
   val darkStartingSquares = 0 to 11

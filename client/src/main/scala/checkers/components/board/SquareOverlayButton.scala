@@ -7,7 +7,7 @@ import japgolly.scalajs.react.vdom.prefix_<^._
 
 object SquareOverlayButton {
 
-  case class Props(squareIndex: Option[Int],
+  case class Props(squareIndex: Int,
                    x: Double,
                    y: Double,
                    clickable: Boolean,
@@ -17,7 +17,7 @@ object SquareOverlayButton {
   val component = ReactComponentB[Props]("SquareOverlayButton")
     .render_P { props =>
       <.svg.rect(
-        ^.classSet1("square-overlay-button", "welcome" -> props.clickable),
+        ^.classSet1("square-button-layer", "welcome" -> props.clickable),
         ^.svg.x := props.x - PhysicalBoard.squareCenterOffset,
         ^.svg.y := props.y - PhysicalBoard.squareCenterOffset,
         ^.svg.width := PhysicalBoard.squareSize,
@@ -32,10 +32,12 @@ object SquareOverlayButton {
   private def handleMouseDown(props: Props)(event: ReactMouseEvent): Option[Callback] = {
     val screenPoint = Point(event.clientX, event.clientY)
     val boardPoint = props.screenToBoard(screenPoint)
-    props.squareIndex.fold(
-      props.callbacks.onBoardMouseDown(BoardMouseEvent(event, boardPoint))
-    ) { square =>
-      val squareEvent = SquareMouseEvent(event, square, boardPoint)
+    val squareIndex = props.squareIndex
+    if(squareIndex < 0) {
+      val boardEvent = BoardMouseEvent(event, boardPoint)
+      props.callbacks.onBoardMouseDown(boardEvent)
+    } else {
+      val squareEvent = SquareMouseEvent(event, squareIndex, boardPoint)
       props.callbacks.onSquareMouseDown(squareEvent)
     }
   }
