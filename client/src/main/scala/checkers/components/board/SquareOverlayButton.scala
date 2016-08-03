@@ -1,6 +1,7 @@
 package checkers.components.board
 
 import checkers.components._
+import checkers.consts.Occupant
 import checkers.geometry.Point
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
@@ -8,6 +9,7 @@ import japgolly.scalajs.react.vdom.prefix_<^._
 object SquareOverlayButton {
 
   case class Props(squareIndex: Int,
+                   occupant: Occupant,
                    x: Double,
                    y: Double,
                    clickable: Boolean,
@@ -33,13 +35,20 @@ object SquareOverlayButton {
     val screenPoint = Point(event.clientX, event.clientY)
     val boardPoint = props.screenToBoard(screenPoint)
     val squareIndex = props.squareIndex
-    if(squareIndex < 0) {
-      val boardEvent = BoardMouseEvent(event, boardPoint)
-      props.callbacks.onBoardMouseDown(boardEvent)
-    } else {
-      val squareEvent = SquareMouseEvent(event, squareIndex, boardPoint)
-      props.callbacks.onSquareMouseDown(squareEvent)
-    }
+    val boardEvent = BoardMouseEvent(reactEvent = event,
+      squareIndex = squareIndex,
+      onPiece = false,
+      piece = props.occupant,
+      boardPoint = boardPoint)
+
+    props.callbacks.onBoardMouseDown(boardEvent)
+//    if(squareIndex < 0) {
+//      val boardEvent = BoardMouseEvent(event, boardPoint)
+//      props.callbacks.onBoardMouseDown(boardEvent)
+//    } else {
+//      val squareEvent = OldSquareMouseEvent(event, squareIndex, boardPoint)
+//      props.callbacks.onSquareMouseDown(squareEvent)
+//    }
   }
 
 }

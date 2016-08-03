@@ -18,19 +18,21 @@ class Game[DS, LS](gameDriver: GameDriver[DS, LS])
     gameDriver.createInitialModel(nowTime)
   }
 
-  object Callbacks extends PieceCallbacks with BoardCallbacks {
-    override val onPieceMouseDown = (event: PieceMouseEvent) => Some(Callback {
-      println(s"pieceMouseDown ${event.tag}")
-      gameDriver.handlePieceMouseDown(model, event).foreach(replaceModel)
-    })
-
-    override val onSquareMouseDown = (event: SquareMouseEvent) => Some(Callback {
-      println(s"squareMouseDown ${event.squareIndex}")
-    })
-
+  object Callbacks extends BoardCallbacks {
     override val onBoardMouseDown = (event: BoardMouseEvent) => Some(Callback {
-      println(s"boardMouseDown ${event.boardPoint}")
+      println(s"pieceMouseDown ${event.squareIndex}")
+      gameDriver.handleBoardMouseDown(model, event).foreach(replaceModel)
     })
+
+//    override val onSquareMouseDown = (event: OldSquareMouseEvent) => Some(Callback {
+//      println(s"squareMouseDown ${event.squareIndex}")
+//      gameDriver.handleSquareMouseDown(model, event).foreach(replaceModel)
+//    })
+//
+//    override val onBoardMouseDown = (event: BoardMouseEvent) => Some(Callback {
+////      println(s"boardMouseDown ${event.boardPoint}")
+////      gameDriver.handleBoardMouseDown(model, event).foreach(replaceModel)
+//    })
   }
 
   private def invalidate(): Unit = {

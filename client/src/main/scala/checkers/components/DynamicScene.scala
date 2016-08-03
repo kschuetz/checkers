@@ -18,7 +18,7 @@ object DynamicScene {
   //                   rotationDegrees: Double)
   type Model = models.GameModelReader
 
-  type Callbacks = PieceCallbacks with BoardCallbacks
+  type Callbacks = BoardCallbacks
 
   type Props = (Model, Callbacks, SceneContainerContext, Point => Point)
 
@@ -84,7 +84,10 @@ object DynamicScene {
       Board.allSquares.foreach { case (boardPos, squareIndex, pt) =>
         val k = s"s-${boardPos.row}-${boardPos.col}"
         val clickable = model.clickableSquares.contains(squareIndex)
-        val props = SquareOverlayButton.Props(squareIndex, pt.x, pt.y, clickable, screenToBoard = screenToBoard, callbacks = callbacks)
+        val occupant = if(squareIndex > 0) boardState.getOccupant(squareIndex) else EMPTY
+
+        val props = SquareOverlayButton.Props(squareIndex, occupant, pt.x, pt.y, clickable,
+          screenToBoard = screenToBoard, callbacks = callbacks)
         val button = SquareOverlayButton.component.withKey(k)(props)
         overlayButtons.push(button)
       }

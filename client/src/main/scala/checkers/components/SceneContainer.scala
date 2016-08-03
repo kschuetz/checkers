@@ -8,7 +8,7 @@ import org.scalajs.dom.raw.SVGSVGElement
 
 object SceneContainer {
 
-  type Callbacks = PieceCallbacks with BoardCallbacks
+  type Callbacks = BoardCallbacks
 
   type Props = (GameModelReader, Callbacks)
 

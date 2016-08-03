@@ -1,6 +1,6 @@
 package checkers.core
 
-import checkers.components.PieceMouseEvent
+import checkers.components.BoardMouseEvent
 import checkers.computer.PlayInput
 import checkers.consts._
 import checkers.core.BeginTurnEvaluation._
@@ -47,7 +47,7 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
       case Play.NoPlay => None
 
       case Play.AcceptDraw =>
-        if(drawLogic.canAcceptDraw(gameState)) {
+        if (drawLogic.canAcceptDraw(gameState)) {
           val newState = gameState.acceptDraw
           val newModel = gameModel.copy(gameState = newState, inputPhase = InputPhase.GameOver(None))
           Some((PlayEvents.acceptedDraw, newModel))
@@ -81,7 +81,7 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
     // TODO: schedule animations
 
     val entry = HistoryEntry(gameState.turnIndex, gameState.turnToMove, gameState.board, gameState.drawStatus, move)
-    val newGameState = if(endsTurn) {
+    val newGameState = if (endsTurn) {
       val beginTurnState = BeginTurnState(board = newBoard,
         turnIndex = gameState.turnIndex + 1,
         turnToMove = OPPONENT(gameState.turnToMove),
@@ -98,7 +98,7 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
       gameState.copy(board = newBoard, history = entry :: gameState.history)
     }
 
-    val playEvents = if(endsTurn) PlayEvents.turnEnded else PlayEvents.partialTurn
+    val playEvents = if (endsTurn) PlayEvents.turnEnded else PlayEvents.partialTurn
     val newModel = gameModel.copy(gameState = newGameState)
     (playEvents, newModel)
   }
@@ -160,7 +160,7 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
   private def restartTurn(gameModel: Model, newState: State): Model = {
     val turnToMove = newState.turnToMove
     val nowTime = gameModel.nowTime
-    val inputPhase = if(turnToMove == LIGHT) {
+    val inputPhase = if (turnToMove == LIGHT) {
       getInputPhase(nowTime, playerConfig.lightPlayer, newState.lightState, getPlayInput(newState))
     } else {
       getInputPhase(nowTime, playerConfig.darkPlayer, newState.darkState, getPlayInput(newState))
@@ -175,7 +175,7 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
     PlayInput(board, gameState.rulesSettings, turnToMove, drawStatus, history)
   }
 
-  def handlePieceMouseDown(model: Model, event: PieceMouseEvent): Option[Model] = {
+  def handleBoardMouseDown(model: Model, event: BoardMouseEvent): Option[Model] = {
     model.inputPhase match {
       case BeginHumanTurn => selectPiece(model, event)
       case PieceSelected(piece, squareIndex, _, true) => Some(cancelPieceSelected(model))
@@ -183,13 +183,13 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
     }
   }
 
-  private def selectPiece(model: Model, event: PieceMouseEvent): Option[Model] = {
-    val selectedSquare = event.tag
-    if(model.moveTree.squares.contains(selectedSquare)) {
+  private def selectPiece(model: Model, event: BoardMouseEvent): Option[Model] = {
+    val selectedSquare = event.squareIndex
+    if (model.moveTree.squares.contains(selectedSquare)) {
       val inputPhase = PieceSelected(event.piece, selectedSquare, event.boardPoint, true)
       val squareCenter = Board.squareCenter(selectedSquare)
-//      val grabOffset = squareCenter - event.boardPoint
-     val grabOffset = Point(-0.13, -0.15) // event.boardPoint - squareCenter     // temp
+      //      val grabOffset = squareCenter - event.boardPoint
+      val grabOffset = Point(-0.13, -0.15) // event.boardPoint - squareCenter     // temp
       val ghostPiece = GhostPiece(event.piece, selectedSquare, grabOffset, event.boardPoint)
       Some(model.copy(inputPhase = inputPhase, ghostPiece = Some(ghostPiece)))
     } else None

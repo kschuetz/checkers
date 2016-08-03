@@ -6,7 +6,7 @@ import japgolly.scalajs.react.vdom.prefix_<^._
 
 object GameScreen {
 
-  type Callbacks = PieceCallbacks with BoardCallbacks
+  type Callbacks = BoardCallbacks
 
   type Props = (GameModelReader, Callbacks)
 

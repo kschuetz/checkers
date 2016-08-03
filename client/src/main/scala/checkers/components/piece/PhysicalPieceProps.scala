@@ -1,6 +1,6 @@
 package checkers.components.piece
 
-import checkers.components.{EmptyPieceCallbacks, PieceCallbacks}
+import checkers.components.{EmptyBoardCallbacks, BoardCallbacks}
 import checkers.consts._
 import checkers.geometry.Point
 
@@ -13,7 +13,7 @@ case class PhysicalPieceProps(piece: Occupant,
                               clickable: Boolean,
                               highlighted: Boolean,
                               screenToBoard: Point => Point,
-                              callbacks: PieceCallbacks)
+                              callbacks: BoardCallbacks)
 
 object PhysicalPieceProps {
   val default = PhysicalPieceProps(piece = DARKMAN,
@@ -25,6 +25,6 @@ object PhysicalPieceProps {
     clickable = false,
     highlighted = false,
     screenToBoard = identity,
-    callbacks = EmptyPieceCallbacks)
+    callbacks = EmptyBoardCallbacks)
 
 }
