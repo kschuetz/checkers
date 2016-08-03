@@ -67,7 +67,7 @@ object PhysicalPiece extends SvgHelpers {
         ^.`class` := classes,
         ^.svg.transform := s"translate(${props.x},${props.y})",
         PieceBody(RenderProps(props, Decoration.Star)),
-        props.clickable ?= PieceOverlayButton(props)
+        PieceOverlayButton(props)
       )
     }.build
 

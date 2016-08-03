@@ -20,23 +20,18 @@ class Game[DS, LS](gameDriver: GameDriver[DS, LS])
 
   object Callbacks extends PieceCallbacks with BoardCallbacks {
     override val onPieceMouseDown = (event: PieceMouseEvent) => Some(Callback {
-//      println("in handlePieceMouseDown")
-//      println(s"(${event.reactEvent.clientX}, ${event.reactEvent.clientY})")
-//      println(event)
+      println(s"pieceMouseDown ${event.tag}")
       gameDriver.handlePieceMouseDown(model, event).foreach(replaceModel)
     })
 
     override val onSquareMouseDown = (event: SquareMouseEvent) => Some(Callback {
-      println("in onSquareMouseDown")
-      println(s"$event")
+      println(s"squareMouseDown ${event.squareIndex}")
     })
 
     override val onBoardMouseDown = (event: BoardMouseEvent) => Some(Callback {
-      println("in onBoardMouseDown")
-      println(s"$event")
+      println(s"boardMouseDown ${event.boardPoint}")
     })
   }
-
 
   private def invalidate(): Unit = {
     dom.window.requestAnimationFrame(handleAnimationFrame _)
