@@ -42,13 +42,6 @@ object SquareOverlayButton {
       boardPoint = boardPoint)
 
     props.callbacks.onBoardMouseDown(boardEvent)
-//    if(squareIndex < 0) {
-//      val boardEvent = BoardMouseEvent(event, boardPoint)
-//      props.callbacks.onBoardMouseDown(boardEvent)
-//    } else {
-//      val squareEvent = OldSquareMouseEvent(event, squareIndex, boardPoint)
-//      props.callbacks.onSquareMouseDown(squareEvent)
-//    }
   }
 
 }
