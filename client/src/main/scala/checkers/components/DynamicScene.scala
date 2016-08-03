@@ -46,7 +46,6 @@ object DynamicScene {
         case (res, _) => res
       }
 
-      //      val squares = model.gameState.board.data
       val boardState = model.board
 
       val staticPieces = new js.Array[ReactNode]
@@ -76,6 +75,11 @@ object DynamicScene {
         }
       }
 
+      val staticPiecesLayer = <.svg.g(
+        ^.classSet("no-pointer-events" -> !model.canClickPieces),
+        staticPieces
+      )
+
       val overlayButtons = new js.Array[ReactNode]
       Board.allSquares.foreach { case (boardPos, squareIndex, pt) =>
         val k = s"s-${boardPos.row}-${boardPos.col}"
@@ -91,7 +95,7 @@ object DynamicScene {
 
       <.svg.g(
         overlayButtons,
-        staticPieces,
+        staticPiecesLayer,
         ghostPiece
       )
 

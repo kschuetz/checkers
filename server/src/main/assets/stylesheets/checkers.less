@@ -116,7 +116,6 @@
 }
 
 .square-button-layer.welcome:hover {
-  stroke: none;
   fill: green;
   fill-opacity: 0.25;
   cursor: pointer;
@@ -124,5 +123,9 @@
 
 .ghost-piece {
   opacity: 0.64;
+  pointer-events: none;
+}
+
+.no-pointer-events {
   pointer-events: none;
 }
