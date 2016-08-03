@@ -26,8 +26,9 @@ object PhysicalPiece extends SvgHelpers {
       )
     }.build
 
-  private val PieceBody = ReactComponentB[RenderProps]("PieceBody")
-    .render_P { case RenderProps(props, decoration) =>
+  class PieceBodyBackend($: BackendScope[RenderProps, Unit]) {
+    def render(renderProps: RenderProps) = {
+      val RenderProps(props, decoration) = renderProps
       val color = COLOR(props.piece)
       val classes =
         if (color == DARK) "piece dark" else "piece light"
@@ -46,7 +47,14 @@ object PhysicalPiece extends SvgHelpers {
         Decorations.PieceDecoration((color, decoration))
       )
 
-    }.build
+    }
+
+  }
+
+  private val PieceBody = ReactComponentB[RenderProps]("PieceBody")
+    .renderBackend[PieceBodyBackend]
+    .shouldComponentUpdateCB(_ => CallbackTo.pure(false))
+    .build
 
   private val PieceOverlayButton = ReactComponentB[PhysicalPieceProps]("PieceOverlayButton")
     .render_P { props =>
@@ -69,7 +77,12 @@ object PhysicalPiece extends SvgHelpers {
         PieceBody(RenderProps(props, Decoration.Star)),
         PieceOverlayButton(props)
       )
-    }.build
+    }
+    .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, _) =>
+      val result = comparePhysicalPieceProps(scope.props, nextProps)
+      CallbackTo.pure(result)
+    }
+    .build
 
   private val PieceKing = ReactComponentB[PhysicalPieceProps]("King")
     .render_P { props =>
@@ -84,7 +97,7 @@ object PhysicalPiece extends SvgHelpers {
           ^.svg.transform := "translate(0.07,-0.11),scale(1.01)",
           PieceBody(RenderProps(props, Decoration.Crown))
         ),
-        props.clickable ?= PieceOverlayButton(props)
+        PieceOverlayButton(props)
       )
     }.build
 
@@ -105,6 +118,10 @@ object PhysicalPiece extends SvgHelpers {
       piece = props.piece,
       boardPoint = props.screenToBoard(screenPoint))
     props.callbacks.onBoardMouseDown(boardEvent)
+  }
+
+  private def comparePhysicalPieceProps(oldProps: PhysicalPieceProps, newProps: PhysicalPieceProps): Boolean = {
+    oldProps != newProps
   }
 
 }
