@@ -39,8 +39,6 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
   }
 
   def applyPlay(gameModel: Model, play: Play): Option[(PlayEvents, Model)] = {
-    val myself = gameModel.turnToMove
-    val opponent = OPPONENT(myself)
     val gameState = gameModel.gameState
 
     play match {
@@ -87,16 +85,20 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
         turnToMove = OPPONENT(gameState.turnToMove),
         drawStatus = gameState.drawStatus)
       val turnEvaluation = evaluateBeginTurn(beginTurnState)
+      println(turnEvaluation)
       gameState.copy(board = newBoard,
         turnIndex = beginTurnState.turnIndex,
         turnToMove = beginTurnState.turnToMove,
         drawStatus = beginTurnState.drawStatus,
+        beginTurnEvaluation = turnEvaluation,
         history = entry :: gameState.history)
     } else {
       // partial
       val turnEvaluation = CanMove(newMoveTree)
-      gameState.copy(board = newBoard, history = entry :: gameState.history)
+      gameState.copy(board = newBoard, beginTurnEvaluation = turnEvaluation, history = entry :: gameState.history)
     }
+
+    println(s"endsTurn: $endsTurn")
 
     val playEvents = if (endsTurn) PlayEvents.turnEnded else PlayEvents.partialTurn
     val newModel = gameModel.copy(gameState = newGameState)
@@ -118,7 +120,7 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
     else {
       val turnToMove = beginTurnState.turnToMove
       val boardStack = BoardStack.fromBoard(beginTurnState.board)
-      val moveList = moveGenerator.generateMoves(boardStack, beginTurnState.turnToMove)
+      val moveList = moveGenerator.generateMoves(boardStack, turnToMove)
       val moveTree = moveTreeFactory.fromMoveList(moveList)
       if (moveTree.isEmpty) {
         if (rulesSettings.giveaway) Win(turnToMove)
@@ -153,6 +155,10 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
     restartTurn(gameModel, newState).copy(turnStartTime = gameModel.nowTime)
   }
 
+  private def continueTurn(model: Model, fromSquare: Int, piece: Occupant): Option[Model] = {
+    selectPiece(model, fromSquare, piece, None)
+  }
+
   /**
     * Reverts back to beginning of current turn (e.g, in case of cancelling a piece selection),
     * but does not update the turnStartTime.
@@ -167,6 +173,8 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
     }
 
     val clickableSquares = getClickableSquares(inputPhase, newState.moveTree)
+    println(s"turnToMove: $turnToMove")
+    println(clickableSquares)
     gameModel.copy(inputPhase = inputPhase, gameState = newState, clickableSquares = clickableSquares, ghostPiece = None)
   }
 
@@ -177,33 +185,50 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
 
   def handleBoardMouseDown(model: Model, event: BoardMouseEvent): Option[Model] = {
     model.inputPhase match {
-      case BeginHumanTurn => selectPiece(model, event)
-      case PieceSelected(piece, squareIndex, _, true) => Some(cancelPieceSelected(model))
+      case BeginHumanTurn => selectPiece(model, event.squareIndex, event.piece, Some(event.boardPoint))
+      case PieceSelected(piece, squareIndex, moveTree, _, true) =>
+        val targetSquare = event.squareIndex
+        if(moveTree.squares.contains(targetSquare)) {
+          println(s"valid target $squareIndex")
+          selectMoveTarget(model, event, squareIndex, targetSquare)
+        } else {
+          println("invalid target")
+          Some(cancelPieceSelected(model))
+        }
       case _ => None
     }
   }
 
   def handleBoardMouseMove(model: Model, event: BoardMouseEvent): Option[Model] = {
     model.inputPhase match {
-      case PieceSelected(piece, squareIndex, grabOffset, _) =>
+      case PieceSelected(piece, squareIndex, nextMoveTree, grabOffset, _) =>
         val ghostPiece = GhostPiece(piece, squareIndex, grabOffset, event.boardPoint)
         Some(model.copy(ghostPiece = Some(ghostPiece)))
       case _ => None
     }
   }
 
-  private def selectPiece(model: Model, event: BoardMouseEvent): Option[Model] = {
-    val selectedSquare = event.squareIndex
-    if (model.moveTree.squares.contains(selectedSquare)) {
-      val inputPhase = PieceSelected(event.piece, selectedSquare, event.boardPoint, true)
-      val squareCenter = Board.squareCenter(selectedSquare)
-      val grabOffset = squareCenter - event.boardPoint
-      val ghostPiece = GhostPiece(event.piece, selectedSquare, grabOffset, event.boardPoint)
-      Some(model.copy(inputPhase = inputPhase, ghostPiece = Some(ghostPiece)))
-    } else None
+  private def selectPiece(model: Model, squareIndex: Int, piece: Occupant, clickPoint: Option[Point]): Option[Model] = {
+    val boardPoint = clickPoint.getOrElse(Board.squareCenter(squareIndex))
+    model.moveTree.next.get(squareIndex).map { nextMoveTree =>
+      val inputPhase = PieceSelected(piece, squareIndex, nextMoveTree, boardPoint, canCancel = true)
+      val squareCenter = Board.squareCenter(squareIndex)
+      val grabOffset = squareCenter - boardPoint
+      val ghostPiece = GhostPiece(piece, squareIndex, grabOffset, boardPoint)
+      val clickableSquares = nextMoveTree.squares
+      model.copy(inputPhase = inputPhase, ghostPiece = Some(ghostPiece), clickableSquares = clickableSquares)
+    }
   }
 
   private def cancelPieceSelected(model: Model): Model = {
     restartTurn(model, model.gameState)
+  }
+
+  private def selectMoveTarget(model: Model, event: BoardMouseEvent, fromSquare: Int, toSquare: Int): Option[Model] = {
+    val play = Play.move(fromSquare, toSquare)
+    applyPlay(model, play).flatMap { case (playEvents, result) =>
+      if(playEvents.endedTurn) Some(initTurn(result, result.gameState))
+      else continueTurn(result, toSquare, event.piece)
+    }
   }
 }

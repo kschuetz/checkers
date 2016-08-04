@@ -16,6 +16,7 @@ object InputPhase {
 
   case class PieceSelected(piece: Occupant,
                            square: Int,
+                           nextMoveTree: MoveTree,
                            grabOffset: Point,
                            canCancel: Boolean) extends HumanMovePhase
 

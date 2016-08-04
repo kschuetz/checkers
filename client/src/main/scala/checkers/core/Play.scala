@@ -8,7 +8,9 @@ object Play {
 
   val empty = NoPlay
 
-  def move(path: List[Int]) = Play.Move(path)
+  def move(path: List[Int]): Move = Play.Move(path)
+
+  def move(fromSquare: Int, toSquare: Int): Move = Play.Move(fromSquare :: toSquare :: Nil)
 }
 
 

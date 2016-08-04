@@ -14,7 +14,7 @@ class GameFactory(gameLogicModuleFactory: GameLogicModuleFactory) {
   def createSimple1(host: dom.Node) = {
     val rulesSettings = RulesSettings.default
     val gameLogicModule = gameLogicModuleFactory.apply(rulesSettings)
-    val light = Computer(new TrivialPlayer(gameLogicModule.moveGenerator)(None))
+    val light = Human //Computer(new TrivialPlayer(gameLogicModule.moveGenerator)(None))
     val dark = Human
     val gameConfig = GameConfig(rulesSettings, PlayerConfig(dark, light))
     createGame(gameLogicModule, gameConfig, host)
