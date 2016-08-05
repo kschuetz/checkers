@@ -13,6 +13,7 @@ object PhysicalPiece extends SvgHelpers {
 
   val pieceRadius = 0.35
   private val pieceOverlayRadius = 0.4
+  private val kingScaleAdjustment = 1.01
 
   protected case class RenderProps(pieceProps: PhysicalPieceProps,
                                    decoration: Decoration)
@@ -71,10 +72,11 @@ object PhysicalPiece extends SvgHelpers {
     .render_P { props =>
       val color = COLOR(props.piece)
       val baseClasses = if (color == DARK) "piece man dark" else "piece man light"
+      val scale = props.scale
       <.svg.g(
         ^.classSet1(baseClasses, "ghost-piece" -> props.ghost),
 //        ^.`class` := baseClasses,
-        ^.svg.transform := s"translate(${props.x},${props.y})",
+        ^.svg.transform := s"translate(${props.x},${props.y}),scale($scale)",
         PieceBody(RenderProps(props, Decoration.Star)),
         PieceOverlayButton(props)
       )
@@ -89,14 +91,15 @@ object PhysicalPiece extends SvgHelpers {
     .render_P { props =>
       val color = COLOR(props.piece)
       val baseClasses = if (color == DARK) "piece king dark" else "piece king light"
+      val scale = props.scale
 
       <.svg.g(
         ^.classSet1(baseClasses, "ghost-piece" -> props.ghost),
 //        ^.`class` := classes,
-        ^.svg.transform := s"translate(${props.x},${props.y})",
+        ^.svg.transform := s"translate(${props.x},${props.y}),scale($scale)",
         Disk((color, pieceRadius)),
         <.svg.g(
-          ^.svg.transform := "translate(0.07,-0.11),scale(1.01)",
+          ^.svg.transform := s"translate(0.07,-0.11),scale($kingScaleAdjustment)",
           PieceBody(RenderProps(props, Decoration.Crown))
         ),
         PieceOverlayButton(props)

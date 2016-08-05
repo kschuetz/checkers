@@ -19,7 +19,8 @@ object PickedUpPiece extends SvgHelpers {
 
       val physicalPieceProps = PhysicalPieceProps.default.copy(piece = model.piece,
         x = center.x,
-        y = center.y)
+        y = center.y,
+        scale = 1.1)
 
       val physicalPiece = PhysicalPiece.apply(physicalPieceProps)
 
