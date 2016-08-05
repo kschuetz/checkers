@@ -27,11 +27,9 @@ trait GameModelReader {
 
   def boardOrientation: BoardOrientation
 
-  def ghostPiece: Option[GhostPiece]
+  def pickedUpPiece: Option[PickedUpPiece]
 
-  def clickableSquares: Set[Int]
-
-  def highlightedSquares: Set[Int]
+  def squareAttributes: Vector[SquareAttributes]
 
   def flipAnimation: Option[FlippingBoardAnimation]
 
@@ -50,9 +48,8 @@ case class GameModel[DS, LS](nowTime: Double,
                              inputPhase: InputPhase,
                              gameState: GameState[DS, LS],
                              boardOrientation: BoardOrientation,
-                             ghostPiece: Option[GhostPiece],
-                             clickableSquares: Set[Int],
-                             highlightedSquares: Set[Int],
+                             pickedUpPiece: Option[PickedUpPiece],
+                             squareAttributesVector: SquareAttributesVector,
                              flipAnimation: Option[FlippingBoardAnimation],
                              animations: List[Animation]) extends GameModelReader {
   def hasActiveAnimations: Boolean =
@@ -110,19 +107,12 @@ case class GameModel[DS, LS](nowTime: Double,
 
   override def drawStatus: DrawStatus = gameState.drawStatus
 
-  override def canClickPieces: Boolean = ghostPiece.isEmpty
+  override def canClickPieces: Boolean = pickedUpPiece.isEmpty
+
+  override def squareAttributes: Vector[SquareAttributes] = squareAttributesVector.items
 
   lazy val moveTree: MoveTree = gameState.moveTree
 
-
-//  lazy val clickableSquares: Set[Int] = inputPhase match {
-//    case InputPhase.BeginHumanTurn => gameState.moveTree.squares
-//    case ps: InputPhase.PieceSelected =>
-//      val sourceSquares = gameState.moveTree.squares
-//      val destSquares = gameState.moveTree.walk(List(ps.square)).fold(Set.empty[Int])(_.squares)
-//      sourceSquares ++ destSquares
-//    case _ => Set.empty
-//  }
 
 }
 

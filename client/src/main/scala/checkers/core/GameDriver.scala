@@ -6,7 +6,7 @@ import checkers.consts._
 import checkers.core.BeginTurnEvaluation._
 import checkers.core.InputPhase.{BeginHumanTurn, ComputerThinking, PieceSelected}
 import checkers.geometry.Point
-import checkers.models.{BoardOrientation, GameModel, GhostPiece}
+import checkers.models.{BoardOrientation, GameModel, PickedUpPiece, SquareAttributesVector}
 
 
 class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
@@ -30,9 +30,8 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
       inputPhase = BeginHumanTurn,
       gameState = gameState,
       boardOrientation = BoardOrientation.Normal,
-      ghostPiece = None,
-      clickableSquares = Set.empty,
-      highlightedSquares = Set.empty,
+      pickedUpPiece = None,
+      squareAttributesVector = SquareAttributesVector.default,
       flipAnimation = None,
       animations = List.empty)
     initTurn(model, gameState)
@@ -175,7 +174,9 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
     val clickableSquares = getClickableSquares(inputPhase, newState.moveTree)
     println(s"turnToMove: $turnToMove")
     println(clickableSquares)
-    gameModel.copy(inputPhase = inputPhase, gameState = newState, clickableSquares = clickableSquares, ghostPiece = None)
+    val squareAttributesVector = gameModel.squareAttributesVector.withClickable(clickableSquares)
+
+    gameModel.copy(inputPhase = inputPhase, gameState = newState, squareAttributesVector = squareAttributesVector, pickedUpPiece = None)
   }
 
   private def getPlayInput(gameState: State): PlayInput = {
@@ -202,8 +203,8 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
   def handleBoardMouseMove(model: Model, event: BoardMouseEvent): Option[Model] = {
     model.inputPhase match {
       case PieceSelected(piece, squareIndex, nextMoveTree, grabOffset, _) =>
-        val ghostPiece = GhostPiece(piece, squareIndex, grabOffset, event.boardPoint)
-        Some(model.copy(ghostPiece = Some(ghostPiece)))
+        val ghostPiece = PickedUpPiece(piece, squareIndex, grabOffset, event.boardPoint)
+        Some(model.copy(pickedUpPiece = Some(ghostPiece)))
       case _ => None
     }
   }
@@ -214,9 +215,10 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
       val inputPhase = PieceSelected(piece, squareIndex, nextMoveTree, boardPoint, canCancel = true)
       val squareCenter = Board.squareCenter(squareIndex)
       val grabOffset = squareCenter - boardPoint
-      val ghostPiece = GhostPiece(piece, squareIndex, grabOffset, boardPoint)
+      val ghostPiece = PickedUpPiece(piece, squareIndex, grabOffset, boardPoint)
       val clickableSquares = nextMoveTree.squares
-      model.copy(inputPhase = inputPhase, ghostPiece = Some(ghostPiece), clickableSquares = clickableSquares)
+      val squareAttributesVector = model.squareAttributesVector.withClickable(clickableSquares)
+      model.copy(inputPhase = inputPhase, pickedUpPiece = Some(ghostPiece), squareAttributesVector = squareAttributesVector)
     }
   }
 

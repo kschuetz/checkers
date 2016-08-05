@@ -8,7 +8,7 @@ import japgolly.scalajs.react.vdom.prefix_<^._
 
 object GhostPiece extends SvgHelpers {
 
-  type Model = checkers.models.GhostPiece
+  type Model = checkers.models.PickedUpPiece
 
   type Props = Model
 

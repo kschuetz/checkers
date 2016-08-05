@@ -3,10 +3,11 @@ package checkers.components
 import checkers.components.board.{PhysicalBoard, SquareOverlayButton}
 import checkers.components.piece._
 import checkers.consts._
-import checkers.core.{Board, BoardPosition}
+import checkers.core.Board
 import checkers.geometry.Point
 import checkers.models
 import checkers.models.Animation.HidesStaticPiece
+import checkers.models.SquareAttributes
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
 
@@ -58,6 +59,8 @@ object DynamicScene {
           val pos = Board.position(squareIndex)
           val pt = PhysicalBoard.positionToPoint(pos)
 
+          val squareAttributes = model.squareAttributes(squareIndex)
+
           val pieceProps = PhysicalPieceProps(
             piece = occupant,
             tag = squareIndex,
@@ -65,8 +68,8 @@ object DynamicScene {
             y = pt.y,
             scale = pieceScale,
             rotationDegrees = pieceRotation,
-            clickable = model.clickableSquares.contains(squareIndex),
-            highlighted = model.highlightedSquares.contains(squareIndex),
+            clickable = squareAttributes.clickable,
+            highlighted = squareAttributes.highlighted,
             screenToBoard = screenToBoard,
             callbacks = callbacks)
 
@@ -83,16 +86,17 @@ object DynamicScene {
       val overlayButtons = new js.Array[ReactNode]
       Board.allSquares.foreach { case (boardPos, squareIndex, pt) =>
         val k = s"s-${boardPos.row}-${boardPos.col}"
-        val clickable = model.clickableSquares.contains(squareIndex)
+        val squareAttributes = if(squareIndex >= 0) model.squareAttributes(squareIndex)
+          else SquareAttributes.default
         val occupant = if(squareIndex > 0) boardState.getOccupant(squareIndex) else EMPTY
 
-        val props = SquareOverlayButton.Props(squareIndex, occupant, pt.x, pt.y, clickable,
+        val props = SquareOverlayButton.Props(squareIndex, occupant, pt.x, pt.y, squareAttributes.clickable,
           screenToBoard = screenToBoard, callbacks = callbacks)
         val button = SquareOverlayButton.component.withKey(k)(props)
         overlayButtons.push(button)
       }
 
-      val ghostPiece = model.ghostPiece.map { gp =>
+      val ghostPiece = model.pickedUpPiece.map { gp =>
         GhostPiece(gp)
       }
 
