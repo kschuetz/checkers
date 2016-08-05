@@ -10,10 +10,18 @@ case class MoveTree(next: Map[Int, MoveTree], requiresJump: Boolean) {
   def isEmpty = next.isEmpty
   lazy val squares: Set[Int] = next.keySet
 
+//  def walk(path: List[Int]): Option[MoveTree] = path match {
+//    case Nil => Some(this)
+//    case x :: xs => next.get(x).flatMap(_.walk(xs))
+//  }
+
   def walk(path: List[Int]): Option[MoveTree] = path match {
-    case Nil => Some(this)
+    case Nil => None
+    case x :: Nil => next.get(x)
     case x :: xs => next.get(x).flatMap(_.walk(xs))
   }
+
+  // TODO: left off here 8/5/2016 - fix walk!
 
 }
 

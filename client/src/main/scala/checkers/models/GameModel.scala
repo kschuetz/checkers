@@ -37,8 +37,6 @@ trait GameModelReader {
 
   def getBoardRotation: Double
 
-  def moveTree: MoveTree
-
   def canClickPieces: Boolean
 }
 
@@ -110,9 +108,6 @@ case class GameModel[DS, LS](nowTime: Double,
   override def canClickPieces: Boolean = pickedUpPiece.isEmpty
 
   override def squareAttributes: Vector[SquareAttributes] = squareAttributesVector.items
-
-  lazy val moveTree: MoveTree = gameState.moveTree
-
 
 }
 

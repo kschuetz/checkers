@@ -33,32 +33,6 @@ object BoardUtils {
     result
   }
 
-//  def isJumperOfColor(boardState: BoardStateRead, color: Color)(squareIndex: Int): Boolean = {
-//    val piece = boardState.getOccupant(squareIndex)
-//    if(! (ISPIECE(piece) && COLOR(piece) == color)) return false
-//
-//    val opponent = if(color == LIGHT) DARK else LIGHT
-//
-//    def checkJump(m: Int, j: Int): Boolean = {
-//      m >= 0 && j >= 0 && {
-//        val over = boardState.getOccupant(m)
-//        boardState.getOccupant(j) == EMPTY && ISPIECE(over) && COLOR(over) == opponent
-//      }
-//    }
-//
-//
-//    val neighborIndex = NeighborIndex.forColor(color)
-//    import neighborIndex._
-//
-//    if(checkJump(forwardMoveW(squareIndex), forwardJumpW(squareIndex))) return true
-//    if(checkJump(forwardMoveE(squareIndex), forwardJumpE(squareIndex))) return true
-//    if(PIECETYPE(piece) == KING) {
-//      if(checkJump(backMoveW(squareIndex), backJumpW(squareIndex))) return true
-//      if(checkJump(backMoveE(squareIndex), backJumpE(squareIndex))) return true
-//    }
-//    false
-//  }
-
   val allSquares = Set(0 to 31)
 
   private val parseSquareIndex = List(
