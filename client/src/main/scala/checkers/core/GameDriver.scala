@@ -187,7 +187,7 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
   def handleBoardMouseDown(model: Model, event: BoardMouseEvent): Option[Model] = {
     model.inputPhase match {
       case BeginHumanTurn => selectPiece(model, event.squareIndex, event.piece, Some(event.boardPoint))
-      case PieceSelected(piece, squareIndex, moveTree, _, true) =>
+      case PieceSelected(piece, squareIndex, moveTree, true) =>
         val targetSquare = event.squareIndex
         if(moveTree.squares.contains(targetSquare)) {
           println(s"valid target $squareIndex")
@@ -202,8 +202,8 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
 
   def handleBoardMouseMove(model: Model, event: BoardMouseEvent): Option[Model] = {
     model.inputPhase match {
-      case PieceSelected(piece, squareIndex, nextMoveTree, grabOffset, _) =>
-        val pickedUpPiece = PickedUpPiece(piece, squareIndex, grabOffset, event.boardPoint)
+      case PieceSelected(piece, squareIndex, nextMoveTree, _) =>
+        val pickedUpPiece = PickedUpPiece(piece, squareIndex, event.boardPoint)
         val squareAttributesVector = model.squareAttributesVector.withGhost(Set(squareIndex))
         Some(model.copy(pickedUpPiece = Some(pickedUpPiece), squareAttributesVector = squareAttributesVector))
       case _ => None
@@ -213,10 +213,8 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
   private def selectPiece(model: Model, squareIndex: Int, piece: Occupant, clickPoint: Option[Point]): Option[Model] = {
     val boardPoint = clickPoint.getOrElse(Board.squareCenter(squareIndex))
     model.moveTree.next.get(squareIndex).map { nextMoveTree =>
-      val inputPhase = PieceSelected(piece, squareIndex, nextMoveTree, boardPoint, canCancel = true)
-      val squareCenter = Board.squareCenter(squareIndex)
-      val grabOffset = squareCenter - boardPoint
-      val pickedUpPiece = PickedUpPiece(piece, squareIndex, grabOffset, boardPoint)
+      val inputPhase = PieceSelected(piece, squareIndex, nextMoveTree, canCancel = true)
+      val pickedUpPiece = PickedUpPiece(piece, squareIndex, boardPoint)
       val clickableSquares = nextMoveTree.squares
       val squareAttributesVector = model.squareAttributesVector.withClickable(clickableSquares).withGhost(Set(squareIndex))
       model.copy(inputPhase = inputPhase, pickedUpPiece = Some(pickedUpPiece), squareAttributesVector = squareAttributesVector)

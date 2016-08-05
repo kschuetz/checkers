@@ -1,6 +1,5 @@
 package checkers.components.piece
 
-import checkers.core.Piece
 import checkers.consts._
 import checkers.util.SvgHelpers
 import japgolly.scalajs.react._
