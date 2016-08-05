@@ -12,6 +12,7 @@ case class PhysicalPieceProps(piece: Occupant,
                               rotationDegrees: Double,
                               clickable: Boolean,
                               highlighted: Boolean,
+                              ghost: Boolean,
                               screenToBoard: Point => Point,
                               callbacks: BoardCallbacks)
 
@@ -24,6 +25,7 @@ object PhysicalPieceProps {
     rotationDegrees = 0,
     clickable = false,
     highlighted = false,
+    ghost = false,
     screenToBoard = identity,
     callbacks = EmptyBoardCallbacks)
 

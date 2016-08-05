@@ -70,6 +70,7 @@ object DynamicScene {
             rotationDegrees = pieceRotation,
             clickable = squareAttributes.clickable,
             highlighted = squareAttributes.highlighted,
+            ghost = squareAttributes.ghost,
             screenToBoard = screenToBoard,
             callbacks = callbacks)
 
@@ -96,14 +97,14 @@ object DynamicScene {
         overlayButtons.push(button)
       }
 
-      val ghostPiece = model.pickedUpPiece.map { gp =>
+      val pickedUpPiece = model.pickedUpPiece.map { gp =>
         PickedUpPiece(gp)
       }
 
       <.svg.g(
         overlayButtons,
         staticPiecesLayer,
-        ghostPiece
+        pickedUpPiece
       )
 
     }.build

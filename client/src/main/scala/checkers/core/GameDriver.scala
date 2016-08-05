@@ -174,7 +174,7 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
     val clickableSquares = getClickableSquares(inputPhase, newState.moveTree)
     println(s"turnToMove: $turnToMove")
     println(clickableSquares)
-    val squareAttributesVector = gameModel.squareAttributesVector.withClickable(clickableSquares)
+    val squareAttributesVector = gameModel.squareAttributesVector.withClickable(clickableSquares).withGhost(Set.empty)
 
     gameModel.copy(inputPhase = inputPhase, gameState = newState, squareAttributesVector = squareAttributesVector, pickedUpPiece = None)
   }
@@ -203,8 +203,9 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
   def handleBoardMouseMove(model: Model, event: BoardMouseEvent): Option[Model] = {
     model.inputPhase match {
       case PieceSelected(piece, squareIndex, nextMoveTree, grabOffset, _) =>
-        val ghostPiece = PickedUpPiece(piece, squareIndex, grabOffset, event.boardPoint)
-        Some(model.copy(pickedUpPiece = Some(ghostPiece)))
+        val pickedUpPiece = PickedUpPiece(piece, squareIndex, grabOffset, event.boardPoint)
+        val squareAttributesVector = model.squareAttributesVector.withGhost(Set(squareIndex))
+        Some(model.copy(pickedUpPiece = Some(pickedUpPiece), squareAttributesVector = squareAttributesVector))
       case _ => None
     }
   }
@@ -215,10 +216,10 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
       val inputPhase = PieceSelected(piece, squareIndex, nextMoveTree, boardPoint, canCancel = true)
       val squareCenter = Board.squareCenter(squareIndex)
       val grabOffset = squareCenter - boardPoint
-      val ghostPiece = PickedUpPiece(piece, squareIndex, grabOffset, boardPoint)
+      val pickedUpPiece = PickedUpPiece(piece, squareIndex, grabOffset, boardPoint)
       val clickableSquares = nextMoveTree.squares
-      val squareAttributesVector = model.squareAttributesVector.withClickable(clickableSquares)
-      model.copy(inputPhase = inputPhase, pickedUpPiece = Some(ghostPiece), squareAttributesVector = squareAttributesVector)
+      val squareAttributesVector = model.squareAttributesVector.withClickable(clickableSquares).withGhost(Set(squareIndex))
+      model.copy(inputPhase = inputPhase, pickedUpPiece = Some(pickedUpPiece), squareAttributesVector = squareAttributesVector)
     }
   }
 
