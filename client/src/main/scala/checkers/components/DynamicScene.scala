@@ -97,7 +97,7 @@ object DynamicScene {
       }
 
       val ghostPiece = model.pickedUpPiece.map { gp =>
-        GhostPiece(gp)
+        PickedUpPiece(gp)
       }
 
       <.svg.g(
