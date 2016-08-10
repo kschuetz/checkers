@@ -274,7 +274,7 @@ class MoveGenerator(rulesSettings: RulesSettings,
               builder.addMove(i.toByte, forwardMoveW(i).toByte)
             }
             if((moveBW & b) != 0) {
-              builder.addMove(i.toByte, backMoveE(i).toByte)
+              builder.addMove(i.toByte, backMoveW(i).toByte)
             }
             b = b << 1
             i += 1
