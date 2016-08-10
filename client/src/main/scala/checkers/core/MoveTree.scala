@@ -21,7 +21,15 @@ case class MoveTree(next: Map[Int, MoveTree], requiresJump: Boolean) {
     case x :: xs => next.get(x).flatMap(_.walk(xs))
   }
 
-  // TODO: left off here 8/5/2016 - fix walk!
+  def down(squareIndex: Int): Option[MoveTreeZipper] = {
+    val root = this
+    next.get(squareIndex).map { nextTree =>
+      val rootZipper = MoveTreeZipper(root, None)
+      MoveTreeZipper(nextTree, Some(rootZipper))
+    }
+  }
+
+  // TODO: left off 8/9/2016 - find a new way to keep track of MoveTree during a partial move!
 
   override def toString: String = {
     val builder = new StringBuilder

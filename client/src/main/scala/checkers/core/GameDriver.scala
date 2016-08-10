@@ -163,8 +163,8 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
     restartTurn(gameModel, newState).copy(turnStartTime = gameModel.nowTime)
   }
 
-  private def continueTurn(model: Model, nextMoveTree: MoveTree, fromSquare: Int, piece: Occupant): Model = {
-    selectPiece(model, nextMoveTree, fromSquare, piece, None, canCancel = false)
+  private def continueTurn(model: Model, moveTreeZipper: MoveTreeZipper, fromSquare: Int, piece: Occupant): Model = {
+    selectPiece(model, moveTreeZipper, fromSquare, piece, None, canCancel = false)
   }
 
   /**
@@ -196,10 +196,11 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
   def handleBoardMouseDown(model: Model, event: BoardMouseEvent): Option[Model] = {
     model.inputPhase match {
       case BeginHumanTurn => userSelectPiece(model, event.squareIndex, event.piece, Some(event.boardPoint))
-      case PieceSelected(piece, squareIndex, targetMoveTree, canCancel) =>
+      case PieceSelected(piece, squareIndex, moveTreeZipper, canCancel) =>
         val targetSquare = event.squareIndex
-        println(targetMoveTree.squares)
-        targetMoveTree.next.get(targetSquare).fold {
+//        println(moveTreeZipper.squares)
+//        moveTreeZipper.next.get(targetSquare).fold {
+        moveTreeZipper.down(targetSquare).fold {
           if (canCancel) Option(cancelPieceSelected(model))
           else None
         } { remainingMoveTree =>
@@ -221,17 +222,21 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
   }
 
   private def userSelectPiece(model: Model, squareIndex: Int, piece: Occupant, clickPoint: Option[Point]): Option[Model] = {
-    model.gameState.moveTree.next.get(squareIndex).map { nextMoveTree =>
-      println(nextMoveTree)
-      selectPiece(model, nextMoveTree, squareIndex, piece, clickPoint, canCancel = true)
+    model.gameState.moveTree.down(squareIndex).map { moveTreeZipper =>
+      println(moveTreeZipper)
+      selectPiece(model, moveTreeZipper, squareIndex, piece, clickPoint, canCancel = true)
+
+//    model.gameState.moveTree.next.get(squareIndex).map { nextMoveTree =>
+//      println(nextMoveTree)
+//      selectPiece(model, nextMoveTree, squareIndex, piece, clickPoint, canCancel = true)
     }
   }
 
-  private def selectPiece(model: Model, targetMoveTree: MoveTree, squareIndex: Int, piece: Occupant, clickPoint: Option[Point], canCancel: Boolean): Model = {
+  private def selectPiece(model: Model, moveTreeZipper: MoveTreeZipper, squareIndex: Int, piece: Occupant, clickPoint: Option[Point], canCancel: Boolean): Model = {
     val boardPoint = clickPoint.getOrElse(Board.squareCenter(squareIndex))
-    val inputPhase = PieceSelected(piece, squareIndex, targetMoveTree, canCancel = canCancel)
+    val inputPhase = PieceSelected(piece, squareIndex, moveTreeZipper, canCancel = canCancel)
     val pickedUpPiece = PickedUpPiece(piece, squareIndex, boardPoint)
-    val validTargetSquares = targetMoveTree.squares
+    val validTargetSquares = moveTreeZipper.current.squares
     val squareAttributesVector = model.squareAttributesVector.withClickable(validTargetSquares).withGhost(Set(squareIndex))
     model.copy(inputPhase = inputPhase, pickedUpPiece = Some(pickedUpPiece), squareAttributesVector = squareAttributesVector)
   }
@@ -240,12 +245,12 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
     restartTurn(model, model.gameState)
   }
 
-  private def selectMoveTarget(model: Model, remainingMoveTree: MoveTree, event: BoardMouseEvent, fromSquare: Int, toSquare: Int): Option[Model] = {
+  private def selectMoveTarget(model: Model, moveTreeZipper: MoveTreeZipper, event: BoardMouseEvent, fromSquare: Int, toSquare: Int): Option[Model] = {
     val play = Play.move(fromSquare, toSquare)
-    println(s"remaining move tree: $remainingMoveTree")
+    println(s"remaining move tree: $moveTreeZipper")
     applyPlay(model, play).map { case (playEvents, result) =>
       if (playEvents.endedTurn) initTurn(result, result.gameState)
-      else continueTurn(result, remainingMoveTree, toSquare, event.piece)
+      else continueTurn(result, moveTreeZipper, toSquare, event.piece)
     }
   }
 }
