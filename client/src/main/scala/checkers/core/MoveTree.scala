@@ -23,6 +23,29 @@ case class MoveTree(next: Map[Int, MoveTree], requiresJump: Boolean) {
 
   // TODO: left off here 8/5/2016 - fix walk!
 
+  override def toString: String = {
+    val builder = new StringBuilder
+    render(builder)
+    builder.result()
+  }
+
+  private def render(output: StringBuilder): Unit = {
+    if(isEmpty) output.append("end")
+    else {
+      output.append('(')
+      if(requiresJump) output.append('J')
+      var inside = false
+      next.foreach { case (square, tree) =>
+        if(inside) output.append(", ")
+        output.append(square)
+        output.append(" -> ")
+        tree.render(output)
+        inside = true
+      }
+      output.append(')')
+    }
+  }
+
 }
 
 class MoveTreeFactory(jumpTable: JumpTable) {
@@ -49,6 +72,16 @@ class MoveTreeFactory(jumpTable: JumpTable) {
         }
       }
       MoveTree(pathMap.mapValues(makeTree), requiresJump)
+    }
+  }
+}
+
+case class MoveTreeZipper(current: MoveTree, up: Option[MoveTreeZipper]) {
+  def top: MoveTree = up.fold(current)(_.top)
+
+  def down(squareIndex: Int): Option[MoveTreeZipper] = {
+    current.next.get(squareIndex).map { moveTree =>
+      MoveTreeZipper(moveTree, Some(this))
     }
   }
 }

@@ -97,6 +97,10 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
         history = entry :: gameState.history)
     } else {
       // partial
+      println("partial move, updating tree:")
+      println(newMoveTree)
+      println("----")
+
       val turnEvaluation = CanMove(newMoveTree)
       gameState.copy(board = newBoard, beginTurnEvaluation = turnEvaluation, history = entry :: gameState.history)
     }
