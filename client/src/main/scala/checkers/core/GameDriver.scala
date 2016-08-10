@@ -218,6 +218,7 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
 
   private def userSelectPiece(model: Model, squareIndex: Int, piece: Occupant, clickPoint: Option[Point]): Option[Model] = {
     model.gameState.moveTree.next.get(squareIndex).map { nextMoveTree =>
+      println(nextMoveTree)
       selectPiece(model, nextMoveTree, squareIndex, piece, clickPoint, canCancel = true)
     }
   }

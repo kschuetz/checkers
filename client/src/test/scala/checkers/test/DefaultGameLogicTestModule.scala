@@ -14,5 +14,5 @@ trait DefaultGameLogicTestModule {
 
   lazy val gameLogicModuleFactory: GameLogicModuleFactory = wire[GameLogicModuleFactory]
 
-  lazy val gameLogicModule = gameLogicModuleFactory.apply(gameConfig)
+  lazy val gameLogicModule = gameLogicModuleFactory.apply(rulesSettings)
 }
