@@ -10,26 +10,15 @@ case class MoveTree(next: Map[Int, MoveTree], requiresJump: Boolean) {
   def isEmpty = next.isEmpty
   lazy val squares: Set[Int] = next.keySet
 
-//  def walk(path: List[Int]): Option[MoveTree] = path match {
-//    case Nil => Some(this)
-//    case x :: xs => next.get(x).flatMap(_.walk(xs))
-//  }
+  def targetSquares(squareIndex: Int): Set[Int] = down(squareIndex).fold(Set.empty[Int])(_.squares)
 
-  def walk(path: List[Int]): Option[MoveTree] = path match {
+  def walk(path: List[Int]): Option[(Int, MoveTree)] = path match {
     case Nil => None
-    case x :: Nil => next.get(x)
+    case x :: Nil => next.get(x).map(t => (x, t))
     case x :: xs => next.get(x).flatMap(_.walk(xs))
   }
 
-  def down(squareIndex: Int): Option[MoveTreeZipper] = {
-    val root = this
-    next.get(squareIndex).map { nextTree =>
-      val rootZipper = MoveTreeZipper(root, None)
-      MoveTreeZipper(nextTree, Some(rootZipper))
-    }
-  }
-
-  // TODO: left off 8/9/2016 - find a new way to keep track of MoveTree during a partial move!
+  def down(squareIndex: Int): Option[MoveTree] = next.get(squareIndex)
 
   override def toString: String = {
     val builder = new StringBuilder
@@ -96,4 +85,7 @@ case class MoveTreeZipper(current: MoveTree, up: Option[MoveTreeZipper]) {
 
 object MoveTree {
   val empty = MoveTree(Map.empty, requiresJump=false)
+
+  def singleton(squareIndex: Int, moveTree: MoveTree): MoveTree =
+    MoveTree(Map(squareIndex -> moveTree), requiresJump = true)
 }
