@@ -63,9 +63,7 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
           println(s"walk2:  $newMoveTree")
           val remainingMoveTree =
             if(newMoveTree.isEmpty) newMoveTree
-            else {
-              MoveTree.singleton(endSquare, newMoveTree)
-            }
+            else newMoveTree.prepend(endSquare, requiresJump = true)
           applyMove(gameModel, move, remainingMoveTree)
         }
     }

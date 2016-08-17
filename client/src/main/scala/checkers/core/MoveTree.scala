@@ -20,6 +20,10 @@ case class MoveTree(next: Map[Int, MoveTree], requiresJump: Boolean) {
 
   def down(squareIndex: Int): Option[MoveTree] = next.get(squareIndex)
 
+  def prepend(squareIndex: Int, requiresJump: Boolean = true): MoveTree = {
+    MoveTree(Map(squareIndex -> this), requiresJump = requiresJump)
+  }
+
   override def toString: String = {
     val builder = new StringBuilder
     render(builder)
@@ -86,6 +90,6 @@ case class MoveTreeZipper(current: MoveTree, up: Option[MoveTreeZipper]) {
 object MoveTree {
   val empty = MoveTree(Map.empty, requiresJump=false)
 
-  def singleton(squareIndex: Int, moveTree: MoveTree): MoveTree =
-    MoveTree(Map(squareIndex -> moveTree), requiresJump = true)
+//  def singleton(squareIndex: Int, moveTree: MoveTree): MoveTree =
+//    MoveTree(Map(squareIndex -> moveTree), requiresJump = true)
 }
