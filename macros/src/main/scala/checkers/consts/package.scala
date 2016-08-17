@@ -56,7 +56,7 @@ package object consts {
 
   def pieceTypeImpl(c: blackbox.Context)(occupant: c.Expr[Occupant]): c.Expr[PieceType] = {
     import c.universe._
-    c.Expr[PieceType](q"($occupant >> 2) & 2")
+    c.Expr[PieceType](q"($occupant >> 2) & 1")
   }
 
   // TODO: remove this
