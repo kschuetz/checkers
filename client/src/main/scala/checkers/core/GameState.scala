@@ -16,6 +16,9 @@ case class GameState[DS, LS](rulesSettings: RulesSettings,
                              lightClock: Double,
                              history: List[HistoryEntry]) {
 
+  def currentPlayer: PlayerDescription =
+    if (turnToMove == DARK) playerConfig.darkPlayer else playerConfig.lightPlayer
+
   def turnsUntilDraw: Option[Int] = drawStatus match {
     case DrawProposed(_, endTurnIndex) => Some(endTurnIndex - turnIndex)
     case _ => None

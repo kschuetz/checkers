@@ -1,3 +1,5 @@
 package checkers.core
 
-class AnimationPlanner
+class AnimationPlanner {
+//  def scheduleMoveAnimations()
+}
