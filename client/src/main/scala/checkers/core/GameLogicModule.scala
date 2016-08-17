@@ -13,6 +13,8 @@ trait GameLogicModule {
   def moveGenerator: MoveGenerator
 
   def moveTreeFactory: MoveTreeFactory
+
+  def animationPlanner: AnimationPlanner
 }
 
 class GameLogicModuleFactory(tablesModule: TablesModule) extends (RulesSettings => GameLogicModule) {

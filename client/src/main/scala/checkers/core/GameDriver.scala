@@ -21,6 +21,7 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
   private val moveTreeFactory = gameLogicModule.moveTreeFactory
   private val moveExecutor = gameLogicModule.moveExecutor
   private val drawLogic = gameLogicModule.drawLogic
+  private val animationPlanner = gameLogicModule.animationPlanner
 
   def createInitialModel(nowTime: Double): Model = {
     val gameState = createInitialState
@@ -116,7 +117,11 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
     println(s"endsTurn: $endsTurn")
 
     val playEvents = if (endsTurn) PlayEvents.turnEnded else PlayEvents.partialTurn(remainingMoveTree)
-    val newModel = gameModel.copy(gameState = newGameState)
+    val newModel = {
+      val m1 = gameModel.copy(gameState = newGameState)
+      scheduleMoveAnimations(m1, moveInfo)
+    }
+
     (playEvents, newModel)
   }
 
@@ -255,6 +260,10 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
         continueTurn(result, toSquare, event.piece, validTargetSquares)
       }
     }
+  }
+
+  private def scheduleMoveAnimations(model: Model, moveInfo: List[MoveInfo]): Model = {
+    model
   }
 
 }
