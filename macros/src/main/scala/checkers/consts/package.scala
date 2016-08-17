@@ -24,13 +24,9 @@ package object consts {
 
   def COLOR(occupant: Occupant): Color = macro colorImpl
   def PIECETYPE(occupant: Occupant): PieceType = macro pieceTypeImpl
-  def ISMAN(occupant: Occupant): Boolean = macro isManImpl
-  def ISKING(occupant: Occupant): Boolean = macro isKingImpl
   def ISPIECE(occupant: Occupant): Boolean = macro isPieceImpl
   def ISEMPTY(occupant: Occupant): Boolean = macro isEmptyImpl
   def OPPONENT(color: Color): Color = macro opponentImpl
-
-  def OCCUPANTENCODE(occupant: Occupant): Int = macro occupantEncodeImpl
 
   def darkImpl(c: blackbox.Context): c.Expr[Color] = c.universe.reify(0)
   def lightImpl(c: blackbox.Context): c.Expr[Color] = c.universe.reify(1)
@@ -59,18 +55,6 @@ package object consts {
     c.Expr[PieceType](q"($occupant >> 2) & 1")
   }
 
-  // TODO: remove this
-  def isManImpl(c: blackbox.Context)(occupant: c.Expr[Occupant]): c.Expr[Boolean] = {
-    import c.universe._
-    c.Expr[Boolean](q"PIECETYPE($occupant) == MAN")
-  }
-
-  // TODO: remove this
-  def isKingImpl(c: blackbox.Context)(occupant: c.Expr[Occupant]): c.Expr[Boolean] = {
-    import c.universe._
-    c.Expr[Boolean](q"PIECETYPE($occupant) == KING")
-  }
-
   def isEmptyImpl(c: blackbox.Context)(occupant: c.Expr[Occupant]): c.Expr[Boolean] = {
     import c.universe._
     c.Expr[Boolean](q"$occupant == 0")
@@ -79,11 +63,6 @@ package object consts {
   def isPieceImpl(c: blackbox.Context)(occupant: c.Expr[Occupant]): c.Expr[Boolean] = {
     import c.universe._
     c.Expr[Boolean](q"$occupant > 0")
-  }
-
-  def occupantEncodeImpl(c: blackbox.Context)(occupant: c.Expr[Occupant]): c.Expr[Int] = {
-    import c.universe._
-    occupant
   }
 
 }
