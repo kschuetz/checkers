@@ -71,35 +71,6 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
     }
   }
 
-  private def applyPlay2(gameModel: Model, moveTree: MoveTree, play: Play): Option[(PlayEvents, Model)] = {
-    val gameState = gameModel.gameState
-
-    println(s"applying play: $play, tree = ${gameState.moveTree}")
-
-    play match {
-      case Play.NoPlay => None
-
-      case Play.AcceptDraw =>
-        if (drawLogic.canAcceptDraw(gameState)) {
-          val newState = gameState.acceptDraw
-          val newModel = gameModel.copy(gameState = newState, inputPhase = InputPhase.GameOver(None))
-          Some((PlayEvents.acceptedDraw, newModel))
-
-        } else None
-
-      case move: Play.Move =>
-        moveTree.walk(move.path).map { case (endSquare, newMoveTree) =>
-          println(s"walk2:  $newMoveTree")
-          val remainingMoveTree =
-            if(newMoveTree.isEmpty) newMoveTree
-            else {
-              MoveTree.singleton(endSquare, newMoveTree)
-            }
-          applyMove(gameModel, move, remainingMoveTree)
-        }
-    }
-  }
-
   private def applyMove(gameModel: Model, move: Play.Move, remainingMoveTree: MoveTree): (PlayEvents, Model) = {
     val gameState = gameModel.gameState
     val boardState = gameState.board.toMutable
