@@ -7,6 +7,8 @@ import checkers.core.tables.JumpTable
 case class RemovedPiece(piece: Occupant, squareIndex: Int)
 
 case class MoveInfo(piece: Occupant,
+                    fromSquare: Int,
+                    toSquare: Int,
                     removedPiece: Option[RemovedPiece],
                     crowned: Boolean)
 
@@ -57,7 +59,7 @@ class MoveExecutor(rulesSettings: RulesSettings,
     }
 
     val crowned = fastExecute(boardState, from, to)
-    MoveInfo(piece, removedPiece, crowned)
+    MoveInfo(piece, from, to, removedPiece, crowned)
   }
 
 }

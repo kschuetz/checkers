@@ -17,7 +17,8 @@ trait GameLogicModule {
   def animationPlanner: AnimationPlanner
 }
 
-class GameLogicModuleFactory(tablesModule: TablesModule) extends (RulesSettings => GameLogicModule) {
+class GameLogicModuleFactory(tablesModule: TablesModule,
+                             animationSettings: AnimationSettings) extends (RulesSettings => GameLogicModule) {
 
   def apply(rulesSettings: RulesSettings): GameLogicModule = {
     val mySettings = rulesSettings
@@ -25,6 +26,8 @@ class GameLogicModuleFactory(tablesModule: TablesModule) extends (RulesSettings 
       import tablesModule._
 
       val rulesSettings = mySettings
+
+      val animSettings = animationSettings
 
       lazy val drawLogic = wire[DrawLogic]
 
