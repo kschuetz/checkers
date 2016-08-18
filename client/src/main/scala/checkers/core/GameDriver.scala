@@ -263,7 +263,12 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
   }
 
   private def scheduleMoveAnimations(model: Model, moveInfo: List[MoveInfo]): Model = {
-    model
+    val currentPlayer = model.gameState.currentPlayer
+    val input = MoveAnimationPlanInput(nowTime = model.nowTime, existingAnimations = model.animations,
+      isComputerPlayer = currentPlayer.isComputer, moveInfo = moveInfo)
+    animationPlanner.scheduleMoveAnimations(input).fold(model) { updatedAnimations =>
+      model.copy(animations = updatedAnimations)
+    }
   }
 
 }
