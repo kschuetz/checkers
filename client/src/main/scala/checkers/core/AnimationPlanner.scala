@@ -27,7 +27,12 @@ class AnimationPlanner(settings: AnimationSettings) {
 
         input.moveInfo.foreach { moveInfo =>
           moveInfo.removedPiece.foreach { rp =>
-            val animation = RemovingPiece(rp.piece, rp.squareIndex, startTime = t, delay = 0, duration = settings.RemovePieceDurationMillis)
+            val animation = RemovingPiece(
+              piece = rp.piece,
+              fromSquare = rp.squareIndex,
+              startTime = input.nowTime,
+              startMovingTime = t,
+              endTime = t + settings.RemovePieceDurationMillis)
             result = animation :: result
             t += offset
           }

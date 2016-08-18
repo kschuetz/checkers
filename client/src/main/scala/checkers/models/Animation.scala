@@ -52,8 +52,19 @@ object Animation {
   case class RemovingPiece(piece: Occupant,
                            fromSquare: Int,
                            startTime: Double,
-                           delay: Double,
-                           duration: Double) extends OneTimeAnimation
+                           startMovingTime: Double,
+                           endTime: Double) extends OneTimeAnimation {
+    val duration = endTime - startTime
+    val moveDuration = endTime - startMovingTime
+
+    override def linearProgress(nowTime: Double): Double = {
+      if(moveDuration <= 0) 1.0
+      else if(nowTime <= startMovingTime) 0.0
+      else math.max((nowTime - startMovingTime) / moveDuration, 1.0)
+    }
+
+    override def isExpired(nowTime: Double): Boolean = nowTime >= endTime
+  }
 
   case class CrowningPiece(square: Int,
                            startTime: Double,
