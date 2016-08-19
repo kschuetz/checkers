@@ -60,7 +60,7 @@ object Animation {
     override def linearProgress(nowTime: Double): Double = {
       if(moveDuration <= 0) 1.0
       else if(nowTime <= startMovingTime) 0.0
-      else math.max((nowTime - startMovingTime) / moveDuration, 1.0)
+      else math.min((nowTime - startMovingTime) / moveDuration, 1.0)
     }
 
     override def isExpired(nowTime: Double): Boolean = nowTime >= endTime

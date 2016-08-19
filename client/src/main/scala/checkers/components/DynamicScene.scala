@@ -6,7 +6,7 @@ import checkers.consts._
 import checkers.core.Board
 import checkers.geometry.Point
 import checkers.models
-import checkers.models.Animation.HidesStaticPiece
+import checkers.models.Animation.{HidesStaticPiece, RemovingPiece}
 import checkers.models.SquareAttributes
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
@@ -101,9 +101,25 @@ object DynamicScene {
         PickedUpPiece(gp)
       }
 
+      val animations = new js.Array[ReactNode]
+      val nowTime = model.nowTime
+      model.animations.zipWithIndex.foreach { case (anim, idx) =>
+        val k = idx.toString
+        anim match {
+          case rp: RemovingPiece =>
+            val progress = rp.linearProgress(nowTime)
+            val props = RemovingPieceAnimation.Props(rp.piece, rp.fromSquare, progress)
+            val component = RemovingPieceAnimation.component.withKey(k)(props)
+            animations.push(component)
+
+          case _ => ()
+        }
+      }
+
       <.svg.g(
         overlayButtons,
         staticPiecesLayer,
+        animations,
         pickedUpPiece
       )
 
