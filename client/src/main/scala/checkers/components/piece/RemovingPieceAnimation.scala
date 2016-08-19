@@ -2,7 +2,7 @@ package checkers.components.piece
 
 import checkers.consts._
 import checkers.core.Board
-import checkers.util.SvgHelpers
+import checkers.util.{Easing, SvgHelpers}
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
 import checkers.geometry.Point
@@ -15,7 +15,7 @@ object RemovingPieceAnimation {
 
   class RemovingAnimationBackend($: BackendScope[Props, Unit]) {
     def render(props: Props) = {
-      val t = props.progress
+      val t = Easing.easeInQuad(props.progress)
       val ptA = startingPoint(props.piece, props.fromSquare)
       val ptB = exitPoint(props.piece, props.fromSquare)
 
