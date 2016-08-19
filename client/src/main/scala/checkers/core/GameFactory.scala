@@ -1,7 +1,6 @@
-package checkers.driver
+package checkers.core
 
 import checkers.computer.TrivialPlayer
-import checkers.core._
 import org.scalajs.dom
 
 class GameFactory(gameLogicModuleFactory: GameLogicModuleFactory) {

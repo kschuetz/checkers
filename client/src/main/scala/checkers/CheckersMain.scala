@@ -2,8 +2,7 @@ package checkers
 
 import checkers.benchmark.MoveGeneratorBenchmarks
 import checkers.core.tables.TablesModule
-import checkers.core._
-import checkers.driver.GameFactory
+import checkers.core.{GameFactory, _}
 import checkers.logger._
 import checkers.style.GlobalStyles
 import com.softwaremill.macwire._
