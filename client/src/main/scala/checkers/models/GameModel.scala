@@ -51,10 +51,19 @@ case class GameModel[DS, LS](nowTime: Double,
                              squareAttributesVector: SquareAttributesVector,
                              flipAnimation: Option[FlippingBoardAnimation],
                              animations: List[Animation]) extends GameModelReader {
+
+  /**
+    * Has any animations that affect game play (e.g. moving a piece)
+    */
+  def hasActivePlayAnimations: Boolean =
+    animations.exists(_.isActive(nowTime))
+
   def hasActiveAnimations: Boolean =
-    animations.exists(_.isActive(nowTime)) || flipAnimation.exists(_.isActive(nowTime))
+    hasActivePlayAnimations || flipAnimation.exists(_.isActive(nowTime))
 
   def hasActiveComputation: Boolean = inputPhase.waitingForComputer
+
+  def waitingForAnimations: Boolean = inputPhase.waitingForAnimations
 
   def runComputations(maxCycles: Int): Int = {
     inputPhase match {

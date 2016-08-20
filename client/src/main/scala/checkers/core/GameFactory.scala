@@ -10,6 +10,7 @@ class GameFactory(gameLogicModuleFactory: GameLogicModuleFactory) {
     createGame(gameLogicModule, gameConfig, host)
   }
 
+  // Human vs. TrivialPlayer
   def createSimple1(host: dom.Node) = {
     val rulesSettings = RulesSettings.default
     val gameLogicModule = gameLogicModuleFactory.apply(rulesSettings)
@@ -19,11 +20,22 @@ class GameFactory(gameLogicModuleFactory: GameLogicModuleFactory) {
     createGame(gameLogicModule, gameConfig, host)
   }
 
+  // Human vs. Human
   def createSimple2(host: dom.Node) = {
     val rulesSettings = RulesSettings.default
     val gameLogicModule = gameLogicModuleFactory.apply(rulesSettings)
     val light = Human
     val dark = Human
+    val gameConfig = GameConfig(rulesSettings, PlayerConfig(dark, light))
+    createGame(gameLogicModule, gameConfig, host)
+  }
+
+  // Trivial Player vs. Trivial Player
+  def createSimple3(host: dom.Node) = {
+    val rulesSettings = RulesSettings.default
+    val gameLogicModule = gameLogicModuleFactory.apply(rulesSettings)
+    val light = Computer(new TrivialPlayer(gameLogicModule.moveGenerator)(None))
+    val dark =  Computer(new TrivialPlayer(gameLogicModule.moveGenerator)(None))
     val gameConfig = GameConfig(rulesSettings, PlayerConfig(dark, light))
     createGame(gameLogicModule, gameConfig, host)
   }

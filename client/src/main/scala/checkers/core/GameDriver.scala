@@ -4,7 +4,7 @@ import checkers.components.BoardMouseEvent
 import checkers.computer.{PlayComputation, PlayInput}
 import checkers.consts._
 import checkers.core.BeginTurnEvaluation._
-import checkers.core.InputPhase.{BeginHumanTurn, ComputerThinking, PieceSelected}
+import checkers.core.InputPhase.{BeginHumanTurn, ComputerThinking, EndingTurn, PieceSelected}
 import checkers.geometry.Point
 import checkers.models.{BoardOrientation, GameModel, PickedUpPiece, SquareAttributesVector}
 import checkers.test.BoardExperiments
@@ -178,6 +178,13 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
     restartTurn(gameModel, newState).copy(turnStartTime = gameModel.nowTime)
   }
 
+  /**
+    * Starts a new turn, but waits until play animations are completed
+    */
+  private def endTurn(gameModel: Model, nextTurnState: State): Model = {
+    gameModel.copy(inputPhase = EndingTurn(nextTurnState))
+  }
+
   private def continueTurn(model: Model, fromSquare: Int, piece: Occupant, validTargetSquares: Set[Int]): Model = {
     selectPiece(model, validTargetSquares, fromSquare, piece, None, canCancel = false)
   }
@@ -247,7 +254,7 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
           val newModel = model.copy(gameState = newGameState)
           applyPlay(newModel, play).map { case (playEvents, result) =>
             // Computer doesn't make partial moves, so play always ends turn
-            initTurn(result, result.gameState)
+            endTurn(result, result.gameState)
           }
 
         } else None
@@ -255,7 +262,12 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
     }
   }
 
-
+  def handleAnimationsComplete(model: Model): Option[Model] = {
+    model.inputPhase match {
+      case EndingTurn(nextTurnState) => Some(initTurn(model, nextTurnState.asInstanceOf[State]))
+      case _ => None
+    }
+  }
 
   private def userSelectPiece(model: Model, squareIndex: Int, piece: Occupant, clickPoint: Option[Point]): Option[Model] = {
     model.gameState.moveTree.down(squareIndex).map { moveTree =>
@@ -279,7 +291,7 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
   private def selectMoveTarget(model: Model, event: BoardMouseEvent, fromSquare: Int, toSquare: Int): Option[Model] = {
     val play = Play.move(fromSquare, toSquare)
     applyPlay(model, play).map { case (playEvents, result) =>
-      if (playEvents.endedTurn) initTurn(result, result.gameState)
+      if (playEvents.endedTurn) endTurn(result, result.gameState)
       else {
         val nextMoveTree = playEvents.remainingMoveTree.next(toSquare)
         val validTargetSquares = nextMoveTree.squares

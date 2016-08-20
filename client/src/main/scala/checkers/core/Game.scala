@@ -35,6 +35,13 @@ class Game[DS, LS](gameDriver: GameDriver[DS, LS])
 
   private def handleAnimationFrame(t: Double) = {
     model = model.updateNowTime(t)
+    if(model.waitingForAnimations) {
+      if(!model.hasActivePlayAnimations) {
+        gameDriver.handleAnimationsComplete(model).foreach { newModel =>
+          model = newModel
+        }
+      }
+    }
     renderModel(model)
     if (model.hasActiveAnimations) invalidate()
   }
