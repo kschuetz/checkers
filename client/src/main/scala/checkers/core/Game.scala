@@ -57,7 +57,7 @@ class Game[DS, LS](gameDriver: GameDriver[DS, LS])
   private def tick(): Unit = {
     if(model.hasActiveComputation) {
       model.runComputations(2000)
-      gameDriver.processComputerMoves(model).foreach { case (_, newModel) =>
+      gameDriver.processComputerMoves(model).foreach { newModel =>
         replaceModel(newModel)
       }
       if(model.hasActiveComputation) {

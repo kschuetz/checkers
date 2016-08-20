@@ -232,7 +232,7 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
     }
   }
 
-  def processComputerMoves(model: Model): Option[(PlayEvents, Model)] = {
+  def processComputerMoves(model: Model): Option[Model] = {
     model.inputPhase match {
       case ct: ComputerThinking[_] =>
         if(ct.playComputation.isReady) {
@@ -245,7 +245,10 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
           }
 
           val newModel = model.copy(gameState = newGameState)
-          applyPlay(newModel, play)
+          applyPlay(newModel, play).map { case (playEvents, result) =>
+            // Computer doesn't make partial moves, so play always ends turn
+            initTurn(result, result.gameState)
+          }
 
         } else None
       case _ => None
