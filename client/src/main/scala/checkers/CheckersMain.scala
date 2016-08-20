@@ -42,7 +42,7 @@ object CheckersMain extends js.JSApp {
 
     lazy val gameFactory: GameFactory = wire[GameFactory]
 
-    val game = gameFactory.createSimple2(host)
+    val game = gameFactory.createSimple1(host)
     game.run()
   }
 

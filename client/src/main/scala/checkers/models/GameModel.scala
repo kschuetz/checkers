@@ -1,6 +1,7 @@
 package checkers.models
 
 import checkers.consts._
+import checkers.core.InputPhase.ComputerThinking
 import checkers.core._
 import checkers.models.Animation.{FlippingBoardAnimation, MovingPiece}
 
@@ -54,6 +55,14 @@ case class GameModel[DS, LS](nowTime: Double,
     animations.exists(_.isActive(nowTime)) || flipAnimation.exists(_.isActive(nowTime))
 
   def hasActiveComputation: Boolean = inputPhase.waitingForComputer
+
+  def runComputations(maxCycles: Int): Int = {
+    inputPhase match {
+      case ct: ComputerThinking[_] =>
+        ct.playComputation.run(maxCycles)
+      case _ => 0
+    }
+  }
 
   def getBoardRotation: Double = {
     // TODO: easing

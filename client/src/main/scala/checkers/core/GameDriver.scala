@@ -129,8 +129,8 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
     val darkState = playerConfig.darkPlayer.initialState
     val lightState = playerConfig.lightPlayer.initialState
     val turnToMove = rulesSettings.playsFirst
-    //val boardState = RulesSettings.initialBoard(rulesSettings)
-    val boardState = BoardExperiments.board1
+    val boardState = RulesSettings.initialBoard(rulesSettings)
+//    val boardState = BoardExperiments.board1
     val beginTurnState = BeginTurnState(boardState, turnToMove, 0, NoDraw)
     val turnEvaluation = evaluateBeginTurn(beginTurnState)
     GameState(rulesSettings, playerConfig, boardState, turnToMove, 0, darkState, lightState, NoDraw, turnEvaluation, 0, 0, Nil)

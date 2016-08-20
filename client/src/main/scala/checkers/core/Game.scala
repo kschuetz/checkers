@@ -29,6 +29,7 @@ class Game[DS, LS](gameDriver: GameDriver[DS, LS])
   }
 
   private def invalidate(): Unit = {
+    scheduleTick()
     dom.window.requestAnimationFrame(handleAnimationFrame _)
   }
 
@@ -50,6 +51,23 @@ class Game[DS, LS](gameDriver: GameDriver[DS, LS])
   private def replaceModel(newModel: Model): Unit = {
     model = newModel
     invalidate()
+  }
+
+
+  private def tick(): Unit = {
+    if(model.hasActiveComputation) {
+      model.runComputations(2000)
+      gameDriver.processComputerMoves(model).foreach { case (_, newModel) =>
+        replaceModel(newModel)
+      }
+      if(model.hasActiveComputation) {
+        scheduleTick()
+      }
+    }
+  }
+
+  private def scheduleTick(): Unit = {
+    dom.window.setTimeout(tick _, 1)
   }
 
 }
