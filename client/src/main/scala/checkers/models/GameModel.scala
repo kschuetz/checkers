@@ -53,6 +53,8 @@ case class GameModel[DS, LS](nowTime: Double,
   def hasActiveAnimations: Boolean =
     animations.exists(_.isActive(nowTime)) || flipAnimation.exists(_.isActive(nowTime))
 
+  def hasActiveComputation: Boolean = inputPhase.waitingForComputer
+
   def getBoardRotation: Double = {
     // TODO: easing
     val offset = flipAnimation.map { anim =>
