@@ -41,4 +41,9 @@ case class GameState[DS, LS](rulesSettings: RulesSettings,
     case _ => MoveTree.empty
   }
 
+  def withDarkState(newState: DS): GameState[DS, LS] = copy(darkState = newState)
+
+  def withLightState(newState: LS): GameState[DS, LS] = copy(lightState = newState)
+
 }
+

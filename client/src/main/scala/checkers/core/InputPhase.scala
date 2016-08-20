@@ -17,7 +17,6 @@ object InputPhase {
   case class PieceSelected(piece: Occupant,
                            square: Int,
                            validTargetSquares: Set[Int],
-//                           moveTree: MoveTree,
                            canCancel: Boolean) extends HumanMovePhase
 
   case class ComputerThinking[S](startTime: Double, playComputation: PlayComputation[S]) extends InputPhase

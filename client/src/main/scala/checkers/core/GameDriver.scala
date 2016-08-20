@@ -1,7 +1,7 @@
 package checkers.core
 
 import checkers.components.BoardMouseEvent
-import checkers.computer.PlayInput
+import checkers.computer.{PlayComputation, PlayInput}
 import checkers.consts._
 import checkers.core.BeginTurnEvaluation._
 import checkers.core.InputPhase.{BeginHumanTurn, ComputerThinking, PieceSelected}
@@ -173,6 +173,7 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
     }
   }
 
+
   private def initTurn(gameModel: Model, newState: State): Model = {
     restartTurn(gameModel, newState).copy(turnStartTime = gameModel.nowTime)
   }
@@ -230,6 +231,28 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
       case _ => None
     }
   }
+
+  def processComputerMoves(model: Model): Option[(PlayEvents, Model)] = {
+    model.inputPhase match {
+      case ct: ComputerThinking[_] =>
+        if(ct.playComputation.isReady) {
+          val (play, newPlayerState) = ct.playComputation.result
+
+          val newGameState = if(model.gameState.turnToMove == DARK) {
+            model.gameState.withDarkState(newPlayerState.asInstanceOf[DS])
+          } else {
+            model.gameState.withLightState(newPlayerState.asInstanceOf[LS])
+          }
+
+          val newModel = model.copy(gameState = newGameState)
+          applyPlay(newModel, play)
+
+        } else None
+      case _ => None
+    }
+  }
+
+
 
   private def userSelectPiece(model: Model, squareIndex: Int, piece: Occupant, clickPoint: Option[Point]): Option[Model] = {
     model.gameState.moveTree.down(squareIndex).map { moveTree =>
