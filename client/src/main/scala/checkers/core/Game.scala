@@ -21,6 +21,9 @@ class Game[DS, LS](gameDriver: GameDriver[DS, LS])
     override val onBoardMouseDown = (event: BoardMouseEvent) => Some(Callback {
       println(s"pieceMouseDown ${event.squareIndex}")
       gameDriver.handleBoardMouseDown(model, event).foreach(replaceModel)
+      if(event.squareIndex < 0) {
+        println(model.inputPhase)
+      }
     })
 
     override val onBoardMouseMove = (event: BoardMouseEvent) => Some(Callback {

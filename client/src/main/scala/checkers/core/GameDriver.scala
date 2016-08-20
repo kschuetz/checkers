@@ -182,7 +182,7 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
     * Starts a new turn, but waits until play animations are completed
     */
   private def endTurn(gameModel: Model, nextTurnState: State): Model = {
-    gameModel.copy(inputPhase = EndingTurn(nextTurnState))
+    gameModel.copy(inputPhase = EndingTurn(nextTurnState), pickedUpPiece = None)
   }
 
   private def continueTurn(model: Model, fromSquare: Int, piece: Occupant, validTargetSquares: Set[Int]): Model = {
@@ -263,6 +263,7 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
   }
 
   def handleAnimationsComplete(model: Model): Option[Model] = {
+    println("handleAnimationsComplete")
     model.inputPhase match {
       case EndingTurn(nextTurnState) => Some(initTurn(model, nextTurnState.asInstanceOf[State]))
       case _ => None
