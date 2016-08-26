@@ -14,7 +14,7 @@ object MovingPieceAnimation {
 
   class MovingPieceAnimationBackend($: BackendScope[Props, Unit]) {
     def render(props: Props) = {
-      val t = props.progress //Easing.easeInOutQuart(props.progress)
+      val t = Easing.easeInOutQuart(props.progress)
       val ptA = Board.squareCenter(props.fromSquare)
       val ptB = Board.squareCenter(props.toSquare)
 

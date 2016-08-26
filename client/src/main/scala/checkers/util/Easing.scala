@@ -2,14 +2,15 @@ package checkers.util
 
 object Easing {
 
+  // Domain for all functions is 0..1
+
   def easeInQuad(t: Double): Double = t * t
 
   def easeInOutQuart(t: Double): Double = {
-    var x = t * 2
-    if(x < 0.5) { 0.5 * x * x * x * x }
+    if(t < 0.5) { 8 * t * t * t * t }
     else {
-      x -= 2
-      -0.5 * (x * x * x * x - 2)
+      val x = t - 1
+      1 - (8 * x * x * x * x)
     }
   }
 
