@@ -13,7 +13,7 @@ trait AnimationSettings {
 object DefaultAnimationSettings extends AnimationSettings {
   val RemovePieceDurationMillis = 330.0
   val RemovePieceHumanDelayMillis = 115.0
-  val RemovePieceComputerDelayMillis = 115.0
+  val RemovePieceComputerDelayMillis = 500.0
   val MovePieceDurationMillis = 900.0
   val JumpPieceDurationMillis = 900.0
 }
