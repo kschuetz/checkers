@@ -10,7 +10,10 @@ case class MoveInfo(piece: Occupant,
                     fromSquare: Int,
                     toSquare: Int,
                     removedPiece: Option[RemovedPiece],
-                    crowned: Boolean)
+                    crowned: Boolean) {
+  def isJump: Boolean = removedPiece.nonEmpty
+  def isNormalMove: Boolean = removedPiece.isEmpty
+}
 
 class MoveExecutor(rulesSettings: RulesSettings,
                    jumpTable: JumpTable) {

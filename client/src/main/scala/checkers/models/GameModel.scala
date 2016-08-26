@@ -98,17 +98,6 @@ case class GameModel[DS, LS](nowTime: Double,
     }
   }
 
-  def startMovePiece(fromSquare: Int, toSquare: Int, duration: Double): GameModel[DS, LS] = {
-    val anim = MovingPiece(fromSquare, toSquare, nowTime, duration)
-    copy(animations = anim :: animations)
-  }
-
-  def startJumpPath(path: Seq[Int], durationPerStep: Double): GameModel[DS, LS] = {
-    ???
-
-
-  }
-
   override def ruleSettings: RulesSettings = gameState.rulesSettings
 
   override def turnToMove: Color = gameState.turnToMove

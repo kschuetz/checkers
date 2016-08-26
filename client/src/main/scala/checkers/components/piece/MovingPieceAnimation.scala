@@ -2,21 +2,21 @@ package checkers.components.piece
 
 import checkers.consts._
 import checkers.core.Board
-import checkers.geometry.Point
 import checkers.util.Easing
 import japgolly.scalajs.react._
 
-object RemovingPieceAnimation {
+object MovingPieceAnimation {
 
   case class Props(piece: Occupant,
                    fromSquare: Int,
+                   toSquare: Int,
                    progress: Double)
 
-  class RemovingAnimationBackend($: BackendScope[Props, Unit]) {
+  class MovingPieceAnimationBackend($: BackendScope[Props, Unit]) {
     def render(props: Props) = {
-      val t = Easing.easeInQuad(props.progress)
-      val ptA = startingPoint(props.piece, props.fromSquare)
-      val ptB = exitPoint(props.piece, props.fromSquare)
+      val t = props.progress //Easing.easeInOutQuart(props.progress)
+      val ptA = Board.squareCenter(props.fromSquare)
+      val ptB = Board.squareCenter(props.toSquare)
 
       val x0 = ptA.x
       val x = x0 + t * (ptB.x - x0)
@@ -35,23 +35,14 @@ object RemovingPieceAnimation {
   }
 
 
-  val component = ReactComponentB[Props]("RemovingPieceAnimation")
-    .renderBackend[RemovingAnimationBackend]
+  val component = ReactComponentB[Props]("MovingPieceAnimation")
+    .renderBackend[MovingPieceAnimationBackend]
     .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, _) =>
-      val result = scope.props != nextProps
+      val result = true //scope.props != nextProps
       CallbackTo.pure(result)
     }
     .build
 
   def apply(props: Props) = component(props)
-
-  private def startingPoint(piece: Occupant, fromSquare: Int): Point = {
-    Board.squareCenter(fromSquare)
-  }
-
-  private def exitPoint(piece: Occupant, fromSquare: Int): Point = {
-    // TODO:
-    startingPoint(piece, fromSquare).copy(x = -5)
-  }
 
 }

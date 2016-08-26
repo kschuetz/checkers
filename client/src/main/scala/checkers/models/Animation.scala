@@ -30,13 +30,15 @@ object Animation {
 
   trait OneTimeAnimation extends Animation {
     def linearProgress(nowTime: Double): Double =
-      math.max((nowTime - startTime) / duration, 1.0)
+      if(nowTime <= startTime) 0.0
+      else math.min((nowTime - startTime) / duration, 1.0)
 
     def isExpired(nowTime: Double): Boolean =
       (nowTime - startTime) >= duration
   }
 
-  case class MovingPiece(fromSquare: Int,
+  case class MovingPiece(piece: Occupant,
+                         fromSquare: Int,
                          toSquare: Int,
                          startTime: Double,
                          duration: Double) extends OneTimeAnimation with HidesStaticPiece {

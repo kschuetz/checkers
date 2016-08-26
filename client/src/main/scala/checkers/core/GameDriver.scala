@@ -74,6 +74,7 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
     val gameState = gameModel.gameState
     val boardState = gameState.board.toMutable
     val endsTurn = remainingMoveTree.isEmpty
+    val isComputerPlayer = gameState.currentPlayer.isComputer
 
     println(s"applyMove: remaining tree = $remainingMoveTree")
 
@@ -88,7 +89,6 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
     }
     val moveInfo = go(move.path, Nil)
     val newBoard = boardState.toImmutable
-    // TODO: schedule animations
 
     val entry = HistoryEntry(gameState.turnIndex, gameState.turnToMove, gameState.board, gameState.drawStatus, move)
     val newGameState = if (endsTurn) {
@@ -119,7 +119,7 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
     val playEvents = if (endsTurn) PlayEvents.turnEnded else PlayEvents.partialTurn(remainingMoveTree)
     val newModel = {
       val m1 = gameModel.copy(gameState = newGameState)
-      scheduleMoveAnimations(m1, moveInfo)
+      scheduleMoveAnimations(m1, moveInfo, isComputerPlayer)
     }
 
     (playEvents, newModel)
@@ -302,10 +302,10 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
     }
   }
 
-  private def scheduleMoveAnimations(model: Model, moveInfo: List[MoveInfo]): Model = {
+  private def scheduleMoveAnimations(model: Model, moveInfo: List[MoveInfo], isComputerPlayer: Boolean): Model = {
     val currentPlayer = model.gameState.currentPlayer
     val input = MoveAnimationPlanInput(nowTime = model.nowTime, existingAnimations = model.animations,
-      isComputerPlayer = currentPlayer.isComputer, moveInfo = moveInfo)
+      isComputerPlayer = isComputerPlayer, moveInfo = moveInfo)
     animationPlanner.scheduleMoveAnimations(input).fold(model) { updatedAnimations =>
       model.copy(animations = updatedAnimations)
     }

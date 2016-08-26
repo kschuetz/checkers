@@ -1,7 +1,7 @@
 package checkers.core
 
 import checkers.models.Animation
-import checkers.models.Animation.RemovingPiece
+import checkers.models.Animation.{MovingPiece, RemovingPiece}
 
 case class MoveAnimationPlanInput(nowTime: Double,
                                   existingAnimations: List[Animation],
@@ -33,9 +33,31 @@ class AnimationPlanner(settings: AnimationSettings) {
       result
     }
 
+    def handleMovePieces(incoming: List[Animation]): List[Animation] = {
+      var result = incoming
+      val duration = settings.MovePieceDurationMillis
+      var t = input.nowTime
+      input.moveInfo.foreach { moveInfo =>
+        if(moveInfo.isNormalMove) {
+          println("SCHEDULING MOVE!")
+          val animation = MovingPiece(
+            piece = moveInfo.piece,
+            fromSquare = moveInfo.fromSquare,
+            toSquare = moveInfo.toSquare,
+            startTime = t,
+            duration = duration)
+          result = animation :: result
+          t += duration
+        }
+      }
+
+      result
+    }
+
     def scheduleForComputer: List[Animation] = {
       var result = List.empty[Animation]
 
+      result = handleMovePieces(result)
       result = handleRemovePieces(settings.RemovePieceComputerDelayMillis, result)
 
       result
@@ -43,9 +65,8 @@ class AnimationPlanner(settings: AnimationSettings) {
 
     def scheduleForHuman: List[Animation] = {
       var result = List.empty[Animation]
-
+      // Moving pieces or jumping pieces are not animated for humans
       result = handleRemovePieces(settings.RemovePieceHumanDelayMillis, result)
-
       result
     }
 
