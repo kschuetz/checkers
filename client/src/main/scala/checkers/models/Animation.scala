@@ -45,17 +45,10 @@ object Animation {
     def hidesPieceAtSquare = toSquare
   }
 
-  case class JumpingPiece(jumpPath: ValidJumpPath,
-                          startTime: Double,
-                          duration: Double) extends OneTimeAnimation with HidesStaticPiece {
-    def hidesPieceAtSquare = jumpPath.endSquare
-  }
+  trait OneTimeDeferredAnimation extends OneTimeAnimation {
+    def startMovingTime: Double
+    def endTime: Double
 
-  case class RemovingPiece(piece: Occupant,
-                           fromSquare: Int,
-                           startTime: Double,
-                           startMovingTime: Double,
-                           endTime: Double) extends OneTimeAnimation {
     val duration = endTime - startTime
     val moveDuration = endTime - startMovingTime
 
@@ -67,6 +60,22 @@ object Animation {
 
     override def isExpired(nowTime: Double): Boolean = nowTime >= endTime
   }
+
+  case class JumpingPiece(piece: Occupant,
+                          fromSquare: Int,
+                          toSquare: Int,
+                          finalSquare: Int,
+                          startTime: Double,
+                          startMovingTime: Double,
+                          endTime: Double) extends OneTimeDeferredAnimation with HidesStaticPiece {
+    def hidesPieceAtSquare = finalSquare
+  }
+
+  case class RemovingPiece(piece: Occupant,
+                           fromSquare: Int,
+                           startTime: Double,
+                           startMovingTime: Double,
+                           endTime: Double) extends OneTimeDeferredAnimation
 
   case class CrowningPiece(square: Int,
                            startTime: Double,
