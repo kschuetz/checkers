@@ -13,33 +13,38 @@ class AnimationPlanner(settings: AnimationSettings) {
 
     println(s"scheduleMoveAnimations: $input")
 
+
+    def handleRemovePieces(offset: Double, incoming: List[Animation]): List[Animation] = {
+      var result = incoming
+      var t = input.nowTime + offset
+
+      input.moveInfo.foreach { moveInfo =>
+        moveInfo.removedPiece.foreach { rp =>
+          val animation = RemovingPiece(
+            piece = rp.piece,
+            fromSquare = rp.squareIndex,
+            startTime = input.nowTime,
+            startMovingTime = t,
+            endTime = t + settings.RemovePieceDurationMillis)
+          result = animation :: result
+          t += offset
+        }
+      }
+      result
+    }
+
     def scheduleForComputer: List[Animation] = {
-      // TODO
-      Nil
+      var result = List.empty[Animation]
+
+      result = handleRemovePieces(settings.RemovePieceComputerDelayMillis, result)
+
+      result
     }
 
     def scheduleForHuman: List[Animation] = {
       var result = List.empty[Animation]
 
-      def handleRemovePieces(): Unit = {
-        val offset = settings.RemovePieceHumanDelayMillis
-        var t = input.nowTime + offset
-
-        input.moveInfo.foreach { moveInfo =>
-          moveInfo.removedPiece.foreach { rp =>
-            val animation = RemovingPiece(
-              piece = rp.piece,
-              fromSquare = rp.squareIndex,
-              startTime = input.nowTime,
-              startMovingTime = t,
-              endTime = t + settings.RemovePieceDurationMillis)
-            result = animation :: result
-            t += offset
-          }
-        }
-      }
-
-      handleRemovePieces()
+      result = handleRemovePieces(settings.RemovePieceHumanDelayMillis, result)
 
       result
     }
