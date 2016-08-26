@@ -204,6 +204,7 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
 
     val clickableSquares = getClickableSquares(inputPhase, newState.moveTree)
     println(s"turnToMove: $turnToMove")
+    println(s"moveTree:  ${newState.moveTree}")
     println(clickableSquares)
     val squareAttributesVector = gameModel.squareAttributesVector.withClickable(clickableSquares).withGhost(Set.empty)
 

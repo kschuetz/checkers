@@ -23,6 +23,7 @@ class Game[DS, LS](gameDriver: GameDriver[DS, LS])
       gameDriver.handleBoardMouseDown(model, event).foreach(replaceModel)
       if(event.squareIndex < 0) {
         println(model.inputPhase)
+        scheduleTick()
       }
     })
 
@@ -46,7 +47,7 @@ class Game[DS, LS](gameDriver: GameDriver[DS, LS])
       }
     }
     renderModel(model)
-    if (model.hasActiveAnimations) invalidate()
+    if (model.hasActiveAnimations || model.hasActiveComputation) invalidate()
   }
 
   private def renderModel(model: Model): Unit = {
