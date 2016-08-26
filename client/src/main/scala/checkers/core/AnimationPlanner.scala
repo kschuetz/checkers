@@ -1,7 +1,7 @@
 package checkers.core
 
 import checkers.models.Animation
-import checkers.models.Animation.{MovingPiece, RemovingPiece}
+import checkers.models.Animation.{JumpingPiece, MovingPiece, RemovingPiece}
 
 case class MoveAnimationPlanInput(nowTime: Double,
                                   existingAnimations: List[Animation],
@@ -39,7 +39,6 @@ class AnimationPlanner(settings: AnimationSettings) {
       var t = input.nowTime
       input.moveInfo.foreach { moveInfo =>
         if(moveInfo.isNormalMove) {
-          println("SCHEDULING MOVE!")
           val animation = MovingPiece(
             piece = moveInfo.piece,
             fromSquare = moveInfo.fromSquare,
@@ -54,10 +53,43 @@ class AnimationPlanner(settings: AnimationSettings) {
       result
     }
 
+    def handleJumpPieces(incoming: List[Animation]): List[Animation] = {
+      val finalSquare = input.moveInfo.foldLeft(-1){ case (acc, moveInfo) =>
+        if(moveInfo.isJump) moveInfo.toSquare
+        else acc
+      }
+
+      if(finalSquare < 0) return incoming   // no jumps found
+
+      var result = incoming
+      val duration = settings.JumpPieceDurationMillis
+
+      val baseTime = input.nowTime
+      var t = baseTime
+      input.moveInfo.foreach { moveInfo =>
+        if(moveInfo.isJump) {
+          val animation = JumpingPiece(
+            piece = moveInfo.piece,
+            fromSquare = moveInfo.fromSquare,
+            toSquare = moveInfo.toSquare,
+            finalSquare = finalSquare,
+            startTime = baseTime,
+            startMovingTime = t,
+            endTime = t + duration
+          )
+          result = animation :: result
+          t += duration
+        }
+      }
+
+      result
+    }
+
     def scheduleForComputer: List[Animation] = {
       var result = List.empty[Animation]
 
       result = handleMovePieces(result)
+      result = handleJumpPieces(result)
       result = handleRemovePieces(settings.RemovePieceComputerDelayMillis, result)
 
       result

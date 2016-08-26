@@ -6,7 +6,7 @@ import checkers.consts._
 import checkers.core.Board
 import checkers.geometry.Point
 import checkers.models
-import checkers.models.Animation.{HidesStaticPiece, MovingPiece, RemovingPiece}
+import checkers.models.Animation.{HidesStaticPiece, JumpingPiece, MovingPiece, RemovingPiece}
 import checkers.models.SquareAttributes
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
@@ -116,6 +116,12 @@ object DynamicScene {
             val progress = mp.linearProgress(nowTime)
             val props = MovingPieceAnimation.Props(mp.piece, mp.fromSquare, mp.toSquare, progress)
             val component = MovingPieceAnimation.component.withKey(k)(props)
+            animations.push(component)
+
+          case jp: JumpingPiece =>
+            val progress = jp.linearProgress(nowTime)
+            val props = JumpingPieceAnimation.Props(jp.piece, jp.fromSquare, jp.toSquare, progress)
+            val component = JumpingPieceAnimation.component.withKey(k)(props)
             animations.push(component)
 
           case _ => ()

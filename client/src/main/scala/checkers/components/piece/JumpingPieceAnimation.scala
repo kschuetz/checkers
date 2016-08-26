@@ -5,14 +5,14 @@ import checkers.core.Board
 import checkers.util.Easing
 import japgolly.scalajs.react._
 
-object MovingPieceAnimation {
+object JumpingPieceAnimation {
 
   case class Props(piece: Occupant,
                    fromSquare: Int,
                    toSquare: Int,
                    progress: Double)
 
-  class MovingPieceAnimationBackend($: BackendScope[Props, Unit]) {
+  class JumpingPieceAnimationBackend($: BackendScope[Props, Unit]) {
     def render(props: Props) = {
       val t = Easing.easeInOutQuart(props.progress)
       val ptA = Board.squareCenter(props.fromSquare)
@@ -35,8 +35,8 @@ object MovingPieceAnimation {
   }
 
 
-  val component = ReactComponentB[Props]("MovingPieceAnimation")
-    .renderBackend[MovingPieceAnimationBackend]
+  val component = ReactComponentB[Props]("JumpingPieceAnimation")
+    .renderBackend[JumpingPieceAnimationBackend]
     .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, _) =>
       val result = scope.props != nextProps
       CallbackTo.pure(result)
