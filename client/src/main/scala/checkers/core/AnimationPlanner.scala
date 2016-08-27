@@ -13,10 +13,9 @@ class AnimationPlanner(settings: AnimationSettings) {
 
     println(s"scheduleMoveAnimations: $input")
 
-
-    def handleRemovePieces(startTime: Double, offset: Double, incoming: List[Animation]): List[Animation] = {
+    def handleRemovePieces(startTime: Double, delay: Double, interval: Double, incoming: List[Animation]): List[Animation] = {
       var result = incoming
-      var t = startTime + offset
+      var t = startTime + delay
 
       input.moveInfo.foreach { moveInfo =>
         moveInfo.removedPiece.foreach { rp =>
@@ -27,7 +26,7 @@ class AnimationPlanner(settings: AnimationSettings) {
             startMovingTime = t,
             endTime = t + settings.RemovePieceDurationMillis)
           result = animation :: result
-          t += offset
+          t += interval
         }
       }
       result
@@ -64,6 +63,7 @@ class AnimationPlanner(settings: AnimationSettings) {
       var result = incoming
       val duration = settings.JumpPieceDurationMillis
 
+      var pathIndex = 0
       var t = startTime
       input.moveInfo.foreach { moveInfo =>
         if(moveInfo.isJump) {
@@ -74,8 +74,10 @@ class AnimationPlanner(settings: AnimationSettings) {
             finalSquare = finalSquare,
             startTime = startTime,
             startMovingTime = t,
-            endTime = t + duration
+            endTime = t + duration,
+            isFirst = pathIndex == 0
           )
+          pathIndex += 1
           result = animation :: result
           t += duration
         }
@@ -91,7 +93,8 @@ class AnimationPlanner(settings: AnimationSettings) {
 
       result = handleMovePieces(startTime, result)
       result = handleJumpPieces(startTime, result)
-      result = handleRemovePieces(startTime, settings.RemovePieceComputerDelayMillis, result)
+      result = handleRemovePieces(startTime, settings.RemovePieceComputerDelayMillis,
+        settings.RemovePieceComputerIntervalMillis, result)
 
       result
     }
@@ -100,7 +103,7 @@ class AnimationPlanner(settings: AnimationSettings) {
       val startTime = input.nowTime
       var result = List.empty[Animation]
       // Moving pieces or jumping pieces are not animated for humans
-      result = handleRemovePieces(startTime, settings.RemovePieceHumanDelayMillis, result)
+      result = handleRemovePieces(startTime, settings.RemovePieceHumanDelayMillis, settings.RemovePieceHumanIntervalMillis, result)
       result
     }
 

@@ -87,7 +87,7 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
           go(more, info :: result)
       }
     }
-    val moveInfo = go(move.path, Nil)
+    val moveInfo = go(move.path, Nil).reverse
     val newBoard = boardState.toImmutable
 
     val entry = HistoryEntry(gameState.turnIndex, gameState.turnToMove, gameState.board, gameState.drawStatus, move)
@@ -119,6 +119,7 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
     val playEvents = if (endsTurn) PlayEvents.turnEnded else PlayEvents.partialTurn(remainingMoveTree)
     val newModel = {
       val m1 = gameModel.copy(gameState = newGameState)
+      println(newGameState.board.toString)
       scheduleMoveAnimations(m1, moveInfo, isComputerPlayer)
     }
 
@@ -130,7 +131,7 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
     val lightState = playerConfig.lightPlayer.initialState
     val turnToMove = rulesSettings.playsFirst
     val boardState = RulesSettings.initialBoard(rulesSettings)
-//    val boardState = BoardExperiments.board1
+//    val boardState = BoardExperiments.board2
     val beginTurnState = BeginTurnState(boardState, turnToMove, 0, NoDraw)
     val turnEvaluation = evaluateBeginTurn(beginTurnState)
     GameState(rulesSettings, playerConfig, boardState, turnToMove, 0, darkState, lightState, NoDraw, turnEvaluation, 0, 0, Nil)

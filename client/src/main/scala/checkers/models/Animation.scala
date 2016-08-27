@@ -67,8 +67,14 @@ object Animation {
                           finalSquare: Int,
                           startTime: Double,
                           startMovingTime: Double,
-                          endTime: Double) extends OneTimeDeferredAnimation with HidesStaticPiece {
+                          endTime: Double,
+                          isFirst: Boolean) extends OneTimeDeferredAnimation with HidesStaticPiece {
     def hidesPieceAtSquare = finalSquare
+
+    def isLast: Boolean = toSquare == finalSquare
+
+    def isPieceVisible(nowTime: Double): Boolean =
+      isFirst || (nowTime >= startMovingTime)
   }
 
   case class RemovingPiece(piece: Occupant,

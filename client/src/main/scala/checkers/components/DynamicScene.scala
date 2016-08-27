@@ -52,7 +52,7 @@ object DynamicScene {
       val staticPieces = new js.Array[ReactNode]
 
       Board.playableSquares.filterNot(piecesToHide.contains).foreach { squareIndex =>
-        val occupant = boardState.getOccupant(squareIndex) //squares(squareIndex)
+        val occupant = boardState.getOccupant(squareIndex)
         if (ISPIECE(occupant)) {
           val k = s"sp-$squareIndex"
 
@@ -103,29 +103,29 @@ object DynamicScene {
 
       val animations = new js.Array[ReactNode]
       val nowTime = model.nowTime
-      model.animations.zipWithIndex.foreach { case (anim, idx) =>
-        val k = idx.toString
-        anim match {
+      model.animations.foreach {
           case rp: RemovingPiece =>
+            val k = s"remove-${rp.fromSquare}"
             val progress = rp.linearProgress(nowTime)
             val props = RemovingPieceAnimation.Props(rp.piece, rp.fromSquare, progress)
             val component = RemovingPieceAnimation.component.withKey(k)(props)
             animations.push(component)
 
           case mp: MovingPiece =>
+            val k = s"move-${mp.fromSquare}-${mp.toSquare}"
             val progress = mp.linearProgress(nowTime)
             val props = MovingPieceAnimation.Props(mp.piece, mp.fromSquare, mp.toSquare, progress)
             val component = MovingPieceAnimation.component.withKey(k)(props)
             animations.push(component)
 
-          case jp: JumpingPiece =>
+          case jp: JumpingPiece if jp.isPieceVisible(nowTime) =>
+            val k = s"jump-${jp.fromSquare}-${jp.toSquare}"
             val progress = jp.linearProgress(nowTime)
             val props = JumpingPieceAnimation.Props(jp.piece, jp.fromSquare, jp.toSquare, progress)
             val component = JumpingPieceAnimation.component.withKey(k)(props)
             animations.push(component)
 
           case _ => ()
-        }
       }
 
       <.svg.g(
