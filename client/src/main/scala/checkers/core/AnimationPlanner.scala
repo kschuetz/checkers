@@ -14,16 +14,16 @@ class AnimationPlanner(settings: AnimationSettings) {
     println(s"scheduleMoveAnimations: $input")
 
 
-    def handleRemovePieces(offset: Double, incoming: List[Animation]): List[Animation] = {
+    def handleRemovePieces(startTime: Double, offset: Double, incoming: List[Animation]): List[Animation] = {
       var result = incoming
-      var t = input.nowTime + offset
+      var t = startTime + offset
 
       input.moveInfo.foreach { moveInfo =>
         moveInfo.removedPiece.foreach { rp =>
           val animation = RemovingPiece(
             piece = rp.piece,
             fromSquare = rp.squareIndex,
-            startTime = input.nowTime,
+            startTime = startTime,
             startMovingTime = t,
             endTime = t + settings.RemovePieceDurationMillis)
           result = animation :: result
@@ -33,10 +33,10 @@ class AnimationPlanner(settings: AnimationSettings) {
       result
     }
 
-    def handleMovePieces(incoming: List[Animation]): List[Animation] = {
+    def handleMovePieces(startTime: Double, incoming: List[Animation]): List[Animation] = {
       var result = incoming
       val duration = settings.MovePieceDurationMillis
-      var t = input.nowTime
+      var t = startTime
       input.moveInfo.foreach { moveInfo =>
         if(moveInfo.isNormalMove) {
           val animation = MovingPiece(
@@ -53,7 +53,7 @@ class AnimationPlanner(settings: AnimationSettings) {
       result
     }
 
-    def handleJumpPieces(incoming: List[Animation]): List[Animation] = {
+    def handleJumpPieces(startTime: Double, incoming: List[Animation]): List[Animation] = {
       val finalSquare = input.moveInfo.foldLeft(-1){ case (acc, moveInfo) =>
         if(moveInfo.isJump) moveInfo.toSquare
         else acc
@@ -64,8 +64,7 @@ class AnimationPlanner(settings: AnimationSettings) {
       var result = incoming
       val duration = settings.JumpPieceDurationMillis
 
-      val baseTime = input.nowTime
-      var t = baseTime
+      var t = startTime
       input.moveInfo.foreach { moveInfo =>
         if(moveInfo.isJump) {
           val animation = JumpingPiece(
@@ -73,7 +72,7 @@ class AnimationPlanner(settings: AnimationSettings) {
             fromSquare = moveInfo.fromSquare,
             toSquare = moveInfo.toSquare,
             finalSquare = finalSquare,
-            startTime = baseTime,
+            startTime = startTime,
             startMovingTime = t,
             endTime = t + duration
           )
@@ -86,19 +85,22 @@ class AnimationPlanner(settings: AnimationSettings) {
     }
 
     def scheduleForComputer: List[Animation] = {
+      val startTime = input.nowTime + settings.ComputerMoveDelayMillis
+
       var result = List.empty[Animation]
 
-      result = handleMovePieces(result)
-      result = handleJumpPieces(result)
-      result = handleRemovePieces(settings.RemovePieceComputerDelayMillis, result)
+      result = handleMovePieces(startTime, result)
+      result = handleJumpPieces(startTime, result)
+      result = handleRemovePieces(startTime, settings.RemovePieceComputerDelayMillis, result)
 
       result
     }
 
     def scheduleForHuman: List[Animation] = {
+      val startTime = input.nowTime
       var result = List.empty[Animation]
       // Moving pieces or jumping pieces are not animated for humans
-      result = handleRemovePieces(settings.RemovePieceHumanDelayMillis, result)
+      result = handleRemovePieces(startTime, settings.RemovePieceHumanDelayMillis, result)
       result
     }
 
