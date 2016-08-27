@@ -84,6 +84,10 @@ object PhysicalBoard {
         border,
         rows
       )
-    }.build
+    }
+    .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, _) =>
+      CallbackTo.pure(false)
+    }
+    .build
 
 }
