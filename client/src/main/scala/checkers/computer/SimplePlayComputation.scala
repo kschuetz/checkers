@@ -7,6 +7,7 @@ import checkers.core.Play
   * an answer almost immediately.
   */
 abstract class SimplePlayComputation[S] extends PlayComputation[S] {
+  private var tickCount: Int = 0
   private var answer: Option[(Play, S)] = None
 
   protected def compute: (Play, S)
@@ -14,7 +15,12 @@ abstract class SimplePlayComputation[S] extends PlayComputation[S] {
   override def run(maxCycles: Int): Int = {
     if(isReady) 0
     else {
-      answer = Some(compute)
+      tickCount += 1
+
+      // Wait a couple of ticks before delivering
+      if(tickCount >= 10) {
+        answer = Some(compute)
+      }
       1
     }
   }
