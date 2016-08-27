@@ -24,7 +24,13 @@ object JumpingPieceAnimation {
       val y0 = ptA.y
       val y = y0 + t * (ptB.y - y0)
 
+      val height = {
+        val z = 2 * t - 1
+        (1 - (z * z)) * 0.3
+      }
+
       val physicalPieceProps = PhysicalPieceProps.default.copy(piece = props.piece,
+        scale = 1 + height,
         x = x,
         y = y)
 
