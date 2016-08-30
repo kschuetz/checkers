@@ -17,13 +17,13 @@ object TopChrome {
 
   class TopChromeBackend($: BackendScope[Props, Unit]) {
 
-
-
     def render(props: Props) = {
       val panelWidth = props.widthPixels / 2
       val panelHeight = props.heightPixels
 
       def createPanelProps(color: Color, player: PlayerDescription) = {
+        val model = props.gameModel
+
         PlayerPanel.Props(
           widthPixels = panelWidth,
           heightPixels = panelHeight,
@@ -31,7 +31,8 @@ object TopChrome {
           playerName = player.displayName,
           isComputerPlayer = player.isComputer,
           clockDisplay = "---",
-          isPlayerTurn = props.gameModel.turnToMove == color,
+          isPlayerTurn = model.displayTurnToMove == color,
+          endingTurn = model.inputPhase.endingTurn,
           jumpIndicator = false,
           thinkingIndicator = false
         )

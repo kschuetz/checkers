@@ -20,6 +20,7 @@ object PlayerPanel {
                    isComputerPlayer: Boolean,
                    clockDisplay: String,
                    isPlayerTurn: Boolean,
+                   endingTurn: Boolean,
                    jumpIndicator: Boolean,
                    thinkingIndicator: Boolean)
 
@@ -53,7 +54,8 @@ object PlayerPanel {
       val y = props.heightPixels / 2
       val x = 60
       val scale = 0.2 * props.heightPixels
-      val turnIndicatorProps = TurnIndicator.Props(color = props.color, scale = scale, x = x, y = y, pointsRight = true)
+      val turnIndicatorProps = TurnIndicator.Props(color = props.color,
+        scale = scale, x = x, y = y, pointsRight = true, endingTurn = props.endingTurn)
       TurnIndicator.component.withKey("turn-indicator")(turnIndicatorProps)
     }
 

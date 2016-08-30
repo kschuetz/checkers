@@ -7,6 +7,7 @@ sealed trait InputPhase {
   def waitingForHuman: Boolean = false
   def waitingForComputer: Boolean = false
   def waitingForAnimations: Boolean = false
+  def endingTurn: Boolean = false
 }
 
 object InputPhase {
@@ -30,6 +31,7 @@ object InputPhase {
 
   case class EndingTurn[DS, LS](nextTurnState: GameState[DS, LS]) extends InputPhase {
     override def waitingForAnimations: Boolean = true
+    override def endingTurn: Boolean = true
   }
 
   case class GameOver(winner: Option[Color]) extends InputPhase

@@ -16,6 +16,7 @@ object TurnIndicator extends SvgHelpers {
 
   case class Props(color: Color,
                    pointsRight: Boolean = false,
+                   endingTurn: Boolean = false,
                    x: Double = 0.0,
                    y: Double = 0.0,
                    scale: Double = 1.0,
@@ -45,7 +46,7 @@ object TurnIndicator extends SvgHelpers {
         Point(x1, -y2))
 
       val arrow = <.svg.polygon(
-        ^.`class` := "turn-indicator",
+        ^.classSet1("turn-indicator", "ending-turn" -> props.endingTurn),
         ^.svg.points := pathString
       )
 

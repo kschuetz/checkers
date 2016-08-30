@@ -20,6 +20,9 @@ trait GameModelReader {
 
   def turnToMove: Color
 
+  // may differ from turnToMove due to waiting for animations
+  def displayTurnToMove: Color
+
   def turnIndex: Int
 
   def drawStatus: DrawStatus
@@ -101,6 +104,10 @@ case class GameModel[DS, LS](nowTime: Double,
   override def ruleSettings: RulesSettings = gameState.rulesSettings
 
   override def turnToMove: Color = gameState.turnToMove
+
+  override def displayTurnToMove: Color =
+    if(inputPhase.endingTurn) OPPONENT(gameState.turnToMove)
+    else gameState.turnToMove
 
   override def turnIndex: Int = gameState.turnIndex
 
