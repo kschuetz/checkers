@@ -6,7 +6,7 @@ object GlobalStyles extends StyleSheet.Inline {
   import dsl._
 
   style(unsafeRoot("body")(
-    paddingTop(60.px))
+    paddingTop(5.px))
   )
 
   val bootstrapStyles = new BootstrapStyles
