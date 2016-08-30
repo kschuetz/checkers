@@ -48,20 +48,13 @@ object PlayerPanel {
 
       PieceAvatar.component.withKey("avatar")(avatarProps)
     }
-//    def pieceAvatar(props: Props) = {
-//      val scale = 0.8 * props.heightPixels
-//      val pieceProps = PhysicalPieceProps.default.copy(
-//        piece = if(props.color == DARK) DARKMAN else LIGHTMAN,
-//        ghost = !props.isPlayerTurn,
-//        scale = scale,
-//        x = scale + 10,
-//        y = props.heightPixels / 2
-//      )
-//      PhysicalPiece.apply.withKey("avatar")(pieceProps)
-//    }
 
     def turnIndicator(props: Props) = {
-
+      val y = props.heightPixels / 2
+      val x = 60
+      val scale = 0.2 * props.heightPixels
+      val turnIndicatorProps = TurnIndicator.Props(color = props.color, scale = scale, x = x, y = y, pointsRight = true)
+      TurnIndicator.component.withKey("turn-indicator")(turnIndicatorProps)
     }
 
     def playerNameDisplay(props: Props) = {
@@ -82,9 +75,9 @@ object PlayerPanel {
       val parts = new js.Array[ReactNode]
       parts.push(backdrop(props))
       parts.push(pieceAvatar(props))
-//      if(props.isPlayerTurn) {
-//        parts.push(turnIndicator(props))
-//      }
+      if(props.isPlayerTurn) {
+        parts.push(turnIndicator(props))
+      }
       <.svg.g(
         parts
       )
