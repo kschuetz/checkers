@@ -49,9 +49,17 @@ object RemovingPieceAnimation {
     Board.squareCenter(fromSquare)
   }
 
+  private lazy val exitPointA = Board.squareCenter(2) + Point(1, 1)
+  private lazy val exitPointB = Board.squareCenter(3) + Point(1, 1)
+  private lazy val exitPointC = Board.squareCenter(29) - Point(1, 1)
+  private lazy val exitPointD = Board.squareCenter(28) - Point(1, 1)
+
   private def exitPoint(piece: Occupant, fromSquare: Int): Point = {
-    // TODO:
-    startingPoint(piece, fromSquare).copy(x = -5)
+    if(COLOR(piece) == LIGHT) {
+      if(Board.isWestSquare(fromSquare)) exitPointA else exitPointB
+    } else {
+      if(Board.isWestSquare(fromSquare)) exitPointD else exitPointC
+    }
   }
 
 }

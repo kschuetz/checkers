@@ -4,6 +4,15 @@ import checkers.components.board.PhysicalBoard
 import checkers.geometry.Point
 import checkers.consts._
 
+//           28  29  30  31
+//         24  25  26  27
+//           20  21  22  23
+//         16  17  18  19
+//           12  13  14  15
+//         08  09  10  11
+//           04  05  06  07
+//         00  01  02  03
+
 case class BoardPosition(row: Int, col: Int) {
   // returns -1 if illegal
   def toSquareIndex: Int = {
@@ -53,6 +62,14 @@ object Board {
 
   val lightCrowningSquares = (0 to 3).toSet
   val darkCrowningSquares = (28 to 31).toSet
+
+  def isNorthSquare(squareIndex: Int): Boolean = squareIndex >= 16
+
+  def isSouthSquare(squareIndex: Int): Boolean = squareIndex < 16
+
+  def isEastSquare(squareIndex: Int): Boolean = (squareIndex % 4) <= 1
+
+  def isWestSquare(squareIndex: Int): Boolean = (squareIndex % 4) > 1
 
   def crowningSquares(color: Color): Set[Int] =
     if(color == DARK) darkCrowningSquares
