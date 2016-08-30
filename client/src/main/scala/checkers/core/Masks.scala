@@ -25,8 +25,8 @@ object masks {
 
   //******
 
-  val crownLight = squareMaskFromSeq(0 to 4)
-  val crownDark = squareMaskFromSeq(27 to 31)
+  val crownLight = squareMaskFromSeq(0 to 3)
+  val crownDark = squareMaskFromSeq(28 to 31)
 
   val nw3 = squareMask(4, 5, 6, 12, 13, 14, 20, 21, 22, 28, 29, 30)
   val nw4 = squareMask(8, 9, 10, 11, 16, 17, 18, 19, 24, 25, 26, 27)
