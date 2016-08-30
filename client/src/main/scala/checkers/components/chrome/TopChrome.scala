@@ -2,9 +2,12 @@ package checkers.components.chrome
 
 import checkers.components.SceneFrame
 import checkers.models.GameModelReader
+import com.sun.scenario.effect.impl.sw.java.JSWBlend_DARKENPeer
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
 import org.scalajs.dom.raw.SVGSVGElement
+import checkers.consts._
+import checkers.core.PlayerDescription
 
 object TopChrome {
 
@@ -13,13 +16,48 @@ object TopChrome {
                    heightPixels: Int)
 
   class TopChromeBackend($: BackendScope[Props, Unit]) {
+
+
+
     def render(props: Props) = {
+      val panelWidth = props.widthPixels / 2
+      val panelHeight = props.heightPixels
+
+      def createPanelProps(color: Color, player: PlayerDescription) = {
+        PlayerPanel.Props(
+          widthPixels = panelWidth,
+          heightPixels = panelHeight,
+          color = color,
+          playerName = player.displayName,
+          isComputerPlayer = player.isComputer,
+          clockDisplay = "---",
+          isPlayerTurn = props.gameModel.turnToMove == color,
+          jumpIndicator = false,
+          thinkingIndicator = false
+        )
+      }
+
+      def makePanel(panelProps: PlayerPanel.Props, translateX: Int, translateY: Int) = {
+        <.svg.g(
+          ^.svg.transform := s"translate($translateX,$translateY)",
+          PlayerPanel(panelProps)
+        )
+      }
+
+      val darkProps = createPanelProps(DARK, props.gameModel.darkPlayer)
+      val darkPanel = makePanel(darkProps, 0, 0)
+
+      val lightProps = createPanelProps(LIGHT, props.gameModel.lightPlayer)
+      val lightPanel = makePanel(lightProps, panelWidth, 0)
+
       <.svg.svg(
         ^.id := "top-chrome",
         ^.svg.width := s"${props.widthPixels}px",
-        ^.svg.height := s"${props.heightPixels}px"
+        ^.svg.height := s"${props.heightPixels}px",
         //^.onMouseMove ==> handleMouseMove,
         //SceneFrame((props._1, props._2, state))
+        darkPanel,
+        lightPanel
       )
     }
   }
