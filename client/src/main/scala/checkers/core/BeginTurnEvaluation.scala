@@ -2,10 +2,14 @@ package checkers.core
 
 import checkers.consts._
 
-sealed trait BeginTurnEvaluation
+sealed trait BeginTurnEvaluation {
+  def requiresJump: Boolean = false
+}
 
 object BeginTurnEvaluation {
-  case class CanMove(moveTree: MoveTree) extends BeginTurnEvaluation
+  case class CanMove(moveTree: MoveTree) extends BeginTurnEvaluation {
+    override def requiresJump = moveTree.requiresJump
+  }
   case object Draw extends BeginTurnEvaluation
   case class Win(color: Color) extends BeginTurnEvaluation
 }

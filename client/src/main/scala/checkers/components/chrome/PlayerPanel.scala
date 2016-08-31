@@ -91,7 +91,7 @@ object PlayerPanel {
       if(props.isPlayerTurn) {
         parts.push(turnIndicator(props))
       }
-      if(true) {
+      if(props.jumpIndicator) {
         parts.push(jumpIndicator(props))
       }
       <.svg.g(

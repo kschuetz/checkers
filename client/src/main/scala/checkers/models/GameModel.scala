@@ -42,6 +42,8 @@ trait GameModelReader {
   def getBoardRotation: Double
 
   def canClickPieces: Boolean
+
+  def playerMustJump: Boolean
 }
 
 case class GameModel[DS, LS](nowTime: Double,
@@ -132,6 +134,8 @@ case class GameModel[DS, LS](nowTime: Double,
   override def canClickPieces: Boolean = pickedUpPiece.isEmpty
 
   override def squareAttributes: Vector[SquareAttributes] = squareAttributesVector.items
+
+  override def playerMustJump: Boolean = gameState.beginTurnEvaluation.requiresJump
 
 }
 

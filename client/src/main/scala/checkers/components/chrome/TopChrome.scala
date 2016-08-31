@@ -23,6 +23,9 @@ object TopChrome {
 
       def createPanelProps(color: Color, player: PlayerDescription) = {
         val model = props.gameModel
+        val isPlayerTurn = model.displayTurnToMove == color
+        val endingTurn = model.inputPhase.endingTurn
+        val jumpIndicator = isPlayerTurn && (!endingTurn) && model.playerMustJump
 
         PlayerPanel.Props(
           widthPixels = panelWidth,
@@ -31,9 +34,9 @@ object TopChrome {
           playerName = player.displayName,
           isComputerPlayer = player.isComputer,
           clockDisplay = "---",
-          isPlayerTurn = model.displayTurnToMove == color,
-          endingTurn = model.inputPhase.endingTurn,
-          jumpIndicator = false,
+          isPlayerTurn = isPlayerTurn,
+          endingTurn = endingTurn,
+          jumpIndicator = jumpIndicator,
           thinkingIndicator = false
         )
       }
