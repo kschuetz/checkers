@@ -272,11 +272,18 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
     }
   }
 
+//  private def userSelectPiece(model: Model, squareIndex: Int, piece: Occupant, clickPoint: Option[Point]): Option[Model] = {
+//    model.gameState.moveTree.down(squareIndex).map { moveTree =>
+//      println(moveTree)
+//      selectPiece(model, moveTree.squares, squareIndex, piece, clickPoint, canCancel = true)
+//    }
+//  }
+
   private def userSelectPiece(model: Model, squareIndex: Int, piece: Occupant, clickPoint: Option[Point]): Option[Model] = {
     model.gameState.moveTree.down(squareIndex).map { moveTree =>
       println(moveTree)
       selectPiece(model, moveTree.squares, squareIndex, piece, clickPoint, canCancel = true)
-    }
+    }.orElse(Option(scheduleIllegalPieceAnimation(model, squareIndex, piece)))
   }
 
   private def selectPiece(model: Model, validTargetSquares: Set[Int], squareIndex: Int, piece: Occupant, clickPoint: Option[Point], canCancel: Boolean): Model = {
@@ -307,9 +314,14 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
     val currentPlayer = model.gameState.currentPlayer
     val input = MoveAnimationPlanInput(nowTime = model.nowTime, existingAnimations = model.animations,
       isComputerPlayer = isComputerPlayer, moveInfo = moveInfo)
-    animationPlanner.scheduleMoveAnimations(input).fold(model) { updatedAnimations =>
-      model.copy(animations = updatedAnimations)
-    }
+    animationPlanner.scheduleMoveAnimations(input).fold(model)(model.withNewAnimations)
   }
+
+  private def scheduleIllegalPieceAnimation(model: Model, squareIndex: Int, piece: Occupant): Model = {
+    val input = IllegalPieceAnimationInput(nowTime = model.nowTime, existingAnimations = model.animations,
+      piece = piece, squareIndex = squareIndex)
+    animationPlanner.illegalPieceSelection(input).fold(model)(model.withNewAnimations)
+  }
+
 
 }

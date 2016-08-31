@@ -12,6 +12,8 @@ trait AnimationSettings {
   def RemovePieceHumanIntervalMillis: Double
   def RemovePieceComputerDelayMillis: Double
   def RemovePieceComputerIntervalMillis: Double
+
+  def IllegalPieceSelectionDurationMillis: Double
 }
 
 
@@ -26,4 +28,6 @@ object DefaultAnimationSettings extends AnimationSettings {
 
   val RemovePieceComputerDelayMillis = JumpPieceDurationMillis * 0.67
   val RemovePieceComputerIntervalMillis = JumpPieceDurationMillis
+
+  val IllegalPieceSelectionDurationMillis = 750.0
 }

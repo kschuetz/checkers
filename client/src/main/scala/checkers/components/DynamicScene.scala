@@ -6,7 +6,7 @@ import checkers.consts._
 import checkers.core.Board
 import checkers.geometry.Point
 import checkers.models
-import checkers.models.Animation.{HidesStaticPiece, JumpingPiece, MovingPiece, RemovingPiece}
+import checkers.models.Animation._
 import checkers.models.SquareAttributes
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
@@ -123,6 +123,13 @@ object DynamicScene {
             val progress = jp.linearProgress(nowTime)
             val props = JumpingPieceAnimation.Props(jp.piece, jp.fromSquare, jp.toSquare, progress)
             val component = JumpingPieceAnimation.component.withKey(k)(props)
+            animations.push(component)
+
+          case ips: IllegalPieceSelection =>
+            val k = s"illegal-${ips.squareIndex}"
+            val progress = ips.linearProgress(nowTime)
+            val props = IllegalPieceSelectionAnimation.Props(ips.piece, ips.squareIndex, progress)
+            val component = IllegalPieceSelectionAnimation.component.withKey(k)(props)
             animations.push(component)
 
           case _ => ()

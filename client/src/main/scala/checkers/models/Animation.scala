@@ -45,12 +45,7 @@ object Animation {
     def hidesPieceAtSquare = toSquare
   }
 
-  case class IllegalPieceSelection(piece: Occupant,
-                                   squareIndex: Int,
-                                   startTime: Double,
-                                   duration: Double) extends OneTimeAnimation with HidesStaticPiece {
-    def hidesPieceAtSquare = squareIndex
-  }
+
 
   trait OneTimeDeferredAnimation extends OneTimeAnimation {
     def startMovingTime: Double
@@ -89,6 +84,14 @@ object Animation {
                            startTime: Double,
                            startMovingTime: Double,
                            endTime: Double) extends OneTimeDeferredAnimation
+
+  case class IllegalPieceSelection(piece: Occupant,
+                                   squareIndex: Int,
+                                   startTime: Double,
+                                   startMovingTime: Double,
+                                   endTime: Double) extends OneTimeDeferredAnimation with HidesStaticPiece {
+    def hidesPieceAtSquare = squareIndex
+  }
 
   case class CrowningPiece(square: Int,
                            startTime: Double,

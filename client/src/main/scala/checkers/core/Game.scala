@@ -20,6 +20,7 @@ class Game[DS, LS](gameDriver: GameDriver[DS, LS])
   object Callbacks extends BoardCallbacks {
     override val onBoardMouseDown = (event: BoardMouseEvent) => Some(Callback {
       println(s"pieceMouseDown ${event.squareIndex}")
+      updateNowTime()
       gameDriver.handleBoardMouseDown(model, event).foreach(replaceModel)
       if(event.squareIndex < 0) {
         println(model.inputPhase)
@@ -28,6 +29,7 @@ class Game[DS, LS](gameDriver: GameDriver[DS, LS])
     })
 
     override val onBoardMouseMove = (event: BoardMouseEvent) => Some(Callback {
+      updateNowTime()
       gameDriver.handleBoardMouseMove(model, event).foreach(replaceModel)
     })
   }
@@ -66,6 +68,7 @@ class Game[DS, LS](gameDriver: GameDriver[DS, LS])
 
 
   private def tick(): Unit = {
+    updateNowTime()
     if(model.hasActiveComputation) {
       model.runComputations(2000)
       gameDriver.processComputerMoves(model).foreach { newModel =>
@@ -79,6 +82,11 @@ class Game[DS, LS](gameDriver: GameDriver[DS, LS])
 
   private def scheduleTick(): Unit = {
     dom.window.setTimeout(tick _, 1)
+  }
+
+  private def updateNowTime(): Unit = {
+    val t = performance.now()
+    model = model.updateNowTime(t)
   }
 
 }

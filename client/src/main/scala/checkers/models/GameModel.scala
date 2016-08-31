@@ -76,6 +76,8 @@ case class GameModel[DS, LS](nowTime: Double,
     }
   }
 
+  def withNewAnimations(newAnimations: List[Animation]) = copy(animations = newAnimations)
+
   def getBoardRotation: Double = {
     // TODO: easing
     val offset = flipAnimation.map { anim =>
@@ -89,6 +91,12 @@ case class GameModel[DS, LS](nowTime: Double,
   def updateNowTime(newTime: Double): GameModel[DS, LS] = {
     val newAnimations = animations.filterNot(_.isExpired(newTime))
     val newFlip = flipAnimation.filterNot(_.isExpired(newTime))
+
+    val oldCount = animations.size
+    val newCount = newAnimations.size
+    if(oldCount > newCount) {
+      println(s"${oldCount - newCount} expired at $newTime")
+    }
     copy(nowTime = newTime, animations = newAnimations, flipAnimation = newFlip)
   }
 

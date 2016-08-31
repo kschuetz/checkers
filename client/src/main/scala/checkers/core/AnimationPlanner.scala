@@ -1,14 +1,21 @@
 package checkers.core
 
+import checkers.consts.Occupant
 import checkers.models.Animation
-import checkers.models.Animation.{JumpingPiece, MovingPiece, RemovingPiece}
+import checkers.models.Animation.{IllegalPieceSelection, JumpingPiece, MovingPiece, RemovingPiece}
 
 case class MoveAnimationPlanInput(nowTime: Double,
                                   existingAnimations: List[Animation],
                                   isComputerPlayer: Boolean,
                                   moveInfo: List[MoveInfo])
 
+case class IllegalPieceAnimationInput(nowTime: Double,
+                                      existingAnimations: List[Animation],
+                                      piece: Occupant,
+                                      squareIndex: Int)
+
 class AnimationPlanner(settings: AnimationSettings) {
+
   def scheduleMoveAnimations(input: MoveAnimationPlanInput): Option[List[Animation]] = {
 
     println(s"scheduleMoveAnimations: $input")
@@ -37,7 +44,7 @@ class AnimationPlanner(settings: AnimationSettings) {
       val duration = settings.MovePieceDurationMillis
       var t = startTime
       input.moveInfo.foreach { moveInfo =>
-        if(moveInfo.isNormalMove) {
+        if (moveInfo.isNormalMove) {
           val animation = MovingPiece(
             piece = moveInfo.piece,
             fromSquare = moveInfo.fromSquare,
@@ -53,12 +60,12 @@ class AnimationPlanner(settings: AnimationSettings) {
     }
 
     def handleJumpPieces(startTime: Double, incoming: List[Animation]): List[Animation] = {
-      val finalSquare = input.moveInfo.foldLeft(-1){ case (acc, moveInfo) =>
-        if(moveInfo.isJump) moveInfo.toSquare
+      val finalSquare = input.moveInfo.foldLeft(-1) { case (acc, moveInfo) =>
+        if (moveInfo.isJump) moveInfo.toSquare
         else acc
       }
 
-      if(finalSquare < 0) return incoming   // no jumps found
+      if (finalSquare < 0) return incoming // no jumps found
 
       var result = incoming
       val duration = settings.JumpPieceDurationMillis
@@ -66,7 +73,7 @@ class AnimationPlanner(settings: AnimationSettings) {
       var pathIndex = 0
       var t = startTime
       input.moveInfo.foreach { moveInfo =>
-        if(moveInfo.isJump) {
+        if (moveInfo.isJump) {
           val animation = JumpingPiece(
             piece = moveInfo.piece,
             fromSquare = moveInfo.fromSquare,
@@ -115,6 +122,14 @@ class AnimationPlanner(settings: AnimationSettings) {
         println(s"scheduling anims: $anims")
         Some(input.existingAnimations ++ anims)
     }
+  }
+
+  def illegalPieceSelection(input: IllegalPieceAnimationInput): Option[List[Animation]] = {
+    val startMovingTime = input.nowTime
+
+    val animation = IllegalPieceSelection(input.piece, input.squareIndex, input.nowTime,
+      startMovingTime, startMovingTime + settings.IllegalPieceSelectionDurationMillis)
+    Some(animation :: input.existingAnimations)
   }
 
 
