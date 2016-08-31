@@ -59,6 +59,17 @@ object PlayerPanel {
       TurnIndicator.component.withKey("turn-indicator")(turnIndicatorProps)
     }
 
+    def jumpIndicator(props: Props) = {
+      val x = props.widthPixels - 50
+      val y = props.heightPixels / 2
+      val jumpIndicatorProps = JumpIndicator.Props(opponentColor = OPPONENT(props.color),
+        x = x,
+        y = y,
+        scale = 0.4 * props.heightPixels
+      )
+      JumpIndicator.component.withKey("jump-indicator")(jumpIndicatorProps)
+    }
+
     def playerNameDisplay(props: Props) = {
 
     }
@@ -79,6 +90,9 @@ object PlayerPanel {
       parts.push(pieceAvatar(props))
       if(props.isPlayerTurn) {
         parts.push(turnIndicator(props))
+      }
+      if(true) {
+        parts.push(jumpIndicator(props))
       }
       <.svg.g(
         parts
