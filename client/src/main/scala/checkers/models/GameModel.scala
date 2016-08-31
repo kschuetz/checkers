@@ -92,11 +92,11 @@ case class GameModel[DS, LS](nowTime: Double,
     val newAnimations = animations.filterNot(_.isExpired(newTime))
     val newFlip = flipAnimation.filterNot(_.isExpired(newTime))
 
-    val oldCount = animations.size
-    val newCount = newAnimations.size
-    if(oldCount > newCount) {
-      println(s"${oldCount - newCount} expired at $newTime")
-    }
+//    val oldCount = animations.size
+//    val newCount = newAnimations.size
+//    if(oldCount > newCount) {
+//      println(s"${oldCount - newCount} expired at $newTime")
+//    }
     copy(nowTime = newTime, animations = newAnimations, flipAnimation = newFlip)
   }
 

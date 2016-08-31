@@ -3,9 +3,38 @@ package checkers.components.piece
 import checkers.consts._
 import checkers.core.Board
 import checkers.geometry.Point
+import checkers.util.CssHelpers
 import japgolly.scalajs.react._
+import checkers.util.SvgHelpers
+import japgolly.scalajs.react._
+import japgolly.scalajs.react.vdom.prefix_<^._
 
 object IllegalPieceSelectionAnimation {
+
+
+  private val NoSymbolLeg = ReactComponentB[String]("NoSymbolLeg")
+    .render_P { transform =>
+      <.svg.rect(
+        ^.svg.x := -0.17,
+        ^.svg.y := -0.5,
+        ^.svg.width := 0.34,
+        ^.svg.height := 1,
+        ^.svg.transform := transform
+      )
+    }
+    .build
+
+  private val NoSymbol = ReactComponentB[Color]("NoSymbol")
+    .render_P { color =>
+      val classes = s"no-symbol ${CssHelpers.playerColorClass(color)}"
+      <.svg.g(
+        ^.`class` := classes,
+        NoSymbolLeg("skewX(45)"),
+        NoSymbolLeg("skewX(-45)"),
+        ^.svg.transform := "scale(0.63)"
+      )
+    }
+    .build
 
   case class Props(piece: Occupant,
                    squareIndex: Int,
@@ -13,20 +42,28 @@ object IllegalPieceSelectionAnimation {
 
   class IllegalPieceSelectionAnimationBackend($: BackendScope[Props, Unit]) {
     def render(props: Props) = {
-      val t = math.Pi * props.progress
-      val xoffset = 0.07 * (1 - props.progress) * math.sin(13 * t)
-      val yoffset = 0 //0.15 * math.sin(7.5 * t)
-
-      val pt = Board.squareCenter(props.squareIndex) + Point(xoffset, yoffset)
+      val t = props.progress
+      val xoffset = 0.07 * (1 - t) * math.sin(40.5 * t)
+      val yoffset = 0
 
       val physicalPieceProps = PhysicalPieceProps.default.copy(piece = props.piece,
-        x = pt.x,
-        y = pt.y)
+        x = xoffset,
+        y = yoffset)
       val physicalPiece = PhysicalPiece.apply(physicalPieceProps)
 
-      physicalPiece
+      val pt = Board.squareCenter(props.squareIndex)
+
+      val noSymbolShowing = (t >= 0.1 && t <= 0.3) || (t >= 0.5 && t <= 0.7)
+
+      <.svg.g(
+        physicalPiece,
+        if(noSymbolShowing) NoSymbol(COLOR(props.piece)) else EmptyTag,
+        ^.svg.transform := s"translate(${pt.x},${pt.y})"
+      )
+
     }
   }
+
 
   val component = ReactComponentB[Props]("IllegalPieceSelectionAnimation")
     .renderBackend[IllegalPieceSelectionAnimationBackend]
