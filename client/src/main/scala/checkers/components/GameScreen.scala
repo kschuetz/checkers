@@ -1,6 +1,6 @@
 package checkers.components
 
-import checkers.components.chrome.TopChrome
+import checkers.components.chrome.{SideChrome, TopChrome}
 import checkers.models.GameModelReader
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
@@ -14,6 +14,7 @@ object GameScreen {
   val component = ReactComponentB[Props]("GameScreen")
     .render_P { props =>
       val topChromeProps = TopChrome.Props(props._1, 800, 90)
+//      val sideChromeProps = SideChrome.Props(props._1)
 
       <.div(
         ^.id := "game-screen",
@@ -27,8 +28,12 @@ object GameScreen {
         <.div(
           ^.`class` := "row",
           <.div(
-            ^.`class` := "col-md-12",
+            ^.`class` := "col-md-11",
             SceneContainer(props)
+          ),
+          <.div(
+            ^.`class` := "col-md-1"
+            //SideChrome(sideChromeProps)
           )
         )
       )

@@ -1,13 +1,10 @@
 package checkers.components.chrome
 
-import checkers.components.SceneFrame
-import checkers.models.GameModelReader
-import com.sun.scenario.effect.impl.sw.java.JSWBlend_DARKENPeer
-import japgolly.scalajs.react._
-import japgolly.scalajs.react.vdom.prefix_<^._
-import org.scalajs.dom.raw.SVGSVGElement
 import checkers.consts._
 import checkers.core.PlayerDescription
+import checkers.models.GameModelReader
+import japgolly.scalajs.react._
+import japgolly.scalajs.react.vdom.prefix_<^._
 
 object TopChrome {
 
@@ -68,10 +65,10 @@ object TopChrome {
 
   val component = ReactComponentB[Props]("TopChrome")
     .renderBackend[TopChromeBackend]
-//    .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, _) =>
-//      val result = scope.props != nextProps
-//      CallbackTo.pure(result)
-//    }
+    //    .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, _) =>
+    //      val result = scope.props != nextProps
+    //      CallbackTo.pure(result)
+    //    }
     .build
 
   def apply(props: Props) = component(props)
