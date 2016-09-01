@@ -4,6 +4,7 @@ import checkers.components.chrome.{SideChrome, TopChrome}
 import checkers.models.GameModelReader
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
+import org.scalajs.dom.raw.SVGSVGElement
 
 object GameScreen {
 
@@ -27,14 +28,19 @@ object GameScreen {
         ),
         <.div(
           ^.`class` := "row",
-          <.div(
-            ^.`class` := "col-md-11",
+          <.svg.svg(
+            ^.svg.width := "1100px",
+            ^.svg.height := "800px",
             SceneContainer(props)
-          ),
-          <.div(
-            ^.`class` := "col-md-1"
-            //SideChrome(sideChromeProps)
           )
+//          <.div(
+//            ^.`class` := "col-md-11",
+//            SceneContainer(props)
+//          ),
+//          <.div(
+//            ^.`class` := "col-md-1"
+//            //SideChrome(sideChromeProps)
+//          )
         )
       )
 
