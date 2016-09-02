@@ -1,9 +1,8 @@
-package checkers.models
+package checkers.core
 
 import checkers.consts._
+import checkers.core.Animation.FlippingBoardAnimation
 import checkers.core.InputPhase.ComputerThinking
-import checkers.core._
-import checkers.models.Animation.{FlippingBoardAnimation, MovingPiece}
 
 trait GameModelReader {
   def nowTime: Double

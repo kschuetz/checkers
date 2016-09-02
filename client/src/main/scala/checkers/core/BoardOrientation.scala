@@ -1,4 +1,4 @@
-package checkers.models
+package checkers.core
 
 sealed trait BoardOrientation {
   def angle: Double

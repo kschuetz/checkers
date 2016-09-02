@@ -1,7 +1,6 @@
 package checkers.core
 
 import checkers.components._
-import checkers.models.GameModel
 import japgolly.scalajs.react.{Callback, ReactDOM}
 import org.scalajs.dom
 import org.scalajs.dom.window.performance

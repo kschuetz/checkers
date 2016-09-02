@@ -1,8 +1,7 @@
 package checkers.components.chrome
 
 import checkers.consts._
-import checkers.core.PlayerDescription
-import checkers.models.GameModelReader
+import checkers.core.{GameModelReader, PlayerDescription}
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
 

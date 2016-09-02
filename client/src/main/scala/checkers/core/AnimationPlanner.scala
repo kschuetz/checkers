@@ -1,8 +1,6 @@
 package checkers.core
 
 import checkers.consts.Occupant
-import checkers.models.Animation
-import checkers.models.Animation.{IllegalPieceSelection, JumpingPiece, MovingPiece, RemovingPiece}
 
 case class MoveAnimationPlanInput(nowTime: Double,
                                   existingAnimations: List[Animation],
@@ -15,6 +13,8 @@ case class IllegalPieceAnimationInput(nowTime: Double,
                                       squareIndex: Int)
 
 class AnimationPlanner(settings: AnimationSettings) {
+
+  import Animation._
 
   def scheduleMoveAnimations(input: MoveAnimationPlanInput): Option[List[Animation]] = {
 

@@ -1,13 +1,11 @@
 package checkers.core
 
 import checkers.components.BoardMouseEvent
-import checkers.computer.{PlayComputation, PlayInput}
+import checkers.computer.PlayInput
 import checkers.consts._
 import checkers.core.BeginTurnEvaluation._
 import checkers.core.InputPhase.{BeginHumanTurn, ComputerThinking, EndingTurn, PieceSelected}
 import checkers.geometry.Point
-import checkers.models.{BoardOrientation, GameModel, PickedUpPiece, SquareAttributesVector}
-import checkers.test.BoardExperiments
 
 
 class GameDriver[DS, LS](gameLogicModule: GameLogicModule)

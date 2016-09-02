@@ -3,11 +3,9 @@ package checkers.components
 import checkers.components.board.{PhysicalBoard, SquareOverlayButton}
 import checkers.components.piece._
 import checkers.consts._
-import checkers.core.Board
+import checkers.core.Animation._
+import checkers.core.{Board, GameModelReader, SquareAttributes}
 import checkers.geometry.Point
-import checkers.models
-import checkers.models.Animation._
-import checkers.models.SquareAttributes
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
 
@@ -17,7 +15,7 @@ object DynamicScene {
 
   //  case class Model(playField: PlayField,
   //                   rotationDegrees: Double)
-  type Model = models.GameModelReader
+  type Model = GameModelReader
 
   type Callbacks = BoardCallbacks
 

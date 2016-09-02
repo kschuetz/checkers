@@ -3,7 +3,7 @@ package checkers.components.chrome
 import checkers.components.SceneFrame
 import checkers.components.piece.{PhysicalPiece, PhysicalPieceProps}
 import checkers.consts._
-import checkers.models.GameModelReader
+import checkers.core.GameModelReader
 import checkers.util.CssHelpers
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._

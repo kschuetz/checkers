@@ -1,4 +1,4 @@
-package checkers.models
+package checkers.core
 
 import checkers.consts._
 import checkers.geometry.Point

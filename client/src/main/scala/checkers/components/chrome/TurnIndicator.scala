@@ -3,8 +3,8 @@ package checkers.components.chrome
 import checkers.components.SceneFrame
 import checkers.components.piece.{PhysicalPiece, PhysicalPieceProps}
 import checkers.consts._
+import checkers.core.GameModelReader
 import checkers.geometry.Point
-import checkers.models.GameModelReader
 import checkers.util.{CssHelpers, SvgHelpers}
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._

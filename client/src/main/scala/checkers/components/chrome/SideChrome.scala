@@ -3,8 +3,7 @@ package checkers.components.chrome
 import checkers.components.Bootstrap
 import checkers.components.Bootstrap.CommonStyle
 import checkers.consts._
-import checkers.core.PlayerDescription
-import checkers.models.GameModelReader
+import checkers.core.{GameModelReader, PlayerDescription}
 import checkers.style.GlobalStyles
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._

@@ -1,6 +1,6 @@
 package checkers.components
 
-import checkers.models.GameModelReader
+import checkers.core.GameModelReader
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
 import org.scalajs.dom.raw.SVGSVGElement
