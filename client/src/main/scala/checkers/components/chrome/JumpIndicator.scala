@@ -61,12 +61,12 @@ object JumpIndicator extends SvgHelpers {
 
       <.svg.g(
         ^.svg.transform := s"translate(${props.x},${props.y}),scale(${props.scale})",
+        <.titleTag("You are required to jump on this move"),
         opponentAvatar,
         <.svg.g(
           ^.svg.transform := "translate(0,-0.61)",
           jumpArrow
         )
-
       )
 
     }
