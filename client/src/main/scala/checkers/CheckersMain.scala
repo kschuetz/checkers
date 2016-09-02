@@ -30,6 +30,8 @@ object CheckersMain extends js.JSApp {
   }
 
   private def sandbox1(host: dom.Node): Unit = {
+    lazy val screenLayoutSettings: ScreenLayoutSettings = DefaultScreenLayoutSettings
+
     lazy val rulesSettings = RulesSettings.default
 
     lazy val animationSettings: AnimationSettings = DefaultAnimationSettings

@@ -3,7 +3,8 @@ package checkers.core
 import checkers.computer.TrivialPlayer
 import org.scalajs.dom
 
-class GameFactory(gameLogicModuleFactory: GameLogicModuleFactory) {
+class GameFactory(gameLogicModuleFactory: GameLogicModuleFactory,
+                  screenLayoutSettings: ScreenLayoutSettings) {
 
   def create[DS, LS](gameConfig: GameConfig[DS, LS], host: dom.Node): Game[DS, LS] = {
     val gameLogicModule = gameLogicModuleFactory.apply(gameConfig.rulesSettings)
@@ -42,7 +43,7 @@ class GameFactory(gameLogicModuleFactory: GameLogicModuleFactory) {
 
   private def createGame[DS, LS](gameLogicModule: GameLogicModule, gameConfig: GameConfig[DS, LS], host: dom.Node): Game[DS, LS] = {
     val driver = new GameDriver(gameLogicModule)(gameConfig.playerConfig)
-    new Game(driver)(host)
+    new Game(driver, screenLayoutSettings)(host)
   }
 
 }

@@ -13,13 +13,14 @@ import scala.scalajs.js
 
 object DynamicScene {
 
-  //  case class Model(playField: PlayField,
-  //                   rotationDegrees: Double)
   type Model = GameModelReader
 
   type Callbacks = BoardCallbacks
 
-  type Props = (Model, Callbacks, SceneContainerContext, Point => Point)
+  case class Props(gameModel: Model,
+                   callbacks: Callbacks,
+                   sceneContainerContext: SceneContainerContext,
+                   screenToBoard: Point => Point)
 
 
   def testCallback(tag: Int) = Callback {
@@ -33,7 +34,7 @@ object DynamicScene {
   //  }
 
   val component = ReactComponentB[Props]("DynamicScene")
-    .render_P { case (model, callbacks, sceneContainerContext, screenToBoard) =>
+    .render_P { case Props(model, callbacks, sceneContainerContext, screenToBoard) =>
 
       val boardRotation = model.getBoardRotation
 

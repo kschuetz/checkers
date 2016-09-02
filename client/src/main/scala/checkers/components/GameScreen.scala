@@ -1,7 +1,7 @@
 package checkers.components
 
 import checkers.components.chrome.{SideChrome, TopChrome}
-import checkers.core.GameModelReader
+import checkers.core.{GameModelReader, ScreenLayoutSettings}
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
 import org.scalajs.dom.raw.SVGSVGElement
@@ -10,12 +10,16 @@ object GameScreen {
 
   type Callbacks = BoardCallbacks
 
-  type Props = (GameModelReader, Callbacks)
+  case class Props(gameModel: GameModelReader,
+                   screenLayoutSettings: ScreenLayoutSettings,
+                   callbacks: Callbacks)
 
   val component = ReactComponentB[Props]("GameScreen")
-    .render_P { props =>
-      val topChromeProps = TopChrome.Props(props._1, 800, 90)
+    .render_P { case Props(gameModel, screenLayoutSettings, callbacks) =>
+      val topChromeProps = TopChrome.Props(gameModel, 800, 90)
 //      val sideChromeProps = SideChrome.Props(props._1)
+
+      val sceneContainerProps = SceneContainer.Props(gameModel, screenLayoutSettings, callbacks)
 
       <.div(
         ^.id := "game-screen",
@@ -31,7 +35,7 @@ object GameScreen {
           <.svg.svg(
             ^.svg.width := "1100px",
             ^.svg.height := "800px",
-            SceneContainer(props)
+            SceneContainer(sceneContainerProps)
           )
 //          <.div(
 //            ^.`class` := "col-md-11",

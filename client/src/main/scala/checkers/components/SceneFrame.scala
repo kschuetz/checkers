@@ -12,7 +12,9 @@ object SceneFrame {
 
   type Callbacks = BoardCallbacks
 
-  type Props = (GameModelReader, Callbacks, SceneContainerContext)
+  case class Props(gameModel: GameModelReader,
+                   callbacks: Callbacks,
+                   sceneContainerContext: SceneContainerContext)
 
   val Backdrop = ReactComponentB[Unit]("Backdrop")
     .render_P { _ =>
@@ -30,10 +32,13 @@ object SceneFrame {
     val playfieldRef = Ref[SVGGElement]("playfield")
 
     def render(props: Props) = {
-      val (model, callbacks, sceneContainerContext) = props
+      val Props(model, callbacks, sceneContainerContext) = props
       val physicalBoard = PhysicalBoard.Board()
       val screenToBoard = makeScreenToBoard(sceneContainerContext)
-      val dynamicScene = DynamicScene((props._1, props._2, props._3, screenToBoard))
+
+      val dynamicSceneProps = DynamicScene.Props(props.gameModel, props.callbacks, props.sceneContainerContext, screenToBoard)
+
+      val dynamicScene = DynamicScene(dynamicSceneProps)
       <.svg.g(
         Backdrop(),
         <.svg.g(
@@ -56,7 +61,7 @@ object SceneFrame {
     }
 
     def handleMouseMove(event: ReactMouseEvent) = $.props.map {  props =>
-      val context = props._3
+      val context = props.sceneContainerContext
       if(event.altKey) {
         val pt = Point(event.clientX, event.clientY)
         $.refs(playfieldRef.name).foreach { node =>
