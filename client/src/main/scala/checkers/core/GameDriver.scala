@@ -53,10 +53,6 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
 
         } else None
 
-//      case move: Play.Move =>
-//        gameState.moveTree.walk(move.path).map { newMoveTree =>
-//          applyMove(gameModel, move, newMoveTree)
-//        }
       case move: Play.Move =>
         gameState.moveTree.walk(move.path).map { case (endSquare, newMoveTree) =>
           println(s"walk2:  $newMoveTree")
@@ -270,18 +266,11 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
     }
   }
 
-//  private def userSelectPiece(model: Model, squareIndex: Int, piece: Occupant, clickPoint: Option[Point]): Option[Model] = {
-//    model.gameState.moveTree.down(squareIndex).map { moveTree =>
-//      println(moveTree)
-//      selectPiece(model, moveTree.squares, squareIndex, piece, clickPoint, canCancel = true)
-//    }
-//  }
-
   private def userSelectPiece(model: Model, squareIndex: Int, piece: Occupant, clickPoint: Option[Point]): Option[Model] = {
     model.gameState.moveTree.down(squareIndex).map { moveTree =>
       println(moveTree)
       selectPiece(model, moveTree.squares, squareIndex, piece, clickPoint, canCancel = true)
-    }.orElse(Option(scheduleIllegalPieceAnimation(model, squareIndex, piece)))
+    }.orElse(handleIllegalPieceSelection(model, squareIndex, piece))
   }
 
   private def selectPiece(model: Model, validTargetSquares: Set[Int], squareIndex: Int, piece: Occupant, clickPoint: Option[Point], canCancel: Boolean): Model = {
@@ -315,10 +304,14 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
     animationPlanner.scheduleMoveAnimations(input).fold(model)(model.withNewAnimations)
   }
 
-  private def scheduleIllegalPieceAnimation(model: Model, squareIndex: Int, piece: Occupant): Model = {
-    val input = IllegalPieceAnimationInput(nowTime = model.nowTime, existingAnimations = model.animations,
-      piece = piece, squareIndex = squareIndex)
-    animationPlanner.illegalPieceSelection(input).fold(model)(model.withNewAnimations)
+  private def handleIllegalPieceSelection(model: Model, squareIndex: Int, piece: Occupant): Option[Model] = {
+    if(ISEMPTY(piece)) None
+    else Some({
+      val input = IllegalPieceAnimationInput(nowTime = model.nowTime, existingAnimations = model.animations,
+        piece = piece, squareIndex = squareIndex)
+      animationPlanner.illegalPieceSelection(input).fold(model)(model.withNewAnimations)
+    })
+
   }
 
 
