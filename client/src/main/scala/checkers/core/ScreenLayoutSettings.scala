@@ -23,7 +23,7 @@ object DefaultScreenLayoutSettings extends ScreenLayoutSettings {
 
   override def TopChromeHeightPixels: Int = 90
 
-  override def SideChromeWidthPixels: Int = 90
+  override def SideChromeWidthPixels: Int = 250
 
   override def TopChromePaddingPixels: Int = 6
 

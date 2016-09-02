@@ -1,6 +1,6 @@
 package checkers.components
 
-import checkers.components.chrome.TopChrome
+import checkers.components.chrome.{SideChrome, TopChrome}
 import checkers.core.{GameModelReader, ScreenLayoutSettings}
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
@@ -14,22 +14,22 @@ object GameScreen {
                    callbacks: Callbacks)
 
   val component = ReactComponentB[Props]("GameScreen")
-    .render_P { case Props(gameModel, screenLayoutSettings, callbacks) =>
-      val topChromeProps = TopChrome.Props(gameModel, screenLayoutSettings.GameSceneWidthPixels,
-        screenLayoutSettings.TopChromeHeightPixels)
-      //      val sideChromeProps = SideChrome.Props(props._1)
+    .render_P { case Props(gameModel, layoutSettings, callbacks) =>
+      val topChromeProps = TopChrome.Props(gameModel, layoutSettings.GameSceneWidthPixels,
+        layoutSettings.TopChromeHeightPixels)
+      val sideChromeProps = SideChrome.Props(gameModel, layoutSettings.SideChromeWidthPixels, layoutSettings.GameSceneHeightPixels)
 
-      val gameSceneY = screenLayoutSettings.TopChromeHeightPixels + screenLayoutSettings.TopChromePaddingPixels
-      val sideChromeX = screenLayoutSettings.GameSceneWidthPixels + screenLayoutSettings.SideChromePaddingPixels
+      val gameSceneY = layoutSettings.TopChromeHeightPixels + layoutSettings.TopChromePaddingPixels
+      val sideChromeX = layoutSettings.GameSceneWidthPixels + layoutSettings.SideChromePaddingPixels
 
       val sceneContainerTransform = s"translate(0,$gameSceneY)"
 
       val sideChromeTransform = s"translate($sideChromeX,$gameSceneY)"
 
-      val totalWidth = sideChromeX + screenLayoutSettings.SideChromeWidthPixels
-      val totalHeight = gameSceneY + screenLayoutSettings.GameSceneHeightPixels
+      val totalWidth = sideChromeX + layoutSettings.SideChromeWidthPixels
+      val totalHeight = gameSceneY + layoutSettings.GameSceneHeightPixels
 
-      val sceneContainerProps = SceneContainer.Props(gameModel, screenLayoutSettings, callbacks)
+      val sceneContainerProps = SceneContainer.Props(gameModel, layoutSettings, callbacks)
 
       <.svg.svg(
         ^.id := "game-screen",
@@ -41,6 +41,10 @@ object GameScreen {
         <.svg.g(
           SceneContainer(sceneContainerProps),
           ^.svg.transform := sceneContainerTransform
+        ),
+        <.svg.g(
+          SideChrome(sideChromeProps),
+          ^.svg.transform := sideChromeTransform
         )
       )
 
