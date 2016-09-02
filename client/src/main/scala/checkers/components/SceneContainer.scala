@@ -23,11 +23,13 @@ object SceneContainer {
     }
 
     def render(props: Props, state: SceneContainerContext) = {
-      val sceneFrameProps = SceneFrame.Props(props.gameModel, props.callbacks, state)
+      val gameSceneWidth = props.screenLayoutSettings.GameSceneWidthPixels
+      val gameSceneHeight = props.screenLayoutSettings.GameSceneHeightPixels
+      val sceneFrameProps = SceneFrame.Props(props.gameModel, props.callbacks, state, gameSceneWidth, gameSceneHeight)
       <.svg.svg(
         ^.id := "game-scene",
-        ^.svg.width := "800px",
-        ^.svg.height := "800px",
+        ^.svg.width := s"${gameSceneWidth}px",
+        ^.svg.height := s"${gameSceneHeight}px",
         //^.onMouseMove ==> handleMouseMove,
         SceneFrame(sceneFrameProps)
       )

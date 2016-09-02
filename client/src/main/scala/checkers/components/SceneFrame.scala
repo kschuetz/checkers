@@ -14,16 +14,18 @@ object SceneFrame {
 
   case class Props(gameModel: GameModelReader,
                    callbacks: Callbacks,
-                   sceneContainerContext: SceneContainerContext)
+                   sceneContainerContext: SceneContainerContext,
+                   widthPixels: Int,
+                   heightPixels: Int)
 
-  val Backdrop = ReactComponentB[Unit]("Backdrop")
-    .render_P { _ =>
+  val Backdrop = ReactComponentB[(Int, Int)]("Backdrop")
+    .render_P { case (width, height) =>
       <.svg.rect(
         ReactAttr.ClassName := "backdrop",
         ^.svg.x := 0,
         ^.svg.y := 0,
-        ^.svg.width := 800,
-        ^.svg.height := 800
+        ^.svg.width := width,
+        ^.svg.height := height
       )
     }.build
 
@@ -32,18 +34,31 @@ object SceneFrame {
     val playfieldRef = Ref[SVGGElement]("playfield")
 
     def render(props: Props) = {
-      val Props(model, callbacks, sceneContainerContext) = props
+      val Props(model, callbacks, sceneContainerContext, widthPixels, heightPixels) = props
       val physicalBoard = PhysicalBoard.Board()
       val screenToBoard = makeScreenToBoard(sceneContainerContext)
 
       val dynamicSceneProps = DynamicScene.Props(props.gameModel, props.callbacks, props.sceneContainerContext, screenToBoard)
 
+      val transform = if(widthPixels == heightPixels) {
+        val translate = widthPixels / 2.0
+        val scale = scaleForDimension(widthPixels)
+        s"translate($translate,$translate),scale($scale)"
+      } else {
+        val translateX = widthPixels / 2.0
+        val translateY = heightPixels / 2.0
+        val scaleX = scaleForDimension(widthPixels)
+        val scaleY = scaleForDimension(heightPixels)
+        s"translate($translateX,$translateY),scale($scaleX,$scaleY)"
+      }
+
       val dynamicScene = DynamicScene(dynamicSceneProps)
       <.svg.g(
-        Backdrop(),
+        Backdrop((widthPixels, heightPixels)),
         <.svg.g(
           ^.ref := playfieldRef,
-          ^.svg.transform := "translate(400,400),scale(90)",
+          ^.svg.transform := transform,
+//          ^.svg.transform := "translate(400,400),scale(90)",
           //^.onMouseMove ==> handleMouseMove,
           physicalBoard,
           dynamicScene
@@ -80,5 +95,10 @@ object SceneFrame {
 
 
   def apply(model: Props) = component(model)
+
+  private def scaleForDimension(dimensionPixels: Int): Double = {
+    // when board is 800 x 800, scene needs to be scaled 90 times
+    (dimensionPixels * 90) / 800.0
+  }
 
 }
