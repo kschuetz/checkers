@@ -5,7 +5,8 @@ trait ScreenLayoutSettings {
   def GameSceneHeightPixels: Int
   def TopChromeHeightPixels: Int
   def SideChromeWidthPixels: Int
-  def ChromePaddingPixels: Int
+  def TopChromePaddingPixels: Int
+  def SideChromePaddingPixels: Int
 }
 
 trait ScreenLayoutSettingsProvider {
@@ -24,5 +25,7 @@ object DefaultScreenLayoutSettings extends ScreenLayoutSettings {
 
   override def SideChromeWidthPixels: Int = 90
 
-  override def ChromePaddingPixels: Int = 6
+  override def TopChromePaddingPixels: Int = 6
+
+  override def SideChromePaddingPixels: Int = 6
 }

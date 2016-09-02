@@ -58,8 +58,6 @@ object SceneFrame {
         <.svg.g(
           ^.ref := playfieldRef,
           ^.svg.transform := transform,
-//          ^.svg.transform := "translate(400,400),scale(90)",
-          //^.onMouseMove ==> handleMouseMove,
           physicalBoard,
           dynamicScene
         )

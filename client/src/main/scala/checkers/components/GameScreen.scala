@@ -15,35 +15,32 @@ object GameScreen {
 
   val component = ReactComponentB[Props]("GameScreen")
     .render_P { case Props(gameModel, screenLayoutSettings, callbacks) =>
-      val topChromeProps = TopChrome.Props(gameModel, 800, 90)
-//      val sideChromeProps = SideChrome.Props(props._1)
+      val topChromeProps = TopChrome.Props(gameModel, screenLayoutSettings.GameSceneWidthPixels,
+        screenLayoutSettings.TopChromeHeightPixels)
+      //      val sideChromeProps = SideChrome.Props(props._1)
+
+      val gameSceneY = screenLayoutSettings.TopChromeHeightPixels + screenLayoutSettings.TopChromePaddingPixels
+      val sideChromeX = screenLayoutSettings.GameSceneWidthPixels + screenLayoutSettings.SideChromePaddingPixels
+
+      val sceneContainerTransform = s"translate(0,$gameSceneY)"
+
+      val sideChromeTransform = s"translate($sideChromeX,$gameSceneY)"
+
+      val totalWidth = sideChromeX + screenLayoutSettings.SideChromeWidthPixels
+      val totalHeight = gameSceneY + screenLayoutSettings.GameSceneHeightPixels
 
       val sceneContainerProps = SceneContainer.Props(gameModel, screenLayoutSettings, callbacks)
 
-      <.div(
+      <.svg.svg(
         ^.id := "game-screen",
-        <.div(
-          ^.`class` := "row",
-          <.div(
-            ^.`class` := "col-md-12",
-            TopChrome(topChromeProps)
-          )
+        ^.svg.width := s"${totalWidth}px",
+        ^.svg.height := s"${totalHeight}px",
+        <.svg.g(
+          TopChrome(topChromeProps)
         ),
-        <.div(
-          ^.`class` := "row",
-          <.svg.svg(
-            ^.svg.width := "1100px",
-            ^.svg.height := "800px",
-            SceneContainer(sceneContainerProps)
-          )
-//          <.div(
-//            ^.`class` := "col-md-11",
-//            SceneContainer(props)
-//          ),
-//          <.div(
-//            ^.`class` := "col-md-1"
-//            //SideChrome(sideChromeProps)
-//          )
+        <.svg.g(
+          SceneContainer(sceneContainerProps),
+          ^.svg.transform := sceneContainerTransform
         )
       )
 
