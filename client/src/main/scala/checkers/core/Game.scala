@@ -7,7 +7,7 @@ import org.scalajs.dom.window.performance
 
 
 class Game[DS, LS](gameDriver: GameDriver[DS, LS],
-                   screenLayoutSettings: ScreenLayoutSettings)
+                   screenLayoutSettingsProvider: ScreenLayoutSettingsProvider)
                   (val host: dom.Node) {
   type Model = GameModel[DS, LS]
 
@@ -53,7 +53,7 @@ class Game[DS, LS](gameDriver: GameDriver[DS, LS],
   }
 
   private def renderModel(model: Model): Unit = {
-    val props = GameScreen.Props(model, screenLayoutSettings, Callbacks)
+    val props = GameScreen.Props(model, screenLayoutSettingsProvider.getScreenLayoutSettings, Callbacks)
     val screen = GameScreen.apply(props)
     ReactDOM.render(screen, host)
   }

@@ -1,10 +1,9 @@
 package checkers.components
 
-import checkers.components.chrome.{SideChrome, TopChrome}
+import checkers.components.chrome.TopChrome
 import checkers.core.{GameModelReader, ScreenLayoutSettings}
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
-import org.scalajs.dom.raw.SVGSVGElement
 
 object GameScreen {
 

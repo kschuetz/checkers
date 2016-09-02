@@ -30,7 +30,7 @@ object CheckersMain extends js.JSApp {
   }
 
   private def sandbox1(host: dom.Node): Unit = {
-    lazy val screenLayoutSettings: ScreenLayoutSettings = DefaultScreenLayoutSettings
+    lazy val screenLayoutSettingsProvider: ScreenLayoutSettingsProvider = ConstantScreenLayoutSettings(DefaultScreenLayoutSettings)
 
     lazy val rulesSettings = RulesSettings.default
 
