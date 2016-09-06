@@ -17,7 +17,7 @@ object GameScreen {
     .render_P { case Props(gameModel, layoutSettings, callbacks) =>
       val topChromeProps = TopChrome.Props(gameModel, layoutSettings.GameSceneWidthPixels,
         layoutSettings.TopChromeHeightPixels)
-      val sideChromeProps = SideChrome.Props(gameModel, layoutSettings.SideChromeWidthPixels, layoutSettings.GameSceneHeightPixels)
+      val sideChromeProps = SideChrome.Props(gameModel,  layoutSettings)
 
       val gameSceneY = layoutSettings.TopChromeHeightPixels + layoutSettings.TopChromePaddingPixels
       val sideChromeX = layoutSettings.GameSceneWidthPixels + layoutSettings.SideChromePaddingPixels

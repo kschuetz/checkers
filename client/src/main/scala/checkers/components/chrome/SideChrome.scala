@@ -1,6 +1,6 @@
 package checkers.components.chrome
 
-import checkers.core.GameModelReader
+import checkers.core.{GameModelReader, SideChromeLayoutSettings}
 import checkers.style.GlobalStyles
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.ReactAttr
@@ -9,8 +9,7 @@ import japgolly.scalajs.react.vdom.prefix_<^._
 object SideChrome {
 
   case class Props(gameModel: GameModelReader,
-                   widthPixels: Int,
-                   heightPixels: Int)
+                   layoutSettings: SideChromeLayoutSettings)
 
   private val Backdrop = ReactComponentB[(Int, Int)]("SideChromeBackdrop")
     .render_P { case (width, height) =>
@@ -27,9 +26,27 @@ object SideChrome {
   class SideChromeBackend($: BackendScope[Props, Unit]) {
 
     def render(props: Props) = {
+      val layoutSettings = props.layoutSettings
+      val widthPixels = layoutSettings.SideChromeWidthPixels
+      val heightPixels = layoutSettings.GameSceneHeightPixels
+      val buttonX = layoutSettings.SideChromeButtonPaddingPixelsX
+      val buttonY = layoutSettings.SideChromeButtonAreaPaddingY
+      val buttonWidth = widthPixels - (2 * buttonX)
+      val buttonHeight = layoutSettings.SideChromeButtonHeightPixels
+
+      val buttonCenterX = buttonX + (buttonWidth / 2)
+      val buttonCenterY = buttonY + (buttonHeight / 2)
+
+      val newGameButton = Button(Button.Props(buttonCenterX,
+        buttonCenterY,
+        buttonWidth,
+        buttonHeight,
+        "New Game",
+        Some("Start a new game")))
       <.svg.svg(
         ^.`class` := "side-chrome",
-        Backdrop((props.widthPixels, props.heightPixels))
+        Backdrop((widthPixels, heightPixels)),
+        newGameButton
       )
     }
 

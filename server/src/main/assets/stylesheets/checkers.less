@@ -1,4 +1,8 @@
 
+body {
+  font-family: Univers, Arial, sans-serif;
+}
+
 .backdrop {
   fill: #6b1ff3;
 }
@@ -174,4 +178,24 @@
 
 .side-chrome-backdrop {
   fill: #d6bff3;
+}
+
+
+.button rect {
+  stroke: #1f628d;
+  stroke-width: 2px;
+  fill: #808080;
+}
+
+.button text {
+  fill: #eee;
+  pointer-events: none;
+  text-anchor: middle;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+
+.button.enabled {
+  cursor: pointer;
 }

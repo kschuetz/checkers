@@ -1,12 +1,22 @@
 package checkers.core
 
-trait ScreenLayoutSettings {
-  def GameSceneWidthPixels: Int
+trait GameSceneHeight {
   def GameSceneHeightPixels: Int
-  def TopChromeHeightPixels: Int
+}
+
+trait SideChromeLayoutSettings extends GameSceneHeight {
   def SideChromeWidthPixels: Int
-  def TopChromePaddingPixels: Int
   def SideChromePaddingPixels: Int
+  def SideChromeButtonPaddingPixelsX: Int
+  def SideChromeButtonPaddingPixelsY: Int
+  def SideChromeButtonAreaPaddingY: Int
+  def SideChromeButtonHeightPixels: Int
+}
+
+trait ScreenLayoutSettings extends SideChromeLayoutSettings {
+  def GameSceneWidthPixels: Int
+  def TopChromeHeightPixels: Int
+  def TopChromePaddingPixels: Int
 }
 
 trait ScreenLayoutSettingsProvider {
@@ -28,4 +38,12 @@ object DefaultScreenLayoutSettings extends ScreenLayoutSettings {
   override def TopChromePaddingPixels: Int = 6
 
   override def SideChromePaddingPixels: Int = 6
+
+  override def SideChromeButtonPaddingPixelsX: Int = 10
+
+  override def SideChromeButtonPaddingPixelsY: Int = 12
+
+  override def SideChromeButtonHeightPixels: Int = 48
+
+  override def SideChromeButtonAreaPaddingY: Int = 14
 }
