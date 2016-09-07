@@ -7,12 +7,12 @@ class GameFactory(programRegistry: ProgramRegistry,
                   gameLogicModuleFactory: GameLogicModuleFactory,
                   screenLayoutSettingsProvider: ScreenLayoutSettingsProvider) {
 
-  def create[DS, LS](gameConfig: GameConfig[DS, LS], host: dom.Node): Game[DS, LS] = {
+  def create(gameConfig: GameConfig, host: dom.Node): Game = {
     val gameLogicModule = gameLogicModuleFactory.apply(gameConfig.rulesSettings)
     createGame(gameLogicModule, gameConfig, host)
   }
 
-  def create2[DS, LS](rulesSettings: RulesSettings, darkPlayerId: Option[String], lightPlayerId: Option[String], host: dom.Node) = {
+  def create2(rulesSettings: RulesSettings, darkPlayerId: Option[String], lightPlayerId: Option[String], host: dom.Node) = {
     val darkEntry = for {
       id <- darkPlayerId
       entry <- programRegistry.findEntry(id)
@@ -72,7 +72,7 @@ class GameFactory(programRegistry: ProgramRegistry,
     createGame(gameLogicModule, gameConfig, host)
   }
 
-  private def createGame[DS, LS](gameLogicModule: GameLogicModule, gameConfig: GameConfig[DS, LS], host: dom.Node): Game[DS, LS] = {
+  private def createGame(gameLogicModule: GameLogicModule, gameConfig: GameConfig, host: dom.Node): Game = {
     val driver = new GameDriver(gameLogicModule)(gameConfig.playerConfig)
     new Game(driver, screenLayoutSettingsProvider)(host)
   }

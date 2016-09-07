@@ -6,10 +6,10 @@ import org.scalajs.dom
 import org.scalajs.dom.window.performance
 
 
-class Game[DS, LS](gameDriver: GameDriver[DS, LS],
+class Game(gameDriver: GameDriver,
                    screenLayoutSettingsProvider: ScreenLayoutSettingsProvider)
                   (val host: dom.Node) {
-  type Model = GameModel[DS, LS]
+  type Model = GameModel
 
 
   var model: Model = {

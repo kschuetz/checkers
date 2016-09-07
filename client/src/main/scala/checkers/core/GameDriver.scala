@@ -8,11 +8,11 @@ import checkers.core.InputPhase.{BeginHumanTurn, ComputerThinking, EndingTurn, P
 import checkers.geometry.Point
 
 
-class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
-                        (playerConfig: PlayerConfig[DS, LS]) {
+class GameDriver(gameLogicModule: GameLogicModule)
+                        (playerConfig: PlayerConfig) {
 
-  type Model = GameModel[DS, LS]
-  type State = GameState[DS, LS]
+  type Model = GameModel
+  type State = GameState
 
   private val rulesSettings = gameLogicModule.rulesSettings
   private val moveGenerator = gameLogicModule.moveGenerator
@@ -159,7 +159,7 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
     }
   }
 
-  private def getInputPhase[A](nowTime: Double, player: Player[A], playerState: A, playInput: => PlayInput): InputPhase = {
+  private def getInputPhase(nowTime: Double, player: Player, playerState: Opaque, playInput: => PlayInput): InputPhase = {
     player match {
       case Human => BeginHumanTurn
       case Computer(program) =>
@@ -237,14 +237,14 @@ class GameDriver[DS, LS](gameLogicModule: GameLogicModule)
 
   def processComputerMoves(model: Model): Option[Model] = {
     model.inputPhase match {
-      case ct: ComputerThinking[_] =>
+      case ct: ComputerThinking =>
         if(ct.playComputation.isReady) {
           val (play, newPlayerState) = ct.playComputation.result
 
           val newGameState = if(model.gameState.turnToMove == DARK) {
-            model.gameState.withDarkState(newPlayerState.asInstanceOf[DS])
+            model.gameState.withDarkState(newPlayerState)
           } else {
-            model.gameState.withLightState(newPlayerState.asInstanceOf[LS])
+            model.gameState.withLightState(newPlayerState)
           }
 
           val newModel = model.copy(gameState = newGameState)

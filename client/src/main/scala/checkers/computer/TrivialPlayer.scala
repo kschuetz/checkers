@@ -5,26 +5,35 @@ import checkers.core._
 import checkers.util.Random
 
 object TrivialPlayer {
-  type State = Random
+  case class State(value: Random) extends Opaque {
+    def nextInt(n: Int): (Int, State) = {
+      val (result, nextRandom) = value.nextInt(n)
+      (result, State(nextRandom))
+    }
+  }
 }
 
 class TrivialPlayer(moveGenerator: MoveGenerator)
-                   (initialSeed: Option[Long]) extends Program[State] {
+                   (initialSeed: Option[Long]) extends Program {
 
   // Can be shared between all computations
   private val moveDecoder = new MoveDecoder
 
-  override def initialState = initialSeed.fold(Random())(seed => Random.apply(seed))
+  override def initialState = {
+    val random = initialSeed.fold(Random())(seed => Random.apply(seed))
+    State(random)
+  }
 
-  class TrivialPlayerComputation(stateIn: State, input: PlayInput) extends SimplePlayComputation[State] {
-    override protected def compute: (Play, State) = {
+  class TrivialPlayerComputation(stateIn: Opaque, input: PlayInput) extends SimplePlayComputation {
+    val currentState = stateIn.asInstanceOf[State]
+    override protected def compute: (Play, Opaque) = {
       val boardStack = BoardStack.fromBoard(input.board)
       val choices = moveGenerator.generateMoves(boardStack, input.turnToMove)
       if(choices.count == 0) (Play.empty, stateIn)
       else {
         val (moveIndex, nextState) = {
-          if(choices.count == 1) (0, stateIn)
-          else stateIn.nextInt(choices.count)
+          if(choices.count == 1) (0, currentState)
+          else currentState.nextInt(choices.count)
         }
         moveDecoder.load(choices, moveIndex)
         val path = moveDecoder.pathToList
@@ -34,12 +43,15 @@ class TrivialPlayer(moveGenerator: MoveGenerator)
     }
   }
 
-  override def play(state: State, playInput: PlayInput): PlayComputation[State] =
+  override def play(state: Opaque, playInput: PlayInput): PlayComputation =
     new TrivialPlayerComputation(state, playInput)
+
+//  override def play(state: State, playInput: PlayInput): PlayComputation[State] =
+//    new TrivialPlayerComputation(state, playInput)
 }
 
-class TrivialPlayerFactory extends ProgramFactory[State] {
-  def makeProgram(gameLogicModule: GameLogicModule): Program[State] = {
+class TrivialPlayerFactory extends ProgramFactory {
+  def makeProgram(gameLogicModule: GameLogicModule): Program = {
     new TrivialPlayer(gameLogicModule.moveGenerator)(None)
   }
 }

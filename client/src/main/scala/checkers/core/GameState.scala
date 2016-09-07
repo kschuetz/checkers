@@ -3,18 +3,18 @@ package checkers.core
 import checkers.consts._
 import checkers.core.BeginTurnEvaluation.CanMove
 
-case class GameState[DS, LS](rulesSettings: RulesSettings,
-                             playerConfig: PlayerConfig[DS, LS],
-                             board: BoardState,
-                             turnToMove: Color,
-                             turnIndex: Int,
-                             darkState: DS,
-                             lightState: LS,
-                             drawStatus: DrawStatus,
-                             beginTurnEvaluation: BeginTurnEvaluation,
-                             darkClock: Double,
-                             lightClock: Double,
-                             history: List[HistoryEntry]) {
+case class GameState(rulesSettings: RulesSettings,
+                     playerConfig: PlayerConfig,
+                     board: BoardState,
+                     turnToMove: Color,
+                     turnIndex: Int,
+                     darkState: Opaque,
+                     lightState: Opaque,
+                     drawStatus: DrawStatus,
+                     beginTurnEvaluation: BeginTurnEvaluation,
+                     darkClock: Double,
+                     lightClock: Double,
+                     history: List[HistoryEntry]) {
 
   def currentPlayer: PlayerDescription =
     if (turnToMove == DARK) playerConfig.darkPlayer else playerConfig.lightPlayer
@@ -29,7 +29,7 @@ case class GameState[DS, LS](rulesSettings: RulesSettings,
     case _ => false
   }
 
-  def acceptDraw: GameState[DS, LS] = {
+  def acceptDraw: GameState = {
     val entry = HistoryEntry(turnIndex, turnToMove, board, drawStatus, Play.AcceptDraw)
     copy(turnIndex = turnIndex + 1,
       turnToMove = OPPONENT(turnToMove),
@@ -41,9 +41,9 @@ case class GameState[DS, LS](rulesSettings: RulesSettings,
     case _ => MoveTree.empty
   }
 
-  def withDarkState(newState: DS): GameState[DS, LS] = copy(darkState = newState)
+  def withDarkState(newState: Opaque): GameState = copy(darkState = newState)
 
-  def withLightState(newState: LS): GameState[DS, LS] = copy(lightState = newState)
+  def withLightState(newState: Opaque): GameState = copy(lightState = newState)
 
 }
 

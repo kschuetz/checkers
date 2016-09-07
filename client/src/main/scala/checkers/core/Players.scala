@@ -3,7 +3,7 @@ package checkers.core
 import checkers.computer.Program
 
 trait HumanState
-case object HumanState extends HumanState
+case object HumanState extends HumanState with Opaque
 
 trait PlayerDescription {
   def displayName: String
@@ -11,17 +11,16 @@ trait PlayerDescription {
   def isHuman: Boolean
 }
 
-sealed trait Player[S] extends PlayerDescription {
-  type State = S
-  def initialState: S
+sealed trait Player extends PlayerDescription {
+  def initialState: Opaque
 }
-case object Human extends Player[HumanState] {
+case object Human extends Player {
   val initialState = HumanState
   val displayName = "Human"
   val isComputer = false
   val isHuman = true
 }
-case class Computer[S](program: Program[S]) extends Player[S] {
+case class Computer(program: Program) extends Player {
   def initialState = program.initialState
   val displayName = "Computer"// TODO
   def isComputer = true

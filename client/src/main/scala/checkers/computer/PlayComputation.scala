@@ -1,12 +1,11 @@
 package checkers.computer
 
-import checkers.core.Play
+import checkers.core.{Opaque, Play}
 
 /**
   * MoveComputation is stateful and mutable.
-  * @tparam S opaque state
   */
-trait PlayComputation[S] {
+trait PlayComputation {
   /**
     * Gives the computation a slice of time to execute.  Updates internal state, and affects isReady status.
     *
@@ -33,5 +32,5 @@ trait PlayComputation[S] {
     * Call isReady first.
     * @return
     */
-  def result: (Play, S)
+  def result: (Play, Opaque)
 }

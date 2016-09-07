@@ -1,20 +1,20 @@
 package checkers.computer
 
-case class ProgramRegistryEntry[S](name: String,
-                                   uniqueId: String,
-                                   difficultyLevel: Int,
-                                   factory: ProgramFactory[S])
+case class ProgramRegistryEntry(name: String,
+                                uniqueId: String,
+                                difficultyLevel: Int,
+                                factory: ProgramFactory)
 
 
-class ProgramRegistry  {
-  private var _entries: Vector[ProgramRegistryEntry[_]] = Vector.empty
+class ProgramRegistry {
+  private var _entries: Vector[ProgramRegistryEntry] = Vector.empty
 
-  def entries: Vector[ProgramRegistryEntry[_]] = _entries
+  def entries: Vector[ProgramRegistryEntry] = _entries
 
-  def register(entry: ProgramRegistryEntry[_]): Unit =
+  def register(entry: ProgramRegistryEntry): Unit =
     _entries = _entries :+ entry
 
-  def findEntry(id: String): Option[ProgramRegistryEntry[_]] =
+  def findEntry(id: String): Option[ProgramRegistryEntry] =
     _entries.find(_.uniqueId == id)
 
 }

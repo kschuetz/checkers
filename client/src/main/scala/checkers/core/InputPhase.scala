@@ -25,11 +25,11 @@ object InputPhase {
                            validTargetSquares: Set[Int],
                            canCancel: Boolean) extends HumanMovePhase
 
-  case class ComputerThinking[S](startTime: Double, playComputation: PlayComputation[S]) extends InputPhase {
+  case class ComputerThinking(startTime: Double, playComputation: PlayComputation) extends InputPhase {
     override def waitingForComputer: Boolean = true
   }
 
-  case class EndingTurn[DS, LS](nextTurnState: GameState[DS, LS]) extends InputPhase {
+  case class EndingTurn(nextTurnState: GameState) extends InputPhase {
     override def waitingForAnimations: Boolean = true
     override def endingTurn: Boolean = true
   }

@@ -2,9 +2,9 @@ package checkers.core
 
 import checkers.computer.TrivialPlayer
 
-case class PlayerConfig[DS, LS](darkPlayer: Player[DS], lightPlayer: Player[LS])
+case class PlayerConfig(darkPlayer: Player, lightPlayer: Player)
 
-case class GameConfig[DS, LS](rulesSettings: RulesSettings, playerConfig: PlayerConfig[DS, LS])
+case class GameConfig(rulesSettings: RulesSettings, playerConfig: PlayerConfig)
 
 object GameConfig {
   val test1 = GameConfig(RulesSettings.default, PlayerConfig(Human, Human))

@@ -9,8 +9,8 @@ case class PlayInput(board: BoardState,
                      drawStatus: DrawStatus,
                      history: List[HistoryEntry])
 
-trait Program[S] {
-  def initialState: S
+trait Program {
+  def initialState: Opaque
 
-  def play(state: S, playInput: PlayInput): PlayComputation[S]
+  def play(state: Opaque, playInput: PlayInput): PlayComputation
 }

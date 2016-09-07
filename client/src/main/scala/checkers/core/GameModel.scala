@@ -45,11 +45,11 @@ trait GameModelReader {
   def playerMustJump: Boolean
 }
 
-case class GameModel[DS, LS](nowTime: Double,
+case class GameModel(nowTime: Double,
                              gameStartTime: Double,
                              turnStartTime: Double,
                              inputPhase: InputPhase,
-                             gameState: GameState[DS, LS],
+                             gameState: GameState,
                              boardOrientation: BoardOrientation,
                              pickedUpPiece: Option[PickedUpPiece],
                              squareAttributesVector: SquareAttributesVector,
@@ -71,7 +71,7 @@ case class GameModel[DS, LS](nowTime: Double,
 
   def runComputations(maxCycles: Int): Int = {
     inputPhase match {
-      case ct: ComputerThinking[_] =>
+      case ct: ComputerThinking =>
         ct.playComputation.run(maxCycles)
       case _ => 0
     }
@@ -89,7 +89,7 @@ case class GameModel[DS, LS](nowTime: Double,
     boardOrientation.angle + offset
   }
 
-  def updateNowTime(newTime: Double): GameModel[DS, LS] = {
+  def updateNowTime(newTime: Double): GameModel = {
     val newAnimations = animations.filterNot(_.isExpired(newTime))
     val newFlip = flipAnimation.filterNot(_.isExpired(newTime))
 
@@ -101,7 +101,7 @@ case class GameModel[DS, LS](nowTime: Double,
     copy(nowTime = newTime, animations = newAnimations, flipAnimation = newFlip)
   }
 
-  def startFlipBoard(duration: Double): GameModel[DS, LS] = {
+  def startFlipBoard(duration: Double): GameModel = {
     if (flipAnimation.nonEmpty) this // ignore if flip is already in progress
     else {
       val target = boardOrientation.opposite

@@ -1,11 +1,11 @@
 package checkers.core
 
 class DrawLogic(rulesSettings: RulesSettings) {
-  def canProposeDraw[DS, LS](gameState: GameState[DS, LS]): Option[Int] = {
+  def canProposeDraw(gameState: GameState): Option[Int] = {
     None
   }
 
-  def canAcceptDraw[DS, LS](gameState: GameState[DS, LS]): Boolean = {
+  def canAcceptDraw(gameState: GameState): Boolean = {
     true
   }
 }
