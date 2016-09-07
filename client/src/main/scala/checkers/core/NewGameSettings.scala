@@ -8,7 +8,16 @@ case class NewGameSettings(rulesSettings: RulesSettings,
 
 
 object NewGameSettings {
-  val default = NewGameSettings(RulesSettings.default,
+  val standardHumanHuman = NewGameSettings(RulesSettings.default,
+    None, None)
+
+  val standardHumanTrivialPlayer =  NewGameSettings(RulesSettings.default,
     None,
     Some(DefaultPrograms.ids.TrivialPlayer))
+
+  val standardTrivialPlayers =  NewGameSettings(RulesSettings.default,
+    Some(DefaultPrograms.ids.TrivialPlayer),
+    Some(DefaultPrograms.ids.TrivialPlayer))
+
+  val default = standardHumanTrivialPlayer
 }
