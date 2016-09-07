@@ -1,6 +1,6 @@
 package checkers.core
 
-import checkers.computer.{ProgramRegistry, TrivialPlayer}
+import checkers.computer.ProgramRegistry
 import org.scalajs.dom
 
 class GameFactory(programRegistry: ProgramRegistry,

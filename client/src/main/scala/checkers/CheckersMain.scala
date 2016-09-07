@@ -5,6 +5,7 @@ import checkers.computer.{DefaultPrograms, ProgramRegistry}
 import checkers.core.tables.TablesModule
 import checkers.core.{GameFactory, _}
 import checkers.logger._
+import checkers.persistence.{LocalStorageNewGameSettingsPersister, NewGameSettingsPersister, NullNewGameSettingsPersister}
 import checkers.style.GlobalStyles
 import com.softwaremill.macwire._
 import org.scalajs.dom
@@ -50,6 +51,10 @@ object CheckersMain extends js.JSApp {
     lazy val makeGameLogicModule: GameLogicModuleFactory = wire[GameLogicModuleFactory]
 
     lazy val gameFactory: GameFactory = wire[GameFactory]
+
+    lazy val newGameSettingsPersister: NewGameSettingsPersister = NullNewGameSettingsPersister
+
+    lazy val mainLoop: MainLoop = wire[MainLoop]
 
     val game = gameFactory.createSimple1(host)
     game.run()

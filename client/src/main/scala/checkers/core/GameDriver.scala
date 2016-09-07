@@ -9,7 +9,7 @@ import checkers.geometry.Point
 
 
 class GameDriver(gameLogicModule: GameLogicModule)
-                        (playerConfig: PlayerConfig) {
+                (playerConfig: PlayerConfig) {
 
   type Model = GameModel
   type State = GameState
@@ -57,7 +57,7 @@ class GameDriver(gameLogicModule: GameLogicModule)
         gameState.moveTree.walk(move.path).map { case (endSquare, newMoveTree) =>
           println(s"walk2:  $newMoveTree")
           val remainingMoveTree =
-            if(newMoveTree.isEmpty) newMoveTree
+            if (newMoveTree.isEmpty) newMoveTree
             else newMoveTree.prepend(endSquare, requiresJump = true)
           applyMove(gameModel, move, remainingMoveTree)
         }
@@ -81,6 +81,7 @@ class GameDriver(gameLogicModule: GameLogicModule)
           go(more, info :: result)
       }
     }
+
     val moveInfo = go(move.path, Nil).reverse
     val newBoard = boardState.toImmutable
 
@@ -125,7 +126,7 @@ class GameDriver(gameLogicModule: GameLogicModule)
     val lightState = playerConfig.lightPlayer.initialState
     val turnToMove = rulesSettings.playsFirst
     val boardState = RulesSettings.initialBoard(rulesSettings)
-//    val boardState = BoardExperiments.board2
+    //    val boardState = BoardExperiments.board2
     val beginTurnState = BeginTurnState(boardState, turnToMove, 0, NoDraw)
     val turnEvaluation = evaluateBeginTurn(beginTurnState)
     GameState(rulesSettings, playerConfig, boardState, turnToMove, 0, darkState, lightState, NoDraw, turnEvaluation, 0, 0, Nil)
@@ -152,8 +153,8 @@ class GameDriver(gameLogicModule: GameLogicModule)
       case InputPhase.BeginHumanTurn => moveTree.squares
       case ps: InputPhase.PieceSelected =>
         val sourceSquares = moveTree.squares
-//        val destSquares = moveTree.walk(List(ps.square)).fold(Set.empty[Int])(_.squares)
-        val targetSquares  = moveTree.targetSquares(ps.square)
+        //        val destSquares = moveTree.walk(List(ps.square)).fold(Set.empty[Int])(_.squares)
+        val targetSquares = moveTree.targetSquares(ps.square)
         sourceSquares ++ targetSquares
       case _ => Set.empty
     }
@@ -216,7 +217,7 @@ class GameDriver(gameLogicModule: GameLogicModule)
       case BeginHumanTurn => userSelectPiece(model, event.squareIndex, event.piece, Some(event.boardPoint))
       case PieceSelected(piece, squareIndex, validTargetSquares, canCancel) =>
         val targetSquare = event.squareIndex
-        if(validTargetSquares.contains(targetSquare)) {
+        if (validTargetSquares.contains(targetSquare)) {
           selectMoveTarget(model, event, squareIndex, targetSquare)
         } else if (canCancel) {
           Option(cancelPieceSelected(model))
@@ -238,10 +239,10 @@ class GameDriver(gameLogicModule: GameLogicModule)
   def processComputerMoves(model: Model): Option[Model] = {
     model.inputPhase match {
       case ct: ComputerThinking =>
-        if(ct.playComputation.isReady) {
+        if (ct.playComputation.isReady) {
           val (play, newPlayerState) = ct.playComputation.result
 
-          val newGameState = if(model.gameState.turnToMove == DARK) {
+          val newGameState = if (model.gameState.turnToMove == DARK) {
             model.gameState.withDarkState(newPlayerState)
           } else {
             model.gameState.withLightState(newPlayerState)
@@ -305,7 +306,7 @@ class GameDriver(gameLogicModule: GameLogicModule)
   }
 
   private def handleIllegalPieceSelection(model: Model, squareIndex: Int, piece: Occupant): Option[Model] = {
-    if(ISEMPTY(piece)) None
+    if (ISEMPTY(piece)) None
     else Some({
       val input = IllegalPieceAnimationInput(nowTime = model.nowTime, existingAnimations = model.animations,
         piece = piece, squareIndex = squareIndex)
