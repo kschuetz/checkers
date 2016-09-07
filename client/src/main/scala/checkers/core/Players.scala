@@ -9,6 +9,8 @@ trait PlayerDescription {
   def displayName: String
   def isComputer: Boolean
   def isHuman: Boolean
+  def programId: Option[String]
+  def difficultyLevel: Int
 }
 
 sealed trait Player extends PlayerDescription {
@@ -19,10 +21,11 @@ case object Human extends Player {
   val displayName = "Human"
   val isComputer = false
   val isHuman = true
+  val programId = None
+  val difficultyLevel = 0
 }
-case class Computer(program: Program) extends Player {
+case class Computer(program: Program, displayName: String, programId: Option[String], difficultyLevel: Int) extends Player {
   def initialState = program.initialState
-  val displayName = "Computer"// TODO
   def isComputer = true
   def isHuman = false
 }

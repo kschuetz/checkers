@@ -162,8 +162,8 @@ class GameDriver(gameLogicModule: GameLogicModule)
   private def getInputPhase(nowTime: Double, player: Player, playerState: Opaque, playInput: => PlayInput): InputPhase = {
     player match {
       case Human => BeginHumanTurn
-      case Computer(program) =>
-        val playComputation = program.play(playerState, playInput)
+      case computer: Computer =>
+        val playComputation = computer.program.play(playerState, playInput)
         ComputerThinking(nowTime, playComputation)
     }
   }

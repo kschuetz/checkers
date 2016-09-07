@@ -7,19 +7,14 @@ class GameFactory(programRegistry: ProgramRegistry,
                   gameLogicModuleFactory: GameLogicModuleFactory,
                   screenLayoutSettingsProvider: ScreenLayoutSettingsProvider) {
 
-  def create(gameConfig: GameConfig, host: dom.Node): Game = {
-    val gameLogicModule = gameLogicModuleFactory.apply(gameConfig.rulesSettings)
-    createGame(gameLogicModule, gameConfig, host)
-  }
-
-  def create2(rulesSettings: RulesSettings, darkPlayerId: Option[String], lightPlayerId: Option[String], host: dom.Node) = {
+  def create(rulesSettings: RulesSettings, darkProgramId: Option[String], lightProgramId: Option[String], host: dom.Node) = {
     val darkEntry = for {
-      id <- darkPlayerId
+      id <- darkProgramId
       entry <- programRegistry.findEntry(id)
     } yield entry
 
     val lightEntry = for {
-      id <- lightPlayerId
+      id <- lightProgramId
       entry <- programRegistry.findEntry(id)
     } yield entry
 
@@ -27,49 +22,35 @@ class GameFactory(programRegistry: ProgramRegistry,
 
     val darkComputer = for {
       entry <- darkEntry
-    } yield Computer(entry.factory.makeProgram(gameLogicModule))
+    } yield entry.makeComputerPlayer(gameLogicModule)
 
     val lightComputer = for {
       entry <- lightEntry
-    } yield Computer(entry.factory.makeProgram(gameLogicModule))
+    } yield entry.makeComputerPlayer(gameLogicModule)
 
-//    val darkPlayer: Player[DS] = darkComputer.getOrElse(Human)
-//    val lightPlayer: Player[LS] = lightComputer.getOrElse(Human)
-//
-//    val gameConfig = GameConfig(rulesSettings, PlayerConfig(darkPlayer, lightPlayer))
-//    createGame(gameLogicModule, gameConfig, host)
+    val darkPlayer = darkComputer.getOrElse(Human)
+    val lightPlayer = lightComputer.getOrElse(Human)
 
-    ???
+    val gameConfig = GameConfig(rulesSettings, PlayerConfig(darkPlayer, lightPlayer))
+    createGame(gameLogicModule, gameConfig, host)
   }
 
   // Human vs. TrivialPlayer
   def createSimple1(host: dom.Node) = {
     val rulesSettings = RulesSettings.default
-    val gameLogicModule = gameLogicModuleFactory.apply(rulesSettings)
-    val light = Computer(new TrivialPlayer(gameLogicModule.moveGenerator)(None))
-    val dark = Human
-    val gameConfig = GameConfig(rulesSettings, PlayerConfig(dark, light))
-    createGame(gameLogicModule, gameConfig, host)
+    create(rulesSettings, None, Some("TrivialPlayer"), host)
   }
 
   // Human vs. Human
   def createSimple2(host: dom.Node) = {
     val rulesSettings = RulesSettings.default
-    val gameLogicModule = gameLogicModuleFactory.apply(rulesSettings)
-    val light = Human
-    val dark = Human
-    val gameConfig = GameConfig(rulesSettings, PlayerConfig(dark, light))
-    createGame(gameLogicModule, gameConfig, host)
+    create(rulesSettings, None, None, host)
   }
 
   // Trivial Player vs. Trivial Player
   def createSimple3(host: dom.Node) = {
     val rulesSettings = RulesSettings.default
-    val gameLogicModule = gameLogicModuleFactory.apply(rulesSettings)
-    val light = Computer(new TrivialPlayer(gameLogicModule.moveGenerator)(None))
-    val dark =  Computer(new TrivialPlayer(gameLogicModule.moveGenerator)(None))
-    val gameConfig = GameConfig(rulesSettings, PlayerConfig(dark, light))
-    createGame(gameLogicModule, gameConfig, host)
+    create(rulesSettings, Some("TrivialPlayer"), Some("TrivialPlayer"), host)
   }
 
   private def createGame(gameLogicModule: GameLogicModule, gameConfig: GameConfig, host: dom.Node): Game = {

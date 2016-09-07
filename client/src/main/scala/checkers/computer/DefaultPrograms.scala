@@ -2,6 +2,11 @@ package checkers.computer
 
 object DefaultPrograms {
 
+  object ids {
+    val TrivialPlayer = "TrivialPlayer"
+  }
+
+
   def registerAll(registry: ProgramRegistry): Unit = {
 
     def register(name: String, uniqueId: String, difficultyLevel: Int, factory: ProgramFactory): Unit = {
@@ -9,7 +14,7 @@ object DefaultPrograms {
       registry.register(entry)
     }
 
-    register("Computer (Easiest)", "TrivialPlayer", 0, new TrivialPlayerFactory)
+    register("Computer (Easiest)", ids.TrivialPlayer, 0, new TrivialPlayerFactory)
   }
 
 }

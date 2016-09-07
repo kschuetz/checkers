@@ -1,9 +1,20 @@
 package checkers.computer
 
+import checkers.core.{Computer, GameLogicModule}
+
 case class ProgramRegistryEntry(name: String,
                                 uniqueId: String,
                                 difficultyLevel: Int,
-                                factory: ProgramFactory)
+                                factory: ProgramFactory) {
+  def makeComputerPlayer(gameLogicModule: GameLogicModule): Computer = {
+    val program = factory.makeProgram(gameLogicModule)
+    Computer(program = program,
+      displayName = name,
+      programId = Some(uniqueId),
+      difficultyLevel = difficultyLevel)
+  }
+
+}
 
 
 class ProgramRegistry {
