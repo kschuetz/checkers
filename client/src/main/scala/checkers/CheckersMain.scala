@@ -1,6 +1,7 @@
 package checkers
 
 import checkers.benchmark.MoveGeneratorBenchmarks
+import checkers.computer.{DefaultPrograms, ProgramRegistry}
 import checkers.core.tables.TablesModule
 import checkers.core.{GameFactory, _}
 import checkers.logger._
@@ -30,6 +31,12 @@ object CheckersMain extends js.JSApp {
   }
 
   private def sandbox1(host: dom.Node): Unit = {
+    lazy val programRegistry = {
+      val result = new ProgramRegistry
+      DefaultPrograms.registerAll(result)
+      result
+    }
+
     lazy val screenLayoutSettingsProvider: ScreenLayoutSettingsProvider = ConstantScreenLayoutSettings(DefaultScreenLayoutSettings)
 
     lazy val rulesSettings = RulesSettings.default

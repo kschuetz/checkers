@@ -1,7 +1,7 @@
 package checkers.computer
 
 import checkers.computer.TrivialPlayer._
-import checkers.core.{BoardStack, MoveDecoder, MoveGenerator, Play}
+import checkers.core._
 import checkers.util.Random
 
 object TrivialPlayer {
@@ -36,4 +36,10 @@ class TrivialPlayer(moveGenerator: MoveGenerator)
 
   override def play(state: State, playInput: PlayInput): PlayComputation[State] =
     new TrivialPlayerComputation(state, playInput)
+}
+
+class TrivialPlayerFactory extends ProgramFactory[State] {
+  def makeProgram(gameLogicModule: GameLogicModule): Program[State] = {
+    new TrivialPlayer(gameLogicModule.moveGenerator)(None)
+  }
 }

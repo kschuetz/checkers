@@ -1,14 +1,45 @@
 package checkers.core
 
-import checkers.computer.TrivialPlayer
+import checkers.computer.{ProgramRegistry, TrivialPlayer}
 import org.scalajs.dom
 
-class GameFactory(gameLogicModuleFactory: GameLogicModuleFactory,
+class GameFactory(programRegistry: ProgramRegistry,
+                  gameLogicModuleFactory: GameLogicModuleFactory,
                   screenLayoutSettingsProvider: ScreenLayoutSettingsProvider) {
 
   def create[DS, LS](gameConfig: GameConfig[DS, LS], host: dom.Node): Game[DS, LS] = {
     val gameLogicModule = gameLogicModuleFactory.apply(gameConfig.rulesSettings)
     createGame(gameLogicModule, gameConfig, host)
+  }
+
+  def create2[DS, LS](rulesSettings: RulesSettings, darkPlayerId: Option[String], lightPlayerId: Option[String], host: dom.Node) = {
+    val darkEntry = for {
+      id <- darkPlayerId
+      entry <- programRegistry.findEntry(id)
+    } yield entry
+
+    val lightEntry = for {
+      id <- lightPlayerId
+      entry <- programRegistry.findEntry(id)
+    } yield entry
+
+    val gameLogicModule = gameLogicModuleFactory.apply(rulesSettings)
+
+    val darkComputer = for {
+      entry <- darkEntry
+    } yield Computer(entry.factory.makeProgram(gameLogicModule))
+
+    val lightComputer = for {
+      entry <- lightEntry
+    } yield Computer(entry.factory.makeProgram(gameLogicModule))
+
+//    val darkPlayer: Player[DS] = darkComputer.getOrElse(Human)
+//    val lightPlayer: Player[LS] = lightComputer.getOrElse(Human)
+//
+//    val gameConfig = GameConfig(rulesSettings, PlayerConfig(darkPlayer, lightPlayer))
+//    createGame(gameLogicModule, gameConfig, host)
+
+    ???
   }
 
   // Human vs. TrivialPlayer
