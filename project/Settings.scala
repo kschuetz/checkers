@@ -64,9 +64,12 @@ object Settings {
     "org.scala-js" %%% "scalajs-dom" % versions.scalaDom,
     "com.softwaremill.macwire" %% "macros" % versions.macwire % Provided,
     "com.lihaoyi" %%% "upickle" % versions.uPickle,
-    "com.github.japgolly.scalajs-benchmark" %%% "benchmark" % versions.benchmark,
     "com.lihaoyi" %%% "utest" % versions.uTest % Test,
     "com.github.japgolly.nyaya" %%% "nyaya-test" % versions.nyaya % Test
+  ))
+
+  val benchmarkjsDependencies = Def.setting(Seq(
+    "com.github.japgolly.scalajs-benchmark" %%% "benchmark" % versions.benchmark
   ))
 
   /** Dependencies for external JS libs that are bundled into a single .js file according to dependency order */
