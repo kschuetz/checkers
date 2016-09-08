@@ -56,8 +56,9 @@ object CheckersMain extends js.JSApp {
 
     lazy val mainLoop: MainLoop = wire[MainLoop]
 
-    val game = gameFactory.createSimple1(host)
-    game.run()
+    mainLoop.start(host, host)
+//    val game = gameFactory.createSimple1(host)
+//    game.run()
   }
 
 }

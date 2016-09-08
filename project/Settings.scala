@@ -31,6 +31,7 @@ object Settings {
     val uTest = "0.4.3"
     val nyaya = "0.7.0"
     val macwire = "2.2.3"
+    val uPickle = "0.4.1"
 
     val react = "15.2.0"
     val jQuery = "1.11.1"
@@ -61,6 +62,7 @@ object Settings {
     "com.github.japgolly.scalacss" %%% "ext-react" % versions.scalaCSS,
     "org.scala-js" %%% "scalajs-dom" % versions.scalaDom,
     "com.softwaremill.macwire" %% "macros" % versions.macwire % Provided,
+    "com.lihaoyi" %%% "upickle" % versions.uPickle,
     "com.lihaoyi" %%% "utest" % versions.uTest % Test,
     "com.github.japgolly.nyaya" %%% "nyaya-test" % versions.nyaya % Test
   ))
