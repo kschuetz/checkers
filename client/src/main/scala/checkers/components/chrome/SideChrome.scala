@@ -43,7 +43,8 @@ object SideChrome {
         buttonWidth,
         buttonHeight,
         "New Game",
-        Some("Start a new game")))
+        Some("Start a new game"),
+        onNewGameClick))
       <.svg.svg(
         ^.`class` := "side-chrome",
         Backdrop((widthPixels, heightPixels)),

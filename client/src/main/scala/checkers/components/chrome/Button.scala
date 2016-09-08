@@ -22,7 +22,8 @@ object Button extends SvgHelpers {
                    width: Double,
                    height: Double,
                    caption: String = "",
-                   tooltip: Option[String] = None)
+                   tooltip: Option[String] = None,
+                   onClick: Callback = Callback.empty)
 
   case class State(depressed: Boolean)
 
@@ -33,9 +34,12 @@ object Button extends SvgHelpers {
       $.modState(_.copy(depressed = true))
     }
 
-    def handleMouseUp(e: ReactEventI) = {
-      $.modState(_.copy(depressed = false))
-    }
+    def handleMouseUp(e: ReactEventI) = for {
+      state <- $.state
+      props <- $.props
+      cb <- if(!state.depressed) Callback.empty
+            else props.onClick >> $.modState(_.copy(depressed = false))
+    } yield cb
 
     def handleMouseOut(e: ReactEventI) = {
       $.modState(_.copy(depressed = false))
