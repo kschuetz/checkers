@@ -18,7 +18,7 @@ object NullNewGameSettingsPersister extends NewGameSettingsPersister {
 }
 
 object LocalStorageNewGameSettingsPersister extends NewGameSettingsPersister {
-  private val key = "new-game-settings"
+  private val key = keys.NewGameSettings
 
   override def loadNewGameSettings: Option[NewGameSettings] = for {
     s <- Option(dom.window.localStorage.getItem(key))
