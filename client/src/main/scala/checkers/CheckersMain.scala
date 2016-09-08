@@ -52,7 +52,7 @@ object CheckersMain extends js.JSApp {
 
     lazy val gameFactory: GameFactory = wire[GameFactory]
 
-    lazy val newGameSettingsPersister: NewGameSettingsPersister = NullNewGameSettingsPersister
+    lazy val newGameSettingsPersister: NewGameSettingsPersister = LocalStorageNewGameSettingsPersister
 
     lazy val mainLoop: MainLoop = wire[MainLoop]
 

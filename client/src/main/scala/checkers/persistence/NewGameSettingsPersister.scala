@@ -1,6 +1,9 @@
 package checkers.persistence
 
 import checkers.core.NewGameSettings
+import org.scalajs.dom
+
+import scala.util.Try
 
 trait NewGameSettingsPersister {
   def loadNewGameSettings: Option[NewGameSettings]
@@ -15,7 +18,27 @@ object NullNewGameSettingsPersister extends NewGameSettingsPersister {
 }
 
 object LocalStorageNewGameSettingsPersister extends NewGameSettingsPersister {
-  override def loadNewGameSettings: Option[NewGameSettings] = None
+  private val key = "new-game-settings"
 
-  override def saveNewGameSettings(settings: NewGameSettings): Unit = None
+  override def loadNewGameSettings: Option[NewGameSettings] = for {
+    s <- Option(dom.window.localStorage.getItem(key))
+    settings <- deserialize(s)
+  } yield settings
+
+  override def saveNewGameSettings(settings: NewGameSettings): Unit = {
+    val data = serialize(settings)
+    dom.window.localStorage.setItem(key, data)
+  }
+
+  private def deserialize(source: String): Option[NewGameSettings] = {
+    import upickle.default._
+    Try(read[NewGameSettings](source)).toOption
+  }
+
+  private def serialize(settings: NewGameSettings): String = {
+    import upickle.default._
+    write(settings)
+  }
+
+
 }
