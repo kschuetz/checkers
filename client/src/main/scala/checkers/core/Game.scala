@@ -13,6 +13,8 @@ class Game(gameDriver: GameDriver,
 
   private var _running = false
 
+  private def stopped = !_running
+
   private var model: Model = {
     val nowTime = performance.now()
     gameDriver.createInitialModel(nowTime)
@@ -84,7 +86,7 @@ class Game(gameDriver: GameDriver,
 
 
   private def tick(): Unit = {
-    if (_running) return
+    if (stopped) return
     updateNowTime()
     if (model.hasActiveComputation) {
       model.runComputations(2000)
@@ -98,7 +100,7 @@ class Game(gameDriver: GameDriver,
   }
 
   private def scheduleTick(): Unit = {
-    if (_running) return
+    if (stopped) return
     dom.window.setTimeout(tick _, 1)
   }
 
