@@ -48,9 +48,9 @@ object CheckersMain extends js.JSApp {
 
     lazy val newGameSettingsPersister: NewGameSettingsPersister = LocalStorageNewGameSettingsPersister
 
-    lazy val mainLoop: MainLoop = wire[MainLoop]
+    lazy val application: Application = wire[Application]
 
-    mainLoop.start(host, dialogHost)
+    application.start(host, dialogHost)
   }
 
 }
