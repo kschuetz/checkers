@@ -44,7 +44,7 @@ object SideChrome {
         buttonHeight,
         "New Game",
         Some("Start a new game"),
-        onNewGameClick))
+        props.applicationCallbacks.onNewGameButtonClicked))
       <.svg.svg(
         ^.`class` := "side-chrome",
         Backdrop((widthPixels, heightPixels)),
@@ -68,10 +68,6 @@ object SideChrome {
 //
 //      )
 //    }
-
-    private def onNewGameClick = Callback {
-      println("new game click")
-    }
 
     private def onRotateBoardClick = Callback {
       println("rotate board click")

@@ -34,7 +34,7 @@ class Application(programRegistry: ProgramRegistry,
       game = None
     }
 
-    override def onNewGameButtonClicked: Callback = Callback {
+    override val onNewGameButtonClicked: Callback = Callback {
       println("New game button clicked")
     }
   }
