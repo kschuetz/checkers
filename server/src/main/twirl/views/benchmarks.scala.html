@@ -1,0 +1,13 @@
+@(title: String)(implicit env: play.api.Environment)
+@import views.html.tags._
+
+<!DOCTYPE html>
+<html>
+    <head lang="en">
+        <title>@title</title>
+    </head>
+    <body>
+        <div id="body">Loading...</div>
+        @playscalajs.html.scripts(projectName = "benchmarks", fileName => _asset(fileName).toString)
+    </body>
+</html>

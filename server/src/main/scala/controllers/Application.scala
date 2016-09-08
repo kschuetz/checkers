@@ -10,6 +10,10 @@ class Application @Inject()(implicit val config: Configuration, env: Environment
     Ok(views.html.index("Checkers"))
   }
 
+  def benchmarks = Action {
+    Ok(views.html.benchmarks("Benchmarks"))
+  }
+
   def logging = Action(parse.anyContent) {
     implicit request =>
       request.body.asJson.foreach { msg =>

@@ -77,7 +77,7 @@ lazy val benchmarks: Project = (project in file("benchmarks"))
 
 
 // Client projects (just one in this case)
-lazy val clients = Seq(client)
+lazy val clients = Seq(client, benchmarks)
 
 // instantiate the JVM project for SBT with some additional settings
 lazy val server = (project in file("server"))
