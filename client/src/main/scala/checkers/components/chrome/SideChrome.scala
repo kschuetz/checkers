@@ -1,6 +1,6 @@
 package checkers.components.chrome
 
-import checkers.core.{GameModelReader, SideChromeLayoutSettings}
+import checkers.core.{ApplicationCallbacks, GameModelReader, SideChromeLayoutSettings}
 import checkers.style.GlobalStyles
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.ReactAttr
@@ -9,7 +9,8 @@ import japgolly.scalajs.react.vdom.prefix_<^._
 object SideChrome {
 
   case class Props(gameModel: GameModelReader,
-                   layoutSettings: SideChromeLayoutSettings)
+                   layoutSettings: SideChromeLayoutSettings,
+                   applicationCallbacks: ApplicationCallbacks)
 
   private val Backdrop = ReactComponentB[(Int, Int)]("SideChromeBackdrop")
     .render_P { case (width, height) =>

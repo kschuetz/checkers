@@ -3,6 +3,7 @@ package checkers.core
 import checkers.computer.ProgramRegistry
 import checkers.core.tables.TablesModule
 import checkers.persistence.NewGameSettingsPersister
+import japgolly.scalajs.react.Callback
 import org.scalajs.dom
 
 class Application(programRegistry: ProgramRegistry,
@@ -10,14 +11,31 @@ class Application(programRegistry: ProgramRegistry,
                   animationSettings: AnimationSettings,
                   newGameSettingsPersister: NewGameSettingsPersister,
                   gameFactory: GameFactory,
-                  makeGameLogicModule: GameLogicModuleFactory) {
+                  makeGameLogicModule: GameLogicModuleFactory)  {
 
-  class Session(gameHost: dom.Node, dialogHost: dom.Node) {
-    var game: Game = _
+  class Session(gameHost: dom.Node, dialogHost: dom.Node) extends ApplicationCallbacks {
+    var game: Option[Game] = None
+
+    def startNewGame(settings: NewGameSettings): Unit = {
+      stopGame()
+      val newGame = gameFactory.create(settings, gameHost)
+      game = Some(newGame)
+      newGame.initApplicationCallbacks(this)
+      newGame.run()
+    }
+
     def run(): Unit = {
       val newGameSettings = newGameSettingsPersister.loadNewGameSettings.getOrElse(NewGameSettings.default)
-      game = gameFactory.create(newGameSettings, gameHost)
-      game.run()
+      startNewGame(newGameSettings)
+    }
+
+    def stopGame(): Unit = {
+      game.foreach(_.stop())
+      game = None
+    }
+
+    override def onNewGameButtonClicked: Callback = Callback {
+      println("New game button clicked")
     }
   }
 
@@ -25,5 +43,6 @@ class Application(programRegistry: ProgramRegistry,
     val session = new Session(gameHost, dialogHost)
     session.run()
   }
+
 
 }

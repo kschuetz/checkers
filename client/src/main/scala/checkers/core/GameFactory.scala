@@ -35,14 +35,14 @@ class GameFactory(programRegistry: ProgramRegistry,
     createGame(gameLogicModule, gameConfig, host)
   }
 
-  // Human vs. TrivialPlayer
-  def createSimple1(host: dom.Node) = create(NewGameSettings.standardHumanTrivialPlayer, host)
-
-  // Human vs. Human
-  def createSimple2(host: dom.Node) = create(NewGameSettings.standardHumanHuman, host)
-
-  // Trivial Player vs. Trivial Player
-  def createSimple3(host: dom.Node) = create(NewGameSettings.standardTrivialPlayers, host)
+//  // Human vs. TrivialPlayer
+//  def createSimple1(host: dom.Node) = create(NewGameSettings.standardHumanTrivialPlayer, host)
+//
+//  // Human vs. Human
+//  def createSimple2(host: dom.Node) = create(NewGameSettings.standardHumanHuman, host)
+//
+//  // Trivial Player vs. Trivial Player
+//  def createSimple3(host: dom.Node) = create(NewGameSettings.standardTrivialPlayers, host)
 
   private def createGame(gameLogicModule: GameLogicModule, gameConfig: GameConfig, host: dom.Node): Game = {
     val driver = new GameDriver(gameLogicModule)(gameConfig.playerConfig)

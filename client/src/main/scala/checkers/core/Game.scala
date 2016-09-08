@@ -7,14 +7,31 @@ import org.scalajs.dom.window.performance
 
 
 class Game(gameDriver: GameDriver,
-                   screenLayoutSettingsProvider: ScreenLayoutSettingsProvider)
-                  (val host: dom.Node) {
+           screenLayoutSettingsProvider: ScreenLayoutSettingsProvider)
+          (val host: dom.Node) {
   type Model = GameModel
 
+  private var _running = false
 
-  var model: Model = {
+  private var model: Model = {
     val nowTime = performance.now()
     gameDriver.createInitialModel(nowTime)
+  }
+
+  private var applicationCallbacks: ApplicationCallbacks = EmptyApplicationCallbacks
+
+  def initApplicationCallbacks(value: ApplicationCallbacks): Unit = {
+    applicationCallbacks = value
+  }
+
+  def run(): Unit = {
+    _running = true
+    invalidate()
+  }
+
+  def stop(): Unit = {
+    _running = false
+    ReactDOM.unmountComponentAtNode(host)
   }
 
   object Callbacks extends BoardCallbacks {
@@ -22,7 +39,7 @@ class Game(gameDriver: GameDriver,
       println(s"pieceMouseDown ${event.squareIndex}")
       updateNowTime()
       gameDriver.handleBoardMouseDown(model, event).foreach(replaceModel)
-      if(event.squareIndex < 0) {
+      if (event.squareIndex < 0) {
         println(model.inputPhase)
         scheduleTick()
       }
@@ -41,8 +58,8 @@ class Game(gameDriver: GameDriver,
 
   private def handleAnimationFrame(t: Double) = {
     model = model.updateNowTime(t)
-    if(model.waitingForAnimations) {
-      if(!model.hasActivePlayAnimations) {
+    if (model.waitingForAnimations) {
+      if (!model.hasActivePlayAnimations) {
         gameDriver.handleAnimationsComplete(model).foreach { newModel =>
           model = newModel
         }
@@ -53,14 +70,12 @@ class Game(gameDriver: GameDriver,
   }
 
   private def renderModel(model: Model): Unit = {
-    val props = GameScreen.Props(model, screenLayoutSettingsProvider.getScreenLayoutSettings, Callbacks)
+    val props = GameScreen.Props(model, screenLayoutSettingsProvider.getScreenLayoutSettings, Callbacks, applicationCallbacks)
     val screen = GameScreen.apply(props)
     ReactDOM.render(screen, host)
   }
 
-  def run(): Unit = {
-    invalidate()
-  }
+
 
   private def replaceModel(newModel: Model): Unit = {
     model = newModel
@@ -69,19 +84,21 @@ class Game(gameDriver: GameDriver,
 
 
   private def tick(): Unit = {
+    if (_running) return
     updateNowTime()
-    if(model.hasActiveComputation) {
+    if (model.hasActiveComputation) {
       model.runComputations(2000)
       gameDriver.processComputerMoves(model).foreach { newModel =>
         replaceModel(newModel)
       }
-      if(model.hasActiveComputation) {
+      if (model.hasActiveComputation) {
         scheduleTick()
       }
     }
   }
 
   private def scheduleTick(): Unit = {
+    if (_running) return
     dom.window.setTimeout(tick _, 1)
   }
 

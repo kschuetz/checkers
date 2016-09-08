@@ -1,7 +1,7 @@
 package checkers.components
 
 import checkers.components.chrome.{SideChrome, TopChrome}
-import checkers.core.{GameModelReader, ScreenLayoutSettings}
+import checkers.core.{ApplicationCallbacks, GameModelReader, ScreenLayoutSettings}
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
 
@@ -11,13 +11,14 @@ object GameScreen {
 
   case class Props(gameModel: GameModelReader,
                    screenLayoutSettings: ScreenLayoutSettings,
-                   callbacks: Callbacks)
+                   callbacks: Callbacks,
+                   applicationCallbacks: ApplicationCallbacks)
 
   val component = ReactComponentB[Props]("GameScreen")
-    .render_P { case Props(gameModel, layoutSettings, callbacks) =>
+    .render_P { case Props(gameModel, layoutSettings, callbacks, applicationCallbacks) =>
       val topChromeProps = TopChrome.Props(gameModel, layoutSettings.GameSceneWidthPixels,
         layoutSettings.TopChromeHeightPixels)
-      val sideChromeProps = SideChrome.Props(gameModel,  layoutSettings)
+      val sideChromeProps = SideChrome.Props(gameModel,  layoutSettings, applicationCallbacks)
 
       val gameSceneY = layoutSettings.TopChromeHeightPixels + layoutSettings.TopChromePaddingPixels
       val sideChromeX = layoutSettings.GameSceneWidthPixels + layoutSettings.SideChromePaddingPixels
