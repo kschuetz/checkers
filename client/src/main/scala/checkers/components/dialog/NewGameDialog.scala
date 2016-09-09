@@ -1,8 +1,8 @@
 package checkers.components.dialog
 
 import checkers.consts._
+import japgolly.scalajs.react._ //{BackendScope, Callback, ReactComponentB}
 import japgolly.scalajs.react.vdom.prefix_<^._
-import japgolly.scalajs.react.{BackendScope, Callback, ReactComponentB}
 
 
 object NewGameDialog {
@@ -18,7 +18,7 @@ object NewGameDialog {
 
 
   trait NewGameDialogCallbacks {
-    def handleNewGameDialogResult(result: Result): Callback
+    def onNewGameDialogResult(result: Result): Callback
   }
 
   case class PlayerChangeEvent(color: Color,
@@ -31,7 +31,7 @@ object NewGameDialog {
                    playsFirst: Color,
                    variationIndex: Int) {
     def withPlayerChange(event: PlayerChangeEvent): State =
-      if(event.color == DARK) {
+      if (event.color == DARK) {
         copy(darkPlayerIndex = event.playerIndex)
       } else {
         copy(lightPlayerIndex = event.playerIndex)
@@ -53,8 +53,6 @@ object NewGameDialog {
                    callbacks: NewGameDialogCallbacks) {
     def initialState: State = State(initialDarkPlayer, initialLightPlayer, initialPlaysFirst, initialVariationIndex)
   }
-
-
 
 
   trait PlayerPanelCallbacks {
@@ -80,8 +78,6 @@ object NewGameDialog {
     .build
 
 
-
-
   trait GeneralSettingsPanelCallbacks {
     def handleVariationChanged(event: VariationChangeEvent): Callback
   }
@@ -102,15 +98,35 @@ object NewGameDialog {
 
 
   trait DialogButtonsCallbacks {
-    def handleOkClicked: Callback
+    def onOkClicked: Callback
 
-    def handleCancelClicked: Callback
+    def onCancelClicked: Callback
   }
 
   class DialogButtonsBackend($: BackendScope[DialogButtonsCallbacks, Unit]) {
     def render(props: DialogButtonsCallbacks) = {
-      <.div()
+      <.div(
+        <.button(
+          ^.onClick ==> handleOkClicked,
+          "OK"
+        ),
+        <.button(
+          ^.onClick ==> handleCancelClicked,
+          "Cancel"
+        )
+      )
     }
+
+    private def handleOkClicked(event: ReactEventI) = for {
+      props <- $.props
+      cb <- props.onOkClicked
+    } yield cb
+
+    private def handleCancelClicked(event: ReactEventI) = for {
+      props <- $.props
+      cb <- props.onCancelClicked
+    } yield cb
+
   }
 
   private val DialogButtons = ReactComponentB[DialogButtonsCallbacks]("DialogButtons")
@@ -151,13 +167,43 @@ object NewGameDialog {
         ^.id := "new-game-dialog",
         ^.`class` := "modal-dialog",
         <.div(
-          darkPlayerPanel,
-          lightPlayerPanel,
-          generalSettingsPanel,
-          dialogButtons
+          ^.`class` := "modal-background",
+          <.div(
+            ^.`class` := "modal-content",
+            <.div(
+              ^.`class` := "modal-header",
+              <.h2("New Game")
+            ),
+            <.div(
+              ^.`class` := "modal-body",
+              darkPlayerPanel,
+              lightPlayerPanel,
+              generalSettingsPanel
+            ),
+            <.div(
+              ^.`class` := "modal-footer",
+              dialogButtons
+            )
+          )
         )
       )
     }
+
+    /*
+    <div class="modal-content">
+  <div class="modal-header">
+    <span class="close">×</span>
+    <h2>Modal Header</h2>
+  </div>
+  <div class="modal-body">
+    <p>Some text in the Modal Body</p>
+    <p>Some other text...</p>
+  </div>
+  <div class="modal-footer">
+    <h3>Modal Footer</h3>
+  </div>
+</div>
+     */
 
     def handlePlayerChanged(event: PlayerChangeEvent) = $.modState(_.withPlayerChange(event))
 
@@ -165,20 +211,20 @@ object NewGameDialog {
 
     def handleVariationChanged(event: VariationChangeEvent) = $.modState(_.withVariationChange(event))
 
-    def handleOkClicked: Callback = for {
+    def onOkClicked: Callback = for {
       props <- $.props
       state <- $.state
       data = Ok(darkPlayerIndex = state.darkPlayerIndex,
         lightPlayerIndex = state.lightPlayerIndex,
         playsFirst = state.playsFirst,
         variationIndex = state.variationIndex)
-      result <- props.callbacks.handleNewGameDialogResult(data)
+      result <- props.callbacks.onNewGameDialogResult(data)
     } yield result
 
-    def handleCancelClicked: Callback = for {
+    def onCancelClicked: Callback = for {
       props <- $.props
       data = Cancel
-      result <- props.callbacks.handleNewGameDialogResult(data)
+      result <- props.callbacks.onNewGameDialogResult(data)
     } yield result
 
 
