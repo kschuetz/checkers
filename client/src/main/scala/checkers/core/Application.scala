@@ -1,6 +1,6 @@
 package checkers.core
 
-import checkers.components.dialog.NewGameDialog
+import checkers.components.dialog.{NewGameDialog, PlayerChoice}
 import checkers.components.dialog.NewGameDialog.{NewGameDialogCallbacks, Result}
 import checkers.computer.ProgramRegistry
 import checkers.core.tables.TablesModule
@@ -15,18 +15,19 @@ class Application(programRegistry: ProgramRegistry,
                   gameFactory: GameFactory,
                   makeGameLogicModule: GameLogicModuleFactory)  {
 
-  private case class PlayerChoiceNode(programId: Option[String], displayName: String)
-
-  private sealed trait VariationChoice {
-    def displayName: String
-    def applyToRuleSettings(rulesSettings: RulesSettings): RulesSettings
+  private lazy val playerChoices: Vector[PlayerChoice] = {
+    val computerPlayers = programRegistry.entries.sortWith {
+      case (a, b) => a.difficultyLevel < b.difficultyLevel || a.name < b.name
+    } map { entry =>
+      PlayerChoice(entry.name, Some(entry.uniqueId), entry.difficultyLevel)
+    }
+    PlayerChoice.human +: computerPlayers
   }
-  private object VariationChoice {
-    case object Standard
+
+  private def findPlayerChoiceIndexById(programId: Option[String]): Int = {
+    val result = playerChoices.indexWhere(_.programId == programId)
+    if(result >= 0) result else 0
   }
-
-  private lazy val variationChoices = Vector()
-
 
 
   class Session(gameHost: dom.Node, dialogHost: dom.Node) extends ApplicationCallbacks with NewGameDialogCallbacks {
@@ -66,22 +67,22 @@ class Application(programRegistry: ProgramRegistry,
     }
 
     private def openNewGameDialog(): Unit = {
-//      val props = NewGameDialog.Props(playerChoices = Vector.empty,
-//        variationChoices = Vector("Standard", "Giveaway"),
-//        initialDarkPlayer = 0,
-//        initialLightPlayer = 0
-//        )
-    }
+      val settings = lastUsedSettings.getOrElse(NewGameSettings.default)
 
-    /*
-    case class Props(playerChoices: Vector[String],
-                   variationChoices: Vector[String],
-                   initialDarkPlayer: Int,
-                   initialLightPlayer: Int,
-                   initialPlaysFirst: Color,
-                   initialVariationIndex: Int,
-                   callbacks: NewGameDialogCallbacks) {
-     */
+      val props = NewGameDialog.Props(playerChoices = playerChoices,
+        variationChoices = Variation.all,
+        initialDarkPlayer = findPlayerChoiceIndexById(settings.darkProgramId),
+        initialLightPlayer = findPlayerChoiceIndexById(settings.lightProgramId),
+        initialPlaysFirst = settings.rulesSettings.playsFirst,
+        initialVariationIndex = math.max(0, Variation.all.indexOf(settings.rulesSettings.variation)),
+        callbacks = this)
+
+      println(props)
+
+      val dialog = NewGameDialog(props)
+
+      ReactDOM.render(dialog, dialogHost)
+    }
 
     private def closeNewGameDialog(): Unit = {
       newGameDialogProps = None

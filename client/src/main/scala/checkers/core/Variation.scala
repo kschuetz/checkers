@@ -14,4 +14,8 @@ object Variation {
     val displayName = "Giveaway"
   }
 
+  lazy val all = Vector(Standard, Giveaway)
+
+  val default = Standard
+
 }

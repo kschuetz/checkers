@@ -1,6 +1,7 @@
 package checkers.components.dialog
 
 import checkers.consts._
+import checkers.core.Variation
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
 
@@ -11,7 +12,9 @@ object NewGameDialog {
 
   case object Cancel extends Result
 
-  case class Ok(darkPlayerIndex: Int,
+  case class Ok(playerChoices: Vector[PlayerChoice],
+                variationChoices: Vector[Variation],
+                darkPlayerIndex: Int,
                 lightPlayerIndex: Int,
                 playsFirst: Color,
                 variationIndex: Int) extends Result
@@ -44,8 +47,8 @@ object NewGameDialog {
       copy(playsFirst = color)
   }
 
-  case class Props(playerChoices: Vector[String],
-                   variationChoices: Vector[String],
+  case class Props(playerChoices: Vector[PlayerChoice],
+                   variationChoices: Vector[Variation],
                    initialDarkPlayer: Int,
                    initialLightPlayer: Int,
                    initialPlaysFirst: Color,
@@ -62,7 +65,7 @@ object NewGameDialog {
   }
 
   case class PlayerSettingsPanelProps(color: Color,
-                                      playerChoices: Vector[String],
+                                      playerChoices: Vector[PlayerChoice],
                                       playerIndex: Int,
                                       playsFirst: Boolean,
                                       callbacks: PlayerPanelCallbacks)
@@ -82,7 +85,7 @@ object NewGameDialog {
     def handleVariationChanged(event: VariationChangeEvent): Callback
   }
 
-  case class GeneralSettingsPanelProps(variationChoices: Vector[String],
+  case class GeneralSettingsPanelProps(variationChoices: Vector[Variation],
                                        variationIndex: Int,
                                        callbacks: GeneralSettingsPanelCallbacks)
 
@@ -198,7 +201,9 @@ object NewGameDialog {
     def onOkClicked: Callback = for {
       props <- $.props
       state <- $.state
-      data = Ok(darkPlayerIndex = state.darkPlayerIndex,
+      data = Ok(playerChoices = props.playerChoices,
+        variationChoices = props.variationChoices,
+        darkPlayerIndex = state.darkPlayerIndex,
         lightPlayerIndex = state.lightPlayerIndex,
         playsFirst = state.playsFirst,
         variationIndex = state.variationIndex)
