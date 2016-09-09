@@ -1,7 +1,7 @@
 package checkers.components.dialog
 
 import checkers.consts._
-import japgolly.scalajs.react._ //{BackendScope, Callback, ReactComponentB}
+import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
 
 
@@ -69,7 +69,7 @@ object NewGameDialog {
 
   class PlayerSettingsPanelBackend($: BackendScope[PlayerSettingsPanelProps, Unit]) {
     def render(props: PlayerSettingsPanelProps) = {
-      <.div()
+      <.div("Player Settings - Placeholder")
     }
   }
 
@@ -88,7 +88,7 @@ object NewGameDialog {
 
   class GeneralSettingsPanelBackend($: BackendScope[GeneralSettingsPanelProps, Unit]) {
     def render(props: GeneralSettingsPanelProps) = {
-      <.div()
+      <.div("General Settings - Placeholder")
     }
   }
 
@@ -188,22 +188,6 @@ object NewGameDialog {
         )
       )
     }
-
-    /*
-    <div class="modal-content">
-  <div class="modal-header">
-    <span class="close">×</span>
-    <h2>Modal Header</h2>
-  </div>
-  <div class="modal-body">
-    <p>Some text in the Modal Body</p>
-    <p>Some other text...</p>
-  </div>
-  <div class="modal-footer">
-    <h3>Modal Footer</h3>
-  </div>
-</div>
-     */
 
     def handlePlayerChanged(event: PlayerChangeEvent) = $.modState(_.withPlayerChange(event))
 
