@@ -66,7 +66,7 @@ object NewGameDialog {
   private val PieceAvatar = ReactComponentB[Color]("NewGameDialogPieceAvatar")
     .render_P { color =>
       val pieceProps = PhysicalPieceProps.default.copy(
-        piece = if(color == DARK) DARKMAN else LIGHTMAN,
+        piece = if (color == DARK) DARKMAN else LIGHTMAN,
         x = 45,
         y = 45,
         scale = 90
@@ -86,8 +86,11 @@ object NewGameDialog {
 
   trait PlayerSelectorProps {
     def color: Color
+
     def playerChoices: Vector[PlayerChoice]
+
     def playerIndex: Int
+
     def callbacks: PlayerSelectorCallbacks
   }
 
@@ -105,6 +108,7 @@ object NewGameDialog {
       }
 
       <.select(
+        ^.`class` := "player-selector",
         ^.value := props.playerIndex,
         ^.onChange ==> handleChange,
         items
@@ -113,7 +117,7 @@ object NewGameDialog {
 
     private def handleChange(event: ReactEventI): Callback = {
       val newValue = StringUtils.safeStringToInt(event.target.value, -1)
-      if(newValue < 0) Callback.empty
+      if (newValue < 0) Callback.empty
       else for {
         props <- $.props
         pce = PlayerChangeEvent(props.color, newValue)
@@ -133,19 +137,24 @@ object NewGameDialog {
 
   trait PlaysFirstProps {
     def color: Color
+
     def playsFirst: Boolean
+
     def callbacks: PlaysFirstCallbacks
   }
 
   class PlaysFirstCheckboxBackend($: BackendScope[PlaysFirstProps, Unit]) {
     def render(props: PlaysFirstProps) = {
-      <.label(
-        <.input(
-          ^.`type` := "checkbox",
-          ^.checked := props.playsFirst,
-          ^.onChange ==> handleChange
-        ),
-        "Plays first"
+      <.div(
+        ^.`class` := "plays-first",
+        <.label(
+          <.input(
+            ^.`type` := "checkbox",
+            ^.checked := props.playsFirst,
+            ^.onChange ==> handleChange
+          ),
+          "Plays first"
+        )
       )
     }
 
@@ -153,7 +162,7 @@ object NewGameDialog {
       val checked = event.target.checked
       for {
         props <- $.props
-        newColor = if(checked) props.color else OPPONENT(props.color)
+        newColor = if (checked) props.color else OPPONENT(props.color)
         cb <- props.callbacks.handlePlaysFirstChanged(newColor)
       } yield cb
     }
@@ -196,7 +205,9 @@ object NewGameDialog {
 
   trait VariationSelectorProps {
     def variationChoices: Vector[Variation]
+
     def variationIndex: Int
+
     def callbacks: VariationSelectorCallbacks
   }
 
@@ -222,7 +233,7 @@ object NewGameDialog {
 
     private def handleChange(event: ReactEventI): Callback = {
       val newValue = StringUtils.safeStringToInt(event.target.value, -1)
-      if(newValue < 0) Callback.empty
+      if (newValue < 0) Callback.empty
       else for {
         props <- $.props
         vce = VariationChangeEvent(newValue)
