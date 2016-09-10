@@ -9,5 +9,4 @@ object GlobalStyles extends StyleSheet.Inline {
     paddingTop(5.px))
   )
 
-  val bootstrapStyles = new BootstrapStyles
 }

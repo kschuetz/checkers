@@ -1,7 +1,6 @@
 package checkers.components.chrome
 
 import checkers.core.{ApplicationCallbacks, GameModelReader, SideChromeLayoutSettings}
-import checkers.style.GlobalStyles
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.ReactAttr
 import japgolly.scalajs.react.vdom.prefix_<^._
@@ -52,23 +51,6 @@ object SideChrome {
       )
     }
 
-//    def render(props: Props) = {
-//      <.div(
-//        ^.`class` := "side-chrome",
-//        <.div(
-//          ^.`class` := "row",
-//          Bootstrap.Button(Bootstrap.Button.Props(onNewGameClick), "New Game"),
-//          <.button(^.`class` := "btn default",
-//            ^.tpe := "button",
-//            ^.title := "Rotate the board 180 degrees",
-//            ^.onClick --> onRotateBoardClick,
-//            "Rotate board"
-//          )
-//        )
-//
-//      )
-//    }
-
     private def onRotateBoardClick = Callback {
       println("rotate board click")
     }
@@ -83,8 +65,6 @@ object SideChrome {
     .build
 
   def apply(props: Props) = component(props)
-
-  private def bss = GlobalStyles.bootstrapStyles
 
 
 }
