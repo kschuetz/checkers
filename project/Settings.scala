@@ -27,7 +27,6 @@ object Settings {
     val scalajsReact = "0.11.1"
     val scalaCSS = "0.4.1"
     val log4js = "1.4.10"
-    val diode = "1.0.0"
     val uTest = "0.4.3"
     val nyaya = "0.7.0"
     val macwire = "2.2.3"
@@ -35,8 +34,6 @@ object Settings {
     val benchmark = "0.2.3"
 
     val react = "15.3.1"
-    val jQuery = "1.11.1"
-    val bootstrap = "3.3.2"
 
     val playScripts = "0.5.0"
   }
@@ -51,8 +48,6 @@ object Settings {
   /** Dependencies only used by the JVM project */
   val jvmDependencies = Def.setting(Seq(
     "com.vmunier" %% "play-scalajs-scripts" % versions.playScripts,
-    "org.webjars" % "font-awesome" % "4.3.0-1" % Provided,
-    "org.webjars" % "bootstrap" % versions.bootstrap % Provided,
     "com.lihaoyi" %% "utest" % versions.uTest % Test
   ))
 
@@ -76,8 +71,6 @@ object Settings {
   val jsDependencies = Def.setting(Seq(
     "org.webjars.bower" % "react" % versions.react / "react-with-addons.js" minified "react-with-addons.min.js" commonJSName "React",
     "org.webjars.bower" % "react" % versions.react / "react-dom.js" minified "react-dom.min.js" dependsOn "react-with-addons.js" commonJSName "ReactDOM",
-    "org.webjars" % "jquery" % versions.jQuery / "jquery.js" minified "jquery.min.js",
-    "org.webjars" % "bootstrap" % versions.bootstrap / "bootstrap.js" minified "bootstrap.min.js" dependsOn "jquery.js",
     "org.webjars" % "log4javascript" % versions.log4js / "js/log4javascript_uncompressed.js" minified "js/log4javascript.js"
   ))
 
