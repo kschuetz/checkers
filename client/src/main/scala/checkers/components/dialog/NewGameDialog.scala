@@ -170,17 +170,63 @@ object NewGameDialog {
     .build
 
 
-  trait GeneralSettingsPanelCallbacks {
+  trait VariationSelectorCallbacks {
     def handleVariationChanged(event: VariationChangeEvent): Callback
   }
 
+  trait VariationSelectorProps {
+    def variationChoices: Vector[Variation]
+    def variationIndex: Int
+    def callbacks: VariationSelectorCallbacks
+  }
+
+  class VariationSelectorBackend($: BackendScope[VariationSelectorProps, Unit]) {
+    def render(props: VariationSelectorProps) = {
+      var items = new js.Array[ReactNode]
+      props.variationChoices.indices.foreach { i =>
+        val item = props.variationChoices(i)
+        val option = <.option(
+          ^.key := i,
+          ^.value := i,
+          item.displayName
+        )
+        items.push(option)
+      }
+
+      <.select(
+        ^.value := props.variationIndex,
+        ^.onChange ==> handleChange,
+        items
+      )
+    }
+
+    private def handleChange(event: ReactEventI): Callback = {
+      val newValue = StringUtils.safeStringToInt(event.target.value, -1)
+      if(newValue < 0) Callback.empty
+      else for {
+        props <- $.props
+        vce = VariationChangeEvent(newValue)
+        cb <- props.callbacks.handleVariationChanged(vce)
+      } yield cb
+    }
+  }
+
+  private val VariationSelector = ReactComponentB[VariationSelectorProps]("VariationSelector")
+    .renderBackend[VariationSelectorBackend]
+    .build
+
+  trait GeneralSettingsPanelCallbacks extends VariationSelectorCallbacks
+
   case class GeneralSettingsPanelProps(variationChoices: Vector[Variation],
                                        variationIndex: Int,
-                                       callbacks: GeneralSettingsPanelCallbacks)
+                                       callbacks: GeneralSettingsPanelCallbacks) extends VariationSelectorProps
 
   class GeneralSettingsPanelBackend($: BackendScope[GeneralSettingsPanelProps, Unit]) {
     def render(props: GeneralSettingsPanelProps) = {
-      <.div("General Settings - Placeholder")
+      val variationSelector = VariationSelector(props)
+      <.div(
+        variationSelector
+      )
     }
   }
 
