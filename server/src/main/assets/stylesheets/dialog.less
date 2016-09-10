@@ -13,16 +13,33 @@
 
 .modal-header {
   padding: 2px 16px;
-  background-color: #5cb85c;
+  background-color: #5c79b8;
   color: white;
+  h2 {
+    margin-top: 3px;
+  }
 }
 
-.modal-body {padding: 2px 16px;}
+.modal-body {
+  padding: 2px 16px;
+  background-color: #ebebeb;
+}
 
 .modal-footer {
+  button {
+    font-size: large;
+    height: 40px;
+    width: 100px;
+    margin-left: 10px;
+    margin-top: 7px;
+    margin-bottom: 5px;
+    cursor: pointer;
+  }
+
   padding: 2px 16px;
-  background-color: #5cb85c;
+  background-color: #5c79b8;
   color: white;
+  text-align: right;
 }
 
 .modal-content {
@@ -30,8 +47,8 @@
   background-color: #fefefe;
   margin: 15% auto;
   padding: 0;
-  border: 1px solid #888;
-  width: 40%;
+  border: 4px outset #10b;
+  width: 560px;
   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
   -webkit-animation-name: animatetop;
   -webkit-animation-duration: 0.2s;
@@ -60,11 +77,13 @@
   margin-left: 20px;
   width: 280px;
   height: 50px;
+  cursor: pointer;
 }
 
 div.plays-first {
   float: right;
   margin-top: 28px;
+  width: 125px;
 }
 
 .plays-first {
@@ -72,6 +91,7 @@ div.plays-first {
   input {
     width: 30px;
     height: 30px;
+    cursor: pointer;
   }
 }
 
