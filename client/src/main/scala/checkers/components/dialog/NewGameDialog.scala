@@ -110,26 +110,15 @@ object NewGameDialog {
     def render(props: DialogButtonsCallbacks) = {
       <.div(
         <.button(
-          ^.onClick ==> handleOkClicked,
+          ^.onClick --> props.onOkClicked,
           "OK"
         ),
         <.button(
-          ^.onClick ==> handleCancelClicked,
+          ^.onClick --> props.onCancelClicked,
           "Cancel"
         )
       )
     }
-
-    private def handleOkClicked(event: ReactEventI) = for {
-      props <- $.props
-      cb <- props.onOkClicked
-    } yield cb
-
-    private def handleCancelClicked(event: ReactEventI) = for {
-      props <- $.props
-      cb <- props.onCancelClicked
-    } yield cb
-
   }
 
   private val DialogButtons = ReactComponentB[DialogButtonsCallbacks]("DialogButtons")
