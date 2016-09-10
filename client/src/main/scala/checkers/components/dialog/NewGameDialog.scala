@@ -60,8 +60,16 @@ object NewGameDialog {
   }
 
 
-  case class PlayerSelectorProps(playerChoices: Vector[PlayerChoice],
-                                 selectedIndex: Int)
+  trait PlayerSelectorCallbacks {
+    def handlePlayerChanged(event: PlayerChangeEvent): Callback
+  }
+
+  trait PlayerSelectorProps {
+    def color: Color
+    def playerChoices: Vector[PlayerChoice]
+    def playerIndex: Int
+    def callbacks: PlayerSelectorCallbacks
+  }
 
   class PlayerSelectorBackend($: BackendScope[PlayerSelectorProps, Unit]) {
     def render(props: PlayerSelectorProps) = {
@@ -77,7 +85,7 @@ object NewGameDialog {
       }
 
       <.select(
-        ^.value := props.selectedIndex,
+        ^.value := props.playerIndex,
         items
       )
     }
@@ -88,9 +96,7 @@ object NewGameDialog {
     .build
 
 
-  trait PlayerPanelCallbacks {
-    def handlePlayerChanged(event: PlayerChangeEvent): Callback
-
+  trait PlayerPanelCallbacks extends PlayerSelectorCallbacks {
     def handlePlaysFirstChanged(color: Color): Callback
   }
 
@@ -98,28 +104,11 @@ object NewGameDialog {
                                       playerChoices: Vector[PlayerChoice],
                                       playerIndex: Int,
                                       playsFirst: Boolean,
-                                      callbacks: PlayerPanelCallbacks)
+                                      callbacks: PlayerPanelCallbacks) extends PlayerSelectorProps
 
   class PlayerSettingsPanelBackend($: BackendScope[PlayerSettingsPanelProps, Unit]) {
     def render(props: PlayerSettingsPanelProps) = {
-      val playerSelector = PlayerSelector(PlayerSelectorProps(props.playerChoices, props.playerIndex))
-
-//      val playerSelector = {
-//        var items = new js.Array[ReactNode]
-//        props.playerChoices.indices.foreach { i =>
-//          val isSelected = i == props.playerIndex
-//          val item = props.playerChoices(i)
-//          val option = <.option(
-//            ^.key := i,
-//            ^.value := i,
-//            item.displayName
-//          )
-//          items.push(option)
-//        }
-//
-//        <.select(
-//          items
-//        )
+      val playerSelector = PlayerSelector(props)
 
       <.div(
         playerSelector
