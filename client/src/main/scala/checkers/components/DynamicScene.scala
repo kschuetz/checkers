@@ -110,6 +110,13 @@ object DynamicScene {
             val component = RemovingPieceAnimation.component.withKey(k)(props)
             animations.push(component)
 
+          case pp: PlacingPiece =>
+            val k = s"place-${pp.toSquare}"
+            val progress = pp.linearProgress(nowTime)
+            val props = PlacingPieceAnimation.Props(pp.piece, pp.toSquare, progress)
+            val component = PlacingPieceAnimation.component.withKey(k)(props)
+            animations.push(component)
+
           case mp: MovingPiece =>
             val k = s"move-${mp.fromSquare}-${mp.toSquare}"
             val progress = mp.linearProgress(nowTime)

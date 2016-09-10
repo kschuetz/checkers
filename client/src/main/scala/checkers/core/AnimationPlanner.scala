@@ -142,7 +142,7 @@ class AnimationPlanner(settings: AnimationSettings) {
     val boardState = input.boardState
     var newAnimations = List.empty[Animation]
 
-    def handleSquare(placementOrder: Vector[Int], square: Int, offset: Double): Double = {
+    def handleSquare(square: Int, offset: Double): Double = {
       val piece = boardState.getOccupant(square)
       if(ISPIECE(piece)) {
         val anim = PlacingPiece(piece = piece, toSquare = square, startTime = input.nowTime,
@@ -153,11 +153,11 @@ class AnimationPlanner(settings: AnimationSettings) {
     }
 
     var i = 0
-    var bottomOffset = settings.PlacePiecesBottomDelayMillis
-    var topOffset = settings.PlacePiecesTopDelayMillis
+    var bottomOffset = input.nowTime + settings.PlacePiecesBottomDelayMillis
+    var topOffset = input.nowTime + settings.PlacePiecesTopDelayMillis
     while(i < 16) {
-      bottomOffset = handleSquare(AnimationPlanner.bottomPlacementOrder, i, bottomOffset)
-      topOffset = handleSquare(AnimationPlanner.topPlacementOrder, i, topOffset)
+      bottomOffset = handleSquare(AnimationPlanner.bottomPlacementOrder(i), bottomOffset)
+      topOffset = handleSquare(AnimationPlanner.topPlacementOrder(i), topOffset)
 
       i += 1
     }

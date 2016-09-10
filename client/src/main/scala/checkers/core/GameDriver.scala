@@ -23,18 +23,28 @@ class GameDriver(gameLogicModule: GameLogicModule)
 
   def createInitialModel(nowTime: Double): Model = {
     val gameState = createInitialState
-    val model = GameModel(
-      nowTime = nowTime,
-      gameStartTime = nowTime,
-      turnStartTime = nowTime,
-      inputPhase = BeginHumanTurn,
-      gameState = gameState,
-      boardOrientation = BoardOrientation.Normal,
-      pickedUpPiece = None,
-      squareAttributesVector = SquareAttributesVector.default,
-      flipAnimation = None,
-      animations = List.empty)
+    val model = {
+      val m1 = GameModel(
+        nowTime = nowTime,
+        gameStartTime = nowTime,
+        turnStartTime = nowTime,
+        inputPhase = BeginHumanTurn,
+        gameState = gameState,
+        boardOrientation = BoardOrientation.Normal,
+        pickedUpPiece = None,
+        squareAttributesVector = SquareAttributesVector.default,
+        flipAnimation = None,
+        animations = List.empty)
+
+      schedulePlacePieces(m1)
+    }
+
     initTurn(model, gameState)
+  }
+
+  private def schedulePlacePieces(model: Model): Model = {
+    val input = PlacePiecesAnimationInput(model.nowTime, model.animations, model.board)
+    animationPlanner.placeAllPieces(input).fold(model)(model.withNewAnimations)
   }
 
   private def applyPlay(gameModel: Model, play: Play): Option[(PlayEvents, Model)] = {

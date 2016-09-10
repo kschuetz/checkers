@@ -36,11 +36,11 @@ object DefaultAnimationSettings extends AnimationSettings {
 
   val IllegalPieceSelectionDurationMillis = 750.0
 
-  val PlacePiecesTopDelayMillis: Double = 150.0
+  val PlacePiecesTopDelayMillis: Double = 250.0
 
   val PlacePiecesBottomDelayMillis: Double = 0.0
 
-  val PlacePiecesIntervalMillis: Double = 300.0
+  val PlacePiecesIntervalMillis: Double = 175.0
 
   val PlacePieceDurationMillis: Double = 275.0
 }
