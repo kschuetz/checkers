@@ -2,8 +2,10 @@ package checkers.components.dialog
 
 import checkers.consts._
 import checkers.core.Variation
+import checkers.util.StringUtils
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
+import org.scalajs.dom
 
 import scala.scalajs.js
 
@@ -86,8 +88,19 @@ object NewGameDialog {
 
       <.select(
         ^.value := props.playerIndex,
+        ^.onChange ==> handleChange,
         items
       )
+    }
+
+    private def handleChange(event: ReactEventI): Callback = {
+      val newValue = StringUtils.safeStringToInt(event.target.value, -1)
+      if(newValue < 0) Callback.empty
+      else for {
+        props <- $.props
+        pce = PlayerChangeEvent(props.color, newValue)
+        cb <- props.callbacks.handlePlayerChanged(pce)
+      } yield cb
     }
   }
 
