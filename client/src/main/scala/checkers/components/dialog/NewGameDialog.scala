@@ -5,6 +5,8 @@ import checkers.core.Variation
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
 
+import scala.scalajs.js
+
 
 object NewGameDialog {
 
@@ -72,7 +74,28 @@ object NewGameDialog {
 
   class PlayerSettingsPanelBackend($: BackendScope[PlayerSettingsPanelProps, Unit]) {
     def render(props: PlayerSettingsPanelProps) = {
-      <.div("Player Settings - Placeholder")
+
+      val playerSelector = {
+        var items = new js.Array[ReactNode]
+        props.playerChoices.indices.foreach { i =>
+          val k = i.toString
+          val isSelected = i == props.playerIndex
+          val item = props.playerChoices(i)
+          val option = <.option(
+            isSelected ?= (^.selected := true),
+            item.displayName
+          )
+          items.push(option)
+        }
+
+        <.select(
+          items
+        )
+      }
+
+      <.div(
+        playerSelector
+      )
     }
   }
 
