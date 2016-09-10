@@ -14,6 +14,11 @@ trait AnimationSettings {
   def RemovePieceComputerIntervalMillis: Double
 
   def IllegalPieceSelectionDurationMillis: Double
+  
+  def PlacePiecesTopDelayMillis: Double
+  def PlacePiecesBottomDelayMillis: Double
+  def PlacePiecesIntervalMillis: Double
+  def PlacePieceDurationMillis: Double
 }
 
 
@@ -30,4 +35,12 @@ object DefaultAnimationSettings extends AnimationSettings {
   val RemovePieceComputerIntervalMillis = JumpPieceDurationMillis
 
   val IllegalPieceSelectionDurationMillis = 750.0
+
+  val PlacePiecesTopDelayMillis: Double = 150.0
+
+  val PlacePiecesBottomDelayMillis: Double = 0.0
+
+  val PlacePiecesIntervalMillis: Double = 300.0
+
+  val PlacePieceDurationMillis: Double = 275.0
 }

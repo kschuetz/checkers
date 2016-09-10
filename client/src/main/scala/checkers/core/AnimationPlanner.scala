@@ -1,6 +1,6 @@
 package checkers.core
 
-import checkers.consts.Occupant
+import checkers.consts._
 
 case class MoveAnimationPlanInput(nowTime: Double,
                                   existingAnimations: List[Animation],
@@ -11,6 +11,10 @@ case class IllegalPieceAnimationInput(nowTime: Double,
                                       existingAnimations: List[Animation],
                                       piece: Occupant,
                                       squareIndex: Int)
+
+case class PlacePiecesAnimationInput(nowTime: Double,
+                                     existingAnimations: List[Animation],
+                                     boardState: BoardStateRead)
 
 class AnimationPlanner(settings: AnimationSettings) {
 
@@ -132,5 +136,44 @@ class AnimationPlanner(settings: AnimationSettings) {
     Some(animation :: input.existingAnimations)
   }
 
+  def placeAllPieces(input: PlacePiecesAnimationInput): Option[List[Animation]] = {
+    val interval = settings.PlacePiecesIntervalMillis
+    val duration = settings.PlacePieceDurationMillis
+    val boardState = input.boardState
+    var newAnimations = List.empty[Animation]
 
+    def handleSquare(placementOrder: Vector[Int], square: Int, offset: Double): Double = {
+      val piece = boardState.getOccupant(square)
+      if(ISPIECE(piece)) {
+        val anim = PlacingPiece(piece = piece, toSquare = square, startTime = input.nowTime,
+          startMovingTime = offset, endTime = offset + duration)
+        newAnimations = anim :: newAnimations
+        offset + interval
+      } else offset
+    }
+
+    var i = 0
+    var bottomOffset = settings.PlacePiecesBottomDelayMillis
+    var topOffset = settings.PlacePiecesTopDelayMillis
+    while(i < 16) {
+      bottomOffset = handleSquare(AnimationPlanner.bottomPlacementOrder, i, bottomOffset)
+      topOffset = handleSquare(AnimationPlanner.topPlacementOrder, i, topOffset)
+
+      i += 1
+    }
+
+    newAnimations match {
+      case Nil => None
+      case anims =>
+        println(s"scheduling placement anims: $anims")
+        Some(input.existingAnimations ++ anims)
+    }
+
+  }
+
+}
+
+object AnimationPlanner {
+  val bottomPlacementOrder = Vector(12, 13, 14, 15, 8, 9, 10, 11, 4, 5, 6, 7, 0, 1, 2, 3)
+  val topPlacementOrder = Vector(19, 18, 17, 16, 23, 22, 21, 20, 27, 26, 25, 24, 31, 30, 29, 28)
 }
