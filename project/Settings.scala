@@ -34,7 +34,7 @@ object Settings {
     val uPickle = "0.4.1"
     val benchmark = "0.2.3"
 
-    val react = "15.2.0"
+    val react = "15.3.1"
     val jQuery = "1.11.1"
     val bootstrap = "3.3.2"
 
