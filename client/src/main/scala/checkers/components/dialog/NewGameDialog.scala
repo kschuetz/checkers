@@ -60,6 +60,34 @@ object NewGameDialog {
   }
 
 
+  case class PlayerSelectorProps(playerChoices: Vector[PlayerChoice],
+                                 selectedIndex: Int)
+
+  class PlayerSelectorBackend($: BackendScope[PlayerSelectorProps, Unit]) {
+    def render(props: PlayerSelectorProps) = {
+      var items = new js.Array[ReactNode]
+      props.playerChoices.indices.foreach { i =>
+        val item = props.playerChoices(i)
+        val option = <.option(
+          ^.key := i,
+          ^.value := i,
+          item.displayName
+        )
+        items.push(option)
+      }
+
+      <.select(
+        ^.value := props.selectedIndex,
+        items
+      )
+    }
+  }
+
+  private val PlayerSelector = ReactComponentB[PlayerSelectorProps]("PlayerSelector")
+    .renderBackend[PlayerSelectorBackend]
+    .build
+
+
   trait PlayerPanelCallbacks {
     def handlePlayerChanged(event: PlayerChangeEvent): Callback
 
@@ -74,24 +102,24 @@ object NewGameDialog {
 
   class PlayerSettingsPanelBackend($: BackendScope[PlayerSettingsPanelProps, Unit]) {
     def render(props: PlayerSettingsPanelProps) = {
+      val playerSelector = PlayerSelector(PlayerSelectorProps(props.playerChoices, props.playerIndex))
 
-      val playerSelector = {
-        var items = new js.Array[ReactNode]
-        props.playerChoices.indices.foreach { i =>
-          val k = i.toString
-          val isSelected = i == props.playerIndex
-          val item = props.playerChoices(i)
-          val option = <.option(
-            isSelected ?= (^.selected := true),
-            item.displayName
-          )
-          items.push(option)
-        }
-
-        <.select(
-          items
-        )
-      }
+//      val playerSelector = {
+//        var items = new js.Array[ReactNode]
+//        props.playerChoices.indices.foreach { i =>
+//          val isSelected = i == props.playerIndex
+//          val item = props.playerChoices(i)
+//          val option = <.option(
+//            ^.key := i,
+//            ^.value := i,
+//            item.displayName
+//          )
+//          items.push(option)
+//        }
+//
+//        <.select(
+//          items
+//        )
 
       <.div(
         playerSelector
