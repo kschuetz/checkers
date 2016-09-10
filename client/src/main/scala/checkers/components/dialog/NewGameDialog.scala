@@ -109,22 +109,58 @@ object NewGameDialog {
     .build
 
 
-  trait PlayerPanelCallbacks extends PlayerSelectorCallbacks {
+  trait PlaysFirstCallbacks {
     def handlePlaysFirstChanged(color: Color): Callback
   }
+
+  trait PlaysFirstProps {
+    def color: Color
+    def playsFirst: Boolean
+    def callbacks: PlaysFirstCallbacks
+  }
+
+  class PlaysFirstCheckboxBackend($: BackendScope[PlaysFirstProps, Unit]) {
+    def render(props: PlaysFirstProps) = {
+      <.label(
+        <.input(
+          ^.`type` := "checkbox",
+          ^.checked := props.playsFirst,
+          ^.onChange ==> handleChange
+        ),
+        "Plays first"
+      )
+    }
+
+    private def handleChange(event: ReactEventI): Callback = {
+      val checked = event.target.checked
+      for {
+        props <- $.props
+        newColor = if(checked) props.color else OPPONENT(props.color)
+        cb <- props.callbacks.handlePlaysFirstChanged(newColor)
+      } yield cb
+    }
+  }
+
+  private val PlaysFirstCheckbox = ReactComponentB[PlaysFirstProps]("PlaysFirstCheckbox")
+    .renderBackend[PlaysFirstCheckboxBackend]
+    .build
+
+  trait PlayerPanelCallbacks extends PlayerSelectorCallbacks with PlaysFirstCallbacks
 
   case class PlayerSettingsPanelProps(color: Color,
                                       playerChoices: Vector[PlayerChoice],
                                       playerIndex: Int,
                                       playsFirst: Boolean,
-                                      callbacks: PlayerPanelCallbacks) extends PlayerSelectorProps
+                                      callbacks: PlayerPanelCallbacks) extends PlayerSelectorProps with PlaysFirstProps
 
   class PlayerSettingsPanelBackend($: BackendScope[PlayerSettingsPanelProps, Unit]) {
     def render(props: PlayerSettingsPanelProps) = {
       val playerSelector = PlayerSelector(props)
+      val playsFirst = PlaysFirstCheckbox(props)
 
       <.div(
-        playerSelector
+        playerSelector,
+        playsFirst
       )
     }
   }
