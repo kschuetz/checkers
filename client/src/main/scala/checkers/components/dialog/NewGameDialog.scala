@@ -1,5 +1,6 @@
 package checkers.components.dialog
 
+import checkers.components.piece.{PhysicalPiece, PhysicalPieceProps}
 import checkers.consts._
 import checkers.core.Variation
 import checkers.util.StringUtils
@@ -61,6 +62,23 @@ object NewGameDialog {
     def initialState: State = State(initialDarkPlayer, initialLightPlayer, initialPlaysFirst, initialVariationIndex)
   }
 
+
+  private val PieceAvatar = ReactComponentB[Color]("NewGameDialogPieceAvatar")
+    .render_P { color =>
+      val pieceProps = PhysicalPieceProps.default.copy(
+        piece = if(color == DARK) DARKMAN else LIGHTMAN,
+        x = 45,
+        y = 45,
+        scale = 90
+      )
+      val component = PhysicalPiece.apply(pieceProps)
+      <.svg.svg(
+        ^.svg.width := 90,
+        ^.svg.height := 90,
+        component
+      )
+    }
+    .build
 
   trait PlayerSelectorCallbacks {
     def handlePlayerChanged(event: PlayerChangeEvent): Callback
@@ -155,10 +173,12 @@ object NewGameDialog {
 
   class PlayerSettingsPanelBackend($: BackendScope[PlayerSettingsPanelProps, Unit]) {
     def render(props: PlayerSettingsPanelProps) = {
+      val avatar = PieceAvatar(props.color)
       val playerSelector = PlayerSelector(props)
       val playsFirst = PlaysFirstCheckbox(props)
 
       <.div(
+        avatar,
         playerSelector,
         playsFirst
       )
