@@ -319,6 +319,11 @@ object NewGameDialog {
             ^.`class` := "modal-content",
             <.div(
               ^.`class` := "modal-header",
+              <.span(
+                ^.`class` := "close",
+                ^.onClick --> onCancelClicked,
+                "×"
+              ),
               <.h2("New Game")
             ),
             <.div(
