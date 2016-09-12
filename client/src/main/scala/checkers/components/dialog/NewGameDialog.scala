@@ -224,11 +224,20 @@ object NewGameDialog {
         items.push(option)
       }
 
-      <.select(
-        ^.value := props.variationIndex,
-        ^.onChange ==> handleChange,
-        items
+      <.div(
+        ^.`class` := "variation-selector",
+        <.label(
+          ^.`for` := "variation-select",
+          "Variation"
+        ),
+        <.select(
+          ^.id := "variation-select",
+          ^.value := props.variationIndex,
+          ^.onChange ==> handleChange,
+          items
+        )
       )
+
     }
 
     private def handleChange(event: ReactEventI): Callback = {
@@ -256,6 +265,7 @@ object NewGameDialog {
     def render(props: GeneralSettingsPanelProps) = {
       val variationSelector = VariationSelector(props)
       <.div(
+        ^.`class` := "general-settings",
         variationSelector
       )
     }

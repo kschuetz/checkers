@@ -80,15 +80,40 @@
   cursor: pointer;
 }
 
+.variation-selector {
+  font-size: x-large;
+  label{
+    display: inline-block;
+    float: left;
+    clear: left;
+    width: 98px;
+    padding-right: 12px;
+    text-align: right;
+  }
+  select {
+    font-size: x-large;
+    display: inline-block;
+    float: left;
+  }
+}
+
+.general-settings {
+  margin-top: 10px;
+  height: 60px;
+}
+
 div.plays-first {
   float: right;
-  margin-top: 28px;
+  margin-top: 22px;
   width: 125px;
 }
 
 .plays-first {
   font-size: large;
   input {
+    position: relative;
+    vertical-align: bottom;
+    top: 6px;
     width: 30px;
     height: 30px;
     cursor: pointer;
