@@ -6,7 +6,6 @@ import checkers.core.Variation
 import checkers.util.StringUtils
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
-import org.scalajs.dom
 
 import scala.scalajs.js
 
@@ -213,7 +212,7 @@ object NewGameDialog {
 
   class VariationSelectorBackend($: BackendScope[VariationSelectorProps, Unit]) {
     def render(props: VariationSelectorProps) = {
-      var items = new js.Array[ReactNode]
+      val items = new js.Array[ReactNode]
       props.variationChoices.indices.foreach { i =>
         val item = props.variationChoices(i)
         val option = <.option(
