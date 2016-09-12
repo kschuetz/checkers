@@ -25,7 +25,6 @@ object SceneContainer {
     def render(props: Props, state: SceneContainerContext) = {
       val gameSceneWidth = props.screenLayoutSettings.GameSceneWidthPixels
       val gameSceneHeight = props.screenLayoutSettings.GameSceneHeightPixels
-      val boardRotation = props.gameModel.getBoardRotation
       val sceneFrameProps = SceneFrame.Props(props.gameModel, props.callbacks, state, gameSceneWidth, gameSceneHeight)
       <.svg.svg(
         ^.id := "game-scene",

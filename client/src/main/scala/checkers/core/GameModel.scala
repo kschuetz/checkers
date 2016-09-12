@@ -3,6 +3,7 @@ package checkers.core
 import checkers.consts._
 import checkers.core.Animation.RotatingBoardAnimation
 import checkers.core.InputPhase.ComputerThinking
+import checkers.util.Easing
 
 trait GameModelReader {
   def nowTime: Double
@@ -80,12 +81,11 @@ case class GameModel(nowTime: Double,
   def withNewAnimations(newAnimations: List[Animation]) = copy(animations = newAnimations)
 
   def getBoardRotation: Double = {
-    // TODO: easing
     val offset = rotateAnimation.map { anim =>
-      val amount = 1.0 - anim.linearProgress(nowTime)
-//      if(amount != 0) println(s"rotation: $amount     at $nowTime")
+      val t = anim.linearProgress(nowTime)
+      val amount = 1.0 - Easing.easeInOutQuart(t)
 
-      180 * amount
+      -180 * amount
     } getOrElse 0.0
 
     boardOrientation.angle + offset

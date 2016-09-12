@@ -46,5 +46,5 @@ object DefaultAnimationSettings extends AnimationSettings {
 
   val PlacePieceDurationMillis: Double = 275.0
 
-  val BoardRotateDurationMillis: Double = 1000.0
+  val BoardRotateDurationMillis: Double = 1200.0
 }

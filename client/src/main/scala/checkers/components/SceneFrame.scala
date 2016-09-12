@@ -29,7 +29,6 @@ object SceneFrame {
       )
     }.build
 
-
   class SceneFrameBackend($: BackendScope[Props, Unit]) {
     val playfieldRef = Ref[SVGGElement]("playfield")
 
@@ -38,18 +37,21 @@ object SceneFrame {
       val physicalBoard = PhysicalBoard.Board()
       val screenToBoard = makeScreenToBoard(sceneContainerContext)
 
+      val boardRotation = props.gameModel.getBoardRotation
+      val rotateTransform = if(boardRotation != 0) s",rotate($boardRotation)" else ""
+
       val dynamicSceneProps = DynamicScene.Props(props.gameModel, props.callbacks, props.sceneContainerContext, screenToBoard)
 
       val transform = if(widthPixels == heightPixels) {
         val translate = widthPixels / 2.0
         val scale = scaleForDimension(widthPixels)
-        s"translate($translate,$translate),scale($scale)"
+        s"translate($translate,$translate),scale($scale)$rotateTransform"
       } else {
         val translateX = widthPixels / 2.0
         val translateY = heightPixels / 2.0
         val scaleX = scaleForDimension(widthPixels)
         val scaleY = scaleForDimension(heightPixels)
-        s"translate($translateX,$translateY),scale($scaleX,$scaleY)"
+        s"translate($translateX,$translateY),scale($scaleX,$scaleY)$rotateTransform"
       }
 
       val dynamicScene = DynamicScene(dynamicSceneProps)
