@@ -23,7 +23,6 @@ object NewGameDialog {
                 playsFirst: Color,
                 variationIndex: Int) extends Result
 
-
   trait NewGameDialogCallbacks {
     def onNewGameDialogResult(result: Result): Callback
   }

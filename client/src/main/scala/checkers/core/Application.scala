@@ -33,7 +33,6 @@ class Application(programRegistry: ProgramRegistry,
   class Session(gameHost: dom.Node, dialogHost: dom.Node) extends ApplicationCallbacks with NewGameDialogCallbacks {
     var game: Option[Game] = None
     var lastUsedSettings: Option[NewGameSettings] = None
-    var newGameDialogProps: Option[NewGameDialog.Props] = None
 
     def startNewGame(settings: NewGameSettings): Unit = {
       stopGame()
@@ -56,7 +55,6 @@ class Application(programRegistry: ProgramRegistry,
     }
 
     override val onNewGameButtonClicked: Callback = Callback {
-      println("New game button clicked")
       openNewGameDialog()
     }
 
@@ -64,6 +62,21 @@ class Application(programRegistry: ProgramRegistry,
       println("New game dialog result:")
       println(result)
       closeNewGameDialog()
+      result match {
+        case NewGameDialog.Cancel => ()
+        case input: NewGameDialog.Ok =>
+          val settings = makeNewGameSettings(input)
+          startNewGame(settings)
+      }
+    }
+
+    private def makeNewGameSettings(input: NewGameDialog.Ok): NewGameSettings = {
+      val getPlayerChoice = input.playerChoices.lift
+      val darkPlayerId = getPlayerChoice(input.darkPlayerIndex).flatMap(_.programId)
+      val lightPlayerId = getPlayerChoice(input.lightPlayerIndex).flatMap(_.programId)
+      val variation = input.variationChoices.lift(input.variationIndex).getOrElse(Variation.default)
+      val rulesSettings = RulesSettings(playsFirst = input.playsFirst, variation = variation)
+      NewGameSettings(rulesSettings = rulesSettings, darkProgramId = darkPlayerId, lightProgramId = lightPlayerId)
     }
 
     private def openNewGameDialog(): Unit = {
@@ -85,7 +98,6 @@ class Application(programRegistry: ProgramRegistry,
     }
 
     private def closeNewGameDialog(): Unit = {
-      newGameDialogProps = None
       ReactDOM.unmountComponentAtNode(dialogHost)
     }
   }
