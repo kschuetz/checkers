@@ -58,9 +58,11 @@ class Application(programRegistry: ProgramRegistry,
       openNewGameDialog()
     }
 
+    override def onRotateBoardButtonClicked: Callback = Callback {
+      println("rotate board clicked")
+    }
+
     override def onNewGameDialogResult(result: Result): Callback = Callback {
-      println("New game dialog result:")
-      println(result)
       closeNewGameDialog()
       result match {
         case NewGameDialog.Cancel => ()

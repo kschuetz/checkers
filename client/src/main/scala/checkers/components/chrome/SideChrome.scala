@@ -33,27 +33,37 @@ object SideChrome {
       val buttonY = layoutSettings.SideChromeButtonAreaPaddingY
       val buttonWidth = widthPixels - (2 * buttonX)
       val buttonHeight = layoutSettings.SideChromeButtonHeightPixels
+      val buttonYSpacing = buttonHeight + layoutSettings.SideChromeButtonPaddingPixelsY
 
       val buttonCenterX = buttonX + (buttonWidth / 2)
-      val buttonCenterY = buttonY + (buttonHeight / 2)
+      var currentY = buttonY + (buttonHeight / 2)
 
       val newGameButton = Button(Button.Props(buttonCenterX,
-        buttonCenterY,
+        currentY,
         buttonWidth,
         buttonHeight,
-        "New Game",
+        "New Game...",
         Some("Start a new game"),
         props.applicationCallbacks.onNewGameButtonClicked))
+
+      currentY += buttonYSpacing
+
+      val rotateBoardButton = Button(Button.Props(buttonCenterX,
+        currentY,
+        buttonWidth,
+        buttonHeight,
+        "Rotate",
+        Some("Rotate the view of the board 180 degrees"),
+        props.applicationCallbacks.onRotateBoardButtonClicked))
+
       <.svg.svg(
         ^.`class` := "side-chrome",
         Backdrop((widthPixels, heightPixels)),
-        newGameButton
+        newGameButton,
+        rotateBoardButton
       )
     }
 
-    private def onRotateBoardClick = Callback {
-      println("rotate board click")
-    }
   }
 
   val component = ReactComponentB[Props]("SideChrome")
