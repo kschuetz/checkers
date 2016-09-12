@@ -4,8 +4,9 @@ import checkers.components.BoardMouseEvent
 import checkers.computer.PlayInput
 import checkers.consts._
 import checkers.core.BeginTurnEvaluation._
-import checkers.core.InputPhase.{BeginHumanTurn, ComputerThinking, EndingTurn, PieceSelected}
+import checkers.core.InputPhase._
 import checkers.geometry.Point
+import checkers.test.BoardExperiments
 
 
 class GameDriver(gameLogicModule: GameLogicModule)
@@ -135,8 +136,8 @@ class GameDriver(gameLogicModule: GameLogicModule)
     val darkState = playerConfig.darkPlayer.initialState
     val lightState = playerConfig.lightPlayer.initialState
     val turnToMove = rulesSettings.playsFirst
-    val boardState = RulesSettings.initialBoard(rulesSettings)
-    //    val boardState = BoardExperiments.board2
+//    val boardState = RulesSettings.initialBoard(rulesSettings)
+        val boardState = BoardExperiments.board3
     val beginTurnState = BeginTurnState(boardState, turnToMove, 0, NoDraw)
     val turnEvaluation = evaluateBeginTurn(beginTurnState)
     GameState(rulesSettings, playerConfig, boardState, turnToMove, 0, darkState, lightState, NoDraw, turnEvaluation, 0, 0, Nil)
@@ -202,10 +203,16 @@ class GameDriver(gameLogicModule: GameLogicModule)
   private def restartTurn(gameModel: Model, newState: State): Model = {
     val turnToMove = newState.turnToMove
     val nowTime = gameModel.nowTime
-    val inputPhase = if (turnToMove == LIGHT) {
-      getInputPhase(nowTime, playerConfig.lightPlayer, newState.lightState, getPlayInput(newState))
-    } else {
-      getInputPhase(nowTime, playerConfig.darkPlayer, newState.darkState, getPlayInput(newState))
+
+    val inputPhase = newState.beginTurnEvaluation match {
+      case Win(color) => GameOver(Some(color))
+      case Draw => GameOver(None)
+      case _ =>
+        if (turnToMove == LIGHT) {
+          getInputPhase(nowTime, playerConfig.lightPlayer, newState.lightState, getPlayInput(newState))
+        } else {
+          getInputPhase(nowTime, playerConfig.darkPlayer, newState.darkState, getPlayInput(newState))
+        }
     }
 
     val clickableSquares = getClickableSquares(inputPhase, newState.moveTree)

@@ -24,4 +24,15 @@ object BoardExperiments {
              - - - -
                                           """)
 
+  lazy val board3 = BoardUtils.parseBoard("""
+              - - - -
+             - - - -
+              - - l -
+             - - - -
+              - d - -
+             - - - -
+              - - - -
+             - - - -
+                                          """)
+
 }

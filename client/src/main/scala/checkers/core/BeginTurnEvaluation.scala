@@ -4,14 +4,19 @@ import checkers.consts._
 
 sealed trait BeginTurnEvaluation {
   def requiresJump: Boolean = false
+  def isGameOver: Boolean = false
 }
 
 object BeginTurnEvaluation {
   case class CanMove(moveTree: MoveTree) extends BeginTurnEvaluation {
     override def requiresJump = moveTree.requiresJump
   }
-  case object Draw extends BeginTurnEvaluation
-  case class Win(color: Color) extends BeginTurnEvaluation
+  case object Draw extends BeginTurnEvaluation {
+    override val isGameOver = true
+  }
+  case class Win(color: Color) extends BeginTurnEvaluation {
+    override def isGameOver = true
+  }
 }
 
 case class BeginTurnState(board: BoardState,
