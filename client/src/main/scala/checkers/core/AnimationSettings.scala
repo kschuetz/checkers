@@ -19,6 +19,8 @@ trait AnimationSettings {
   def PlacePiecesBottomDelayMillis: Double
   def PlacePiecesIntervalMillis: Double
   def PlacePieceDurationMillis: Double
+
+  def BoardRotateDurationMillis: Double
 }
 
 
@@ -43,4 +45,6 @@ object DefaultAnimationSettings extends AnimationSettings {
   val PlacePiecesIntervalMillis: Double = 175.0
 
   val PlacePieceDurationMillis: Double = 275.0
+
+  val BoardRotateDurationMillis: Double = 1000.0
 }

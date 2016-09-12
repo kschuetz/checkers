@@ -1,7 +1,7 @@
 package checkers.core
 
 import checkers.consts._
-import checkers.core.Animation.FlippingBoardAnimation
+import checkers.core.Animation.RotatingBoardAnimation
 import checkers.core.InputPhase.ComputerThinking
 
 trait GameModelReader {
@@ -34,7 +34,7 @@ trait GameModelReader {
 
   def squareAttributes: Vector[SquareAttributes]
 
-  def flipAnimation: Option[FlippingBoardAnimation]
+  def rotateAnimation: Option[RotatingBoardAnimation]
 
   def animations: List[Animation]
 
@@ -46,15 +46,15 @@ trait GameModelReader {
 }
 
 case class GameModel(nowTime: Double,
-                             gameStartTime: Double,
-                             turnStartTime: Double,
-                             inputPhase: InputPhase,
-                             gameState: GameState,
-                             boardOrientation: BoardOrientation,
-                             pickedUpPiece: Option[PickedUpPiece],
-                             squareAttributesVector: SquareAttributesVector,
-                             flipAnimation: Option[FlippingBoardAnimation],
-                             animations: List[Animation]) extends GameModelReader {
+                     gameStartTime: Double,
+                     turnStartTime: Double,
+                     inputPhase: InputPhase,
+                     gameState: GameState,
+                     boardOrientation: BoardOrientation,
+                     pickedUpPiece: Option[PickedUpPiece],
+                     squareAttributesVector: SquareAttributesVector,
+                     rotateAnimation: Option[RotatingBoardAnimation],
+                     animations: List[Animation]) extends GameModelReader {
 
   /**
     * Has any animations that affect game play (e.g. moving a piece)
@@ -63,7 +63,7 @@ case class GameModel(nowTime: Double,
     animations.exists(_.isActive(nowTime))
 
   def hasActiveAnimations: Boolean =
-    hasActivePlayAnimations || flipAnimation.exists(_.isActive(nowTime))
+    hasActivePlayAnimations || rotateAnimation.exists(_.isActive(nowTime))
 
   def hasActiveComputation: Boolean = inputPhase.waitingForComputer
 
@@ -81,8 +81,10 @@ case class GameModel(nowTime: Double,
 
   def getBoardRotation: Double = {
     // TODO: easing
-    val offset = flipAnimation.map { anim =>
+    val offset = rotateAnimation.map { anim =>
       val amount = 1.0 - anim.linearProgress(nowTime)
+//      if(amount != 0) println(s"rotation: $amount     at $nowTime")
+
       180 * amount
     } getOrElse 0.0
 
@@ -91,23 +93,9 @@ case class GameModel(nowTime: Double,
 
   def updateNowTime(newTime: Double): GameModel = {
     val newAnimations = animations.filterNot(_.isExpired(newTime))
-    val newFlip = flipAnimation.filterNot(_.isExpired(newTime))
+    val newFlip = rotateAnimation.filterNot(_.isExpired(newTime))
 
-//    val oldCount = animations.size
-//    val newCount = newAnimations.size
-//    if(oldCount > newCount) {
-//      println(s"${oldCount - newCount} expired at $newTime")
-//    }
-    copy(nowTime = newTime, animations = newAnimations, flipAnimation = newFlip)
-  }
-
-  def startFlipBoard(duration: Double): GameModel = {
-    if (flipAnimation.nonEmpty) this // ignore if flip is already in progress
-    else {
-      val target = boardOrientation.opposite
-      val anim = FlippingBoardAnimation(nowTime, duration)
-      copy(boardOrientation = target, flipAnimation = Some(anim))
-    }
+    copy(nowTime = newTime, animations = newAnimations, rotateAnimation = newFlip)
   }
 
   override def ruleSettings: RulesSettings = gameState.rulesSettings

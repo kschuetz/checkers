@@ -36,6 +36,12 @@ class Game(gameDriver: GameDriver,
     ReactDOM.unmountComponentAtNode(host)
   }
 
+  def rotateBoard(): Unit = {
+    if(stopped) return
+    updateNowTime()
+    gameDriver.rotateBoard(model).foreach(replaceModel)
+  }
+
   object Callbacks extends BoardCallbacks {
     override val onBoardMouseDown = (event: BoardMouseEvent) => Some(Callback {
       println(s"pieceMouseDown ${event.squareIndex}")

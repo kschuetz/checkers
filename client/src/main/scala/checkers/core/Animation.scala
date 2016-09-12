@@ -106,7 +106,7 @@ object Animation {
                            startTime: Double,
                            duration: Double) extends OneTimeAnimation
 
-  case class FlippingBoardAnimation(startTime: Double,
+  case class RotatingBoardAnimation(startTime: Double,
                                     duration: Double) extends OneTimeAnimation
 
 

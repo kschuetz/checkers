@@ -171,6 +171,10 @@ class AnimationPlanner(settings: AnimationSettings) {
 
   }
 
+  def createBoardRotateAnimation(nowTime: Double): RotatingBoardAnimation = {
+    RotatingBoardAnimation(nowTime, settings.BoardRotateDurationMillis)
+  }
+
 }
 
 object AnimationPlanner {

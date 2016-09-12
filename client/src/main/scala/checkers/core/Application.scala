@@ -59,7 +59,7 @@ class Application(programRegistry: ProgramRegistry,
     }
 
     override def onRotateBoardButtonClicked: Callback = Callback {
-      println("rotate board clicked")
+      game.foreach(_.rotateBoard())
     }
 
     override def onNewGameDialogResult(result: Result): Callback = Callback {

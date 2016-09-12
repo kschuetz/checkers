@@ -54,6 +54,11 @@ object PhysicalPiece extends SvgHelpers {
 
   private val PieceBody = ReactComponentB[RenderProps]("PieceBody")
     .renderBackend[PieceBodyBackend]
+//    .shouldComponentUpdateCB(_ => CallbackTo.pure(false))
+    .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, _) =>
+      val result = scope.props.pieceProps.rotationDegrees != nextProps.pieceProps.rotationDegrees
+      CallbackTo.pure(result)
+    }
     .shouldComponentUpdateCB(_ => CallbackTo.pure(false))
     .build
 

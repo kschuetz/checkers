@@ -3,6 +3,7 @@ package checkers.core
 import checkers.components.BoardMouseEvent
 import checkers.computer.PlayInput
 import checkers.consts._
+import checkers.core.Animation.RotatingBoardAnimation
 import checkers.core.BeginTurnEvaluation._
 import checkers.core.InputPhase._
 import checkers.geometry.Point
@@ -34,13 +35,23 @@ class GameDriver(gameLogicModule: GameLogicModule)
         boardOrientation = BoardOrientation.Normal,
         pickedUpPiece = None,
         squareAttributesVector = SquareAttributesVector.default,
-        flipAnimation = None,
+        rotateAnimation = None,
         animations = List.empty)
 
       schedulePlacePieces(m1)
     }
 
     initTurn(model, gameState)
+  }
+
+  def rotateBoard(model: Model): Option[Model] = {
+    if(model.rotateAnimation.nonEmpty) None  // ignore if flip is already in progress
+    else {
+      val target = model.boardOrientation.opposite
+      val anim = animationPlanner.createBoardRotateAnimation(model.nowTime)
+      println(s"rotating board: $anim")
+      Some(model.copy(boardOrientation = target, rotateAnimation = Some(anim)))
+    }
   }
 
   private def schedulePlacePieces(model: Model): Model = {
