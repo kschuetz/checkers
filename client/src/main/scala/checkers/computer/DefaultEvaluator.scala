@@ -89,7 +89,16 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
       i += 1
     }
 
-    0
+    var result = 0
+    if(color == DARK) {
+      result += darkMaterial - lightMaterial
+    } else {
+      result += lightMaterial - darkMaterial
+    }
+
+    if(turnToPlay == color) result += 3
+
+    if(rulesSettings.giveaway) -result else result
   }
 
 
