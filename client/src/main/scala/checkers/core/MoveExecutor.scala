@@ -45,6 +45,40 @@ class MoveExecutor(rulesSettings: RulesSettings,
     crowned
   }
 
+
+  /**
+    * Runs the contents of a MoveDecoder (which can include compound moves), but returns no metadata.
+    */
+  def executeFromMoveDecoder(boardState: MutableBoardState, decoder: MoveDecoder): Unit = {
+    val len = decoder.pathLength
+    val data = decoder.data
+    var from = data(0)
+    var to: Byte = 0
+    var i = 1
+    while (i < len) {
+      to = data(i)
+
+      val piece = boardState.getOccupant(from)
+      val over = jumpTable.getMiddle(from, to)
+      if(over >= 0) boardState.setOccupant(over, EMPTY)
+
+      boardState.setOccupant(from, EMPTY)
+
+      val m = 1 << to
+      if(piece == LIGHTMAN && (m & masks.crownLight) != 0) {
+        boardState.setOccupant(to, LIGHTKING)
+      } else if (piece == DARKMAN && (m & masks.crownDark) != 0) {
+        boardState.setOccupant(to, DARKKING)
+      } else {
+        boardState.setOccupant(to, piece)
+      }
+
+      from = to
+      i += 1
+    }
+
+  }
+
   /**
     * Updates the board in place.  Returns metadata describing the move.
     * Not as efficient as fastExecute.
