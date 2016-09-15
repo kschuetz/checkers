@@ -12,8 +12,8 @@ class PrincipalVariation[A](val depth: Int) {
     val baseIndex = ply * depth
     line(baseIndex) = value
     if(ply < depth - 1) {
-      var source = baseIndex + 1
-      var dest = baseIndex + depth
+      var dest = baseIndex + 1
+      var source = baseIndex + depth
       var copyCount = depth - ply - 1
 
       while(copyCount > 0) {

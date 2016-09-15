@@ -43,6 +43,9 @@ class Search(gameLogicModule: GameLogicModule,
     val gameOver = moveCount == 0
     val moveDecoder = new MoveDecoder
 
+    // TODO: handle case of only one move
+    // TODO: handle case of game over
+
     def process: Ply = {
       boardStack.push()
       try {
