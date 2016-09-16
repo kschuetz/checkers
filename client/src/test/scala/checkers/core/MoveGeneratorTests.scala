@@ -17,6 +17,7 @@ object MoveGeneratorTests extends TestSuite with DefaultGameLogicTestModule with
 
   lazy val moveDecoder = new MoveDecoder
   lazy val moveGenerator = gameLogicModule.moveGenerator
+  lazy val jumpTable = tablesModule.jumpTable
 
   private def testBoard(board: BoardState, color: Color, expectedResult: Set[List[Int]]): Unit = {
     val stack = BoardStack.fromBoard(board)
@@ -41,7 +42,23 @@ object MoveGeneratorTests extends TestSuite with DefaultGameLogicTestModule with
   })
 
   lazy val moveStartOccupiedByCurrentPlayer: Prop[BoardWithMove] = Prop.test("moveStartOccupiedByCurrentPlayer", {
-    case BoardWithMove(board, turnToMove, Some(legalMove)) => board.squareHasColor(turnToMove, legalMove.head)
+    case BoardWithMove(board, turnToMove, Some(legalMove)) => board.squareHasColor(turnToMove)(legalMove.head)
+    case _ => true
+  })
+
+  lazy val jumpIsOverOpponent: Prop[BoardWithMove] = Prop.test("jumpIsOverOpponent", {
+    case BoardWithMove(board, turnToMove, Some(legalMove)) =>
+      val opponent = OPPONENT(turnToMove)
+      val jumpedOver = jumpTable.getMiddles(legalMove)
+      jumpedOver.forall(board.squareHasColor(opponent))
+    case _ => true
+  })
+
+  lazy val allJumpsOrNoJumps: Prop[BoardWithMoves] = Prop.test("allJumpsOrNoJumps", {
+    case BoardWithMoves(board, turnToMove, legalMoves) =>
+      val moves = legalMoves.toSet
+      val hasJumps = moves.map(jumpTable.isJump)
+      hasJumps.size <= 1   // Set(), Set(true), or Set(false), but not Set(true, false)
     case _ => true
   })
 
@@ -54,7 +71,12 @@ object MoveGeneratorTests extends TestSuite with DefaultGameLogicTestModule with
       'Properties {
         genBoardWithMove.mustSatisfy(
           movePathUnobstructed &
-            moveStartOccupiedByCurrentPlayer)
+            moveStartOccupiedByCurrentPlayer &
+            jumpIsOverOpponent)
+
+        genBoardWithMoves.mustSatisfy(
+          allJumpsOrNoJumps
+        )
       }
 
       'StaticTests {

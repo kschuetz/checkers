@@ -17,6 +17,18 @@ class JumpTable(neighborTable: NeighborTable) {
     else -1
   }
 
+  def getMiddles(path: List[Int]): List[Int] = {
+    val initial = (-1, List.empty[Int])
+    val (_, result) = path.foldLeft(initial) { case ((from, acc), to) =>
+      val next = if(from >= 0) {
+        val middle = getMiddle(from, to)
+        if(middle >= 0) middle :: acc else acc
+      } else acc
+      (to, next)
+    }
+    result.reverse
+  }
+
   def isJump(path: List[Int]): Boolean = path match {
     case Nil => false
     case _ :: Nil => false

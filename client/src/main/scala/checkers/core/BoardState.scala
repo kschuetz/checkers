@@ -15,7 +15,7 @@ trait BoardStateRead {
 
   def isSquareEmpty(squareIndex: Int): Boolean
 
-  def squareHasColor(color: Color, squareIndex: Int): Boolean
+  def squareHasColor(color: Color)(squareIndex: Int): Boolean
 
   def foreach(color: Color)(f: (Int, Occupant) => Unit): Unit
 
@@ -62,7 +62,7 @@ trait BoardStateReadImpl extends BoardStateRead {
     (p & 1) == 0
   }
 
-  def squareHasColor(color: Color, squareIndex: Int): Boolean = {
+  def squareHasColor(color: Color)(squareIndex: Int): Boolean = {
     val lp = (lightPieces >>> squareIndex) & 1
     val dp = (darkPieces >>> squareIndex) & 1
 

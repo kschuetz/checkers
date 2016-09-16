@@ -29,6 +29,7 @@ class MoveList(val data: Int8Array,
     result
   }
 
+  override def toString: String = s"MoveList(${toSet.toString})"
 }
 
 /**
