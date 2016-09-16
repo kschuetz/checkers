@@ -1,7 +1,7 @@
 package checkers.test
 
 import checkers.core.tables.TablesModule
-import checkers.core.{GameConfig, GameLogicModuleFactory}
+import checkers.core.{AnimationSettings, DefaultAnimationSettings, GameConfig, GameLogicModuleFactory}
 import com.softwaremill.macwire._
 
 
@@ -11,6 +11,8 @@ trait DefaultGameLogicTestModule {
   lazy val rulesSettings = gameConfig.rulesSettings
 
   lazy val tablesModule = wire[TablesModule]
+
+  lazy val animationSettings: AnimationSettings = DefaultAnimationSettings
 
   lazy val gameLogicModuleFactory: GameLogicModuleFactory = wire[GameLogicModuleFactory]
 
