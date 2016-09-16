@@ -6,10 +6,12 @@ import nyaya.gen.Gen
 
 trait BoardGenerators {
   // counts for (men, kings)
-  protected lazy val choosePieceCount: Gen[(Int, Int)] = for {
-    totalPieces <- Gen.chooseInt(12)
-    kingCount <- Gen.chooseInt(totalPieces)
-  } yield (totalPieces - kingCount, kingCount)
+  protected lazy val choosePieceCount: Gen[(Int, Int)] = Gen.chooseInt(12).flatMap { totalPieces =>
+    if(totalPieces <= 0) Gen.pure((0, 0))
+    else Gen.chooseInt(totalPieces).map { kingCount =>
+      (totalPieces - kingCount, kingCount)
+    }
+  }
 
   protected lazy val boardPositions: Gen[List[Int]] =
     Gen.shuffle((0 to 31).toList)

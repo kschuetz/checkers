@@ -89,6 +89,29 @@ trait BoardStateReadImpl extends BoardStateRead {
     copyFrameTo(result)
     result
   }
+
+  override def toString: String = {
+    val rows = for {
+      r <- 0 to 7
+    } yield {
+      val cells = for {
+        c <- 0 to 7
+      } yield {
+        val idx = BoardPosition(r, c).toSquareIndex
+        if(idx < 0) ' '
+        else {
+          val occupant = getOccupant(idx)
+          if(occupant == DARKMAN) 'd'
+          else if(occupant == DARKKING) 'D'
+          else if(occupant == LIGHTMAN) 'l'
+          else if(occupant == LIGHTKING) 'L'
+          else '-'
+        }
+      }
+      cells.mkString("|", "", "|")
+    }
+    rows.mkString("+--------+\n", "\n", "\n+--------+")
+  }
 }
 
 trait BoardStateWriteImpl extends BoardStateReadImpl {
@@ -172,28 +195,28 @@ class BoardState protected[core](val data: Int32Array) extends BoardStateReadImp
     def toImmutable: BoardState = new BoardState(copyFrame)
   }
 
-  override def toString: String = {
-    val rows = for {
-      r <- 0 to 7
-    } yield {
-      val cells = for {
-        c <- 0 to 7
-      } yield {
-        val idx = BoardPosition(r, c).toSquareIndex
-        if(idx < 0) ' '
-        else {
-          val occupant = getOccupant(idx)
-          if(occupant == DARKMAN) 'd'
-          else if(occupant == DARKKING) 'D'
-          else if(occupant == LIGHTMAN) 'l'
-          else if(occupant == LIGHTKING) 'L'
-          else '.'
-        }
-      }
-      cells.mkString("|", "", "|")
-    }
-    rows.mkString("+--------+\n", "\n", "\n+--------+")
-  }
+//  override def toString: String = {
+//    val rows = for {
+//      r <- 0 to 7
+//    } yield {
+//      val cells = for {
+//        c <- 0 to 7
+//      } yield {
+//        val idx = BoardPosition(r, c).toSquareIndex
+//        if(idx < 0) ' '
+//        else {
+//          val occupant = getOccupant(idx)
+//          if(occupant == DARKMAN) 'd'
+//          else if(occupant == DARKKING) 'D'
+//          else if(occupant == LIGHTMAN) 'l'
+//          else if(occupant == LIGHTKING) 'L'
+//          else '.'
+//        }
+//      }
+//      cells.mkString("|", "", "|")
+//    }
+//    rows.mkString("+--------+\n", "\n", "\n+--------+")
+//  }
 
 }
 

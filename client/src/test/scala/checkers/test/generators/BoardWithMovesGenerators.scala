@@ -22,7 +22,9 @@ trait BoardWithMovesGenerators extends BoardGenerators with ColorGenerator {
     */
   case class BoardWithMove(board: BoardStack,
                            turnToMove: Color,
-                           legalMove: List[Int])
+                           legalMove: Option[List[Int]]) {
+    def hasMove: Boolean = legalMove.nonEmpty
+  }
 
 
   protected lazy val genBoardWithMoves: Gen[BoardWithMoves] = for {
@@ -31,12 +33,13 @@ trait BoardWithMovesGenerators extends BoardGenerators with ColorGenerator {
     boardStack = BoardStack.fromBoard(boardState)
   } yield BoardWithMoves(boardStack, turnToMove, moveGenerator.generateMoves(boardStack, turnToMove))
 
-  protected lazy val genBoardWithMove: Gen[BoardWithMove] = genBoardWithMoves.withFilter(_.legalMoves.nonEmpty).flatMap {
+  protected lazy val genBoardWithMove: Gen[BoardWithMove] = genBoardWithMoves.flatMap {
     case BoardWithMoves(board, turnToMove, legalMoves) =>
-      Gen.chooseInt(legalMoves.count).map { moveIndex =>
+      if(legalMoves.isEmpty) Gen.pure(BoardWithMove(board, turnToMove, None))
+      else Gen.chooseInt(legalMoves.count).map { moveIndex =>
         moveDecoder.load(legalMoves, moveIndex)
         val move = moveDecoder.pathToList
-        BoardWithMove(board, turnToMove, move)
+        BoardWithMove(board, turnToMove, Some(move))
       }
   }
 

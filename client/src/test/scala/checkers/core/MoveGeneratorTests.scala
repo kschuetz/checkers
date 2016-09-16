@@ -35,20 +35,26 @@ object MoveGeneratorTests extends TestSuite with DefaultGameLogicTestModule with
   //         00  01  02  03
 
 
-  def isPathUnobstructed(boardWithMoves: BoardWithMove): Boolean =
-    true //boardWithMoves.legalMove.tail.forall(square => boardWithMoves.board.isSquareEmpty(square))
+  lazy val movePathUnobstructed: Prop[BoardWithMove] = Prop.test("movePathUnobstructed", {
+    case BoardWithMove(board, turnToMove, Some(legalMove)) => legalMove.tail.forall(board.isSquareEmpty)
+    case _ => true
+  })
 
-  lazy val movePathUnobstructed: Prop[BoardWithMove] = Prop.test("movePathUnobstructed", isPathUnobstructed)
-
+  lazy val moveStartOccupiedByCurrentPlayer: Prop[BoardWithMove] = Prop.test("moveStartOccupiedByCurrentPlayer", {
+    case BoardWithMove(board, turnToMove, Some(legalMove)) => board.squareHasColor(turnToMove, legalMove.head)
+    case _ => true
+  })
 
   // simpleMove
-  private def s(pair: (Int, Int)): List[Int] =
-  List(pair._1, pair._2)
+  private def s(pair: (Int, Int)): List[Int] = List(pair._1, pair._2)
+
 
   override def tests: Tree[Test] = TestSuite {
     'MoveGenerator {
       'Properties {
-        'MovePathUnobstructed - genBoardWithMove.mustSatisfy(movePathUnobstructed)
+        genBoardWithMove.mustSatisfy(
+          movePathUnobstructed &
+            moveStartOccupiedByCurrentPlayer)
       }
 
       'StaticTests {

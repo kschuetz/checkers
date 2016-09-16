@@ -28,7 +28,7 @@ object Settings {
     val scalaCSS = "0.4.1"
     val log4js = "1.4.10"
     val uTest = "0.4.3"
-    val nyaya = "0.7.0"
+    val nyaya = "0.7.2"
     val macwire = "2.2.3"
     val uPickle = "0.4.1"
     val benchmark = "0.2.3"
