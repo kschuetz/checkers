@@ -33,7 +33,7 @@ object BoardUtils {
     result
   }
 
-  val allSquares = Set(0 to 31)
+  val allSquares = (0 to 31).toSet
 
   private val parseSquareIndex = List(
     28, 29, 30, 31, 24, 25, 26, 27, 20, 21, 22, 23, 16, 17, 18, 19,
@@ -54,6 +54,30 @@ object BoardUtils {
       result.updated(idx, occ)
     }
 
+  }
+
+  case class BoardStats(empty: Int,
+                        darkMan: Int,
+                        darkKing: Int,
+                        lightMan: Int,
+                        lightKing: Int)
+
+  def getBoardStats(board: BoardStateRead): BoardStats = {
+    var empty = 0
+    var darkMan = 0
+    var darkKing = 0
+    var lightMan = 0
+    var lightKing = 0
+    allSquares.foreach { idx =>
+      board.getOccupant(idx) match {
+        case x if x == DARKMAN => darkMan += 1
+        case x if x == DARKKING => darkKing += 1
+        case x if x == LIGHTMAN => lightMan += 1
+        case x if x == LIGHTKING => lightKing += 1
+        case _ => empty += 1
+      }
+    }
+    BoardStats(empty, darkMan, darkKing, lightMan, lightKing)
   }
 
 

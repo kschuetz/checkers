@@ -5,6 +5,11 @@ import scala.scalajs.js.typedarray.Int8Array
 
 class MoveList(val data: Int8Array,
                val count: Int) {
+
+  def isEmpty: Boolean = count == 0
+
+  def nonEmpty: Boolean = count > 0
+
   def foreach(f: MoveDecoder => Unit): Unit = {
     val decoder = new MoveDecoder
     var i = 0
@@ -23,6 +28,7 @@ class MoveList(val data: Int8Array,
     }
     result
   }
+
 }
 
 /**
