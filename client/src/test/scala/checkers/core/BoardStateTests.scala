@@ -2,14 +2,13 @@ package checkers.core
 
 
 import checkers.consts._
+import checkers.test.TestSuiteBase
 import utest._
 import utest.framework._
 
 import scala.util.Random
 
-object BoardStateTests extends TestSuite {
-
-  override def formatColor: Boolean = false
+object BoardStateTests extends TestSuiteBase {
 
   val allPieces = List(LIGHTMAN, DARKMAN, LIGHTKING, DARKKING)
   val allSquares = Board.playableSquares.toSet

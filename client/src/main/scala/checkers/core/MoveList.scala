@@ -70,6 +70,18 @@ class MoveDecoder {
     }
     result.reverse
   }
+
+  // for tests
+  def loadFromList(path: List[Int]): Unit = {
+    var i = 0
+    var current = path
+    while(current.nonEmpty && i < MoveList.frameSize) {
+      data(i) = current.head.toByte
+      current = current.tail
+      i += 1
+    }
+    _pathLength = i
+  }
 }
 
 /**
