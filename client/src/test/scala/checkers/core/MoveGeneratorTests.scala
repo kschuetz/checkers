@@ -37,7 +37,10 @@ object MoveGeneratorTests extends TestSuite with DefaultGameLogicTestModule with
 
 
   lazy val movePathUnobstructed: Prop[BoardWithMove] = Prop.test("movePathUnobstructed", {
-    case BoardWithMove(board, turnToMove, Some(legalMove)) => legalMove.tail.forall(board.isSquareEmpty)
+    case BoardWithMove(board, turnToMove, Some(legalMove)) =>
+      val startSquare = legalMove.head  // there is a rare, but possible case that the start square is encountered
+                                        // again later in the move path
+      legalMove.tail.forall(square => board.isSquareEmpty(square) || square == startSquare)
     case _ => true
   })
 
