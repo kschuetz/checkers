@@ -19,6 +19,21 @@ class MoveExecutor(rulesSettings: RulesSettings,
                    jumpTable: JumpTable) {
 
   /**
+    * All methods have the same outcome, and update the board in place, but are used in different scenarios:
+    *
+    * fastExecute:
+    *   Fast, can only handle one simple move segment, returns a flag indicating crowning event.
+    *   Used in move generator.
+    * executeFromMoveDecoder:
+    *   Fast, can handle compound moves, returns no meta-data.
+    *   Used in search routines.
+    * execute:
+    *   Slowest, can only handle one simple move segment, returns meta-data describing the move.
+    *   Used when committing a move for a turn (not used in inner loops).
+    */
+
+
+  /**
     * Updates the board in place.  Does not return metadata, other than a flag indicating a crowning event.
     * @return if true, move ended in a piece being crowned
     */
@@ -44,7 +59,6 @@ class MoveExecutor(rulesSettings: RulesSettings,
 
     crowned
   }
-
 
   /**
     * Runs the contents of a MoveDecoder (which can include compound moves), but returns no metadata.
@@ -82,7 +96,6 @@ class MoveExecutor(rulesSettings: RulesSettings,
   /**
     * Updates the board in place.  Returns metadata describing the move.
     * Not as efficient as fastExecute.
-    * @return
     */
   def execute(boardState: MutableBoardState, from: Int, to: Int): MoveInfo = {
     val piece = boardState.getOccupant(from)
