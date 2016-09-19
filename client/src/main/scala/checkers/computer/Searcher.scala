@@ -11,7 +11,7 @@ class Searcher(gameLogicModule: GameLogicModule,
   private val moveGenerator = gameLogicModule.moveGenerator
   private val moveExecutor = gameLogicModule.moveExecutor
 
-  class Search(playInput: PlayInput, opaque: Opaque) extends PlayComputation {
+  class Search(playInput: PlayInput, incomingPlayerState: ComputerPlayerState) extends PlayComputation {
 
     val pv = new PrincipalVariation[Play](maxDepth)
     private var iteration = 0
@@ -149,7 +149,7 @@ class Searcher(gameLogicModule: GameLogicModule,
     override def isReady: Boolean = done
 
     override def result: (Play, Opaque) = if (done) {
-      (pv.getBestMove(0), opaque)
+      (pv.getBestMove(0), incomingPlayerState)
     } else throw new Exception("No result yet")
   }
 

@@ -1,26 +1,17 @@
 package checkers.computer
 
-import checkers.core.{GameState, Opaque}
-
-case class MoveChoiceWeights(pickBestMove: Int,
-                             pickRandomMove: Int,
-                             blunder: Int)
-
 
 case class SearchParameters(maxDepth: Int,
-                            moveChoiceWeights: MoveChoiceWeights)
+                            selectionMethodWeights: MoveSelectionMethodWeights)
 
 trait Personality {
-  def getSearchParameters(opaque: Opaque, gameState: GameState): (Opaque, SearchParameters)
-}
-
-
-object MoveChoiceWeights {
-  val alwaysBestMove = MoveChoiceWeights(pickBestMove = 1, pickRandomMove = 0, blunder = 0)
+  def getSearchParameters(playerState: ComputerPlayerState, playInput: PlayInput): (ComputerPlayerState, SearchParameters)
 }
 
 
 class StaticPersonality(searchParameters: SearchParameters) extends Personality {
-  def getSearchParameters(opaque: Opaque, gameState: GameState): (Opaque, SearchParameters) =
-    (opaque, searchParameters)
+  def getSearchParameters(playerState: ComputerPlayerState, playInput: PlayInput): (ComputerPlayerState, SearchParameters) =
+    (playerState, searchParameters)
 }
+
+
