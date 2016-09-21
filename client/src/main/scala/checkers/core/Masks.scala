@@ -22,6 +22,9 @@ object masks {
   val second = squareMaskFromSeq(4 to 7)
   val seventh = squareMaskFromSeq(24 to 27)
   val edges = squareMask(24, 20, 16, 12, 8, 4, 0, 7, 11, 15, 19, 23, 27, 31)
+  val outer = squareMask(0, 1, 2, 3, 7, 8, 15, 16, 23, 24, 28, 29, 30, 31)
+
+
 
   //******
 
