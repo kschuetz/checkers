@@ -1,14 +1,14 @@
 package checkers.computer
 
 import checkers.consts._
-import checkers.core.{BoardStateRead, RulesSettings, masks}
+import checkers.masks._
+import checkers.core.{BoardStateRead, RulesSettings}
 
 import scala.scalajs.js.typedarray.Int32Array
 
 
 class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
 
-  import masks._
 
   //           28  29  30  31
   //         24  25  26  27
@@ -28,7 +28,7 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
   private val RunawayBaseBonus = 50
   private val BackRankBonus = 6
 
-  private val innerSquares = ~masks.outer
+  private val innerSquares = ~checkers.core.masks.outer
 
   def evaluate(color: Color, turnToPlay: Color, board: BoardStateRead, testProbe: AnyRef = null): Int = {
     val probe = if (testProbe == null) null else testProbe.asInstanceOf[DefaultEvaluatorTestProbe]
@@ -38,22 +38,22 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
     val dp = board.darkPieces
     val notOccupied = ~(lp | dp)
 
-    val darkNW = shiftSE(dp)
-    val darkNE = shiftSW(dp)
-    val darkSW = shiftNE(dp)
-    val darkSE = shiftNW(dp)
-    val lightNW = shiftSE(lp)
-    val lightNE = shiftSW(lp)
-    val lightSW = shiftNE(lp)
-    val lightSE = shiftNW(lp)
-    val emptyNW = shiftSE(notOccupied)
-    val emptyNE = shiftSW(notOccupied)
-    val emptySW = shiftNE(notOccupied)
-    val emptySE = shiftNW(notOccupied)
-    val kingNW = shiftSE(k)
-    val kingNE = shiftSW(k)
-    val kingSW = shiftNE(k)
-    val kingSE = shiftNW(k)
+    val darkNW = SHIFTSE(dp)
+    val darkNE = SHIFTSW(dp)
+    val darkSW = SHIFTNE(dp)
+    val darkSE = SHIFTNW(dp)
+    val lightNW = SHIFTSE(lp)
+    val lightNE = SHIFTSW(lp)
+    val lightSW = SHIFTNE(lp)
+    val lightSE = SHIFTNW(lp)
+    val emptyNW = SHIFTSE(notOccupied)
+    val emptyNE = SHIFTSW(notOccupied)
+    val emptySW = SHIFTNE(notOccupied)
+    val emptySE = SHIFTNW(notOccupied)
+    val kingNW = SHIFTSE(k)
+    val kingNE = SHIFTSW(k)
+    val kingSW = SHIFTNE(k)
+    val kingSE = SHIFTNW(k)
 
     val darkKingNW = darkNW & kingNW
     val darkKingNE = darkNE & kingNE

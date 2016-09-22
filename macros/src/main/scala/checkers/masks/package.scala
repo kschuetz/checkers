@@ -33,6 +33,12 @@ package object masks {
   def SE3: Int = macro se3Impl
   def SE4: Int = macro se4Impl
 
+  def SHIFTNW(board: Int): Int = macro shiftNWImpl
+  def SHIFTNE(board: Int): Int = macro shiftNEImpl
+  def SHIFTSW(board: Int): Int = macro shiftSWImpl
+  def SHIFTSE(board: Int): Int = macro shiftSEImpl
+
+
   def nw3Impl(c: blackbox.Context): c.Expr[Int] = {
     import c.universe._
     c.Expr[Int](Literal(Constant(nw3)))
@@ -72,5 +78,32 @@ package object masks {
     import c.universe._
     c.Expr[Int](Literal(Constant(se4)))
   }
+
+  def shiftNWImpl(c: blackbox.Context)(board: c.Expr[Int]): c.Expr[Int] = {
+    import c.universe._
+    c.Expr[Int](q"(($board << 3) & NW3) | (($board << 4) & NW4)")
+  }
+
+  def shiftNEImpl(c: blackbox.Context)(board: c.Expr[Int]): c.Expr[Int] = {
+    import c.universe._
+    c.Expr[Int](q"(($board << 4) & NE4) | (($board << 5) & NE5)")
+  }
+
+  def shiftSWImpl(c: blackbox.Context)(board: c.Expr[Int]): c.Expr[Int] = {
+    import c.universe._
+    c.Expr[Int](q"(($board >> 4) & SW4) | (($board >> 5) & SW5)")
+  }
+
+  def shiftSEImpl(c: blackbox.Context)(board: c.Expr[Int]): c.Expr[Int] = {
+    import c.universe._
+    c.Expr[Int](q"(($board >> 3) & SE3) | (($board >> 4) & SE4)")
+  }
+  //  @inline def shiftNW(board: Int): Int = ((board << 3) & checkers.masks.NW3) | ((board << 4) & checkers.masks.NW4)
+  //
+  //  @inline def shiftNE(board: Int): Int = ((board << 4) & checkers.masks.NE4) | ((board << 5) & checkers.masks.NE5)
+  //
+  //  @inline def shiftSW(board: Int): Int = ((board >> 4) & checkers.masks.SW4) | ((board >> 5) & checkers.masks.SW5)
+  //
+  //  @inline def shiftSE(board: Int): Int = ((board >> 3) & checkers.masks.SE3) | ((board >> 4) & checkers.masks.SE4)
 
 }
