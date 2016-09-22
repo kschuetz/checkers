@@ -13,7 +13,7 @@ class MoveGenerator(rulesSettings: RulesSettings,
     var dark = turnToMove == DARK
     val neighborIndex = neighborTable.forColor(turnToMove)
 
-    import masks._
+    import checkers.masks._
 
     def go(limitToPieces: Int, jumpsOnly: Boolean): Boolean = {
       val myPieces = if(dark) boardState.darkPieces else boardState.lightPieces
@@ -43,23 +43,23 @@ class MoveGenerator(rulesSettings: RulesSettings,
       var oppBE = 0
 
       if(dark) {
-        noBW = shiftSW(notOccupied)
-        noBW2 = shiftSW(noBW)
-        noBE = shiftSE(notOccupied)
-        noBE2 = shiftSE(noBE)
+        noBW = SHIFTSW(notOccupied)
+        noBW2 = SHIFTSW(noBW)
+        noBE = SHIFTSE(notOccupied)
+        noBE2 = SHIFTSE(noBE)
 
-        oppBW = shiftSW(opponentPieces)
-        oppBE = shiftSE(opponentPieces)
+        oppBW = SHIFTSW(opponentPieces)
+        oppBE = SHIFTSE(opponentPieces)
 
       } else {
 
-        noBW = shiftNW(notOccupied)
-        noBW2 = shiftNW(noBW)
-        noBE = shiftNE(notOccupied)
-        noBE2 = shiftNE(noBE)
+        noBW = SHIFTNW(notOccupied)
+        noBW2 = SHIFTNW(noBW)
+        noBE = SHIFTNE(notOccupied)
+        noBE2 = SHIFTNE(noBE)
 
-        oppBW = shiftNW(opponentPieces)
-        oppBE = shiftNE(opponentPieces)
+        oppBW = SHIFTNW(opponentPieces)
+        oppBE = SHIFTNE(opponentPieces)
       }
 
       val jumpFE = myPiecesOfInterest & oppBW & noBW2
@@ -71,23 +71,23 @@ class MoveGenerator(rulesSettings: RulesSettings,
       if (myKings != 0) {
 
         if(dark) {
-          noFW = shiftNW(notOccupied)
-          noFE = shiftNE(notOccupied)
+          noFW = SHIFTNW(notOccupied)
+          noFE = SHIFTNE(notOccupied)
 
-          noFW2 = shiftNW(noFW)
-          noFE2 = shiftNE(noFE)
+          noFW2 = SHIFTNW(noFW)
+          noFE2 = SHIFTNE(noFE)
 
-          oppFW = shiftNW(opponentPieces)
-          oppFE = shiftNE(opponentPieces)
+          oppFW = SHIFTNW(opponentPieces)
+          oppFE = SHIFTNE(opponentPieces)
         } else {
-          noFW = shiftSW(notOccupied)
-          noFE = shiftSE(notOccupied)
+          noFW = SHIFTSW(notOccupied)
+          noFE = SHIFTSE(notOccupied)
 
-          noFW2 = shiftSW(noFW)
-          noFE2 = shiftSE(noFE)
+          noFW2 = SHIFTSW(noFW)
+          noFE2 = SHIFTSE(noFE)
 
-          oppFW = shiftSW(opponentPieces)
-          oppFE = shiftSE(opponentPieces)
+          oppFW = SHIFTSW(opponentPieces)
+          oppFE = SHIFTSE(opponentPieces)
         }
 
         jumpBE = myKings & oppFW & noFW2

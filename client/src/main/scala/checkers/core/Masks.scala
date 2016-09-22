@@ -51,14 +51,14 @@ object masks {
 //  @inline def shiftSW(board: Int): Int = ((board >> 4) & sw4) | ((board >> 5) & sw5)
 //
 //  @inline def shiftSE(board: Int): Int = ((board >> 3) & se3) | ((board >> 4) & se4)
-
-  @inline def shiftNW(board: Int): Int = ((board << 3) & checkers.masks.NW3) | ((board << 4) & checkers.masks.NW4)
-
-  @inline def shiftNE(board: Int): Int = ((board << 4) & checkers.masks.NE4) | ((board << 5) & checkers.masks.NE5)
-
-  @inline def shiftSW(board: Int): Int = ((board >> 4) & checkers.masks.SW4) | ((board >> 5) & checkers.masks.SW5)
-
-  @inline def shiftSE(board: Int): Int = ((board >> 3) & checkers.masks.SE3) | ((board >> 4) & checkers.masks.SE4)
+//
+//  @inline def shiftNW(board: Int): Int = ((board << 3) & checkers.masks.NW3) | ((board << 4) & checkers.masks.NW4)
+//
+//  @inline def shiftNE(board: Int): Int = ((board << 4) & checkers.masks.NE4) | ((board << 5) & checkers.masks.NE5)
+//
+//  @inline def shiftSW(board: Int): Int = ((board >> 4) & checkers.masks.SW4) | ((board >> 5) & checkers.masks.SW5)
+//
+//  @inline def shiftSE(board: Int): Int = ((board >> 3) & checkers.masks.SE3) | ((board >> 4) & checkers.masks.SE4)
 
 
   def squareMaskFromSeq(squares: Seq[Int]): Int = {
