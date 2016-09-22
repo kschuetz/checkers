@@ -79,6 +79,4 @@ object BoardUtils {
     }
     BoardStats(empty, darkMan, darkKing, lightMan, lightKing)
   }
-
-
 }

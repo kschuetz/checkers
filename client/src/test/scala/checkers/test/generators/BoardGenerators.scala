@@ -29,10 +29,23 @@ trait BoardGenerators {
     (lightMen, lightKings) <- choosePieceCount
     (darkMen, darkKings) <- choosePieceCount
     positions <- boardPositions
-  } yield updateBoard(BoardState.empty, List(lightMen -> LIGHTMAN, darkMen -> DARKMAN, lightKings -> LIGHTKING, darkKings -> DARKKING), positions)
+  } yield {
+    val board = updateBoard(BoardState.empty, List(lightMen -> LIGHTMAN, darkMen -> DARKMAN, lightKings -> LIGHTKING, darkKings -> DARKKING), positions)
+    normalizeBoard(board)
+  }
 
 
-
+  private def normalizeBoard(board: BoardState): BoardState = {
+    var result = board
+    var i = 0
+    while(i < 4) {
+      val top = 28 + i
+      if(result.getOccupant(top) == DARKMAN) result = result.updated(top, DARKKING)
+      if(result.getOccupant(i) == LIGHTMAN) result = result.updated(i, LIGHTKING)
+      i += 1
+    }
+    result
+  }
 
 
 }
