@@ -66,24 +66,13 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
     val safeForDark = notOccupied & (~lightAttacks)
     val safeForLight = notOccupied & (~darkAttacks)
 
-    if(probe != null) {
-      probe.potentialAttacks = potentialAttacks
-      probe.darkAttacks = darkAttacks
-      probe.lightAttacks = lightAttacks
-      probe.safeForDark = safeForDark
-      probe.safeForLight = safeForLight
-    }
-
     var darkMen = 0
     var darkKings = 0
     var lightMen = 0
     var lightKings = 0
     var darkMaterial = 0
     var lightMaterial = 0
-    var emptySquares = 0
 
-
-    var currentSquareMask = 1
     var i = 0
     while(i < 32) {
       if(((dp >>> i) & 1) != 0) {
@@ -94,7 +83,7 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
           darkMen += 1
           darkMaterial += Man
         }
-      } else if(((dp >>> i) & 1) != 0) {
+      } else if(((lp >>> i) & 1) != 0) {
         if (((k >>> i) & 1) != 0) {
           lightKings += 1
           lightMaterial += King
@@ -102,12 +91,8 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
           lightMen += 1
           lightMaterial += Man
         }
-      } else {
-        emptySquares |= currentSquareMask
       }
       i += 1
-
-      currentSquareMask = currentSquareMask << 1
     }
 
     var result = 0
@@ -119,12 +104,28 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
 
     if(turnToPlay == color) result += TurnAdvantageBonus
 
+    if(probe != null) {
+      probe.darkMen = darkMen
+      probe.darkKings = darkKings
+      probe.lightMen = lightMen
+      probe.lightKings = lightKings
+      probe.potentialAttacks = potentialAttacks
+      probe.darkAttacks = darkAttacks
+      probe.lightAttacks = lightAttacks
+      probe.safeForDark = safeForDark
+      probe.safeForLight = safeForLight
+    }
+
     if(rulesSettings.giveaway) -result else result
   }
 
 }
 
 class DefaultEvaluatorTestProbe {
+  var darkMen: Int = 0
+  var darkKings: Int = 0
+  var lightMen: Int = 0
+  var lightKings: Int = 0
   var potentialAttacks: Int = 0
   var darkAttacks: Int = 0
   var lightAttacks: Int = 0

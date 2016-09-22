@@ -82,6 +82,17 @@ class MoveDecoder {
     }
     _pathLength = i
   }
+
+  def allPaths(moveList: MoveList): List[List[Int]] = {
+    var i = 0
+    var result = List.empty[List[Int]]
+    while(i < moveList.count) {
+      load(moveList, i)
+      result = pathToList :: result
+      i += 1
+    }
+    result.reverse
+  }
 }
 
 /**
