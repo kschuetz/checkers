@@ -1,8 +1,8 @@
 package checkers.computer
 
 import checkers.consts._
-import checkers.core.MoveExecutorTests._
 import checkers.core._
+import checkers.core.tables.NeighborIndex
 import checkers.test.BoardUtils.BoardStats
 import checkers.test.generators.{BoardGenerators, ColorGenerator}
 import checkers.test.{BoardUtils, DefaultGameLogicTestModule, TestSuiteBase}
@@ -22,19 +22,45 @@ object EvaluatorTests extends TestSuiteBase
   lazy val moveGenerator = gameLogicModule.moveGenerator
   lazy val moveDecoder = new MoveDecoder
   lazy val jumpTable = tablesModule.jumpTable
+  lazy val neighborTable = tablesModule.neighborTable
+  lazy val innerSquares: Set[Int] = BoardUtils.squareMaskToSet(~masks.outer)
 
   private def getMoveList(boardStack: BoardStack, turnToMove: Color): List[List[Int]] = {
     val moveList = moveGenerator.generateMoves(boardStack, turnToMove)
     moveDecoder.allPaths(moveList)
   }
 
-  private def moveToAttack(path: List[Int]): Int = path match {
-    // only consider first move in path;  we only care about immediate attacks
-    case from :: to :: _ => jumpTable.getMiddle(from, to)
-    case _ => -1
+  case class ExpectedAttacks(dark: Set[Int], light: Set[Int])
+
+  private def isColor(color: Color, occupant: Occupant): Boolean = ISPIECE(occupant) && COLOR(occupant) == color
+
+  private def getExpectedAttacks(board: BoardStateRead): ExpectedAttacks = {
+    var dark = Set.empty[Int]
+    var light = Set.empty[Int]
+
+    def evaluateForColor(color: Color, king: Occupant, neighbors: NeighborIndex): Set[Int] = {
+      var result = Set.empty[Int]
+      innerSquares.foreach { idx =>
+        val isAttack = board.isSquareEmpty(idx) && {
+          val forwardW = board.getOccupant(neighbors.forwardMoveW(idx))
+          val forwardE = board.getOccupant(neighbors.forwardMoveE(idx))
+          val backW = board.getOccupant(neighbors.backMoveW(idx))
+          val backE = board.getOccupant(neighbors.backMoveE(idx))
+
+          (isColor(color, backW) && !isColor(color, forwardE)) ||
+            (isColor(color, backE) && !isColor(color, forwardW)) ||
+            (!isColor(color, backW) && forwardE == king) ||
+            (!isColor(color, backE) && forwardW == king)
+        }
+        if(isAttack) result += idx
+      }
+      result
+    }
+
+    ExpectedAttacks(dark = evaluateForColor(DARK, DARKKING, neighborTable.Dark),
+      light = evaluateForColor(LIGHT, LIGHTKING, neighborTable.Light))
   }
 
-  private def movesToAttacks(paths: List[List[Int]]) = paths.map(moveToAttack).filter(_ >= 0).toSet
 
   case class ProbeData(darkMen: Int,
                        darkKings: Int,
@@ -69,8 +95,7 @@ object EvaluatorTests extends TestSuiteBase
                                 probeData: ProbeData,
                                 darkMoves: List[List[Int]],
                                 lightMoves: List[List[Int]],
-                                darkAttacks: Set[Int],
-                                lightAttacks: Set[Int],
+                                expectedAttacks: ExpectedAttacks,
                                 boardStats: BoardStats,
                                 evaluationResult: Int)
 
@@ -81,13 +106,12 @@ object EvaluatorTests extends TestSuiteBase
     val boardStack = BoardStack.fromBoard(board)
     val darkMoves = getMoveList(boardStack, DARK)
     val lightMoves = getMoveList(boardStack, LIGHT)
-    val darkAttacks = movesToAttacks(darkMoves)
-    val lightAttacks = movesToAttacks(lightMoves)
+    val expectedAttacks = getExpectedAttacks(board)
     val boardStats = BoardUtils.getBoardStats(board)
     val testProbe = new DefaultEvaluatorTestProbe
     val evaluationResult = evaluator.evaluate(turnToMove, turnToMove, board, testProbe)
     val probeData = ProbeData.fromTestProbe(testProbe)
-    EvaluatorPropInput(board, turnToMove, probeData, darkMoves, lightMoves, darkAttacks, lightAttacks, boardStats, evaluationResult)
+    EvaluatorPropInput(board, turnToMove, probeData, darkMoves, lightMoves, expectedAttacks, boardStats, evaluationResult)
   }
 
   private def testProbeCheck(name: String, f: (ProbeData, EvaluatorPropInput) => Boolean): Prop[EvaluatorPropInput] =
@@ -98,10 +122,11 @@ object EvaluatorTests extends TestSuiteBase
   lazy val darkKingCount = testProbeCheck("darkKingCount", _.darkKings == _.boardStats.darkKing)
   lazy val lightKingCount = testProbeCheck("lightKingCount", _.lightKings == _.boardStats.lightKing)
 
-  lazy val darkAttacks = testProbeCheck("darkAttacks", _.darkAttackSet == _.darkAttacks)
+  lazy val darkAttacks = testProbeCheck("darkAttacks", _.darkAttackSet == _.expectedAttacks.dark)
+  lazy val lightAttacks = testProbeCheck("lightAttacks", _.lightAttackSet == _.expectedAttacks.light)
 
   lazy val evaluatorPropInputProps = darkManCount & lightManCount & darkKingCount & lightKingCount &
-    darkAttacks
+    darkAttacks & lightAttacks
 
 
   override def tests: Tree[Test] = TestSuite {
