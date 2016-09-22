@@ -70,7 +70,7 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
 
     val lightAttacks = potentialAttacks &
       ((lightNW & (emptySE | darkSE)) |
-        (lightNE & (emptySW | darkNE)) |
+        (lightNE & (emptySW | darkSW)) |
         (lightKingSW & (emptyNE | darkNE)) |
         (lightKingSE & (emptyNW | darkNW)))
 
