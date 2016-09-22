@@ -46,10 +46,10 @@ class MoveExecutor(rulesSettings: RulesSettings,
     boardState.setOccupant(from, EMPTY)
 
     val m = 1 << to
-    if(piece == LIGHTMAN && (m & masks.crownLight) != 0) {
+    if(piece == LIGHTMAN && (m & checkers.masks.CROWNLIGHT) != 0) {
       crowned = true
       boardState.setOccupant(to, LIGHTKING)
-    } else if (piece == DARKMAN && (m & masks.crownDark) != 0) {
+    } else if (piece == DARKMAN && (m & checkers.masks.CROWNDARK) != 0) {
       crowned = true
       boardState.setOccupant(to, DARKKING)
       crowned = true
@@ -79,9 +79,9 @@ class MoveExecutor(rulesSettings: RulesSettings,
       boardState.setOccupant(from, EMPTY)
 
       val m = 1 << to
-      if(piece == LIGHTMAN && (m & masks.crownLight) != 0) {
+      if(piece == LIGHTMAN && (m & checkers.masks.CROWNLIGHT) != 0) {
         boardState.setOccupant(to, LIGHTKING)
-      } else if (piece == DARKMAN && (m & masks.crownDark) != 0) {
+      } else if (piece == DARKMAN && (m & checkers.masks.CROWNDARK) != 0) {
         boardState.setOccupant(to, DARKKING)
       } else {
         boardState.setOccupant(to, piece)

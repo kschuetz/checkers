@@ -1,10 +1,8 @@
 package checkers.computer
 
 import checkers.consts._
-import checkers.masks._
 import checkers.core.{BoardStateRead, RulesSettings}
-
-import scala.scalajs.js.typedarray.Int32Array
+import checkers.masks._
 
 
 class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
@@ -27,8 +25,6 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
   private val TurnAdvantageBonus = 3
   private val RunawayBaseBonus = 50
   private val BackRankBonus = 6
-
-  private val innerSquares = ~checkers.core.masks.outer
 
   def evaluate(color: Color, turnToPlay: Color, board: BoardStateRead, testProbe: AnyRef = null): Int = {
     val probe = if (testProbe == null) null else testProbe.asInstanceOf[DefaultEvaluatorTestProbe]
@@ -60,7 +56,7 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
     val lightKingSW = lightSW & kingSW
     val lightKingSE = lightSE & kingSE
 
-    val potentialAttacks = innerSquares & notOccupied
+    val potentialAttacks = INNER & notOccupied
 
     val darkAttacks = potentialAttacks &
       ((darkSW & (emptyNE | lightNE)) |

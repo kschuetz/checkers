@@ -23,7 +23,7 @@ object EvaluatorTests extends TestSuiteBase
   lazy val moveDecoder = new MoveDecoder
   lazy val jumpTable = tablesModule.jumpTable
   lazy val neighborTable = tablesModule.neighborTable
-  lazy val innerSquares: Set[Int] = BoardUtils.squareMaskToSet(~masks.outer)
+  lazy val innerSquares: Set[Int] = BoardUtils.squareMaskToSet(checkers.masks.INNER)
 
   private def getMoveList(boardStack: BoardStack, turnToMove: Color): List[List[Int]] = {
     val moveList = moveGenerator.generateMoves(boardStack, turnToMove)
