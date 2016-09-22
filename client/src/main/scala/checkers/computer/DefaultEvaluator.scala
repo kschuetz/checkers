@@ -7,7 +7,7 @@ import scala.scalajs.js.typedarray.Int32Array
 
 
 class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
-  
+
   import masks._
 
   //           28  29  30  31
@@ -31,13 +31,13 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
   private val innerSquares = ~masks.outer
 
   def evaluate(color: Color, turnToPlay: Color, board: BoardStateRead, testProbe: AnyRef = null): Int = {
-    val probe = if(testProbe == null) null else testProbe.asInstanceOf[DefaultEvaluatorTestProbe]
+    val probe = if (testProbe == null) null else testProbe.asInstanceOf[DefaultEvaluatorTestProbe]
 
     val k = board.kings
     val lp = board.lightPieces
     val dp = board.darkPieces
     val notOccupied = ~(lp | dp)
-    
+
     val darkNW = shiftSE(dp)
     val darkNE = shiftSW(dp)
     val darkSW = shiftNE(dp)
@@ -55,14 +55,25 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
     val kingSW = shiftNE(k)
     val kingSE = shiftNW(k)
 
+    val darkKingNW = darkNW & kingNW
+    val darkKingNE = darkNE & kingNE
+    val lightKingSW = lightSW & kingSW
+    val lightKingSE = lightSE & kingSE
+
     val potentialAttacks = innerSquares & notOccupied
 
     val darkAttacks = potentialAttacks &
-      ((darkSW & emptyNE) | (darkSE & emptyNW) | (darkNW & kingNW & emptySE) | (darkNE & kingNE & emptySW))
-    
+      ((darkSW & (emptyNE | lightNE)) |
+        (darkSE & (emptyNW | lightNW)) |
+        (darkKingNW & (emptySE | lightSE)) |
+        (darkKingNE & (emptySW | lightSW)))
+
     val lightAttacks = potentialAttacks &
-      ((lightNW & emptySE) | (lightNE & emptySW) | (lightSW & kingSW & emptyNE) | (lightSE & kingSE & emptyNW))
-    
+      ((lightNW & (emptySE | darkSE)) |
+        (lightNE & (emptySW | darkNE)) |
+        (lightKingSW & (emptyNE | darkNE)) |
+        (lightKingSE & (emptyNW | darkNW)))
+
     val safeForDark = notOccupied & (~lightAttacks)
     val safeForLight = notOccupied & (~darkAttacks)
 
@@ -74,16 +85,16 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
     var lightMaterial = 0
 
     var i = 0
-    while(i < 32) {
-      if(((dp >>> i) & 1) != 0) {
-        if(((k >>> i) & 1) != 0) {
+    while (i < 32) {
+      if (((dp >>> i) & 1) != 0) {
+        if (((k >>> i) & 1) != 0) {
           darkKings += 1
           darkMaterial += King
         } else {
           darkMen += 1
           darkMaterial += Man
         }
-      } else if(((lp >>> i) & 1) != 0) {
+      } else if (((lp >>> i) & 1) != 0) {
         if (((k >>> i) & 1) != 0) {
           lightKings += 1
           lightMaterial += King
@@ -96,15 +107,15 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
     }
 
     var result = 0
-    if(color == DARK) {
+    if (color == DARK) {
       result += darkMaterial - lightMaterial
     } else {
       result += lightMaterial - darkMaterial
     }
 
-    if(turnToPlay == color) result += TurnAdvantageBonus
+    if (turnToPlay == color) result += TurnAdvantageBonus
 
-    if(probe != null) {
+    if (probe != null) {
       probe.darkMen = darkMen
       probe.darkKings = darkKings
       probe.lightMen = lightMen
@@ -116,7 +127,7 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
       probe.safeForLight = safeForLight
     }
 
-    if(rulesSettings.giveaway) -result else result
+    if (rulesSettings.giveaway) -result else result
   }
 
 }
