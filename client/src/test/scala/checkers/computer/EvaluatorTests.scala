@@ -118,7 +118,7 @@ object EvaluatorTests extends TestSuiteBase
     val expectedAttacks = getExpectedAttacks(board)
     val boardStats = BoardUtils.getBoardStats(board)
     val testProbe = new DefaultEvaluatorTestProbe
-    val evaluationResult = evaluator.evaluate(turnToMove, turnToMove, board, testProbe)
+    val evaluationResult = evaluator.evaluate(turnToMove, board, testProbe)
     val probeData = ProbeData.fromTestProbe(testProbe)
     EvaluatorPropInput(board, turnToMove, probeData, darkMoves, lightMoves, expectedAttacks, boardStats, evaluationResult)
   }

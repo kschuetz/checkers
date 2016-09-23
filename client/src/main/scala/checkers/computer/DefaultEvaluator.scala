@@ -27,7 +27,7 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
   private val RunawayBaseBonus = 50
   private val BackRankBonus = 6
 
-  def evaluate(color: Color, turnToPlay: Color, board: BoardStateRead, testProbe: AnyRef = null): Int = {
+  def evaluate(turnToPlay: Color, board: BoardStateRead, testProbe: AnyRef = null): Int = {
     val probe = if (testProbe == null) null else testProbe.asInstanceOf[DefaultEvaluatorTestProbe]
 
     val k = board.kings
@@ -114,14 +114,12 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
       i += 1
     }
 
-    var result = 0
-    if (color == DARK) {
+    var result = TurnAdvantageBonus
+    if (turnToPlay == DARK) {
       result += darkMaterial - lightMaterial
     } else {
       result += lightMaterial - darkMaterial
     }
-
-    if (turnToPlay == color) result += TurnAdvantageBonus
 
     if (probe != null) {
       val darkTrappedKingLocations = (~darkCanEscape) & k & dp

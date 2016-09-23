@@ -55,7 +55,7 @@ class Searcher(gameLogicModule: GameLogicModule,
             moveDecoder.load(candidates, nextMovePtr)
             moveExecutor.executeFromMoveDecoder(boardStack, moveDecoder)
             if (depth <= 0) {
-              val value = evaluator.evaluate(turnToMove, turnToMove, boardStack)
+              val value = evaluator.evaluate(turnToMove, boardStack)
               if (value >= beta) {
                 betaCutoffCount += 1
                 parent.answer(beta)
