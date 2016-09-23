@@ -63,10 +63,13 @@ object EvaluatorTests extends TestSuiteBase
 
 
   case class ProbeDataSide(manCount: Int,
-                       kingCount: Int,
-                       attackMask: Int,
-                       safeMask: Int,
-                       attackSet: Set[Int])
+                           kingCount: Int,
+                           attackMask: Int,
+                           safeMask: Int,
+                           canEscapeMask: Int,
+                           trappedKingMask: Int,
+                           attackSet: Set[Int],
+                           trappedKingSet: Set[Int])
 
   case class ProbeData(dark: ProbeDataSide,
                        light: ProbeDataSide,
@@ -78,14 +81,20 @@ object EvaluatorTests extends TestSuiteBase
         input.darkKingCount,
         input.darkAttackMask,
         input.darkSafeMask,
-        attackSet = BoardUtils.squareMaskToSet(input.darkAttackMask))
+        input.darkCanEscapeMask,
+        input.darkTrappedKingMask,
+        attackSet = BoardUtils.squareMaskToSet(input.darkAttackMask),
+        trappedKingSet = BoardUtils.squareMaskToSet(input.darkTrappedKingMask))
 
       val light = ProbeDataSide(input.lightManCount,
         input.lightKingCount,
         input.lightAttackMask,
         input.lightSafeMask,
-        attackSet = BoardUtils.squareMaskToSet(input.lightAttackMask))
-      
+        input.lightCanEscapeMask,
+        input.lightTrappedKingMask,
+        attackSet = BoardUtils.squareMaskToSet(input.lightAttackMask),
+        trappedKingSet = BoardUtils.squareMaskToSet(input.lightTrappedKingMask))
+
       ProbeData(dark, light, input.potentialAttackMask)
     }
   }
