@@ -52,7 +52,7 @@ object EvaluatorTests extends TestSuiteBase
             (!isColor(color, backW) && forwardE == king) ||
             (!isColor(color, backE) && forwardW == king)
         }
-        if(isAttack) result += idx
+        if (isAttack) result += idx
       }
       result
     }
@@ -62,31 +62,31 @@ object EvaluatorTests extends TestSuiteBase
   }
 
 
-  case class ProbeData(darkMen: Int,
-                       darkKings: Int,
-                       lightMen: Int,
-                       lightKings: Int,
-                       potentialAttacks: Int,
-                       darkAttacks: Int,
-                       lightAttacks: Int,
-                       safeForDark: Int,
-                       safeForLight: Int,
-                       darkAttackSet: Set[Int],
-                       lightAttackSet: Set[Int])
+  case class ProbeDataSide(manCount: Int,
+                       kingCount: Int,
+                       attackMask: Int,
+                       safeMask: Int,
+                       attackSet: Set[Int])
+
+  case class ProbeData(dark: ProbeDataSide,
+                       light: ProbeDataSide,
+                       potentialAttackMask: Int)
 
   object ProbeData {
     def fromTestProbe(input: DefaultEvaluatorTestProbe): ProbeData = {
-      ProbeData(input.darkManCount,
+      val dark = ProbeDataSide(input.darkManCount,
         input.darkKingCount,
-        input.lightManCount,
+        input.darkAttackMask,
+        input.darkSafeMask,
+        attackSet = BoardUtils.squareMaskToSet(input.darkAttackMask))
+
+      val light = ProbeDataSide(input.lightManCount,
         input.lightKingCount,
-        input.potentialAttacks,
-        input.darkAttacks,
-        input.lightAttacks,
-        input.safeForDark,
-        input.safeForLight,
-        darkAttackSet = BoardUtils.squareMaskToSet(input.darkAttacks),
-        lightAttackSet = BoardUtils.squareMaskToSet(input.lightAttacks))
+        input.lightAttackMask,
+        input.lightSafeMask,
+        attackSet = BoardUtils.squareMaskToSet(input.lightAttackMask))
+      
+      ProbeData(dark, light, input.potentialAttackMask)
     }
   }
 
@@ -117,13 +117,13 @@ object EvaluatorTests extends TestSuiteBase
   private def testProbeCheck(name: String, f: (ProbeData, EvaluatorPropInput) => Boolean): Prop[EvaluatorPropInput] =
     Prop.test(name, { input => f(input.probeData, input) })
 
-  lazy val darkManCount = testProbeCheck("darkManCount", _.darkMen == _.boardStats.darkMan)
-  lazy val lightManCount = testProbeCheck("lightManCount", _.lightMen == _.boardStats.lightMan)
-  lazy val darkKingCount = testProbeCheck("darkKingCount", _.darkKings == _.boardStats.darkKing)
-  lazy val lightKingCount = testProbeCheck("lightKingCount", _.lightKings == _.boardStats.lightKing)
+  lazy val darkManCount = testProbeCheck("darkManCount", _.dark.manCount == _.boardStats.darkMan)
+  lazy val lightManCount = testProbeCheck("lightManCount", _.light.manCount == _.boardStats.lightMan)
+  lazy val darkKingCount = testProbeCheck("darkKingCount", _.dark.kingCount == _.boardStats.darkKing)
+  lazy val lightKingCount = testProbeCheck("lightKingCount", _.light.kingCount == _.boardStats.lightKing)
 
-  lazy val darkAttacks = testProbeCheck("darkAttacks", _.darkAttackSet == _.expectedAttacks.dark)
-  lazy val lightAttacks = testProbeCheck("lightAttacks", _.lightAttackSet == _.expectedAttacks.light)
+  lazy val darkAttacks = testProbeCheck("darkAttacks", _.dark.attackSet == _.expectedAttacks.dark)
+  lazy val lightAttacks = testProbeCheck("lightAttacks", _.light.attackSet == _.expectedAttacks.light)
 
   lazy val evaluatorPropInputProps = darkManCount & lightManCount & darkKingCount & lightKingCount &
     darkAttacks & lightAttacks

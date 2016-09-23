@@ -22,6 +22,7 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
   private val King = 150
 
   private val DogHoleBonus = 10
+  private val TrappedKingPenalty = 50
   private val TurnAdvantageBonus = 3
   private val RunawayBaseBonus = 50
   private val BackRankBonus = 6
@@ -123,19 +124,24 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
     if (turnToPlay == color) result += TurnAdvantageBonus
 
     if (probe != null) {
+      val darkTrappedKingLocations = (~darkCanEscape) & k & dp
+      val lightTrappedKingLocations = (~lightCanEscape) & k & lp
+
       probe.darkManCount = darkMen
       probe.darkKingCount = darkKings
       probe.darkTrappedKingCount = darkTrappedKings
       probe.lightManCount = lightMen
       probe.lightKingCount = lightKings
       probe.lightTrappedKingCount = lightTrappedKings
-      probe.potentialAttacks = potentialAttacks
-      probe.darkAttacks = darkAttacks
-      probe.lightAttacks = lightAttacks
-      probe.safeForDark = safeForDark
-      probe.safeForLight = safeForLight
-      probe.darkCanEscape = darkCanEscape
-      probe.lightCanEscape = lightCanEscape
+      probe.potentialAttackMask = potentialAttacks
+      probe.darkAttackMask = darkAttacks
+      probe.lightAttackMask = lightAttacks
+      probe.darkSafeMask = safeForDark
+      probe.lightSafeMask = safeForLight
+      probe.darkCanEscapeMask = darkCanEscape
+      probe.lightCanEscapeMask = lightCanEscape
+      probe.darkTrappedKingMask = darkTrappedKingLocations
+      probe.lightTrappedKingMask = lightTrappedKingLocations
     }
 
     if (rulesSettings.giveaway) -result else result
@@ -150,12 +156,14 @@ class DefaultEvaluatorTestProbe {
   var lightManCount: Int = 0
   var lightKingCount: Int = 0
   var lightTrappedKingCount: Int = 0
-  var potentialAttacks: Int = 0
-  var darkAttacks: Int = 0
-  var lightAttacks: Int = 0
-  var safeForDark: Int = 0
-  var safeForLight: Int = 0
-  var darkCanEscape: Int = 0
-  var lightCanEscape: Int = 0
+  var potentialAttackMask: Int = 0
+  var darkAttackMask: Int = 0
+  var lightAttackMask: Int = 0
+  var darkSafeMask: Int = 0
+  var lightSafeMask: Int = 0
+  var darkCanEscapeMask: Int = 0
+  var lightCanEscapeMask: Int = 0
+  var darkTrappedKingMask: Int = 0
+  var lightTrappedKingMask: Int = 0
 
 }
