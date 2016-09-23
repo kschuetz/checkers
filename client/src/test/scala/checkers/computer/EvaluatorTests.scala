@@ -76,10 +76,10 @@ object EvaluatorTests extends TestSuiteBase
 
   object ProbeData {
     def fromTestProbe(input: DefaultEvaluatorTestProbe): ProbeData = {
-      ProbeData(input.darkMen,
-        input.darkKings,
-        input.lightMen,
-        input.lightKings,
+      ProbeData(input.darkManCount,
+        input.darkKingCount,
+        input.lightManCount,
+        input.lightKingCount,
         input.potentialAttacks,
         input.darkAttacks,
         input.lightAttacks,

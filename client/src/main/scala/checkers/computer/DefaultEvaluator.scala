@@ -73,12 +73,17 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
     val safeForDark = notOccupied & (~lightAttacks)
     val safeForLight = notOccupied & (~darkAttacks)
 
+    val darkCanEscape = SHIFTNW(safeForDark) | SHIFTNE(safeForDark) | SHIFTSW(safeForDark) | SHIFTSE(safeForDark)
+    val lightCanEscape = SHIFTNW(safeForLight) | SHIFTNE(safeForLight) | SHIFTSW(safeForLight) | SHIFTSE(safeForLight)
+
     var darkMen = 0
     var darkKings = 0
     var lightMen = 0
     var lightKings = 0
     var darkMaterial = 0
     var lightMaterial = 0
+    var darkTrappedKings = 0
+    var lightTrappedKings = 0
 
     var i = 0
     while (i < 32) {
@@ -86,6 +91,9 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
         if (((k >>> i) & 1) != 0) {
           darkKings += 1
           darkMaterial += King
+          if(((darkCanEscape >>> i) & 1) == 0) {
+            darkTrappedKings += 1
+          }
         } else {
           darkMen += 1
           darkMaterial += Man
@@ -94,6 +102,9 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
         if (((k >>> i) & 1) != 0) {
           lightKings += 1
           lightMaterial += King
+          if(((lightCanEscape >>> i) & 1) == 0) {
+            lightTrappedKings += 1
+          }
         } else {
           lightMen += 1
           lightMaterial += Man
@@ -112,15 +123,19 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
     if (turnToPlay == color) result += TurnAdvantageBonus
 
     if (probe != null) {
-      probe.darkMen = darkMen
-      probe.darkKings = darkKings
-      probe.lightMen = lightMen
-      probe.lightKings = lightKings
+      probe.darkManCount = darkMen
+      probe.darkKingCount = darkKings
+      probe.darkTrappedKingCount = darkTrappedKings
+      probe.lightManCount = lightMen
+      probe.lightKingCount = lightKings
+      probe.lightTrappedKingCount = lightTrappedKings
       probe.potentialAttacks = potentialAttacks
       probe.darkAttacks = darkAttacks
       probe.lightAttacks = lightAttacks
       probe.safeForDark = safeForDark
       probe.safeForLight = safeForLight
+      probe.darkCanEscape = darkCanEscape
+      probe.lightCanEscape = lightCanEscape
     }
 
     if (rulesSettings.giveaway) -result else result
@@ -129,13 +144,18 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
 }
 
 class DefaultEvaluatorTestProbe {
-  var darkMen: Int = 0
-  var darkKings: Int = 0
-  var lightMen: Int = 0
-  var lightKings: Int = 0
+  var darkManCount: Int = 0
+  var darkKingCount: Int = 0
+  var darkTrappedKingCount: Int = 0
+  var lightManCount: Int = 0
+  var lightKingCount: Int = 0
+  var lightTrappedKingCount: Int = 0
   var potentialAttacks: Int = 0
   var darkAttacks: Int = 0
   var lightAttacks: Int = 0
   var safeForDark: Int = 0
   var safeForLight: Int = 0
+  var darkCanEscape: Int = 0
+  var lightCanEscape: Int = 0
+
 }
