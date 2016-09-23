@@ -41,7 +41,7 @@ object DynamicScene {
       val pieceRotation = if (boardRotation != 0) -boardRotation else 0
       val pieceScale = 1.0d
 
-      val piecesToHide = model.animations.foldLeft(Set.empty[Int]) {
+      val piecesToHide = model.animation.play.foldLeft(Set.empty[Int]) {
         case (res, anim: HidesStaticPiece) => res + anim.hidesPieceAtSquare
         case (res, _) => res
       }
@@ -102,7 +102,7 @@ object DynamicScene {
 
       val animations = new js.Array[ReactNode]
       val nowTime = model.nowTime
-      model.animations.foreach {
+      model.animation.play.foreach {
           case rp: RemovingPiece =>
             val k = s"remove-${rp.fromSquare}"
             val progress = rp.linearProgress(nowTime)

@@ -3,11 +3,9 @@ package checkers.core
 import checkers.components.BoardMouseEvent
 import checkers.computer.PlayInput
 import checkers.consts._
-import checkers.core.Animation.RotatingBoardAnimation
 import checkers.core.BeginTurnEvaluation._
 import checkers.core.InputPhase._
 import checkers.geometry.Point
-import checkers.test.BoardExperiments
 
 
 class GameDriver(gameLogicModule: GameLogicModule)
@@ -35,8 +33,7 @@ class GameDriver(gameLogicModule: GameLogicModule)
         boardOrientation = BoardOrientation.Normal,
         pickedUpPiece = None,
         squareAttributesVector = SquareAttributesVector.default,
-        rotateAnimation = None,
-        animations = List.empty)
+        animation = AnimationModel.empty)
 
       schedulePlacePieces(m1)
     }
@@ -45,18 +42,19 @@ class GameDriver(gameLogicModule: GameLogicModule)
   }
 
   def rotateBoard(model: Model): Option[Model] = {
-    if(model.rotateAnimation.nonEmpty) None  // ignore if flip is already in progress
+    if(model.animation.rotate.nonEmpty) None  // ignore if flip is already in progress
     else {
       val target = model.boardOrientation.opposite
       val anim = animationPlanner.createBoardRotateAnimation(model.nowTime)
+      val animModel = model.animation.copy(rotate = Some(anim))
       println(s"rotating board: $anim")
-      Some(model.copy(boardOrientation = target, rotateAnimation = Some(anim)))
+      Some(model.copy(boardOrientation = target, animation = animModel))
     }
   }
 
   private def schedulePlacePieces(model: Model): Model = {
-    val input = PlacePiecesAnimationInput(model.nowTime, model.animations, model.board)
-    animationPlanner.placeAllPieces(input).fold(model)(model.withNewAnimations)
+    val input = PlacePiecesAnimationInput(model.nowTime, model.animation, model.board)
+    animationPlanner.placeAllPieces(input).fold(model)(model.withAnimationModel)
   }
 
   private def applyPlay(gameModel: Model, play: Play): Option[(PlayEvents, Model)] = {
@@ -328,17 +326,17 @@ class GameDriver(gameLogicModule: GameLogicModule)
 
   private def scheduleMoveAnimations(model: Model, moveInfo: List[MoveInfo], isComputerPlayer: Boolean): Model = {
     val currentPlayer = model.gameState.currentPlayer
-    val input = MoveAnimationPlanInput(nowTime = model.nowTime, existingAnimations = model.animations,
+    val input = MoveAnimationPlanInput(nowTime = model.nowTime, animationModel = model.animation,
       isComputerPlayer = isComputerPlayer, moveInfo = moveInfo)
-    animationPlanner.scheduleMoveAnimations(input).fold(model)(model.withNewAnimations)
+    animationPlanner.scheduleMoveAnimations(input).fold(model)(model.withAnimationModel)
   }
 
   private def handleIllegalPieceSelection(model: Model, squareIndex: Int, piece: Occupant): Option[Model] = {
     if (ISEMPTY(piece)) None
     else Some({
-      val input = IllegalPieceAnimationInput(nowTime = model.nowTime, existingAnimations = model.animations,
+      val input = IllegalPieceAnimationInput(nowTime = model.nowTime, animationModel = model.animation,
         piece = piece, squareIndex = squareIndex)
-      animationPlanner.illegalPieceSelection(input).fold(model)(model.withNewAnimations)
+      animationPlanner.illegalPieceSelection(input).fold(model)(model.withAnimationModel)
     })
 
   }

@@ -1,7 +1,6 @@
 package checkers.core
 
 import checkers.consts._
-import checkers.core.Animation.RotatingBoardAnimation
 import checkers.core.InputPhase.ComputerThinking
 import checkers.util.Easing
 
@@ -35,9 +34,7 @@ trait GameModelReader {
 
   def squareAttributes: Vector[SquareAttributes]
 
-  def rotateAnimation: Option[RotatingBoardAnimation]
-
-  def animations: List[Animation]
+  def animation: AnimationModel
 
   def getBoardRotation: Double
 
@@ -54,17 +51,14 @@ case class GameModel(nowTime: Double,
                      boardOrientation: BoardOrientation,
                      pickedUpPiece: Option[PickedUpPiece],
                      squareAttributesVector: SquareAttributesVector,
-                     rotateAnimation: Option[RotatingBoardAnimation],
-                     animations: List[Animation]) extends GameModelReader {
+                     animation: AnimationModel) extends GameModelReader {
 
   /**
     * Has any animations that affect game play (e.g. moving a piece)
     */
-  def hasActivePlayAnimations: Boolean =
-    animations.exists(_.isActive(nowTime))
+  def hasActivePlayAnimations: Boolean = animation.hasActivePlayAnimations(nowTime)
 
-  def hasActiveAnimations: Boolean =
-    hasActivePlayAnimations || rotateAnimation.exists(_.isActive(nowTime))
+  def hasActiveAnimations: Boolean = animation.hasActiveAnimations(nowTime)
 
   def hasActiveComputation: Boolean = inputPhase.waitingForComputer
 
@@ -78,10 +72,10 @@ case class GameModel(nowTime: Double,
     }
   }
 
-  def withNewAnimations(newAnimations: List[Animation]) = copy(animations = newAnimations)
+  def withAnimationModel(newAnimationModel: AnimationModel) = copy(animation = newAnimationModel)
 
   def getBoardRotation: Double = {
-    val offset = rotateAnimation.map { anim =>
+    val offset = animation.rotate.map { anim =>
       val t = anim.linearProgress(nowTime)
       val amount = 1.0 - Easing.easeInOutQuart(t)
 
@@ -92,10 +86,8 @@ case class GameModel(nowTime: Double,
   }
 
   def updateNowTime(newTime: Double): GameModel = {
-    val newAnimations = animations.filterNot(_.isExpired(newTime))
-    val newFlip = rotateAnimation.filterNot(_.isExpired(newTime))
-
-    copy(nowTime = newTime, animations = newAnimations, rotateAnimation = newFlip)
+    val newAnimation = animation.updateNowTime(newTime)
+    copy(nowTime = newTime, animation = newAnimation)
   }
 
   override def ruleSettings: RulesSettings = gameState.rulesSettings

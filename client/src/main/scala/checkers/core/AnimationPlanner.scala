@@ -3,24 +3,24 @@ package checkers.core
 import checkers.consts._
 
 case class MoveAnimationPlanInput(nowTime: Double,
-                                  existingAnimations: List[Animation],
+                                  animationModel: AnimationModel,
                                   isComputerPlayer: Boolean,
                                   moveInfo: List[MoveInfo])
 
 case class IllegalPieceAnimationInput(nowTime: Double,
-                                      existingAnimations: List[Animation],
+                                      animationModel: AnimationModel,
                                       piece: Occupant,
                                       squareIndex: Int)
 
 case class PlacePiecesAnimationInput(nowTime: Double,
-                                     existingAnimations: List[Animation],
+                                     animationModel: AnimationModel,
                                      boardState: BoardStateRead)
 
 class AnimationPlanner(settings: AnimationSettings) {
 
   import Animation._
 
-  def scheduleMoveAnimations(input: MoveAnimationPlanInput): Option[List[Animation]] = {
+  def scheduleMoveAnimations(input: MoveAnimationPlanInput): Option[AnimationModel] = {
 
     println(s"scheduleMoveAnimations: $input")
 
@@ -124,19 +124,19 @@ class AnimationPlanner(settings: AnimationSettings) {
       case Nil => None
       case anims =>
         println(s"scheduling anims: $anims")
-        Some(input.existingAnimations ++ anims)
+        Some(input.animationModel.addPlayAnims(anims))
     }
   }
 
-  def illegalPieceSelection(input: IllegalPieceAnimationInput): Option[List[Animation]] = {
+  def illegalPieceSelection(input: IllegalPieceAnimationInput): Option[AnimationModel] = {
     val startMovingTime = input.nowTime
 
     val animation = IllegalPieceSelection(input.piece, input.squareIndex, input.nowTime,
       startMovingTime, startMovingTime + settings.IllegalPieceSelectionDurationMillis)
-    Some(animation :: input.existingAnimations)
+    Some(input.animationModel.addPlayAnim(animation))
   }
 
-  def placeAllPieces(input: PlacePiecesAnimationInput): Option[List[Animation]] = {
+  def placeAllPieces(input: PlacePiecesAnimationInput): Option[AnimationModel] = {
     val interval = settings.PlacePiecesIntervalMillis
     val duration = settings.PlacePieceDurationMillis
     val boardState = input.boardState
@@ -166,7 +166,7 @@ class AnimationPlanner(settings: AnimationSettings) {
       case Nil => None
       case anims =>
         println(s"scheduling placement anims: $anims")
-        Some(input.existingAnimations ++ anims)
+        Some(input.animationModel.addPlayAnims(anims))
     }
 
   }
