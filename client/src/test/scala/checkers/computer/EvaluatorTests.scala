@@ -30,14 +30,11 @@ object EvaluatorTests extends TestSuiteBase
     moveDecoder.allPaths(moveList)
   }
 
-  case class ExpectedAttacks(dark: Set[Int], light: Set[Int])
+  case class ExpectedSquares(dark: Set[Int], light: Set[Int])
 
   private def isColor(color: Color, occupant: Occupant): Boolean = ISPIECE(occupant) && COLOR(occupant) == color
 
-  private def getExpectedAttacks(board: BoardStateRead): ExpectedAttacks = {
-    var dark = Set.empty[Int]
-    var light = Set.empty[Int]
-
+  private def getExpectedAttacks(board: BoardStateRead): ExpectedSquares = {
     def evaluateForColor(color: Color, king: Occupant, neighbors: NeighborIndex): Set[Int] = {
       var result = Set.empty[Int]
       innerSquares.foreach { idx =>
@@ -57,7 +54,55 @@ object EvaluatorTests extends TestSuiteBase
       result
     }
 
-    ExpectedAttacks(dark = evaluateForColor(DARK, DARKKING, neighborTable.Dark),
+    ExpectedSquares(dark = evaluateForColor(DARK, DARKKING, neighborTable.Dark),
+      light = evaluateForColor(LIGHT, LIGHTKING, neighborTable.Light))
+  }
+
+  private def getExpectedTrappedKings(board: BoardStateRead): ExpectedSquares = {
+    def evaluateForColor(color: Color, king: Occupant, neighbors: NeighborIndex): Set[Int] = {
+      val opponent = OPPONENT(color)
+      val opponentAt = board.squareHasColor(opponent) _
+      var result = Set.empty[Int]
+
+      def checkEscape(forward: Int, move: Int, jump: Int, right: Int): Boolean = {
+        if(move < 0 || !board.isSquareEmpty(move)) return false
+        if(jump >= 0 && opponentAt(jump)) return false
+        if(forward < 0 || right < 0) return true
+        if(opponentAt(forward)) {
+          board.isSquareEmpty(right)
+        } else if(opponentAt(right)) {
+          board.isSquareEmpty(forward)
+        } else true
+      }
+
+      Board.playableSquares.foreach { square =>
+        if(board.getOccupant(square) == king) {
+          val canEscape =
+            checkEscape(neighbors.forwardTwo(square),
+              neighbors.forwardMoveE(square),
+              neighbors.forwardJumpE(square),
+              neighbors.rightTwo(square)) ||
+            checkEscape(neighbors.forwardTwo(square),
+              neighbors.forwardMoveW(square),
+              neighbors.forwardJumpW(square),
+              neighbors.leftTwo(square)) ||
+            checkEscape(neighbors.backTwo(square),
+              neighbors.backMoveE(square),
+              neighbors.backJumpE(square),
+              neighbors.rightTwo(square)) ||
+            checkEscape(neighbors.backTwo(square),
+              neighbors.backMoveW(square),
+              neighbors.backJumpW(square),
+              neighbors.leftTwo(square))
+
+          if(!canEscape) result += square
+        }
+      }
+
+      result
+    }
+
+    ExpectedSquares(dark = evaluateForColor(DARK, DARKKING, neighborTable.Dark),
       light = evaluateForColor(LIGHT, LIGHTKING, neighborTable.Light))
   }
 
@@ -104,7 +149,8 @@ object EvaluatorTests extends TestSuiteBase
                                 probeData: ProbeData,
                                 darkMoves: List[List[Int]],
                                 lightMoves: List[List[Int]],
-                                expectedAttacks: ExpectedAttacks,
+                                expectedAttacks: ExpectedSquares,
+                                expectedTrappedKings: ExpectedSquares,
                                 boardStats: BoardStats,
                                 evaluationResult: Int)
 
@@ -116,11 +162,13 @@ object EvaluatorTests extends TestSuiteBase
     val darkMoves = getMoveList(boardStack, DARK)
     val lightMoves = getMoveList(boardStack, LIGHT)
     val expectedAttacks = getExpectedAttacks(board)
+    val expectedTrappedKings = getExpectedTrappedKings(board)
     val boardStats = BoardUtils.getBoardStats(board)
     val testProbe = new DefaultEvaluatorTestProbe
     val evaluationResult = evaluator.evaluate(turnToMove, board, testProbe)
     val probeData = ProbeData.fromTestProbe(testProbe)
-    EvaluatorPropInput(board, turnToMove, probeData, darkMoves, lightMoves, expectedAttacks, boardStats, evaluationResult)
+    EvaluatorPropInput(board, turnToMove, probeData, darkMoves, lightMoves, expectedAttacks, expectedTrappedKings,
+      boardStats, evaluationResult)
   }
 
   private def testProbeCheck(name: String, f: (ProbeData, EvaluatorPropInput) => Boolean): Prop[EvaluatorPropInput] =
