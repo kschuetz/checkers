@@ -15,8 +15,8 @@ case class NeighborIndex(forwardMoveW: js.Array[Int],
                          backJumpW: js.Array[Int],
                          backJumpE: js.Array[Int],
                          backTwo:   js.Array[Int],
-                         leftTwo:  js.Array[Int],
-                         rightTwo: js.Array[Int])
+                         twoW:  js.Array[Int],
+                         twoE: js.Array[Int])
 
 class NeighborTable {
   import NeighborTable._
@@ -46,8 +46,8 @@ class NeighborTable {
     backJumpW = jumpSW,
     backJumpE = jumpSE,
     backTwo = twoS,
-    leftTwo = twoW,
-    rightTwo = twoE)
+    twoW = twoE,
+    twoE = twoW)
 
   val Light = NeighborIndex(forwardMoveW = moveSW,
     forwardMoveE = moveSE,
@@ -59,8 +59,8 @@ class NeighborTable {
     backJumpW = jumpNW,
     backJumpE = jumpNE,
     backTwo = twoN,
-    leftTwo = twoE,
-    rightTwo = twoW)
+    twoW = twoE,
+    twoE = twoW)
 
 
   def forColor(color: Color): NeighborIndex = {

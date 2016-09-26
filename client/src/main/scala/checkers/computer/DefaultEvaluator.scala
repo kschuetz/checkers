@@ -47,6 +47,10 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
     val emptyNE = SHIFTSW(notOccupied)
     val emptySW = SHIFTNE(notOccupied)
     val emptySE = SHIFTNW(notOccupied)
+    val emptyNW2 = SHIFTSE(emptyNW)
+    val emptyNE2 = SHIFTSE(emptyNE)
+    val emptySW2 = SHIFTSE(emptySW)
+    val emptySE2 = SHIFTSE(emptySE)
     val kingNW = SHIFTSE(k)
     val kingNE = SHIFTSW(k)
     val kingSW = SHIFTNE(k)
@@ -71,11 +75,24 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
         (lightKingSW & (emptyNE | darkNE)) |
         (lightKingSE & (emptyNW | darkNW)))
 
+    val darkKingCanJump = dp & k & ((emptyNE2 & lightNE) |
+      (emptySE2 & lightSE) |
+      (emptySW2 & lightSW) |
+      (emptyNW2 & lightNW))
+
+    val lightKingCanJump = lp & k & ((emptyNE2 & darkNE) |
+      (emptySE2 & darkSE) |
+      (emptySW2 & darkSW) |
+      (emptyNW2 & darkNW))
+
     val safeForDark = notOccupied & (~lightAttacks)
     val safeForLight = notOccupied & (~darkAttacks)
 
-    val darkCanEscape = SHIFTNW(safeForDark) | SHIFTNE(safeForDark) | SHIFTSW(safeForDark) | SHIFTSE(safeForDark)
-    val lightCanEscape = SHIFTNW(safeForLight) | SHIFTNE(safeForLight) | SHIFTSW(safeForLight) | SHIFTSE(safeForLight)
+    val darkEscapeMove = SHIFTNW(safeForDark) | SHIFTNE(safeForDark) | SHIFTSW(safeForDark) | SHIFTSE(safeForDark)
+    val lightEscapeMove = SHIFTNW(safeForLight) | SHIFTNE(safeForLight) | SHIFTSW(safeForLight) | SHIFTSE(safeForLight)
+
+    val darkCanEscape = darkEscapeMove | darkKingCanJump
+    val lightCanEscape = lightEscapeMove | lightKingCanJump
 
     var darkMen = 0
     var darkKings = 0
@@ -92,7 +109,7 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
         if (((k >>> i) & 1) != 0) {
           darkKings += 1
           darkMaterial += King
-          if(((darkCanEscape >>> i) & 1) == 0) {
+          if (((darkCanEscape >>> i) & 1) == 0) {
             darkTrappedKings += 1
           }
         } else {
@@ -103,7 +120,7 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
         if (((k >>> i) & 1) != 0) {
           lightKings += 1
           lightMaterial += King
-          if(((lightCanEscape >>> i) & 1) == 0) {
+          if (((lightCanEscape >>> i) & 1) == 0) {
             lightTrappedKings += 1
           }
         } else {
@@ -122,8 +139,8 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
     }
 
     if (probe != null) {
-      val darkTrappedKingLocations = (~darkCanEscape) & k & dp
-      val lightTrappedKingLocations = (~lightCanEscape) & k & lp
+      val darkTrappedKingLocations = (~darkEscapeMove) & k & dp
+      val lightTrappedKingLocations = (~lightEscapeMove) & k & lp
 
       probe.darkManCount = darkMen
       probe.darkKingCount = darkKings
@@ -136,8 +153,8 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
       probe.lightAttackMask = lightAttacks
       probe.darkSafeMask = safeForDark
       probe.lightSafeMask = safeForLight
-      probe.darkCanEscapeMask = darkCanEscape
-      probe.lightCanEscapeMask = lightCanEscape
+      probe.darkCanEscapeMask = darkEscapeMove
+      probe.lightCanEscapeMask = lightEscapeMove
       probe.darkTrappedKingMask = darkTrappedKingLocations
       probe.lightTrappedKingMask = lightTrappedKingLocations
     }

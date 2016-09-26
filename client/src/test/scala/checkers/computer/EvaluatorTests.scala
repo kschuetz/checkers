@@ -59,51 +59,68 @@ object EvaluatorTests extends TestSuiteBase
   }
 
   private def getExpectedTrappedKings(board: BoardStateRead): ExpectedSquares = {
-    def evaluateForColor(color: Color, king: Occupant, neighbors: NeighborIndex): Set[Int] = {
+    def evaluateForColor(color: Color, king: Occupant, opponentKing: Occupant, neighbors: NeighborIndex): Set[Int] = {
       val opponent = OPPONENT(color)
       val opponentAt = board.squareHasColor(opponent) _
       var result = Set.empty[Int]
 
-      def checkEscape(forward: Int, move: Int, jump: Int, right: Int): Boolean = {
-        if(move < 0 || !board.isSquareEmpty(move)) return false
-        if(jump >= 0 && opponentAt(jump)) return false
-        if(forward < 0 || right < 0) return true
-        if(opponentAt(forward)) {
-          board.isSquareEmpty(right)
-        } else if(opponentAt(right)) {
-          board.isSquareEmpty(forward)
-        } else true
+      def checkEscape(up: Int, move: Int, jump: Int, right: Int): Boolean = {
+        if (move >= 0 && jump >= 0 && opponentAt(move) && board.isSquareEmpty(jump)) return true
+        if (move < 0 || !board.isSquareEmpty(move)) return false
+
+        if (jump >= 0 && opponentAt(jump)) return false
+        if (up < 0 || right < 0) return true
+
+        if (board.isSquareEmpty(up)) board.getOccupant(right) != opponentKing
+        else if (board.isSquareEmpty(right)) !opponentAt(up)
+        else true
+      }
+
+      def checkRearEscape(down: Int, move: Int, jump: Int, right: Int): Boolean = {
+        if (move >= 0 && jump >= 0 && opponentAt(move) && board.isSquareEmpty(jump)) return true
+        if (move < 0 || !board.isSquareEmpty(move)) return false
+
+        if (jump >= 0 && board.getOccupant(jump) == opponentKing) return false
+        if (down < 0 || right < 0) return true
+
+        if (board.isSquareEmpty(down)) !opponentAt(right)
+        else if (board.isSquareEmpty(right)) board.getOccupant(down) != opponentKing
+        else true
       }
 
       Board.playableSquares.foreach { square =>
-        if(board.getOccupant(square) == king) {
+        if (board.getOccupant(square) == king) {
           val canEscape =
-            checkEscape(neighbors.forwardTwo(square),
+            checkEscape(
+              neighbors.forwardTwo(square),
               neighbors.forwardMoveE(square),
               neighbors.forwardJumpE(square),
-              neighbors.rightTwo(square)) ||
-            checkEscape(neighbors.forwardTwo(square),
-              neighbors.forwardMoveW(square),
-              neighbors.forwardJumpW(square),
-              neighbors.leftTwo(square)) ||
-            checkEscape(neighbors.backTwo(square),
-              neighbors.backMoveE(square),
-              neighbors.backJumpE(square),
-              neighbors.rightTwo(square)) ||
-            checkEscape(neighbors.backTwo(square),
-              neighbors.backMoveW(square),
-              neighbors.backJumpW(square),
-              neighbors.leftTwo(square))
+              neighbors.twoE(square)) ||
+              checkEscape(
+                neighbors.forwardTwo(square),
+                neighbors.forwardMoveW(square),
+                neighbors.forwardJumpW(square),
+                neighbors.twoW(square)) ||
+              checkRearEscape(
+                neighbors.backTwo(square),
+                neighbors.backMoveE(square),
+                neighbors.backJumpE(square),
+                neighbors.twoE(square)) ||
+              checkRearEscape(
+                neighbors.backTwo(square),
+                neighbors.backMoveW(square),
+                neighbors.backJumpW(square),
+                neighbors.twoW(square))
 
-          if(!canEscape) result += square
+          if (!canEscape) result += square
         }
       }
 
       result
     }
 
-    ExpectedSquares(dark = evaluateForColor(DARK, DARKKING, neighborTable.Dark),
-      light = evaluateForColor(LIGHT, LIGHTKING, neighborTable.Light))
+    ExpectedSquares(dark = evaluateForColor(DARK, DARKKING, LIGHTKING, neighborTable.Dark),
+      light = evaluateForColor(LIGHT, LIGHTKING, DARKKING, neighborTable.Light))
   }
 
 
@@ -182,8 +199,11 @@ object EvaluatorTests extends TestSuiteBase
   lazy val darkAttacks = testProbeCheck("darkAttacks", _.dark.attackSet == _.expectedAttacks.dark)
   lazy val lightAttacks = testProbeCheck("lightAttacks", _.light.attackSet == _.expectedAttacks.light)
 
+  lazy val darkTrappedKings = testProbeCheck("darkTrappedKings", _.dark.trappedKingSet == _.expectedTrappedKings.dark)
+  lazy val lightTrappedKings = testProbeCheck("lightTrappedKings", _.light.trappedKingSet == _.expectedTrappedKings.light)
+
   lazy val evaluatorPropInputProps = darkManCount & lightManCount & darkKingCount & lightKingCount &
-    darkAttacks & lightAttacks
+    darkAttacks & lightAttacks & darkTrappedKings & lightTrappedKings
 
 
   override def tests: Tree[Test] = TestSuite {
