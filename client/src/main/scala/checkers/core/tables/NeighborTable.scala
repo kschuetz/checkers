@@ -9,10 +9,14 @@ case class NeighborIndex(forwardMoveW: js.Array[Int],
                          forwardMoveE: js.Array[Int],
                          forwardJumpW: js.Array[Int],
                          forwardJumpE: js.Array[Int],
+                         forwardTwo: js.Array[Int],
                          backMoveW: js.Array[Int],
                          backMoveE: js.Array[Int],
                          backJumpW: js.Array[Int],
-                         backJumpE: js.Array[Int])
+                         backJumpE: js.Array[Int],
+                         backTwo:   js.Array[Int],
+                         leftTwo:  js.Array[Int],
+                         rightTwo: js.Array[Int])
 
 class NeighborTable {
   import NeighborTable._
@@ -27,23 +31,36 @@ class NeighborTable {
   val jumpSW = makeNeighborList(2, -2)
   val jumpSE = makeNeighborList(2, 2)
 
+  val twoN = makeNeighborList(-2, 0)
+  val twoE = makeNeighborList(0, 2)
+  val twoS = makeNeighborList(2, 0)
+  val twoW = makeNeighborList(0, -2)
+
   val Dark = NeighborIndex(forwardMoveW = moveNW,
     forwardMoveE = moveNE,
     forwardJumpW = jumpNW,
     forwardJumpE = jumpNE,
+    forwardTwo = twoN,
     backMoveW = moveSW,
     backMoveE = moveSE,
     backJumpW = jumpSW,
-    backJumpE = jumpSE)
+    backJumpE = jumpSE,
+    backTwo = twoS,
+    leftTwo = twoW,
+    rightTwo = twoE)
 
   val Light = NeighborIndex(forwardMoveW = moveSW,
     forwardMoveE = moveSE,
     forwardJumpW = jumpSW,
     forwardJumpE = jumpSE,
+    forwardTwo = twoS,
     backMoveW = moveNW,
     backMoveE = moveNE,
     backJumpW = jumpNW,
-    backJumpE = jumpNE)
+    backJumpE = jumpNE,
+    backTwo = twoN,
+    leftTwo = twoE,
+    rightTwo = twoW)
 
 
   def forColor(color: Color): NeighborIndex = {
