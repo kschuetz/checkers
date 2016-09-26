@@ -48,9 +48,9 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
     val emptySW = SHIFTNE(notOccupied)
     val emptySE = SHIFTNW(notOccupied)
     val emptyNW2 = SHIFTSE(emptyNW)
-    val emptyNE2 = SHIFTSE(emptyNE)
-    val emptySW2 = SHIFTSE(emptySW)
-    val emptySE2 = SHIFTSE(emptySE)
+    val emptyNE2 = SHIFTSW(emptyNE)
+    val emptySW2 = SHIFTNE(emptySW)
+    val emptySE2 = SHIFTNW(emptySE)
     val kingNW = SHIFTSE(k)
     val kingNE = SHIFTSW(k)
     val kingSW = SHIFTNE(k)
@@ -139,8 +139,8 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
     }
 
     if (probe != null) {
-      val darkTrappedKingLocations = (~darkEscapeMove) & k & dp
-      val lightTrappedKingLocations = (~lightEscapeMove) & k & lp
+      val darkTrappedKingLocations = (~darkCanEscape) & k & dp
+      val lightTrappedKingLocations = (~lightCanEscape) & k & lp
 
       probe.darkManCount = darkMen
       probe.darkKingCount = darkKings

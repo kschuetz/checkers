@@ -64,27 +64,29 @@ object EvaluatorTests extends TestSuiteBase
       val opponentAt = board.squareHasColor(opponent) _
       var result = Set.empty[Int]
 
-      def checkEscape(up: Int, move: Int, jump: Int, right: Int): Boolean = {
-        if (move >= 0 && jump >= 0 && opponentAt(move) && board.isSquareEmpty(jump)) return true
-        if (move < 0 || !board.isSquareEmpty(move)) return false
+      def checkEscape(forward: Int, move: Int, jump: Int, side: Int): Boolean = {
+        if (move < 0) return false
+        if (jump >= 0 && opponentAt(move) && board.isSquareEmpty(jump)) return true
+        if (!board.isSquareEmpty(move)) return false
 
         if (jump >= 0 && opponentAt(jump)) return false
-        if (up < 0 || right < 0) return true
+        if (forward < 0 || side < 0) return true
 
-        if (board.isSquareEmpty(up)) board.getOccupant(right) != opponentKing
-        else if (board.isSquareEmpty(right)) !opponentAt(up)
+        if (board.isSquareEmpty(forward)) board.getOccupant(side) != opponentKing
+        else if (board.isSquareEmpty(side)) !opponentAt(forward)
         else true
       }
 
-      def checkRearEscape(down: Int, move: Int, jump: Int, right: Int): Boolean = {
-        if (move >= 0 && jump >= 0 && opponentAt(move) && board.isSquareEmpty(jump)) return true
-        if (move < 0 || !board.isSquareEmpty(move)) return false
+      def checkRearEscape(forward: Int, move: Int, jump: Int, side: Int): Boolean = {
+        if (move < 0) return false
+        if (jump >= 0 && opponentAt(move) && board.isSquareEmpty(jump)) return true
+        if (!board.isSquareEmpty(move)) return false
 
         if (jump >= 0 && board.getOccupant(jump) == opponentKing) return false
-        if (down < 0 || right < 0) return true
+        if (forward < 0 || side < 0) return true
 
-        if (board.isSquareEmpty(down)) !opponentAt(right)
-        else if (board.isSquareEmpty(right)) board.getOccupant(down) != opponentKing
+        if (board.isSquareEmpty(forward)) !opponentAt(side)
+        else if (board.isSquareEmpty(side)) board.getOccupant(forward) != opponentKing
         else true
       }
 
