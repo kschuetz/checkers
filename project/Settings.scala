@@ -33,7 +33,7 @@ object Settings {
     val uPickle = "0.4.1"
     val benchmark = "0.2.3"
 
-    val react = "15.3.1"
+    val react = "15.3.2"
 
     val playScripts = "0.5.0"
   }
