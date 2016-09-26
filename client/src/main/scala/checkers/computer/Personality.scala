@@ -1,7 +1,8 @@
 package checkers.computer
 
 
-case class SearchParameters(maxDepth: Int,
+case class SearchParameters(maxDepth: Option[Int],
+                            maxCycles: Option[Int],
                             selectionMethodWeights: MoveSelectionMethodWeights)
 
 trait Personality {
