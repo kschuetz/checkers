@@ -56,13 +56,58 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
     val kingSW = SHIFTNE(k)
     val kingSE = SHIFTNW(k)
 
+    val nonDarkNW = lightNW | emptyNW
+    val nonDarkNE = lightNE | emptyNE
+    val nonDarkSW = lightSW | emptySW
+    val nonDarkSE = lightSE | emptySE
+
+    val nonLightNW = darkNW | emptyNW
+    val nonLightNE = darkNE | emptyNE
+    val nonLightSW = darkSW | emptySW
+    val nonLightSE = darkSE | emptySE
+
     val darkKingNW = darkNW & kingNW
     val darkKingNE = darkNE & kingNE
     val lightKingSW = lightSW & kingSW
     val lightKingSE = lightSE & kingSE
+    
+    val darkAttackNW = notOccupied & nonDarkNW & darkSE
+    val darkAttackNE = notOccupied & nonDarkNE & darkSW
+    val darkAttackSW = notOccupied & nonDarkSW & darkKingNE
+    val darkAttackSE = notOccupied & nonDarkSE & darkKingNW
+
+    val lightAttackNW = notOccupied & nonLightNW & lightKingSE
+    val lightAttackNE = notOccupied & nonLightNE & lightKingSW
+    val lightAttackSW = notOccupied & nonLightSW & lightNE
+    val lightAttackSE = notOccupied & nonLightSE & lightNW
+    
+    val safeFromDarkNW = ~darkAttackNW
+    val safeFromDarkNE = ~darkAttackNE
+    val safeFromDarkSW = ~darkAttackSW
+    val safeFromDarkSE = ~darkAttackSE
+
+    val safeFromLightNW = ~lightAttackNW
+    val safeFromLightNE = ~lightAttackNE
+    val safeFromLightSW = ~lightAttackSW
+    val safeFromLightSE = ~lightAttackSE
+    
+    val safeToMoveDarkNW = emptyNW & SHIFTNW(safeFromLightSE)
+    val safeToMoveDarkNE = emptyNE & SHIFTNE(safeFromLightSW)
+    val safeToMoveDarkSW = emptySW & SHIFTSW(safeFromLightNE)
+    val safeToMoveDarkSE = emptySE &SHIFTSE(safeFromLightNW)
+
+    val safeToMoveLightNW = emptyNW & SHIFTNW(safeFromDarkSE)
+    val safeToMoveLightNE = emptyNE & SHIFTNE(safeFromDarkSW)
+    val safeToMoveLightSW = emptySW & SHIFTSW(safeFromDarkNE)
+    val safeToMoveLightSE = emptySE & SHIFTSE(safeFromDarkNW)
+    
+    val darkEscapeMove = safeToMoveDarkNW | safeToMoveDarkNE | safeToMoveDarkSW | safeToMoveDarkSE
+    val lightEscapeMove = safeToMoveLightNW | safeToMoveLightNE | safeToMoveLightSW | safeToMoveLightSE
+
 
     val potentialAttacks = INNER & notOccupied
 
+    // TODO:  rewrite attacks
     val darkAttacks = potentialAttacks &
       ((darkSW & (emptyNE | lightNE)) |
         (darkSE & (emptyNW | lightNW)) |
@@ -88,8 +133,8 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
     val safeForDark = notOccupied & (~lightAttacks)
     val safeForLight = notOccupied & (~darkAttacks)
 
-    val darkEscapeMove = SHIFTNW(safeForDark) | SHIFTNE(safeForDark) | SHIFTSW(safeForDark) | SHIFTSE(safeForDark)
-    val lightEscapeMove = SHIFTNW(safeForLight) | SHIFTNE(safeForLight) | SHIFTSW(safeForLight) | SHIFTSE(safeForLight)
+//    val darkEscapeMove = SHIFTNW(safeForDark) | SHIFTNE(safeForDark) | SHIFTSW(safeForDark) | SHIFTSE(safeForDark)
+//    val lightEscapeMove = SHIFTNW(safeForLight) | SHIFTNE(safeForLight) | SHIFTSW(safeForLight) | SHIFTSE(safeForLight)
 
     val darkCanEscape = darkEscapeMove | darkKingCanJump
     val lightCanEscape = lightEscapeMove | lightKingCanJump
