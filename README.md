@@ -2,7 +2,7 @@
 
 - A 100% client-side implementation of Checkers that runs in modern web browsers.
 - Graphics and animations are rendered as SVG elements in the browser DOM.
-- Supports Human vs. Computer, Human vs. Computer, and Computer vs. Computer games.
+- Supports Human vs. Computer, Human vs. Human (hot seat), and Computer vs. Computer games.
 - Written in Scala.js.
 
 ## Build instructions
