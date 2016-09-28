@@ -46,8 +46,8 @@ class NeighborTable {
     backJumpW = jumpSW,
     backJumpE = jumpSE,
     backTwo = twoS,
-    twoW = twoE,
-    twoE = twoW)
+    twoW = twoW,
+    twoE = twoE)
 
   val Light = NeighborIndex(forwardMoveW = moveSW,
     forwardMoveE = moveSE,
@@ -59,8 +59,8 @@ class NeighborTable {
     backJumpW = jumpNW,
     backJumpE = jumpNE,
     backTwo = twoN,
-    twoW = twoE,
-    twoE = twoW)
+    twoW = twoW,
+    twoE = twoE)
 
 
   def forColor(color: Color): NeighborIndex = {

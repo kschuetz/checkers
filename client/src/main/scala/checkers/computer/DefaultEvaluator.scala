@@ -33,16 +33,35 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
     val k = board.kings
     val lp = board.lightPieces
     val dp = board.darkPieces
+    val occupied = lp | dp
     val notOccupied = ~(lp | dp)
 
     val darkNW = SHIFTSE(dp)
     val darkNE = SHIFTSW(dp)
     val darkSW = SHIFTNE(dp)
     val darkSE = SHIFTNW(dp)
+    val darkNW2 = SHIFTSE(darkNW)
+    val darkNE2 = SHIFTSW(darkNE)
+    val darkSW2 = SHIFTNE(darkSW)
+    val darkSE2 = SHIFTNW(darkSE)
+    val darkN = SHIFTSE(darkNE)
+    val darkE = SHIFTSW(darkSE)
+    val darkS = SHIFTNW(darkSW)
+    val darkW = SHIFTNE(darkNW)
+
     val lightNW = SHIFTSE(lp)
     val lightNE = SHIFTSW(lp)
     val lightSW = SHIFTNE(lp)
     val lightSE = SHIFTNW(lp)
+    val lightNW2 = SHIFTSE(lightNW)
+    val lightNE2 = SHIFTSW(lightNE)
+    val lightSW2 = SHIFTNE(lightSW)
+    val lightSE2 = SHIFTNW(lightSE)
+    val lightN = SHIFTSE(lightNE)
+    val lightE = SHIFTSW(lightSE)
+    val lightS = SHIFTNW(lightSW)
+    val lightW = SHIFTNE(lightNW)
+
     val emptyNW = SHIFTSE(notOccupied)
     val emptyNE = SHIFTSW(notOccupied)
     val emptySW = SHIFTNE(notOccupied)
@@ -51,74 +70,69 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
     val emptyNE2 = SHIFTSW(emptyNE)
     val emptySW2 = SHIFTNE(emptySW)
     val emptySE2 = SHIFTNW(emptySE)
+    val emptyN = SHIFTSE(emptyNE)
+    val emptyE = SHIFTSW(emptySE)
+    val emptyS = SHIFTNW(emptySW)
+    val emptyW = SHIFTNE(emptyNW)
+
     val kingNW = SHIFTSE(k)
     val kingNE = SHIFTSW(k)
     val kingSW = SHIFTNE(k)
     val kingSE = SHIFTNW(k)
-
-    val nonDarkNW = lightNW | emptyNW
-    val nonDarkNE = lightNE | emptyNE
-    val nonDarkSW = lightSW | emptySW
-    val nonDarkSE = lightSE | emptySE
-
-    val nonLightNW = darkNW | emptyNW
-    val nonLightNE = darkNE | emptyNE
-    val nonLightSW = darkSW | emptySW
-    val nonLightSE = darkSE | emptySE
-
-    val darkKingNW = darkNW & kingNW
-    val darkKingNE = darkNE & kingNE
-    val lightKingSW = lightSW & kingSW
-    val lightKingSE = lightSE & kingSE
+    val kingNW2 = SHIFTSE(kingNW)
+    val kingNE2 = SHIFTSW(kingNE)
+    val kingSW2 = SHIFTNE(kingSW)
+    val kingSE2 = SHIFTNW(kingSE)
+    val kingN = SHIFTSE(kingNE)
+    val kingE = SHIFTSW(kingSE)
+    val kingS = SHIFTNW(kingSW)
+    val kingW = SHIFTNE(kingNW)
     
-    val darkAttackNW = notOccupied & nonDarkNW & darkSE
-    val darkAttackNE = notOccupied & nonDarkNE & darkSW
-    val darkAttackSW = notOccupied & nonDarkSW & darkKingNE
-    val darkAttackSE = notOccupied & nonDarkSE & darkKingNW
 
-    val lightAttackNW = notOccupied & nonLightNW & lightKingSE
-    val lightAttackNE = notOccupied & nonLightNE & lightKingSW
-    val lightAttackSW = notOccupied & nonLightSW & lightNE
-    val lightAttackSE = notOccupied & nonLightSE & lightNW
+    // trapped
+    val closedNW = ~emptyNW
+    val closedNE = ~emptyNE
+    val closedSE = ~emptySE
+    val closedSW = ~emptySW
     
-    val safeFromDarkNW = ~darkAttackNW
-    val safeFromDarkNE = ~darkAttackNE
-    val safeFromDarkSW = ~darkAttackSW
-    val safeFromDarkSE = ~darkAttackSE
+    val darkTrappedNW = closedNW | lightNW2 | (lightN & emptyW) | (emptyN & lightW & kingW)
+    val darkTrappedNE = closedNE | lightNE2 | (lightN & emptyE) | (emptyN & lightE & kingE)
+    val darkTrappedSW = closedSW | (lightSW2 & kingSW2) | (lightS & kingS & emptyW) | (emptyS & lightW)
+    val darkTrappedSE = closedSE | (lightSE2 & kingSE2) | (lightS & kingS & emptyE) | (emptyS & lightE)
 
-    val safeFromLightNW = ~lightAttackNW
-    val safeFromLightNE = ~lightAttackNE
-    val safeFromLightSW = ~lightAttackSW
-    val safeFromLightSE = ~lightAttackSE
-    
-    val safeToMoveDarkNW = emptyNW & SHIFTNW(safeFromLightSE)
-    val safeToMoveDarkNE = emptyNE & SHIFTNE(safeFromLightSW)
-    val safeToMoveDarkSW = emptySW & SHIFTSW(safeFromLightNE)
-    val safeToMoveDarkSE = emptySE &SHIFTSE(safeFromLightNW)
+    val lightTrappedNW = closedNW | (darkNW2 & kingNW2) | (darkN & kingN & emptyW) | (emptyN & darkW)
+    val lightTrappedNE = closedNE | (darkNE2 & kingNE2) | (darkN & kingN & emptyE) | (emptyN & darkE)
+    val lightTrappedSW = closedSW | darkSW2 | (darkS & emptyW) | (emptyS & darkW & kingW)
+    val lightTrappedSE = closedSE | darkSE2 | (darkS & emptyE) | (emptyS & darkE & kingE)
 
-    val safeToMoveLightNW = emptyNW & SHIFTNW(safeFromDarkSE)
-    val safeToMoveLightNE = emptyNE & SHIFTNE(safeFromDarkSW)
-    val safeToMoveLightSW = emptySW & SHIFTSW(safeFromDarkNE)
-    val safeToMoveLightSE = emptySE & SHIFTSE(safeFromDarkNW)
-    
-    val darkEscapeMove = safeToMoveDarkNW | safeToMoveDarkNE | safeToMoveDarkSW | safeToMoveDarkSE
-    val lightEscapeMove = safeToMoveLightNW | safeToMoveLightNE | safeToMoveLightSW | safeToMoveLightSE
+//
+//    val darkEscapeMove = safeToMoveDarkNW | safeToMoveDarkNE | safeToMoveDarkSW | safeToMoveDarkSE
+//    val lightEscapeMove = safeToMoveLightNW | safeToMoveLightNE | safeToMoveLightSW | safeToMoveLightSE
 
+    val darkTrappedN = darkTrappedNW & darkTrappedNE
+    val darkTrappedS = darkTrappedSW & darkTrappedSE
+    val lightTrappedN = lightTrappedNW & lightTrappedNE
+    val lightTrappedS = lightTrappedSW & lightTrappedSE
+
+    val darkEscapeMove = ~(darkTrappedN & darkTrappedS)
+    val lightEscapeMove = ~(lightTrappedN & lightTrappedS)
 
     val potentialAttacks = INNER & notOccupied
 
     // TODO:  rewrite attacks
-    val darkAttacks = potentialAttacks &
-      ((darkSW & (emptyNE | lightNE)) |
-        (darkSE & (emptyNW | lightNW)) |
-        (darkKingNW & (emptySE | lightSE)) |
-        (darkKingNE & (emptySW | lightSW)))
-
-    val lightAttacks = potentialAttacks &
-      ((lightNW & (emptySE | darkSE)) |
-        (lightNE & (emptySW | darkSW)) |
-        (lightKingSW & (emptyNE | darkNE)) |
-        (lightKingSE & (emptyNW | darkNW)))
+//    val darkAttacks = potentialAttacks &
+//      ((darkSW & (emptyNE | lightNE)) |
+//        (darkSE & (emptyNW | lightNW)) |
+//        (darkKingNW & (emptySE | lightSE)) |
+//        (darkKingNE & (emptySW | lightSW)))
+//
+//    val lightAttacks = potentialAttacks &
+//      ((lightNW & (emptySE | darkSE)) |
+//        (lightNE & (emptySW | darkSW)) |
+//        (lightKingSW & (emptyNE | darkNE)) |
+//        (lightKingSE & (emptyNW | darkNW)))
+    val darkAttacks = 0
+    val lightAttacks = 0
 
     val darkKingCanJump = dp & k & ((emptyNE2 & lightNE) |
       (emptySE2 & lightSE) |
