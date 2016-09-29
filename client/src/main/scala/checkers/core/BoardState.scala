@@ -63,15 +63,16 @@ trait BoardStateReadImpl extends BoardStateRead {
   }
 
   def squareHasColor(color: Color)(squareIndex: Int): Boolean = {
-    val lp = (lightPieces >>> squareIndex) & 1
-    val dp = (darkPieces >>> squareIndex) & 1
-
-    COLOR((lp << 1) | dp) == color
+    if(color == LIGHT) {
+      ((lightPieces >>> squareIndex) & 1) != 0
+    } else {
+      ((darkPieces >>> squareIndex) & 1) != 0
+    }
   }
 
   def foreach(color: Color)(f: (Int, Occupant) => Unit): Unit = {
     var i = 0
-    while(i < 31) {
+    while(i < 32) {
       val code = getOccupant(i)
       if(COLOR(code) == color) { f(i, code) }
       i += 1

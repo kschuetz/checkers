@@ -90,6 +90,21 @@ object EvaluatorTests extends TestSuiteBase
         else true
       }
 
+
+
+      def checkRearEscape2(home: Int, forward: Int, move: Int, jump: Int, side: Int): Boolean = {
+        println(s"checkRearEscape color $color at $home: f $forward, m $move, j $jump, s $side, k $king oppk $opponentKing")
+        val jumpOcc = if(jump >= 0) board.getOccupant(jump) else EMPTY
+        val moveOcc = if(jump >= 0) board.getOccupant(move) else EMPTY
+        val forwardOcc = if(jump >= 0) board.getOccupant(forward) else EMPTY
+        val sideOcc = if(jump >= 0) board.getOccupant(side) else EMPTY
+        println(s"   @f: $forwardOcc, @m:$moveOcc, @j:$jumpOcc, @s:$sideOcc")
+
+        val result = checkRearEscape(forward, move, jump, side)
+        println(s"   -> $result")
+        result
+      }
+
       Board.playableSquares.foreach { square =>
         if (board.getOccupant(square) == king) {
           val canEscape =
@@ -103,12 +118,12 @@ object EvaluatorTests extends TestSuiteBase
                 neighbors.forwardMoveW(square),
                 neighbors.forwardJumpW(square),
                 neighbors.twoW(square)) ||
-              checkRearEscape(
+              checkRearEscape( //square,
                 neighbors.backTwo(square),
                 neighbors.backMoveE(square),
                 neighbors.backJumpE(square),
                 neighbors.twoE(square)) ||
-              checkRearEscape(
+              checkRearEscape( //square,
                 neighbors.backTwo(square),
                 neighbors.backMoveW(square),
                 neighbors.backJumpW(square),
@@ -137,18 +152,24 @@ object EvaluatorTests extends TestSuiteBase
 
   case class ProbeData(dark: ProbeDataSide,
                        light: ProbeDataSide,
-                       potentialAttackMask: Int)
+                       potentialAttackMask: Int,
+                       closedNWSet: Set[Int],
+                       closedNESet: Set[Int],
+                       closedSWSet: Set[Int],
+                       closedSESet: Set[Int])
 
   object ProbeData {
     def fromTestProbe(input: DefaultEvaluatorTestProbe): ProbeData = {
+      import BoardUtils.squareMaskToSet
+
       val dark = ProbeDataSide(input.darkManCount,
         input.darkKingCount,
         input.darkAttackMask,
         input.darkSafeMask,
         input.darkCanEscapeMask,
         input.darkTrappedKingMask,
-        attackSet = BoardUtils.squareMaskToSet(input.darkAttackMask),
-        trappedKingSet = BoardUtils.squareMaskToSet(input.darkTrappedKingMask))
+        attackSet = squareMaskToSet(input.darkAttackMask),
+        trappedKingSet = squareMaskToSet(input.darkTrappedKingMask))
 
       val light = ProbeDataSide(input.lightManCount,
         input.lightKingCount,
@@ -156,10 +177,15 @@ object EvaluatorTests extends TestSuiteBase
         input.lightSafeMask,
         input.lightCanEscapeMask,
         input.lightTrappedKingMask,
-        attackSet = BoardUtils.squareMaskToSet(input.lightAttackMask),
-        trappedKingSet = BoardUtils.squareMaskToSet(input.lightTrappedKingMask))
+        attackSet = squareMaskToSet(input.lightAttackMask),
+        trappedKingSet = squareMaskToSet(input.lightTrappedKingMask))
 
-      ProbeData(dark, light, input.potentialAttackMask)
+      ProbeData(dark, light, input.potentialAttackMask,
+        closedNWSet = squareMaskToSet(input.closedNWMask),
+        closedNESet = squareMaskToSet(input.closedNEMask),
+        closedSWSet = squareMaskToSet(input.closedSWMask),
+        closedSESet = squareMaskToSet(input.closedSEMask)
+      )
     }
   }
 
@@ -210,7 +236,7 @@ object EvaluatorTests extends TestSuiteBase
 
   override def tests: Tree[Test] = TestSuite {
     'Evaluator {
-      //genEvaluatorPropInput.mustSatisfy(evaluatorPropInputProps)
+      genEvaluatorPropInput.mustSatisfy(evaluatorPropInputProps)
     }
 
   }

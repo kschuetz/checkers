@@ -216,6 +216,10 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
       probe.lightCanEscapeMask = lightEscapeMove
       probe.darkTrappedKingMask = darkTrappedKingLocations
       probe.lightTrappedKingMask = lightTrappedKingLocations
+      probe.closedNWMask = closedNW
+      probe.closedNEMask = closedNE
+      probe.closedSWMask = closedSW
+      probe.closedSEMask = closedSE
     }
 
     if (rulesSettings.giveaway) -result else result
@@ -239,5 +243,9 @@ class DefaultEvaluatorTestProbe {
   var lightCanEscapeMask: Int = 0
   var darkTrappedKingMask: Int = 0
   var lightTrappedKingMask: Int = 0
+  var closedNWMask: Int = 0
+  var closedNEMask: Int = 0
+  var closedSWMask: Int = 0
+  var closedSEMask: Int = 0
 
 }

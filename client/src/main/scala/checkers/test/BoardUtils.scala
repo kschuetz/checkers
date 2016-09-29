@@ -22,12 +22,15 @@ object BoardUtils {
   }
 
   def squareMaskToSet(mask: Int): Set[Int] = {
-    var board = mask
+//    var board = mask
     var result = Set.empty[Int]
     var i = 0
-    while (i < 31) {
-      if((board & 1) == 1) result += i
-      board = board >> 1
+    var j = 1
+    while (i < 32) {
+//      if((board & 1) == 1) result += i
+//      board = board >>> 1
+      if((mask & j) != 0) result += i
+      j <<= 1
       i += 1
     }
     result
