@@ -210,7 +210,7 @@ object EvaluatorTests extends TestSuiteBase
 
   override def tests: Tree[Test] = TestSuite {
     'Evaluator {
-      genEvaluatorPropInput.mustSatisfy(evaluatorPropInputProps)
+      //genEvaluatorPropInput.mustSatisfy(evaluatorPropInputProps)
     }
 
   }
