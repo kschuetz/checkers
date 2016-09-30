@@ -29,7 +29,6 @@ package object masks {
   private val crownLight = squareMaskFromSeq(0 to 3)
   private val crownDark = squareMaskFromSeq(28 to 31)
 
-
   private val nw3 = squareMask(4, 5, 6, 12, 13, 14, 20, 21, 22, 28, 29, 30)
   private val nw4 = squareMask(8, 9, 10, 11, 16, 17, 18, 19, 24, 25, 26, 27)
 
@@ -48,6 +47,14 @@ package object masks {
   private val notLeftEdge = ~leftEdge
   private val notRightEdge = ~rightEdge
 
+  private val lightSecond = squareMask(24, 25, 26, 27)
+  private val lightThird = squareMask(20, 21, 22, 23)
+  private val lightFourth = squareMask(16, 17, 18, 19)
+
+  private val darkSecond = squareMask(4, 5, 6, 7)
+  private val darkThird = squareMask(8, 9, 10, 11)
+  private val darkFourth = squareMask(12, 13, 14, 15)
+
   def OUTER: Int = macro outerImpl
   def INNER: Int = macro innerImpl
 
@@ -64,6 +71,14 @@ package object masks {
   def SE4: Int = macro se4Impl
   def NLE: Int = macro nleImpl
   def NRE: Int = macro nreImpl
+  
+  def LIGHTSECOND: Int = macro lightSecondImpl
+  def LIGHTTHIRD: Int = macro lightThirdImpl
+  def LIGHTFOURTH: Int = macro lightFourthImpl
+
+  def DARKSECOND: Int = macro darkSecondImpl
+  def DARKTHIRD: Int = macro darkThirdImpl
+  def DARKFOURTH: Int = macro darkFourthImpl
 
   /**
     * Notice: Some SHIFT macros will evaluate the argument twice.
@@ -151,6 +166,36 @@ package object masks {
   def nreImpl(c: blackbox.Context): c.Expr[Int] = {
     import c.universe._
     c.Expr[Int](Literal(Constant(notRightEdge)))
+  }
+
+  def lightSecondImpl(c: blackbox.Context): c.Expr[Int] = {
+    import c.universe._
+    c.Expr[Int](Literal(Constant(lightSecond)))
+  }
+
+  def lightThirdImpl(c: blackbox.Context): c.Expr[Int] = {
+    import c.universe._
+    c.Expr[Int](Literal(Constant(lightThird)))
+  }
+
+  def lightFourthImpl(c: blackbox.Context): c.Expr[Int] = {
+    import c.universe._
+    c.Expr[Int](Literal(Constant(lightFourth)))
+  }
+
+  def darkSecondImpl(c: blackbox.Context): c.Expr[Int] = {
+    import c.universe._
+    c.Expr[Int](Literal(Constant(darkSecond)))
+  }
+
+  def darkThirdImpl(c: blackbox.Context): c.Expr[Int] = {
+    import c.universe._
+    c.Expr[Int](Literal(Constant(darkThird)))
+  }
+
+  def darkFourthImpl(c: blackbox.Context): c.Expr[Int] = {
+    import c.universe._
+    c.Expr[Int](Literal(Constant(darkFourth)))
   }
 
   def shiftNImpl(c: blackbox.Context)(board: c.Expr[Int]): c.Expr[Int] = {

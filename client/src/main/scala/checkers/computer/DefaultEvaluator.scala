@@ -150,6 +150,24 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
         SHIFTSE(lightAttacksSE) |
         SHIFTSW(lightAttacksSW))
 
+    val safeForDark = empty & (~lightAttacks)
+    val safeForLight = empty & (~darkAttacks)
+
+    // Unimpeded path to king
+    val unimpededForDark = {
+      val u1 = safeForDark & (emptyNW | emptyNE)
+      val u2 = safeForDark & (SHIFTSE(u1) | SHIFTSW(u1))
+      val u3 = safeForDark & (SHIFTSE(u2) | SHIFTSW(u2))
+      (u1 & LIGHTSECOND) | (u2 & LIGHTTHIRD) | (u3 & LIGHTFOURTH)
+    }
+
+    val unimpededForLight = {
+      val u1 = safeForLight & (emptySW | emptySE)
+      val u2 = safeForLight & (SHIFTNE(u1) | SHIFTNW(u1))
+      val u3 = safeForLight & (SHIFTNE(u2) | SHIFTNW(u2))
+      (u1 & DARKSECOND) | (u2 & DARKTHIRD) | (u3 & DARKFOURTH)
+    }
+
     val darkKingCanJump = dp & k & ((emptyNE2 & lightNE) |
       (emptySE2 & lightSE) |
       (emptySW2 & lightSW) |
@@ -160,44 +178,41 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
       (emptySW2 & darkSW) |
       (emptyNW2 & darkNW))
 
-    val safeForDark = empty & (~lightAttacks)
-    val safeForLight = empty & (~darkAttacks)
-
     val darkKingCanEscape = darkEscapeMove | darkKingCanJump
     val lightKingCanEscape = lightEscapeMove | lightKingCanJump
 
-    var darkMen = 0
-    var darkKings = 0
-    var lightMen = 0
-    var lightKings = 0
-    var darkMaterial = 0
-    var lightMaterial = 0
-    var darkTrappedKings = 0
-    var lightTrappedKings = 0
+    var darkManCount = 0
+    var darkKingCount = 0
+    var lightManCount = 0
+    var lightKingCount = 0
+    var darkMaterialScore = 0
+    var lightMaterialScore = 0
+    var darkTrappedKingCount = 0
+    var lightTrappedKingCount = 0
 
     var i = 0
     while (i < 32) {
       if (((dp >>> i) & 1) != 0) {
         if (((k >>> i) & 1) != 0) {
-          darkKings += 1
-          darkMaterial += King
+          darkKingCount += 1
+          darkMaterialScore += King
           if (((darkKingCanEscape >>> i) & 1) == 0) {
-            darkTrappedKings += 1
+            darkTrappedKingCount += 1
           }
         } else {
-          darkMen += 1
-          darkMaterial += Man
+          darkManCount += 1
+          darkMaterialScore += Man
         }
       } else if (((lp >>> i) & 1) != 0) {
         if (((k >>> i) & 1) != 0) {
-          lightKings += 1
-          lightMaterial += King
+          lightKingCount += 1
+          lightMaterialScore += King
           if (((lightKingCanEscape >>> i) & 1) == 0) {
-            lightTrappedKings += 1
+            lightTrappedKingCount += 1
           }
         } else {
-          lightMen += 1
-          lightMaterial += Man
+          lightManCount += 1
+          lightMaterialScore += Man
         }
       }
       i += 1
@@ -205,21 +220,21 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
 
     var result = TurnAdvantageBonus
     if (turnToPlay == DARK) {
-      result += darkMaterial - lightMaterial
+      result += darkMaterialScore - lightMaterialScore
     } else {
-      result += lightMaterial - darkMaterial
+      result += lightMaterialScore - darkMaterialScore
     }
 
     if (probe != null) {
       val darkTrappedKingLocations = (~darkKingCanEscape) & k & dp
       val lightTrappedKingLocations = (~lightKingCanEscape) & k & lp
 
-      probe.darkManCount = darkMen
-      probe.darkKingCount = darkKings
-      probe.darkTrappedKingCount = darkTrappedKings
-      probe.lightManCount = lightMen
-      probe.lightKingCount = lightKings
-      probe.lightTrappedKingCount = lightTrappedKings
+      probe.darkManCount = darkManCount
+      probe.darkKingCount = darkKingCount
+      probe.darkTrappedKingCount = darkTrappedKingCount
+      probe.lightManCount = lightManCount
+      probe.lightKingCount = lightKingCount
+      probe.lightTrappedKingCount = lightTrappedKingCount
       probe.potentialAttackMask = potentialAttacks
       probe.darkAttackMask = darkAttacks
       probe.lightAttackMask = lightAttacks
@@ -233,6 +248,8 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
       probe.closedNEMask = closedNE
       probe.closedSWMask = closedSW
       probe.closedSEMask = closedSE
+      probe.lightUnimpededMask = unimpededForLight
+      probe.darkUnimpededMask = unimpededForDark
     }
 
     if (rulesSettings.giveaway) -result else result
@@ -260,5 +277,7 @@ class DefaultEvaluatorTestProbe {
   var closedNEMask: Int = 0
   var closedSWMask: Int = 0
   var closedSEMask: Int = 0
+  var lightUnimpededMask: Int = 0
+  var darkUnimpededMask: Int = 0
 
 }
