@@ -12,7 +12,6 @@ import utest.framework._
 
 object ShiftTests extends TestSuiteBase with BoardGenerators {
 
-
   sealed trait Shift {
     def complement: Shift
 
