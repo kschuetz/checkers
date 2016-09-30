@@ -34,7 +34,7 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
     val lp = board.lightPieces
     val dp = board.darkPieces
     val occupied = lp | dp
-    val notOccupied = ~(lp | dp)
+    val empty = ~(lp | dp)
 
     val darkN = SHIFTS(dp)
     val darkE = SHIFTW(dp)
@@ -62,18 +62,18 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
     val lightSW2 = SHIFTNE2(lp)
     val lightSE2 = SHIFTNW2(lp)
 
-    val emptyN = SHIFTS(notOccupied)
-    val emptyE = SHIFTW(notOccupied)
-    val emptyS = SHIFTN(notOccupied)
-    val emptyW = SHIFTE(notOccupied)
-    val emptyNW = SHIFTSE(notOccupied)
-    val emptyNE = SHIFTSW(notOccupied)
-    val emptySW = SHIFTNE(notOccupied)
-    val emptySE = SHIFTNW(notOccupied)
-    val emptyNW2 = SHIFTSE2(notOccupied)
-    val emptyNE2 = SHIFTSW2(notOccupied)
-    val emptySW2 = SHIFTNE2(notOccupied)
-    val emptySE2 = SHIFTNW2(notOccupied)
+    val emptyN = SHIFTS(empty)
+    val emptyE = SHIFTW(empty)
+    val emptyS = SHIFTN(empty)
+    val emptyW = SHIFTE(empty)
+    val emptyNW = SHIFTSE(empty)
+    val emptyNE = SHIFTSW(empty)
+    val emptySW = SHIFTNE(empty)
+    val emptySE = SHIFTNW(empty)
+    val emptyNW2 = SHIFTSE2(empty)
+    val emptyNE2 = SHIFTSW2(empty)
+    val emptySW2 = SHIFTNE2(empty)
+    val emptySE2 = SHIFTNW2(empty)
 
     val kingN = SHIFTS(k)
     val kingE = SHIFTW(k)
@@ -88,25 +88,33 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
     val kingSW2 = SHIFTNE2(k)
     val kingSE2 = SHIFTNW2(k)
 
-    // trapped
+    // closed:  occupied or out of bounds
     val closedNW = ~emptyNW
     val closedNE = ~emptyNE
     val closedSE = ~emptySE
     val closedSW = ~emptySW
-    
-    val darkTrappedNW = closedNW | lightNW2 | (lightN & emptyW) | (emptyN & lightW & kingW)
-    val darkTrappedNE = closedNE | lightNE2 | (lightN & emptyE) | (emptyN & lightE & kingE)
-    val darkTrappedSW = closedSW | (lightSW2 & kingSW2) | (lightS & kingS & emptyW) | (emptyS & lightW)
-    val darkTrappedSE = closedSE | (lightSE2 & kingSE2) | (lightS & kingS & emptyE) | (emptyS & lightE)
 
-    val lightTrappedNW = closedNW | (darkNW2 & kingNW2) | (darkN & kingN & emptyW) | (emptyN & darkW)
-    val lightTrappedNE = closedNE | (darkNE2 & kingNE2) | (darkN & kingN & emptyE) | (emptyN & darkE)
-    val lightTrappedSW = closedSW | darkSW2 | (darkS & emptyW) | (emptyS & darkW & kingW)
-    val lightTrappedSE = closedSE | darkSE2 | (darkS & emptyE) | (emptyS & darkE & kingE)
+    // vulnerable:  if square is empty, it is under attack
+    val darkVulnerableNW = lightNW2 | (lightN & emptyW) | (emptyN & lightW & kingW)
+    val darkVulnerableNE = lightNE2 | (lightN & emptyE) | (emptyN & lightE & kingE)
+    val darkVulnerableSW = (lightSW2 & kingSW2) | (lightS & kingS & emptyW) | (emptyS & lightW)
+    val darkVulnerableSE = (lightSE2 & kingSE2) | (lightS & kingS & emptyE) | (emptyS & lightE)
 
-//
-//    val darkEscapeMove = safeToMoveDarkNW | safeToMoveDarkNE | safeToMoveDarkSW | safeToMoveDarkSE
-//    val lightEscapeMove = safeToMoveLightNW | safeToMoveLightNE | safeToMoveLightSW | safeToMoveLightSE
+    val lightVulnerableNW = (darkNW2 & kingNW2) | (darkN & kingN & emptyW) | (emptyN & darkW)
+    val lightVulnerableNE = (darkNE2 & kingNE2) | (darkN & kingN & emptyE) | (emptyN & darkE)
+    val lightVulnerableSW = darkSW2 | (darkS & emptyW) | (emptyS & darkW & kingW)
+    val lightVulnerableSE = darkSE2 | (darkS & emptyE) | (emptyS & darkE & kingE)
+
+    // trapped:  can't move due to being blocked or under attack
+    val darkTrappedNW = closedNW | darkVulnerableNW
+    val darkTrappedNE = closedNE | darkVulnerableNE
+    val darkTrappedSW = closedSW | darkVulnerableSW
+    val darkTrappedSE = closedSE | darkVulnerableSE
+
+    val lightTrappedNW = closedNW | lightVulnerableNW
+    val lightTrappedNE = closedNE | lightVulnerableNE
+    val lightTrappedSW = closedSW | lightVulnerableSW
+    val lightTrappedSE = closedSE | lightVulnerableSE
 
     val darkTrappedN = darkTrappedNW & darkTrappedNE
     val darkTrappedS = darkTrappedSW & darkTrappedSE
@@ -116,7 +124,7 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
     val darkEscapeMove = ~(darkTrappedN & darkTrappedS)
     val lightEscapeMove = ~(lightTrappedN & lightTrappedS)
 
-    val potentialAttacks = INNER & notOccupied
+    val potentialAttacks = INNER & empty
 
     // TODO:  rewrite attacks
 //    val darkAttacks = potentialAttacks &
@@ -143,14 +151,14 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
       (emptySW2 & darkSW) |
       (emptyNW2 & darkNW))
 
-    val safeForDark = notOccupied & (~lightAttacks)
-    val safeForLight = notOccupied & (~darkAttacks)
+    val safeForDark = empty & (~lightAttacks)
+    val safeForLight = empty & (~darkAttacks)
 
 //    val darkEscapeMove = SHIFTNW(safeForDark) | SHIFTNE(safeForDark) | SHIFTSW(safeForDark) | SHIFTSE(safeForDark)
 //    val lightEscapeMove = SHIFTNW(safeForLight) | SHIFTNE(safeForLight) | SHIFTSW(safeForLight) | SHIFTSE(safeForLight)
 
-    val darkCanEscape = darkEscapeMove | darkKingCanJump
-    val lightCanEscape = lightEscapeMove | lightKingCanJump
+    val darkKingCanEscape = darkEscapeMove | darkKingCanJump
+    val lightKingCanEscape = lightEscapeMove | lightKingCanJump
 
     var darkMen = 0
     var darkKings = 0
@@ -167,7 +175,7 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
         if (((k >>> i) & 1) != 0) {
           darkKings += 1
           darkMaterial += King
-          if (((darkCanEscape >>> i) & 1) == 0) {
+          if (((darkKingCanEscape >>> i) & 1) == 0) {
             darkTrappedKings += 1
           }
         } else {
@@ -178,7 +186,7 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
         if (((k >>> i) & 1) != 0) {
           lightKings += 1
           lightMaterial += King
-          if (((lightCanEscape >>> i) & 1) == 0) {
+          if (((lightKingCanEscape >>> i) & 1) == 0) {
             lightTrappedKings += 1
           }
         } else {
@@ -197,8 +205,8 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
     }
 
     if (probe != null) {
-      val darkTrappedKingLocations = (~darkCanEscape) & k & dp
-      val lightTrappedKingLocations = (~lightCanEscape) & k & lp
+      val darkTrappedKingLocations = (~darkKingCanEscape) & k & dp
+      val lightTrappedKingLocations = (~lightKingCanEscape) & k & lp
 
       probe.darkManCount = darkMen
       probe.darkKingCount = darkKings
