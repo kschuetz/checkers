@@ -48,7 +48,6 @@ package object masks {
   private val notLeftEdge = ~leftEdge
   private val notRightEdge = ~rightEdge
 
-
   def OUTER: Int = macro outerImpl
   def INNER: Int = macro innerImpl
 
@@ -67,18 +66,22 @@ package object masks {
   def NRE: Int = macro nreImpl
 
   /**
-    * Notice: SHIFT macros will evaluate the argument twice.
+    * Notice: Some SHIFT macros will evaluate the argument twice.
     */
-  def SHIFTNW(board: Int): Int = macro shiftNWImpl
-  def SHIFTNE(board: Int): Int = macro shiftNEImpl
-  def SHIFTSW(board: Int): Int = macro shiftSWImpl
-  def SHIFTSE(board: Int): Int = macro shiftSEImpl
-
   def SHIFTN(board: Int): Int = macro shiftNImpl
   def SHIFTE(board: Int): Int = macro shiftEImpl
   def SHIFTS(board: Int): Int = macro shiftSImpl
   def SHIFTW(board: Int): Int = macro shiftWImpl
 
+  def SHIFTNW(board: Int): Int = macro shiftNWImpl
+  def SHIFTNE(board: Int): Int = macro shiftNEImpl
+  def SHIFTSW(board: Int): Int = macro shiftSWImpl
+  def SHIFTSE(board: Int): Int = macro shiftSEImpl
+
+  def SHIFTNW2(board: Int): Int = macro shiftNW2Impl
+  def SHIFTNE2(board: Int): Int = macro shiftNE2Impl
+  def SHIFTSW2(board: Int): Int = macro shiftSW2Impl
+  def SHIFTSE2(board: Int): Int = macro shiftSE2Impl
 
   def outerImpl(c: blackbox.Context): c.Expr[Int] = {
     import c.universe._
@@ -150,6 +153,26 @@ package object masks {
     c.Expr[Int](Literal(Constant(notRightEdge)))
   }
 
+  def shiftNImpl(c: blackbox.Context)(board: c.Expr[Int]): c.Expr[Int] = {
+    import c.universe._
+    c.Expr[Int](q"($board << 8)")
+  }
+
+  def shiftSImpl(c: blackbox.Context)(board: c.Expr[Int]): c.Expr[Int] = {
+    import c.universe._
+    c.Expr[Int](q"($board >>> 8)")
+  }
+
+  def shiftEImpl(c: blackbox.Context)(board: c.Expr[Int]): c.Expr[Int] = {
+    import c.universe._
+    c.Expr[Int](q"($board << 1) & NLE")
+  }
+
+  def shiftWImpl(c: blackbox.Context)(board: c.Expr[Int]): c.Expr[Int] = {
+    import c.universe._
+    c.Expr[Int](q"($board >>> 1) & NRE")
+  }
+
   def shiftNWImpl(c: blackbox.Context)(board: c.Expr[Int]): c.Expr[Int] = {
     import c.universe._
     c.Expr[Int](q"(($board << 3) & NW3) | (($board << 4) & NW4)")
@@ -170,24 +193,24 @@ package object masks {
     c.Expr[Int](q"(($board >> 3) & SE3) | (($board >> 4) & SE4)")
   }
 
-  def shiftNImpl(c: blackbox.Context)(board: c.Expr[Int]): c.Expr[Int] = {
+  def shiftNW2Impl(c: blackbox.Context)(board: c.Expr[Int]): c.Expr[Int] = {
     import c.universe._
-    c.Expr[Int](q"($board << 8)")
+    c.Expr[Int](q"($board << 7) & NRE")
   }
 
-  def shiftSImpl(c: blackbox.Context)(board: c.Expr[Int]): c.Expr[Int] = {
+  def shiftNE2Impl(c: blackbox.Context)(board: c.Expr[Int]): c.Expr[Int] = {
     import c.universe._
-    c.Expr[Int](q"($board >>> 8)")
+    c.Expr[Int](q"($board << 9) & NLE")
   }
 
-  def shiftEImpl(c: blackbox.Context)(board: c.Expr[Int]): c.Expr[Int] = {
+  def shiftSW2Impl(c: blackbox.Context)(board: c.Expr[Int]): c.Expr[Int] = {
     import c.universe._
-    c.Expr[Int](q"($board << 1) & NLE")
+    c.Expr[Int](q"($board >>> 9) & NRE")
   }
 
-  def shiftWImpl(c: blackbox.Context)(board: c.Expr[Int]): c.Expr[Int] = {
+  def shiftSE2Impl(c: blackbox.Context)(board: c.Expr[Int]): c.Expr[Int] = {
     import c.universe._
-    c.Expr[Int](q"($board >>> 1) & NRE")
+    c.Expr[Int](q"($board >>> 7) & NLE")
   }
 
 

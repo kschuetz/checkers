@@ -107,6 +107,46 @@ object ShiftTests extends TestSuiteBase with BoardGenerators {
     def applyShift(x: Int) = SHIFTW(x)
   }
 
+  case object ShiftNW2 extends Shift {
+    def complement: Shift = ShiftSE2
+
+    def rowOffset: Int = -2
+
+    def colOffset: Int = -2
+
+    def applyShift(x: Int) = SHIFTNW2(x)
+  }
+
+  case object ShiftNE2 extends Shift {
+    def complement: Shift = ShiftSW2
+
+    def rowOffset: Int = -2
+
+    def colOffset: Int = 2
+
+    def applyShift(x: Int) = SHIFTNE2(x)
+  }
+
+  case object ShiftSW2 extends Shift {
+    def complement: Shift = ShiftNE2
+
+    def rowOffset: Int = 2
+
+    def colOffset: Int = -2
+
+    def applyShift(x: Int) = SHIFTSW2(x)
+  }
+
+  case object ShiftSE2 extends Shift {
+    def complement: Shift = ShiftNW2
+
+    def rowOffset: Int = 2
+
+    def colOffset: Int = 2
+
+    def applyShift(x: Int) = SHIFTSE2(x)
+  }
+
   private def applyShiftMacro(boardState: MutableBoardState, shift: Shift): Unit = {
     val dp = shift.applyShift(boardState.darkPieces)
     val lp = shift.applyShift(boardState.lightPieces)
@@ -178,8 +218,9 @@ object ShiftTests extends TestSuiteBase with BoardGenerators {
   lazy val getAlternateShifts = applyShifts(alternateApplyShift) _
 
 
-  lazy val genShift: Gen[Shift] = Gen.choose(ShiftNW, ShiftNE, ShiftSW, ShiftSE,
-    ShiftN, ShiftS, ShiftE, ShiftW)
+  lazy val genShift: Gen[Shift] = Gen.choose(ShiftN, ShiftS, ShiftE, ShiftW,
+    ShiftNW, ShiftNE, ShiftSW, ShiftSE,
+    ShiftNW2, ShiftNE2, ShiftSW2, ShiftSE2)
 
 
   case class ShiftMacroTestInput(shift: Shift,
