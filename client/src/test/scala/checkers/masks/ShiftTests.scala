@@ -67,6 +67,46 @@ object ShiftTests extends TestSuiteBase with BoardGenerators {
     def applyShift(x: Int) = SHIFTSE(x)
   }
 
+  case object ShiftN extends Shift {
+    def complement: Shift = ShiftS
+
+    def rowOffset: Int = -2
+
+    def colOffset: Int = 0
+
+    def applyShift(x: Int) = SHIFTN(x)
+  }
+
+  case object ShiftS extends Shift {
+    def complement: Shift = ShiftN
+
+    def rowOffset: Int = 2
+
+    def colOffset: Int = 0
+
+    def applyShift(x: Int) = SHIFTS(x)
+  }
+
+  case object ShiftE extends Shift {
+    def complement: Shift = ShiftW
+
+    def rowOffset: Int = 0
+
+    def colOffset: Int = 2
+
+    def applyShift(x: Int) = SHIFTE(x)
+  }
+
+  case object ShiftW extends Shift {
+    def complement: Shift = ShiftE
+
+    def rowOffset: Int = 0
+
+    def colOffset: Int = -2
+
+    def applyShift(x: Int) = SHIFTW(x)
+  }
+
   private def applyShiftMacro(boardState: MutableBoardState, shift: Shift): Unit = {
     val dp = shift.applyShift(boardState.darkPieces)
     val lp = shift.applyShift(boardState.lightPieces)
@@ -82,7 +122,7 @@ object ShiftTests extends TestSuiteBase with BoardGenerators {
     val dx = -shift.colOffset
     for (row <- 0 to 7; col <- 0 to 7) {
       val destSquare = BoardPosition(row, col).toSquareIndex
-      if(destSquare >= 0) {
+      if (destSquare >= 0) {
         val sourceSquare = BoardPosition(row + dy, col + dx).toSquareIndex
         val sourceOccupant = if (sourceSquare >= 0) sourceBoard.getOccupant(sourceSquare) else EMPTY
         boardState.setOccupant(destSquare, sourceOccupant)
@@ -138,7 +178,8 @@ object ShiftTests extends TestSuiteBase with BoardGenerators {
   lazy val getAlternateShifts = applyShifts(alternateApplyShift) _
 
 
-  lazy val genShift: Gen[Shift] = Gen.choose(ShiftNW, ShiftNE, ShiftSW, ShiftSE)
+  lazy val genShift: Gen[Shift] = Gen.choose(ShiftNW, ShiftNE, ShiftSW, ShiftSE,
+    ShiftN, ShiftS, ShiftE, ShiftW)
 
 
   case class ShiftMacroTestInput(shift: Shift,
@@ -172,6 +213,7 @@ object ShiftTests extends TestSuiteBase with BoardGenerators {
   lazy val props = forward1Equal & forward1back1Equal & forward2Equal & forward2back1Equal & forward2back2Equal
 
   lazy val dummy: Prop[ShiftMacroTestInput] = Prop.test("dummy", _ => true)
+
   override def tests: Tree[Test] = TestSuite {
     'ShiftMacros {
       genTestInput.mustSatisfy(props)

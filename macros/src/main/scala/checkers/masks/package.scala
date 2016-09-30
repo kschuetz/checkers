@@ -42,6 +42,13 @@ package object masks {
   private val se3 = squareMask(1, 2, 3, 9, 10, 11, 17, 18, 19, 25, 26, 27)
   private val se4 = squareMask(4, 5, 6, 7, 12, 13, 14, 15, 20, 21, 22, 23)
 
+  private val leftEdge = squareMask(0, 4, 8, 12, 16, 20, 24, 28)
+  private val rightEdge = squareMask(3, 7, 11, 15, 19, 23, 27, 31)
+
+  private val notLeftEdge = ~leftEdge
+  private val notRightEdge = ~rightEdge
+
+
   def OUTER: Int = macro outerImpl
   def INNER: Int = macro innerImpl
 
@@ -56,6 +63,8 @@ package object masks {
   def SW5: Int = macro sw5Impl
   def SE3: Int = macro se3Impl
   def SE4: Int = macro se4Impl
+  def NLE: Int = macro nleImpl
+  def NRE: Int = macro nreImpl
 
   /**
     * Notice: SHIFT macros will evaluate the argument twice.
@@ -64,6 +73,11 @@ package object masks {
   def SHIFTNE(board: Int): Int = macro shiftNEImpl
   def SHIFTSW(board: Int): Int = macro shiftSWImpl
   def SHIFTSE(board: Int): Int = macro shiftSEImpl
+
+  def SHIFTN(board: Int): Int = macro shiftNImpl
+  def SHIFTE(board: Int): Int = macro shiftEImpl
+  def SHIFTS(board: Int): Int = macro shiftSImpl
+  def SHIFTW(board: Int): Int = macro shiftWImpl
 
 
   def outerImpl(c: blackbox.Context): c.Expr[Int] = {
@@ -126,6 +140,16 @@ package object masks {
     c.Expr[Int](Literal(Constant(se4)))
   }
 
+  def nleImpl(c: blackbox.Context): c.Expr[Int] = {
+    import c.universe._
+    c.Expr[Int](Literal(Constant(notLeftEdge)))
+  }
+
+  def nreImpl(c: blackbox.Context): c.Expr[Int] = {
+    import c.universe._
+    c.Expr[Int](Literal(Constant(notRightEdge)))
+  }
+
   def shiftNWImpl(c: blackbox.Context)(board: c.Expr[Int]): c.Expr[Int] = {
     import c.universe._
     c.Expr[Int](q"(($board << 3) & NW3) | (($board << 4) & NW4)")
@@ -145,5 +169,26 @@ package object masks {
     import c.universe._
     c.Expr[Int](q"(($board >> 3) & SE3) | (($board >> 4) & SE4)")
   }
+
+  def shiftNImpl(c: blackbox.Context)(board: c.Expr[Int]): c.Expr[Int] = {
+    import c.universe._
+    c.Expr[Int](q"($board << 8)")
+  }
+
+  def shiftSImpl(c: blackbox.Context)(board: c.Expr[Int]): c.Expr[Int] = {
+    import c.universe._
+    c.Expr[Int](q"($board >>> 8)")
+  }
+
+  def shiftEImpl(c: blackbox.Context)(board: c.Expr[Int]): c.Expr[Int] = {
+    import c.universe._
+    c.Expr[Int](q"($board << 1) & NLE")
+  }
+
+  def shiftWImpl(c: blackbox.Context)(board: c.Expr[Int]): c.Expr[Int] = {
+    import c.universe._
+    c.Expr[Int](q"($board >>> 1) & NRE")
+  }
+
 
 }
