@@ -231,7 +231,7 @@ object EvaluatorTests extends TestSuiteBase
   lazy val lightTrappedKings = testProbeCheck("lightTrappedKings", _.light.trappedKingSet == _.expectedTrappedKings.light)
 
   lazy val evaluatorPropInputProps = darkManCount & lightManCount & darkKingCount & lightKingCount &
-    /*darkAttacks & lightAttacks &*/ darkTrappedKings & lightTrappedKings
+    darkAttacks & lightAttacks & darkTrappedKings & lightTrappedKings
 
 
   override def tests: Tree[Test] = TestSuite {

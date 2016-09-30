@@ -35,6 +35,8 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
     val dp = board.darkPieces
     val occupied = lp | dp
     val empty = ~(lp | dp)
+    val nonDark = empty | lp
+    val nonLight = empty | dp
 
     val darkN = SHIFTS(dp)
     val darkE = SHIFTW(dp)
@@ -94,7 +96,7 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
     val closedSE = ~emptySE
     val closedSW = ~emptySW
 
-    // vulnerable:  if square is empty, it is under attack
+    // vulnerable:  the square to a given direction is under attack (if empty)
     val darkVulnerableNW = lightNW2 | (lightN & emptyW) | (emptyN & lightW & kingW)
     val darkVulnerableNE = lightNE2 | (lightN & emptyE) | (emptyN & lightE & kingE)
     val darkVulnerableSW = (lightSW2 & kingSW2) | (lightS & kingS & emptyW) | (emptyS & lightW)
@@ -116,30 +118,37 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
     val lightTrappedSW = closedSW | lightVulnerableSW
     val lightTrappedSE = closedSE | lightVulnerableSE
 
-    val darkTrappedN = darkTrappedNW & darkTrappedNE
-    val darkTrappedS = darkTrappedSW & darkTrappedSE
-    val lightTrappedN = lightTrappedNW & lightTrappedNE
-    val lightTrappedS = lightTrappedSW & lightTrappedSE
+    val darkTrappedForward = darkTrappedNW & darkTrappedNE
+    val darkTrappedRear = darkTrappedSW & darkTrappedSE
+    val lightTrappedForward = lightTrappedSW & lightTrappedSE
+    val lightTrappedRear = lightTrappedNW & lightTrappedNE
 
-    val darkEscapeMove = ~(darkTrappedN & darkTrappedS)
-    val lightEscapeMove = ~(lightTrappedN & lightTrappedS)
+    val darkEscapeMove = ~(darkTrappedForward & darkTrappedRear)
+    val lightEscapeMove = ~(lightTrappedRear & lightTrappedForward)
 
     val potentialAttacks = INNER & empty
 
-    // TODO:  rewrite attacks
-//    val darkAttacks = potentialAttacks &
-//      ((darkSW & (emptyNE | lightNE)) |
-//        (darkSE & (emptyNW | lightNW)) |
-//        (darkKingNW & (emptySE | lightSE)) |
-//        (darkKingNE & (emptySW | lightSW)))
-//
-//    val lightAttacks = potentialAttacks &
-//      ((lightNW & (emptySE | darkSE)) |
-//        (lightNE & (emptySW | darkSW)) |
-//        (lightKingSW & (emptyNE | darkNE)) |
-//        (lightKingSE & (emptyNW | darkNW)))
-    val darkAttacks = 0
-    val lightAttacks = 0
+    val darkAttacksNE = nonDark & lightVulnerableNE
+    val darkAttacksNW = nonDark & lightVulnerableNW
+    val darkAttacksSW = nonDark & lightVulnerableSW
+    val darkAttacksSE = nonDark & lightVulnerableSE
+
+    val lightAttacksNE = nonLight & darkVulnerableNE
+    val lightAttacksNW = nonLight & darkVulnerableNW
+    val lightAttacksSW = nonLight & darkVulnerableSW
+    val lightAttacksSE = nonLight & darkVulnerableSE
+    
+    val darkAttacks = potentialAttacks & (
+      SHIFTNE(darkAttacksNE) |
+        SHIFTNW(darkAttacksNW) |
+        SHIFTSE(darkAttacksSE) |
+        SHIFTSW(darkAttacksSW))
+
+    val lightAttacks = potentialAttacks & (
+      SHIFTNE(lightAttacksNE) |
+        SHIFTNW(lightAttacksNW) |
+        SHIFTSE(lightAttacksSE) |
+        SHIFTSW(lightAttacksSW))
 
     val darkKingCanJump = dp & k & ((emptyNE2 & lightNE) |
       (emptySE2 & lightSE) |
@@ -153,9 +162,6 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
 
     val safeForDark = empty & (~lightAttacks)
     val safeForLight = empty & (~darkAttacks)
-
-//    val darkEscapeMove = SHIFTNW(safeForDark) | SHIFTNE(safeForDark) | SHIFTSW(safeForDark) | SHIFTSE(safeForDark)
-//    val lightEscapeMove = SHIFTNW(safeForLight) | SHIFTNE(safeForLight) | SHIFTSW(safeForLight) | SHIFTSE(safeForLight)
 
     val darkKingCanEscape = darkEscapeMove | darkKingCanJump
     val lightKingCanEscape = lightEscapeMove | lightKingCanJump
