@@ -1,6 +1,6 @@
 package checkers.benchmarks
 
-import checkers.benchmarks.suites.Sandbox
+import checkers.benchmarks.suites.{Evaluator, MoveGenerator, Sandbox}
 import japgolly.scalajs.benchmark.gui.BenchmarkGUI
 import org.scalajs.dom.document
 
@@ -12,6 +12,8 @@ object Main extends scalajs.js.JSApp {
   def main(): Unit = {
     val tgt = document.getElementById("body")
 
-    BenchmarkGUI.renderMenu(tgt)(Sandbox.suite)
+    BenchmarkGUI.renderMenu(tgt)(Evaluator.suite,
+      MoveGenerator.suite,
+      Sandbox.suite)
   }
 }
