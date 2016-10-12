@@ -25,10 +25,6 @@ package object masks {
 //  private val edges = squareMask(24, 20, 16, 12, 8, 4, 0, 7, 11, 15, 19, 23, 27, 31)
   private val outer = squareMask(0, 1, 2, 3, 7, 8, 15, 16, 23, 24, 28, 29, 30, 31)
   private val inner = ~outer
-
-  private val crownLight = squareMaskFromSeq(0 to 3)
-  private val crownDark = squareMaskFromSeq(28 to 31)
-
   private val nw3 = squareMask(4, 5, 6, 12, 13, 14, 20, 21, 22, 28, 29, 30)
   private val nw4 = squareMask(8, 9, 10, 11, 16, 17, 18, 19, 24, 25, 26, 27)
 
@@ -47,13 +43,18 @@ package object masks {
   private val notLeftEdge = ~leftEdge
   private val notRightEdge = ~rightEdge
 
-  private val lightSecond = squareMask(24, 25, 26, 27)
-  private val lightThird = squareMask(20, 21, 22, 23)
-  private val lightFourth = squareMask(16, 17, 18, 19)
+  private val lightBack = squareMaskFromSeq(28 to 31)
+  private val lightSecond = squareMaskFromSeq(24 to 27)
+  private val lightThird = squareMaskFromSeq(20 to 23)
+  private val lightFourth = squareMaskFromSeq(16 to 19)
 
-  private val darkSecond = squareMask(4, 5, 6, 7)
-  private val darkThird = squareMask(8, 9, 10, 11)
-  private val darkFourth = squareMask(12, 13, 14, 15)
+  private val darkBack = squareMaskFromSeq(0 to 3)
+  private val darkSecond = squareMaskFromSeq(4 to 7)
+  private val darkThird = squareMaskFromSeq(8 to 11)
+  private val darkFourth = squareMaskFromSeq(12 to 15)
+
+  private val crownLight = darkBack
+  private val crownDark = lightBack
 
   def OUTER: Int = macro outerImpl
   def INNER: Int = macro innerImpl
@@ -71,11 +72,13 @@ package object masks {
   def SE4: Int = macro se4Impl
   def NLE: Int = macro nleImpl
   def NRE: Int = macro nreImpl
-  
+
+  def LIGHTBACK: Int = macro lightBackImpl
   def LIGHTSECOND: Int = macro lightSecondImpl
   def LIGHTTHIRD: Int = macro lightThirdImpl
   def LIGHTFOURTH: Int = macro lightFourthImpl
 
+  def DARKBACK: Int = macro darkBackImpl
   def DARKSECOND: Int = macro darkSecondImpl
   def DARKTHIRD: Int = macro darkThirdImpl
   def DARKFOURTH: Int = macro darkFourthImpl
@@ -168,6 +171,11 @@ package object masks {
     c.Expr[Int](Literal(Constant(notRightEdge)))
   }
 
+  def lightBackImpl(c: blackbox.Context): c.Expr[Int] = {
+    import c.universe._
+    c.Expr[Int](Literal(Constant(lightBack)))
+  }
+
   def lightSecondImpl(c: blackbox.Context): c.Expr[Int] = {
     import c.universe._
     c.Expr[Int](Literal(Constant(lightSecond)))
@@ -181,6 +189,11 @@ package object masks {
   def lightFourthImpl(c: blackbox.Context): c.Expr[Int] = {
     import c.universe._
     c.Expr[Int](Literal(Constant(lightFourth)))
+  }
+
+  def darkBackImpl(c: blackbox.Context): c.Expr[Int] = {
+    import c.universe._
+    c.Expr[Int](Literal(Constant(darkBack)))
   }
 
   def darkSecondImpl(c: blackbox.Context): c.Expr[Int] = {

@@ -154,18 +154,18 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
     val safeForLight = empty & (~darkAttacks)
 
     // Unimpeded path to king
-    val unimpededForDark = {
-      val u1 = safeForDark & (emptyNW | emptyNE)
-      val u2 = safeForDark & (SHIFTSE(u1) | SHIFTSW(u1))
+    val unimpededPathForDark = {
+      val u2 = safeForDark & (SHIFTSE(safeForDark) | SHIFTSW(safeForDark))
       val u3 = safeForDark & (SHIFTSE(u2) | SHIFTSW(u2))
-      (u1 & LIGHTSECOND) | (u2 & LIGHTTHIRD) | (u3 & LIGHTFOURTH)
+      val u4 = safeForDark & (SHIFTSE(u3) | SHIFTSW(u3))
+      (safeForDark & LIGHTBACK) | (u2 & LIGHTSECOND) | (u3 & LIGHTTHIRD) | (u4 & LIGHTFOURTH)
     }
 
-    val unimpededForLight = {
-      val u1 = safeForLight & (emptySW | emptySE)
-      val u2 = safeForLight & (SHIFTNE(u1) | SHIFTNW(u1))
+    val unimpededPathForLight = {
+      val u2 = safeForLight & (SHIFTNE(safeForLight) | SHIFTNW(safeForLight))
       val u3 = safeForLight & (SHIFTNE(u2) | SHIFTNW(u2))
-      (u1 & DARKSECOND) | (u2 & DARKTHIRD) | (u3 & DARKFOURTH)
+      val u4 = safeForLight & (SHIFTNE(u3) | SHIFTNW(u3))
+      (safeForLight & LIGHTBACK) | (u2 & DARKSECOND) | (u3 & DARKTHIRD) | (u4 & DARKFOURTH)
     }
 
     val darkKingCanJump = dp & k & ((emptyNE2 & lightNE) |
@@ -248,8 +248,8 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
       probe.closedNEMask = closedNE
       probe.closedSWMask = closedSW
       probe.closedSEMask = closedSE
-      probe.lightUnimpededMask = unimpededForLight
-      probe.darkUnimpededMask = unimpededForDark
+      probe.lightUnimpededMask = unimpededPathForLight
+      probe.darkUnimpededMask = unimpededPathForDark
     }
 
     if (rulesSettings.giveaway) -result else result

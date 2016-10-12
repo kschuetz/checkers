@@ -90,21 +90,6 @@ object EvaluatorTests extends TestSuiteBase
         else true
       }
 
-
-
-      def checkRearEscape2(home: Int, forward: Int, move: Int, jump: Int, side: Int): Boolean = {
-        println(s"checkRearEscape color $color at $home: f $forward, m $move, j $jump, s $side, k $king oppk $opponentKing")
-        val jumpOcc = if(jump >= 0) board.getOccupant(jump) else EMPTY
-        val moveOcc = if(jump >= 0) board.getOccupant(move) else EMPTY
-        val forwardOcc = if(jump >= 0) board.getOccupant(forward) else EMPTY
-        val sideOcc = if(jump >= 0) board.getOccupant(side) else EMPTY
-        println(s"   @f: $forwardOcc, @m:$moveOcc, @j:$jumpOcc, @s:$sideOcc")
-
-        val result = checkRearEscape(forward, move, jump, side)
-        println(s"   -> $result")
-        result
-      }
-
       Board.playableSquares.foreach { square =>
         if (board.getOccupant(square) == king) {
           val canEscape =
