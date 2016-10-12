@@ -24,7 +24,8 @@ class Searcher(moveGenerator: MoveGenerator,
     extends PlayComputation {
 
     val maxDepth = depthLimit.getOrElse(Searcher.MaxDepth)
-    var cyclesRemaining = cycleLimit
+    var cyclesRemaining = cycleLimit.getOrElse(0)
+    val cyclesLimited = cycleLimit.nonEmpty
 
     val pv = new PrincipalVariation[Play](maxDepth)
     private var iteration = 0
@@ -147,11 +148,21 @@ class Searcher(moveGenerator: MoveGenerator,
     }
 
     override def run(maxCycles: Int): Int = {
+      val limit = if(cyclesLimited) {
+        math.min(maxCycles, cyclesRemaining)
+      } else maxCycles
+
       var steps = 0
-      while (steps < maxCycles && !done) {
+      while (steps < limit && !done) {
         process()
         steps += 1
       }
+
+      if(cyclesLimited) {
+        cyclesRemaining -= steps
+        if(cyclesRemaining <= 0) done = true
+      }
+
       steps
     }
 

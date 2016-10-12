@@ -4,6 +4,7 @@ object DefaultPrograms {
 
   object ids {
     val TrivialPlayer = "TrivialPlayer"
+    val Medium = "Medium"
   }
 
 
@@ -15,6 +16,14 @@ object DefaultPrograms {
     }
 
     register("Computer (Easiest)", ids.TrivialPlayer, 0, new TrivialPlayerFactory)
+
+    val medium = {
+      val params = SearchParameters(None, cycleLimit = Option(1000000), MoveSelectionMethodWeights.alwaysBestMove)
+      val personality = new StaticPersonality(params)
+      new ComputerPlayerFactory(personality)
+    }
+
+    register("Computer (Medium)", ids.Medium, 5, medium)
   }
 
 }
