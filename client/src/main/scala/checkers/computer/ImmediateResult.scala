@@ -10,5 +10,5 @@ class ImmediateResult(play: Play, stateOut: Opaque) extends PlayComputation {
 
   override def isReady: Boolean = true
 
-  override def result: (Play, Opaque) = (play, stateOut)
+  override def result: PlayResult = PlayResult(play, stateOut)
 }

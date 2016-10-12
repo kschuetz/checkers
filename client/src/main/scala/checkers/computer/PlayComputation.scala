@@ -2,6 +2,8 @@ package checkers.computer
 
 import checkers.core.{Opaque, Play}
 
+case class PlayResult(play: Play, opaque: Opaque)
+
 /**
   * MoveComputation is stateful and mutable.
   */
@@ -32,5 +34,5 @@ trait PlayComputation {
     * Call isReady first.
     * @return
     */
-  def result: (Play, Opaque)
+  def result: PlayResult
 }

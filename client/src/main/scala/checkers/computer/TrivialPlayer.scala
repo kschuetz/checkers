@@ -26,10 +26,10 @@ class TrivialPlayer(moveGenerator: MoveGenerator)
 
   class TrivialPlayerComputation(stateIn: Opaque, input: PlayInput) extends SimplePlayComputation {
     val currentState = stateIn.asInstanceOf[State]
-    override protected def compute: (Play, Opaque) = {
+    override protected def compute: PlayResult = {
       val boardStack = BoardStack.fromBoard(input.board)
       val choices = moveGenerator.generateMoves(boardStack, input.turnToMove)
-      if(choices.count == 0) (Play.empty, stateIn)
+      if(choices.count == 0) PlayResult(Play.empty, stateIn)
       else {
         val (moveIndex, nextState) = {
           if(choices.count == 1) (0, currentState)
@@ -38,7 +38,7 @@ class TrivialPlayer(moveGenerator: MoveGenerator)
         moveDecoder.load(choices, moveIndex)
         val path = moveDecoder.pathToList
         val play = Play.move(path)
-        (play, nextState)
+        PlayResult(play, nextState)
       }
     }
   }

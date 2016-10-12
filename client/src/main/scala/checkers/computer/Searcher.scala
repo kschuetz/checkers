@@ -4,11 +4,27 @@ import checkers.consts._
 import checkers.core.Play.Move
 import checkers.core._
 
+object Searcher {
+  val MaxDepth = 32
+}
+
 class Searcher(moveGenerator: MoveGenerator,
                moveExecutor: MoveExecutor,
                evaluator: Evaluator) {
 
-  class Search(playInput: PlayInput, incomingPlayerState: ComputerPlayerState, maxDepth: Int) extends PlayComputation {
+  def create(playInput: PlayInput, incomingPlayerState: ComputerPlayerState, depthLimit: Option[Int],
+             cycleLimit: Option[Int], transformResult: PlayResult => PlayResult): Search =
+    new Search(playInput, incomingPlayerState, depthLimit, cycleLimit, transformResult)
+
+  class Search(playInput: PlayInput,
+               incomingPlayerState: ComputerPlayerState,
+               depthLimit: Option[Int],
+               cycleLimit: Option[Int],
+               transformResult: PlayResult => PlayResult)
+    extends PlayComputation {
+
+    val maxDepth = depthLimit.getOrElse(Searcher.MaxDepth)
+    var cyclesRemaining = cycleLimit
 
     val pv = new PrincipalVariation[Play](maxDepth)
     private var iteration = 0
@@ -145,8 +161,9 @@ class Searcher(moveGenerator: MoveGenerator,
 
     override def isReady: Boolean = done
 
-    override def result: (Play, Opaque) = if (done) {
-      (pv.getBestMove(0), incomingPlayerState)
+    override def result: PlayResult = if (done) {
+      val play = pv.getBestMove(0)
+      transformResult(PlayResult(play, incomingPlayerState))
     } else throw new Exception("No result yet")
   }
 

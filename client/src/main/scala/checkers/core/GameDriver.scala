@@ -1,7 +1,7 @@
 package checkers.core
 
 import checkers.components.BoardMouseEvent
-import checkers.computer.PlayInput
+import checkers.computer.{PlayInput, PlayResult}
 import checkers.consts._
 import checkers.core.BeginTurnEvaluation._
 import checkers.core.InputPhase._
@@ -266,7 +266,7 @@ class GameDriver(gameLogicModule: GameLogicModule)
     model.inputPhase match {
       case ct: ComputerThinking =>
         if (ct.playComputation.isReady) {
-          val (play, newPlayerState) = ct.playComputation.result
+          val PlayResult(play, newPlayerState) = ct.playComputation.result
 
           val newGameState = if (model.gameState.turnToMove == DARK) {
             model.gameState.withDarkState(newPlayerState)

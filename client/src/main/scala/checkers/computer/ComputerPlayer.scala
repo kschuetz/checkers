@@ -5,6 +5,7 @@ import checkers.util.Random
 
 
 class ComputerPlayer(moveGenerator: MoveGenerator,
+                     searcher: Searcher,
                      personality: Personality)
                     (initialSeed: Option[Long]) extends Program {
   // Can be shared between all computations
@@ -35,11 +36,17 @@ class ComputerPlayer(moveGenerator: MoveGenerator,
         case _ => search(state3, playInput, choices, searchParameters, blunder = false)
       }
     }
+  }
 
+  private def executeBlunder(choices: MoveList)(playResult: PlayResult): PlayResult = {
+    playResult  // TODO: blunder
   }
 
   private def search(stateIn: ComputerPlayerState, playInput: PlayInput, choices: MoveList, searchParameters: SearchParameters, blunder: Boolean): PlayComputation = {
-    ???
+    //searcher
+    val transformResult: PlayResult => PlayResult = if(blunder) executeBlunder(choices) else identity
+
+    searcher.create(playInput, stateIn, searchParameters.maxDepth, searchParameters.maxCycles, transformResult)
   }
 
   private def selectRandomMove(stateIn: ComputerPlayerState, choices: MoveList): PlayComputation = {
@@ -54,6 +61,6 @@ class ComputerPlayer(moveGenerator: MoveGenerator,
 
 class ComputerPlayerFactory(personality: Personality) extends ProgramFactory {
   def makeProgram(gameLogicModule: GameLogicModule): Program = {
-    new ComputerPlayer(gameLogicModule.moveGenerator, personality)(None)
+    new ComputerPlayer(gameLogicModule.moveGenerator, gameLogicModule.searcher, personality)(None)
   }
 }
