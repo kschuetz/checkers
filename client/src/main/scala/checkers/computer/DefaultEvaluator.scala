@@ -17,17 +17,15 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
   //           04  05  06  07
   //         00  01  02  03
 
-
   private val Man = 100
-  private val King = 150
+  private val King = 147
 
   private val DogHoleBonus = 10
   private val DustHolePenalty = 2
-  private val TrappedKingPenalty = 48
+  private val TrappedKingPenalty = 45
   private val TurnAdvantageBonus = 3
-  private val RunawayBaseBonus = 50
-  private val BackRankBonus = 6
-  private val UnimpededManBonus = 50
+  private val BackRankBonus = 5
+  private val RunawayBaseBonus = 47
 
   def evaluate(turnToPlay: Color, board: BoardStateRead, testProbe: AnyRef = null): Int = {
     val probe = if (testProbe == null) null else testProbe.asInstanceOf[DefaultEvaluatorTestProbe]
@@ -195,8 +193,10 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
     var lightMaterialScore = 0
     var darkTrappedKingCount = 0
     var lightTrappedKingCount = 0
-    var darkUnimpededBonus = 0
-    var lightUnimpededBonus = 0
+    var darkRunawayBonus = 0
+    var lightRunawayBonus = 0
+    var darkBackRankCount = 0
+    var lightBackRankCount = 0
 
     var i = 0
     while (i < 32) {
@@ -214,9 +214,12 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
 
           if(((unimpededDark >>> i) & 1) != 0) {
             val distanceFromBack = (32 - i) >> 2
-            darkUnimpededBonus += UnimpededManBonus - (distanceFromBack * TurnAdvantageBonus)
+            darkRunawayBonus += RunawayBaseBonus - (distanceFromBack * TurnAdvantageBonus)
           }
         }
+
+        if(i <= 4) darkBackRankCount += 1
+
       } else if (((lp >>> i) & 1) != 0) {
         if (((k >>> i) & 1) != 0) {
           lightKingCount += 1
@@ -231,9 +234,11 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
 
           if(((unimpededLight >>> i) & 1) != 0) {
             val distanceFromBack = i >> 2
-            lightUnimpededBonus += UnimpededManBonus - (distanceFromBack * TurnAdvantageBonus)
+            lightRunawayBonus += RunawayBaseBonus - (distanceFromBack * TurnAdvantageBonus)
           }
         }
+
+        if(i >= 28) lightBackRankCount += 1
       }
       i += 1
     }
@@ -244,8 +249,16 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
     val darkDustHolePenalty = if((dp & DUSTHOLEDARK) != 0) DustHolePenalty else 0
     val lightDustHolePenalty = if((lp & DUSTHOLELIGHT) != 0) DustHolePenalty else 0
 
-    val darkScore = darkMaterialScore + darkUnimpededBonus + darkDogHoleBonus - darkDustHolePenalty
-    val lightScore = lightMaterialScore + lightUnimpededBonus + lightDogHoleBonus - lightDustHolePenalty
+    val darkBackRankBonus = if(lightManCount > 0) {
+      darkBackRankCount * BackRankBonus
+    } else 0
+
+    val lightBackRankBonus = if(darkManCount > 0) {
+      lightBackRankCount * BackRankBonus
+    } else 0
+
+    val darkScore = darkMaterialScore + darkRunawayBonus + darkDogHoleBonus + darkBackRankBonus - darkDustHolePenalty
+    val lightScore = lightMaterialScore + lightRunawayBonus + lightDogHoleBonus + lightBackRankBonus - lightDustHolePenalty
 
     var result = TurnAdvantageBonus
     if (turnToPlay == DARK) {
