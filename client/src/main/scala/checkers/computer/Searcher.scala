@@ -4,14 +4,11 @@ import checkers.consts._
 import checkers.core.Play.Move
 import checkers.core._
 
-class Searcher(gameLogicModule: GameLogicModule,
-               evaluator: Evaluator,
-               maxDepth: Int) {
+class Searcher(moveGenerator: MoveGenerator,
+               moveExecutor: MoveExecutor,
+               evaluator: Evaluator) {
 
-  private val moveGenerator = gameLogicModule.moveGenerator
-  private val moveExecutor = gameLogicModule.moveExecutor
-
-  class Search(playInput: PlayInput, incomingPlayerState: ComputerPlayerState) extends PlayComputation {
+  class Search(playInput: PlayInput, incomingPlayerState: ComputerPlayerState, maxDepth: Int) extends PlayComputation {
 
     val pv = new PrincipalVariation[Play](maxDepth)
     private var iteration = 0

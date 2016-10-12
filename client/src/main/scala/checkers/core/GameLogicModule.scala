@@ -1,5 +1,6 @@
 package checkers.core
 
+import checkers.computer.{DefaultEvaluator, Evaluator, Searcher}
 import checkers.core.tables.TablesModule
 import com.softwaremill.macwire._
 
@@ -15,6 +16,10 @@ trait GameLogicModule {
   def moveTreeFactory: MoveTreeFactory
 
   def animationPlanner: AnimationPlanner
+
+  def searcher: Searcher
+
+  def evaluator: Evaluator
 }
 
 class GameLogicModuleFactory(tablesModule: TablesModule,
@@ -38,6 +43,11 @@ class GameLogicModuleFactory(tablesModule: TablesModule,
       lazy val moveTreeFactory = wire[MoveTreeFactory]
 
       lazy val animationPlanner = wire[AnimationPlanner]
+
+      lazy val evaluator = wire[DefaultEvaluator]
+
+      lazy val searcher = wire[Searcher]
+
     }
   }
 

@@ -51,3 +51,9 @@ class ComputerPlayer(moveGenerator: MoveGenerator,
 
 
 }
+
+class ComputerPlayerFactory(personality: Personality) extends ProgramFactory {
+  def makeProgram(gameLogicModule: GameLogicModule): Program = {
+    new ComputerPlayer(gameLogicModule.moveGenerator, personality)(None)
+  }
+}
