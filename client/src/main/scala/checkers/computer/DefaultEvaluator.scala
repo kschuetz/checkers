@@ -22,6 +22,7 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
   private val King = 150
 
   private val DogHoleBonus = 10
+  private val DustHolePenalty = 2
   private val TrappedKingPenalty = 48
   private val TurnAdvantageBonus = 3
   private val RunawayBaseBonus = 50
@@ -237,8 +238,14 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
       i += 1
     }
 
-    val darkScore = darkMaterialScore + darkUnimpededBonus
-    val lightScore = lightMaterialScore + lightUnimpededBonus
+    val darkDogHoleBonus = if(((lp & DOGHOLELIGHT) != 0) && ((dp & DOGHOLEBLOCKLIGHT) != 0)) DogHoleBonus else 0
+    val lightDogHoleBonus = if(((dp & DOGHOLEDARK) != 0) && ((lp & DOGHOLEBLOCKDARK) != 0)) DogHoleBonus else 0
+
+    val darkDustHolePenalty = if((dp & DUSTHOLEDARK) != 0) DustHolePenalty else 0
+    val lightDustHolePenalty = if((lp & DUSTHOLELIGHT) != 0) DustHolePenalty else 0
+
+    val darkScore = darkMaterialScore + darkUnimpededBonus + darkDogHoleBonus - darkDustHolePenalty
+    val lightScore = lightMaterialScore + lightUnimpededBonus + lightDogHoleBonus - lightDustHolePenalty
 
     var result = TurnAdvantageBonus
     if (turnToPlay == DARK) {

@@ -53,6 +53,15 @@ package object masks {
   private val darkThird = squareMaskFromSeq(8 to 11)
   private val darkFourth = squareMaskFromSeq(12 to 15)
 
+  private val dogHoleLight = squareMask(7)
+  private val dogHoleBlockLight = squareMask(3)
+
+  private val dogHoleDark = squareMask(24)
+  private val dogHoleBlockDark = squareMask(28)
+
+  private val dustHoleLight = squareMask(8)
+  private val dustHoleDark = squareMask(23)
+
   private val crownLight = darkBack
   private val crownDark = lightBack
 
@@ -61,6 +70,14 @@ package object masks {
 
   def CROWNLIGHT: Int = macro crownLightImpl
   def CROWNDARK: Int = macro crownDarkImpl
+
+  def DOGHOLEDARK: Int = macro dogHoleDarkImpl
+  def DOGHOLELIGHT: Int = macro dogHoleLightImpl
+  def DOGHOLEBLOCKDARK: Int = macro dogHoleBlockDarkImpl
+  def DOGHOLEBLOCKLIGHT: Int = macro dogHoleBlockLightImpl
+
+  def DUSTHOLEDARK: Int = macro dustHoleDarkImpl
+  def DUSTHOLELIGHT: Int = macro dustHoleLightImpl 
 
   def NW3: Int = macro nw3Impl
   def NW4: Int = macro nw4Impl
@@ -209,6 +226,36 @@ package object masks {
   def darkFourthImpl(c: blackbox.Context): c.Expr[Int] = {
     import c.universe._
     c.Expr[Int](Literal(Constant(darkFourth)))
+  }
+
+  def dogHoleDarkImpl(c: blackbox.Context): c.Expr[Int] = {
+    import c.universe._
+    c.Expr[Int](Literal(Constant(dogHoleDark)))
+  }
+
+  def dogHoleLightImpl(c: blackbox.Context): c.Expr[Int] = {
+    import c.universe._
+    c.Expr[Int](Literal(Constant(dogHoleLight)))
+  }
+
+  def dogHoleBlockDarkImpl(c: blackbox.Context): c.Expr[Int] = {
+    import c.universe._
+    c.Expr[Int](Literal(Constant(dogHoleBlockDark)))
+  }
+
+  def dogHoleBlockLightImpl(c: blackbox.Context): c.Expr[Int] = {
+    import c.universe._
+    c.Expr[Int](Literal(Constant(dogHoleBlockLight)))
+  }
+
+  def dustHoleDarkImpl(c: blackbox.Context): c.Expr[Int] = {
+    import c.universe._
+    c.Expr[Int](Literal(Constant(dustHoleDark)))
+  }
+
+  def dustHoleLightImpl(c: blackbox.Context): c.Expr[Int] = {
+    import c.universe._
+    c.Expr[Int](Literal(Constant(dustHoleLight)))
   }
 
   def shiftNImpl(c: blackbox.Context)(board: c.Expr[Int]): c.Expr[Int] = {
