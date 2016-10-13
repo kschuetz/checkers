@@ -1,7 +1,8 @@
 package checkers
 
 package object logger {
-  private val defaultLogger = LoggerFactory.getLogger("Log")
+  val log = LoggerFactory.getLogger("Log")
 
-  def log = defaultLogger
+  val animations = LoggerFactory.getLogger("Animations", Level.DEBUG)
+
 }

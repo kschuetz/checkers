@@ -15,7 +15,11 @@ private[logger] trait Log4JavaScript extends js.Object {
 
 @js.native
 @JSName("log4javascript.Level")
-private[logger] trait Level extends js.Object {
+trait Level extends js.Object
+
+@js.native
+@JSName("log4javascript.Level")
+object Level extends js.Object {
   val ALL:Level = js.native
   val TRACE:Level = js.native
   val DEBUG:Level = js.native
@@ -23,6 +27,7 @@ private[logger] trait Level extends js.Object {
   val WARN:Level = js.native
   val ERROR:Level = js.native
   val FATAL:Level = js.native
+  val OFF:Level = js.native
 }
 
 @js.native
@@ -81,7 +86,7 @@ private[logger] object Log4JavaScript extends js.GlobalScope {
   val log4javascript:Log4JavaScript = js.native
 }
 
-class L4JSLogger(jsLogger:JSLogger) extends Logger {
+class L4JSLogger(jsLogger: JSLogger) extends Logger {
 
   private var ajaxAppender:AjaxAppender = null
 
@@ -104,5 +109,7 @@ class L4JSLogger(jsLogger:JSLogger) extends Logger {
   override def error(msg: String): Unit = jsLogger.error(msg)
   override def fatal(msg: String, e: Exception): Unit = jsLogger.fatal(msg, undefOrError(e))
   override def fatal(msg: String): Unit = jsLogger.fatal(msg)
+
+  def setLevel(level: Level): Unit = jsLogger.setLevel(level)
 
 }

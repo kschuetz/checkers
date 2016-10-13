@@ -36,18 +36,22 @@ object LoggerFactory {
   /**
    * Create a logger that outputs to browser console
    */
-  def getLogger(name: String): Logger = {
+  def getLogger(name: String, level: Level = null): Logger = {
     val nativeLogger = Log4JavaScript.log4javascript.getLogger(name)
     nativeLogger.addAppender(consoleAppender)
-    new L4JSLogger(nativeLogger)
+    val result = new L4JSLogger(nativeLogger)
+    if(level != null) result.setLevel(level)
+    result
   }
 
   /**
    * Create a logger that outputs to a separate popup window
    */
-  def getPopUpLogger(name: String): Logger = {
+  def getPopUpLogger(name: String, level: Level = null): Logger = {
     val nativeLogger = Log4JavaScript.log4javascript.getLogger(name)
     nativeLogger.addAppender(popupAppender)
-    new L4JSLogger(nativeLogger)
+    val result = new L4JSLogger(nativeLogger)
+    if(level != null) result.setLevel(level)
+    result
   }
 }

@@ -1,6 +1,7 @@
 package checkers.core
 
 import checkers.consts._
+import checkers.logger
 
 case class MoveAnimationPlanInput(nowTime: Double,
                                   animationModel: AnimationModel,
@@ -18,11 +19,13 @@ case class PlacePiecesAnimationInput(nowTime: Double,
 
 class AnimationPlanner(settings: AnimationSettings) {
 
+  private val log = logger.animations
+
   import Animation._
 
   def scheduleMoveAnimations(input: MoveAnimationPlanInput): Option[AnimationModel] = {
 
-    println(s"scheduleMoveAnimations: $input")
+    log.debug(s"scheduleMoveAnimations: $input")
 
     def handleRemovePieces(startTime: Double, delay: Double, interval: Double, incoming: List[Animation]): List[Animation] = {
       var result = incoming
@@ -123,7 +126,7 @@ class AnimationPlanner(settings: AnimationSettings) {
     newAnimations match {
       case Nil => None
       case anims =>
-        println(s"scheduling anims: $anims")
+        log.debug(s"scheduling anims: $anims")
         Some(input.animationModel.addPlayAnims(anims))
     }
   }
@@ -165,7 +168,7 @@ class AnimationPlanner(settings: AnimationSettings) {
     newAnimations match {
       case Nil => None
       case anims =>
-        println(s"scheduling placement anims: $anims")
+        log.debug(s"scheduling placement anims: $anims")
         Some(input.animationModel.addPlayAnims(anims))
     }
 
