@@ -75,18 +75,6 @@ object SceneFrame {
       result
     }
 
-    def handleMouseMove(event: ReactMouseEvent) = $.props.map {  props =>
-      val context = props.sceneContainerContext
-      if(event.altKey) {
-        val pt = Point(event.clientX, event.clientY)
-        $.refs(playfieldRef.name).foreach { node =>
-          val target = node.getDOMNode().asInstanceOf[SVGLocatable]
-          val transformed = context.screenToLocal(target)(pt)
-          println(s"screen: $pt")
-          println(s"local: $transformed")
-        }
-      }
-    }
   }
 
   val component = ReactComponentB[Props]("SceneFrame")
