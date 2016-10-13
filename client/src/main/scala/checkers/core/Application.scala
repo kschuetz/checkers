@@ -4,6 +4,7 @@ import checkers.components.dialog.{NewGameDialog, PlayerChoice}
 import checkers.components.dialog.NewGameDialog.{NewGameDialogCallbacks, Result}
 import checkers.computer.ProgramRegistry
 import checkers.core.tables.TablesModule
+import checkers.logger
 import checkers.persistence.NewGameSettingsPersister
 import japgolly.scalajs.react.{Callback, ReactDOM}
 import org.scalajs.dom
@@ -92,7 +93,7 @@ class Application(programRegistry: ProgramRegistry,
         initialVariationIndex = math.max(0, Variation.all.indexOf(settings.rulesSettings.variation)),
         callbacks = this)
 
-      println(props)
+      logger.log.debug(props.toString)
 
       val dialog = NewGameDialog(props)
 

@@ -1,6 +1,7 @@
 package checkers.core
 
 import checkers.components._
+import checkers.logger
 import japgolly.scalajs.react.{Callback, ReactDOM}
 import org.scalajs.dom
 import org.scalajs.dom.window.performance
@@ -44,11 +45,11 @@ class Game(gameDriver: GameDriver,
 
   object Callbacks extends BoardCallbacks {
     override val onBoardMouseDown = (event: BoardMouseEvent) => Some(Callback {
-      println(s"pieceMouseDown ${event.squareIndex}")
+      logger.inputEvents.info(s"pieceMouseDown ${event.squareIndex}")
       updateNowTime()
       gameDriver.handleBoardMouseDown(model, event).foreach(replaceModel)
       if (event.squareIndex < 0) {
-        println(model.inputPhase)
+        logger.inputEvents.debug(model.inputPhase.toString)
         scheduleTick()
       }
     })

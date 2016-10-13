@@ -6,10 +6,13 @@ import checkers.consts._
 import checkers.core.BeginTurnEvaluation._
 import checkers.core.InputPhase._
 import checkers.geometry.Point
+import checkers.logger
 
 
 class GameDriver(gameLogicModule: GameLogicModule)
                 (playerConfig: PlayerConfig) {
+
+  private val log = logger.gameDriver
 
   type Model = GameModel
   type State = GameState
@@ -47,7 +50,7 @@ class GameDriver(gameLogicModule: GameLogicModule)
       val target = model.boardOrientation.opposite
       val anim = animationPlanner.createBoardRotateAnimation(model.nowTime)
       val animModel = model.animation.copy(rotate = Some(anim))
-      println(s"rotating board: $anim")
+      logger.animations.info(s"rotating board: $anim")
       Some(model.copy(boardOrientation = target, animation = animModel))
     }
   }
@@ -60,7 +63,7 @@ class GameDriver(gameLogicModule: GameLogicModule)
   private def applyPlay(gameModel: Model, play: Play): Option[(PlayEvents, Model)] = {
     val gameState = gameModel.gameState
 
-    println(s"applying play: $play, tree = ${gameState.moveTree}")
+    log.debug(s"applying play: $play, tree = ${gameState.moveTree}")
 
     play match {
       case Play.NoPlay => None
@@ -75,7 +78,7 @@ class GameDriver(gameLogicModule: GameLogicModule)
 
       case move: Play.Move =>
         gameState.moveTree.walk(move.path).map { case (endSquare, newMoveTree) =>
-          println(s"walk2:  $newMoveTree")
+          log.debug(s"walk:  $newMoveTree")
           val remainingMoveTree =
             if (newMoveTree.isEmpty) newMoveTree
             else newMoveTree.prepend(endSquare, requiresJump = true)
@@ -90,7 +93,7 @@ class GameDriver(gameLogicModule: GameLogicModule)
     val endsTurn = remainingMoveTree.isEmpty
     val isComputerPlayer = gameState.currentPlayer.isComputer
 
-    println(s"applyMove: remaining tree = $remainingMoveTree")
+    log.debug(s"applyMove: remaining tree = $remainingMoveTree")
 
     def go(path: List[Int], result: List[MoveInfo]): List[MoveInfo] = {
       path match {
@@ -112,7 +115,7 @@ class GameDriver(gameLogicModule: GameLogicModule)
         turnToMove = OPPONENT(gameState.turnToMove),
         drawStatus = gameState.drawStatus)
       val turnEvaluation = evaluateBeginTurn(beginTurnState)
-      println(turnEvaluation)
+      log.info(turnEvaluation.toString)
       gameState.copy(board = newBoard,
         turnIndex = beginTurnState.turnIndex,
         turnToMove = beginTurnState.turnToMove,
@@ -121,20 +124,20 @@ class GameDriver(gameLogicModule: GameLogicModule)
         history = entry :: gameState.history)
     } else {
       // partial
-      println("partial move, updating tree:")
-      println(remainingMoveTree)
-      println("----")
+      log.debug("partial move, updating tree:")
+      log.debug(remainingMoveTree.toString)
+      log.debug("----")
 
       val turnEvaluation = CanMove(remainingMoveTree)
       gameState.copy(board = newBoard, beginTurnEvaluation = turnEvaluation, history = entry :: gameState.history)
     }
 
-    println(s"endsTurn: $endsTurn")
+    log.info(s"endsTurn: $endsTurn")
 
     val playEvents = if (endsTurn) PlayEvents.turnEnded else PlayEvents.partialTurn(remainingMoveTree)
     val newModel = {
       val m1 = gameModel.copy(gameState = newGameState)
-      println(newGameState.board.toString)
+      log.info(newGameState.board.toString)
       scheduleMoveAnimations(m1, moveInfo, isComputerPlayer)
     }
 
@@ -225,9 +228,9 @@ class GameDriver(gameLogicModule: GameLogicModule)
     }
 
     val clickableSquares = getClickableSquares(inputPhase, newState.moveTree)
-    println(s"turnToMove: $turnToMove")
-    println(s"moveTree:  ${newState.moveTree}")
-    println(clickableSquares)
+    log.info(s"turnToMove: $turnToMove")
+    log.info(s"moveTree:  ${newState.moveTree}")
+    log.info(s"clickable: $clickableSquares")
     val squareAttributesVector = gameModel.squareAttributesVector.withClickable(clickableSquares).withGhost(Set.empty)
 
     gameModel.copy(inputPhase = inputPhase, gameState = newState, squareAttributesVector = squareAttributesVector, pickedUpPiece = None)
@@ -286,7 +289,7 @@ class GameDriver(gameLogicModule: GameLogicModule)
   }
 
   def handleAnimationsComplete(model: Model): Option[Model] = {
-    println("handleAnimationsComplete")
+    log.debug("handleAnimationsComplete")
     model.inputPhase match {
       case EndingTurn(nextTurnState) => Some(initTurn(model, nextTurnState.asInstanceOf[State]))
       case _ => None
@@ -295,7 +298,7 @@ class GameDriver(gameLogicModule: GameLogicModule)
 
   private def userSelectPiece(model: Model, squareIndex: Int, piece: Occupant, clickPoint: Option[Point]): Option[Model] = {
     model.gameState.moveTree.down(squareIndex).map { moveTree =>
-      println(moveTree)
+      log.debug(moveTree.toString)
       selectPiece(model, moveTree.squares, squareIndex, piece, clickPoint, canCancel = true)
     }.orElse(handleIllegalPieceSelection(model, squareIndex, piece))
   }
