@@ -7,6 +7,8 @@ package object logger {
 
   val inputEvents = LoggerFactory.getLogger("InputEvents")
 
-  val gameDriver = LoggerFactory.getPopUpLogger("GameDriver")
+  val gameDriver = LoggerFactory.getLogger("GameDriver")
+
+  val computerPlayer = LoggerFactory.getPopUpLogger("ComputerPlayer")
 
 }
