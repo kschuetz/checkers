@@ -63,6 +63,8 @@ class Searcher(moveGenerator: MoveGenerator,
               var alpha: Int,
               var beta: Int) extends PlyParent {
 
+      val moveDecoder = new MoveDecoder
+
       val pvMove = if(left) pv.getBestMove(plyIndex) else null
 
       val candidates = {
@@ -73,7 +75,7 @@ class Searcher(moveGenerator: MoveGenerator,
         }
 
         pvMove match {
-          case m: Move => base.moveToFrontIfExists(m.path)
+          case m: Move => base.moveToFrontIfExists(m.path, moveDecoder)
           case _ => base
         }
       }
@@ -81,7 +83,7 @@ class Searcher(moveGenerator: MoveGenerator,
       val moveCount = candidates.count
       var nextMovePtr = 0
       val gameOver = moveCount == 0
-      val moveDecoder = new MoveDecoder
+
 
       // TODO: handle case of only one move
       // TODO: handle case of game over
@@ -137,7 +139,7 @@ class Searcher(moveGenerator: MoveGenerator,
 
       def answer(result: Int): Ply = {
         val value = -result
-        if (value > beta) parent.answer(beta)
+        if (value >= beta) parent.answer(beta)
         else {
           if (value > alpha) {
             alpha = value
