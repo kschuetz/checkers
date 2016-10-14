@@ -20,6 +20,18 @@ class MoveList(val data: Int8Array,
     }
   }
 
+  def indexOf(path: List[Int]): Int = {
+    var result = -1
+    val decoder = new MoveDecoder
+    var i = 0
+    while(i < count && result < 0) {
+      decoder.load(this, i)
+      if(decoder.containsPath(path)) result = i
+      i += 1
+    }
+    result
+  }
+
   // for tests
   def toSet: Set[List[Int]] = {
     var result = Set.empty[List[Int]]
@@ -69,6 +81,24 @@ class MoveDecoder {
       i += 1
     }
     result.reverse
+  }
+
+  def containsPath(path: List[Int]): Boolean = {
+    var result = true
+    var p = path
+    var i = 0
+    while (i < _pathLength && result) {
+      val x = data(i)
+      p match {
+        case Nil => false
+        case y :: ys =>
+          if(x != y) result = false
+          else p = ys
+      }
+      i += 1
+    }
+
+    result && p == Nil
   }
 
   // for tests

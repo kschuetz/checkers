@@ -5,6 +5,9 @@ import checkers.core.Play.Move
 import checkers.core._
 import checkers.logger
 
+import scala.annotation.elidable
+import scala.annotation.elidable._
+
 object Searcher {
   val MaxDepth = 32
 }
@@ -39,8 +42,9 @@ class Searcher(moveGenerator: MoveGenerator,
     private var stack: Ply = _
     private var alphaCutoffCount = 0
     private var betaCutoffCount = 0
-
     private val boardStack = BoardStack.fromBoard(playInput.board)
+
+    private val rootCandidates: MoveList = moveGenerator.generateMoves(boardStack, playInput.turnToMove)
 
     trait PlyParent {
       def answer(value: Int): Ply
@@ -59,7 +63,12 @@ class Searcher(moveGenerator: MoveGenerator,
               var alpha: Int,
               var beta: Int) extends PlyParent {
 
-      val candidates = moveGenerator.generateMoves(boardStack, turnToMove)
+      val candidates = if (root) {
+        rootCandidates
+      } else {
+        moveGenerator.generateMoves(boardStack, turnToMove)
+      }
+
       val moveCount = candidates.count
       var nextMovePtr = 0
       val gameOver = moveCount == 0
@@ -69,7 +78,7 @@ class Searcher(moveGenerator: MoveGenerator,
       // TODO: handle case of game over
 
       def process: Ply = {
-        if(plyIndex > deepestPly) deepestPly = plyIndex
+        if (plyIndex > deepestPly) deepestPly = plyIndex
         boardStack.push()
         try {
           if (nextMovePtr < moveCount) {
@@ -157,7 +166,7 @@ class Searcher(moveGenerator: MoveGenerator,
     }
 
     override def run(maxCycles: Int): Int = {
-      val limit = if(cyclesLimited) {
+      val limit = if (cyclesLimited) {
         math.min(maxCycles, cyclesRemaining)
       } else maxCycles
 
@@ -167,9 +176,9 @@ class Searcher(moveGenerator: MoveGenerator,
         steps += 1
       }
 
-      if(cyclesLimited) {
+      if (cyclesLimited) {
         cyclesRemaining -= steps
-        if(cyclesRemaining <= 0) done = true
+        if (cyclesRemaining <= 0) done = true
       }
 
       totalCyclesUsed += steps
@@ -183,17 +192,28 @@ class Searcher(moveGenerator: MoveGenerator,
     override def isReady: Boolean = done
 
     override def result: PlayResult = if (done) {
-      logStats()
       val play = pv.getBestMove(0)
+      logStats(play)
       transformResult(PlayResult(play, incomingPlayerState))
     } else throw new Exception("No result yet")
 
-    private def logStats(): Unit = {
+    @elidable(INFO)
+    private def logStats(play: Play): Unit = {
+      log.info("----------")
       log.info(s"Total cycles used: $totalCyclesUsed")
       log.info(s"Deepest ply: $deepestPly")
       log.info(s"Evaluator calls: $evaluatorCalls")
       log.info(s"Alpha cutoffs: $alphaCutoffCount")
       log.info(s"Beta cutoffs: $betaCutoffCount")
+
+      play match {
+        case m: Move =>
+          val candidateCount = rootCandidates.count
+          val moveIndex = rootCandidates.indexOf(m.path)
+          log.info(s"Chose move $moveIndex ($candidateCount candidates)")
+      }
+
+
     }
   }
 
