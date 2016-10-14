@@ -63,10 +63,19 @@ class Searcher(moveGenerator: MoveGenerator,
               var alpha: Int,
               var beta: Int) extends PlyParent {
 
-      val candidates = if (root) {
-        rootCandidates
-      } else {
-        moveGenerator.generateMoves(boardStack, turnToMove)
+      val pvMove = if(left) pv.getBestMove(plyIndex) else null
+
+      val candidates = {
+        val base = if (root) {
+          rootCandidates
+        } else {
+          moveGenerator.generateMoves(boardStack, turnToMove)
+        }
+
+        pvMove match {
+          case m: Move => base.moveToFrontIfExists(m.path)
+          case _ => base
+        }
       }
 
       val moveCount = candidates.count
@@ -202,7 +211,7 @@ class Searcher(moveGenerator: MoveGenerator,
       log.info("----------")
       log.info(s"Total cycles used: $totalCyclesUsed")
       log.info(s"Deepest ply: $deepestPly")
-      log.info(s"Evaluator calls: $evaluatorCalls")
+      log.info(s"Evaluations: $evaluatorCalls")
       log.info(s"Alpha cutoffs: $alphaCutoffCount")
       log.info(s"Beta cutoffs: $betaCutoffCount")
 
@@ -211,6 +220,7 @@ class Searcher(moveGenerator: MoveGenerator,
           val candidateCount = rootCandidates.count
           val moveIndex = rootCandidates.indexOf(m.path)
           log.info(s"Chose move $moveIndex ($candidateCount candidates)")
+        case _ => ()
       }
 
 

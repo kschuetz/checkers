@@ -20,9 +20,9 @@ class MoveList(val data: Int8Array,
     }
   }
 
-  def indexOf(path: List[Int]): Int = {
+  def indexOf(path: List[Int], moveDecoder: MoveDecoder = null): Int = {
     var result = -1
-    val decoder = new MoveDecoder
+    val decoder = if(moveDecoder != null) moveDecoder else new MoveDecoder
     var i = 0
     while(i < count && result < 0) {
       decoder.load(this, i)
@@ -30,6 +30,27 @@ class MoveList(val data: Int8Array,
       i += 1
     }
     result
+  }
+
+  def moveToFrontIfExists(path: List[Int], moveDecoder: MoveDecoder = null): MoveList = {
+    val decoder = if(moveDecoder != null) moveDecoder else new MoveDecoder
+    val index = indexOf(path, moveDecoder)
+    if(index < 1) this
+    else {
+      val newData = MoveList.makeBuffer
+      MoveList.copyFrame(index, 0, data, newData)
+      var from = 0
+      var to = 1
+      var i = count - 1
+      while(i > 0) {
+        if(from == index) from += 1
+        MoveList.copyFrame(from, to, data, newData)
+        from += 1
+        to += 1
+        i -= 1
+      }
+      new MoveList(newData, count)
+    }
   }
 
   // for tests
@@ -160,7 +181,7 @@ class MovePathStack {
 
 class MoveListBuilder {
   private val pathSize = MoveList.frameSize
-  private var data = new Int8Array(MoveList.bufferSize)
+  private var data = MoveList.makeBuffer
   private var ptr = 0
   private var count = 0
 
@@ -191,4 +212,18 @@ object MoveList {
   val frameSize = 12
   val maxMoveCount = 36
   val bufferSize = frameSize * maxMoveCount
+
+  def makeBuffer: Int8Array = new Int8Array(bufferSize)
+
+  def copyFrame(srcFrameIndex: Int, destFrameIndex: Int, srcData: Int8Array, destData: Int8Array): Unit = {
+    var from = srcFrameIndex * frameSize
+    var to = destFrameIndex * frameSize
+    var i = frameSize
+    while(i > 0) {
+      destData(to) = srcData(from)
+      i -= 1
+      from += 1
+      to += 1
+    }
+  }
 }
