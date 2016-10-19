@@ -1,6 +1,7 @@
 *.class
 *.log
 sandbox/*
+node_modules/*
 
 # sbt specific
 .cache
