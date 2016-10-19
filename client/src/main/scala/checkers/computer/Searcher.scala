@@ -1,9 +1,10 @@
 package checkers.computer
 
 import checkers.consts._
-import checkers.core.Play.Move
+import checkers.core.Play.{Move, NoPlay}
 import checkers.core._
 import checkers.logger
+import org.scalajs.dom
 
 import scala.annotation.elidable
 import scala.annotation.elidable._
@@ -44,7 +45,14 @@ class Searcher(moveGenerator: MoveGenerator,
     private var betaCutoffCount = 0
     private val boardStack = BoardStack.fromBoard(playInput.board)
 
+    var probeA: Int = 0
+    var probeB: Int = 0
+
     private val rootCandidates: MoveList = moveGenerator.generateMoves(boardStack, playInput.turnToMove)
+
+    trait Ply {
+      def process: Ply
+    }
 
     trait PlyParent {
       def answer(value: Int): Ply
@@ -54,18 +62,19 @@ class Searcher(moveGenerator: MoveGenerator,
       def answer(value: Int): Ply = null
     }
 
-    class Ply(root: Boolean,
-              left: Boolean,
-              turnToMove: Color,
-              depth: Int,
-              plyIndex: Int,
-              parent: PlyParent,
-              var alpha: Int,
-              var beta: Int) extends PlyParent {
+    class ConcretePly(root: Boolean,
+                      left: Boolean,
+                      turnToMove: Color,
+                      depth: Int,
+                      plyIndex: Int,
+                      parent: PlyParent,
+                      var alpha: Int,
+                      var beta: Int) extends Ply with PlyParent {
 
       val moveDecoder = new MoveDecoder
+      var lastMove: Play = NoPlay
 
-      val pvMove = if(left) pv.getBestMove(plyIndex) else null
+      val pvMove = if (left) pv.getBestMove(plyIndex) else null
 
       val candidates = {
         val base = if (root) {
@@ -95,6 +104,8 @@ class Searcher(moveGenerator: MoveGenerator,
           if (nextMovePtr < moveCount) {
             moveDecoder.load(candidates, nextMovePtr)
             nextMovePtr += 1
+            lastMove = Move(moveDecoder.pathToList, proposeDraw = false)
+
             moveExecutor.executeFromMoveDecoder(boardStack, moveDecoder)
             if (depth <= 0) {
               evaluatorCalls += 1
@@ -107,15 +118,17 @@ class Searcher(moveGenerator: MoveGenerator,
                 if (value > alpha) {
                   alpha = value
                   alphaCutoffCount += 1
-                  val move = Move(moveDecoder.pathToList, proposeDraw = false)
+                  //val move = Move(moveDecoder.pathToList, proposeDraw = false)
+                  val move = lastMove
                   pv.updateBestMove(plyIndex, move)
+                  probeA += 1
                 }
 
                 this
               }
 
             } else {
-              val nextPly = new Ply(
+              val nextPly = new ConcretePly(
                 root = false,
                 left = left && nextMovePtr == 1,
                 turnToMove = OPPONENT(turnToMove),
@@ -141,9 +154,10 @@ class Searcher(moveGenerator: MoveGenerator,
         val value = -result
         if (value >= beta) parent.answer(beta)
         else {
-          if (value > alpha) {
+          if (value >= alpha) {
             alpha = value
-            val lastMove = Move(moveDecoder.pathToList, proposeDraw = false)
+            //val lastMove = Move(moveDecoder.pathToList, proposeDraw = false)
+            probeB += 1
             pv.updateBestMove(plyIndex, lastMove)
           }
           this
@@ -152,7 +166,7 @@ class Searcher(moveGenerator: MoveGenerator,
     }
 
 
-    private def createRootPly: Ply = new Ply(
+    private def createRootPly: Ply = new ConcretePly(
       root = true,
       left = true,
       turnToMove = playInput.turnToMove,
@@ -167,6 +181,10 @@ class Searcher(moveGenerator: MoveGenerator,
       if (stack == null) {
         if (iteration < maxDepth) {
           iteration += 1
+          log.debug(s"iteration: $iteration")
+
+          dumpPv()
+
           stack = createRootPly
         } else {
           done = true
@@ -216,6 +234,8 @@ class Searcher(moveGenerator: MoveGenerator,
       log.info(s"Evaluations: $evaluatorCalls")
       log.info(s"Alpha cutoffs: $alphaCutoffCount")
       log.info(s"Beta cutoffs: $betaCutoffCount")
+      log.info(s"Probe A: $probeA")
+      log.info(s"Probe B: $probeB")
 
       play match {
         case m: Move =>
@@ -226,6 +246,28 @@ class Searcher(moveGenerator: MoveGenerator,
       }
 
 
+    }
+
+    @elidable(FINE)
+    private def dumpPv(): Unit = {
+      val sb = new StringBuilder
+      var i = 0
+      while (i < pv.depth) {
+        val move = pv.getBestMove(i)
+        if (move != null) {
+          move match {
+            case m: Move =>
+              val s = m.path.mkString("->")
+              sb.append(s)
+              sb.append(" | ")
+            case _ => ()
+          }
+          i += 1
+        } else i = pv.depth
+
+      }
+      //dom.console.log(pv.line)
+      log.debug(sb.result())
     }
   }
 
