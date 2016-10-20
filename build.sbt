@@ -43,7 +43,10 @@ lazy val client: Project = (project in file("client"))
     persistLauncher := true,
     persistLauncher in Test := false,
     // use uTest framework for tests
-    testFrameworks += new TestFramework("utest.runner.Framework")
+    testFrameworks += new TestFramework("utest.runner.Framework"),
+
+    scalaJSUseRhino in Global := true,
+    jsEnv := PhantomJSEnv().value
   )
   .enablePlugins(ScalaJSPlugin, ScalaJSPlay)
   .dependsOn(sharedJS)
