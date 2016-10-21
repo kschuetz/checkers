@@ -25,6 +25,23 @@ class PrincipalVariation[A](val depth: Int) {
     }
   }
 
+//  def updateBestMove(ply: Int, value: A): Unit = {
+//    val baseIndex = ply * depth
+//    line(baseIndex) = value
+//    if(ply > 0) {
+//      var source = baseIndex
+//      var dest = baseIndex - depth + 1
+//      var copyCount = depth - ply - 2
+//
+//      while(copyCount > 0) {
+//        line(dest) = line(source)
+//        source += 1
+//        dest += 1
+//        copyCount -= 1
+//      }
+//    }
+//  }
+
   private def initLine(size: Int): js.Array[A] = {
     val result = new js.Array[A](size)
     var i = 0

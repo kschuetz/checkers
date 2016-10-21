@@ -166,15 +166,111 @@ class Searcher(moveGenerator: MoveGenerator,
     }
 
 
-    private def createRootPly: Ply = new ConcretePly(
+
+    class Ply2(root: Boolean,
+               left: Boolean,
+               turnToMove: Color,
+               depth: Int,
+               plyIndex: Int,
+               parent: PlyParent,
+               var alpha: Int,
+               var beta: Int) extends Ply with PlyParent {
+      private var initted = false
+
+      private var moveDecoder: MoveDecoder = _
+      private var lastMove: Play = NoPlay
+
+      private var candidates: MoveList = _
+
+      private var moveCount = 0
+      private var nextMovePtr = 0
+
+      private def init(): Unit = {
+        val pvMove = if (left) pv.getBestMove(plyIndex) else null
+        moveDecoder = new MoveDecoder
+        candidates = {
+          val base = if (root) {
+            rootCandidates
+          } else {
+            moveGenerator.generateMoves(boardStack, turnToMove)
+          }
+
+          pvMove match {
+            case m: Move => base.moveToFrontIfExists(m.path, moveDecoder)
+            case _ => base
+          }
+        }
+
+        moveCount = candidates.count
+        initted = true
+      }
+
+      def process: Ply = {
+        if (plyIndex > deepestPly) deepestPly = plyIndex
+        if(depth <= 0) {
+          evaluatorCalls += 1
+          val score = evaluator.evaluate(turnToMove, boardStack)
+          parent.answer(score)
+        } else {
+          if(!initted) init()
+
+          if(nextMovePtr < moveCount) {
+            boardStack.push()
+            try {
+              moveDecoder.load(candidates, nextMovePtr)
+              nextMovePtr += 1
+              lastMove = Move(moveDecoder.pathToList, proposeDraw = false)
+
+              moveExecutor.executeFromMoveDecoder(boardStack, moveDecoder)
+
+              val nextPly = new Ply2(
+                root = false,
+                left = left && nextMovePtr == 1,
+                turnToMove = OPPONENT(turnToMove),
+                depth = depth - 1,
+                plyIndex = plyIndex + 1,
+                parent = this,
+                alpha = -beta,
+                beta = -alpha
+              )
+
+              nextPly.process
+            } finally {
+              boardStack.pop()
+            }
+          } else {
+            parent.answer(alpha)
+          }
+        }
+      }
+
+      def answer(result: Int): Ply = {
+        val value = -result
+        if (value >= beta) {
+          betaCutoffCount += 1
+          parent.answer(beta)
+        } else {
+          if (value > alpha) {
+            alphaCutoffCount += 1
+            alpha = value
+            //val lastMove = Move(moveDecoder.pathToList, proposeDraw = false)
+            probeB += 1
+            pv.updateBestMove(plyIndex, lastMove)
+          }
+          this
+        }
+      }
+    }
+
+    private def createRootPly: Ply = new Ply2(
       root = true,
       left = true,
       turnToMove = playInput.turnToMove,
-      depth = iteration - 1,
+      depth = iteration,
       plyIndex = 0,
       parent = NullPlyParent,
-      alpha = Int.MinValue,
-      beta = Int.MaxValue)
+      alpha = Int.MinValue + 100,
+      beta = Int.MaxValue - 100)
 
 
     private def process(): Unit = {
