@@ -45,10 +45,12 @@ class Searcher(moveGenerator: MoveGenerator,
     private var stack: Ply = _
     private var alphaCutoffCount = 0
     private var betaCutoffCount = 0
+    private var deadEndCount: Int = 0
     private val boardStack = BoardStack.fromBoard(playInput.board)
 
     var probeA: Int = 0
     var probeB: Int = 0
+
 
     private val scoreBeforeMove = evaluator.evaluate(playInput.turnToMove, boardStack)
     private val rootCandidates: MoveList = moveGenerator.generateMoves(boardStack, playInput.turnToMove)
@@ -105,18 +107,24 @@ class Searcher(moveGenerator: MoveGenerator,
 
       def process: Ply = {
         if (plyIndex > deepestPly) deepestPly = plyIndex
-        if(depth <= 0) {
+        if (depth <= 0) {
           evaluatorCalls += 1
           val score = evaluator.evaluate(turnToMove, boardStack)
           parent.answer(score)
         } else {
-          if(!initted) init()
+          if (!initted) init()
 
-          if(moveCount <= 0) {
+          if (moveCount <= 0) {
             // loss
+            deadEndCount += 1
             val score = -Searcher.Infinity + depth
             parent.answer(score)
-          } else if(nextMovePtr < moveCount) {
+          } else if (nextMovePtr < moveCount) {
+
+//            val saveDP = boardStack.darkPieces
+//            val saveLP = boardStack.lightPieces
+//            val saveK = boardStack.kings
+
             boardStack.push()
             try {
               moveDecoder.load(candidates, nextMovePtr)
@@ -124,11 +132,10 @@ class Searcher(moveGenerator: MoveGenerator,
               lastMove = Move(moveDecoder.pathToList, proposeDraw = false)
 
               val wasJump = moveExecutor.executeFromMoveDecoder(boardStack, moveDecoder)
-//              val newDepth = {
-//                if(wasJump) depth   // quiescence
-//                else depth - 1
-//              }
-              val newDepth = depth - 1
+              val newDepth = {
+                if(wasJump && depth == 1) 1   // quiescence
+                else depth - 1
+              }
 
               val nextPly = new ConcretePly(
                 root = false,
@@ -144,6 +151,10 @@ class Searcher(moveGenerator: MoveGenerator,
               nextPly.process
             } finally {
               boardStack.pop()
+
+//              assert(boardStack.darkPieces == saveLP)
+//              assert(boardStack.lightPieces == saveDP)
+//              assert(boardStack.kings == saveK)
             }
           } else {
             parent.answer(alpha)
@@ -238,6 +249,7 @@ class Searcher(moveGenerator: MoveGenerator,
       log.info(s"Evaluations: $evaluatorCalls")
       log.info(s"Alpha cutoffs: $alphaCutoffCount")
       log.info(s"Beta cutoffs: $betaCutoffCount")
+      log.info(s"Dead ends: $deadEndCount")
       log.info(s"Probe A: $probeA")
       log.info(s"Probe B: $probeB")
 
