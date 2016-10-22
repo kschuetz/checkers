@@ -218,7 +218,7 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
           }
         }
 
-        if(i <= 4) darkBackRankCount += 1
+        if(i <= 3) darkBackRankCount += 1
 
       } else if (((lp >>> i) & 1) != 0) {
         if (((k >>> i) & 1) != 0) {
