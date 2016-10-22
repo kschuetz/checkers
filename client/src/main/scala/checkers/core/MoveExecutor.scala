@@ -25,7 +25,7 @@ class MoveExecutor(rulesSettings: RulesSettings,
     *   Fast, can only handle one simple move segment, returns a flag indicating crowning event.
     *   Used in move generator.
     * executeFromMoveDecoder:
-    *   Fast, can handle compound moves, returns no meta-data.
+    *   Fast, can handle compound moves, returns a flag indicating move was a jump.
     *   Used in search routines.
     * execute:
     *   Slowest, can only handle one simple move segment, returns meta-data describing the move.
@@ -62,19 +62,24 @@ class MoveExecutor(rulesSettings: RulesSettings,
 
   /**
     * Runs the contents of a MoveDecoder (which can include compound moves), but returns no metadata.
+    * @return if true, move was a jump
     */
-  def executeFromMoveDecoder(boardState: MutableBoardState, decoder: MoveDecoder): Unit = {
+  def executeFromMoveDecoder(boardState: MutableBoardState, decoder: MoveDecoder): Boolean = {
     val len = decoder.pathLength
     val data = decoder.data
     var from = data(0)
     var to: Byte = 0
     var i = 1
+    var wasJump: Boolean = false
     while (i < len) {
       to = data(i)
 
       val piece = boardState.getOccupant(from)
       val over = jumpTable.getMiddle(from, to)
-      if(over >= 0) boardState.setOccupant(over, EMPTY)
+      if(over >= 0) {
+        wasJump = true
+        boardState.setOccupant(over, EMPTY)
+      }
 
       boardState.setOccupant(from, EMPTY)
 
@@ -91,6 +96,7 @@ class MoveExecutor(rulesSettings: RulesSettings,
       i += 1
     }
 
+    wasJump
   }
 
   /**

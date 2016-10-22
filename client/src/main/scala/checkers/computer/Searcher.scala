@@ -11,6 +11,8 @@ import scala.annotation.elidable._
 
 object Searcher {
   val MaxDepth = 32
+
+  val Infinity = Int.MaxValue - 1000
 }
 
 class Searcher(moveGenerator: MoveGenerator,
@@ -71,111 +73,6 @@ class Searcher(moveGenerator: MoveGenerator,
                       parent: PlyParent,
                       var alpha: Int,
                       var beta: Int) extends Ply with PlyParent {
-
-      val moveDecoder = new MoveDecoder
-      var lastMove: Play = NoPlay
-
-      val pvMove = if (left) pv.getBestMove(plyIndex) else null
-
-      val candidates = {
-        val base = if (root) {
-          rootCandidates
-        } else {
-          moveGenerator.generateMoves(boardStack, turnToMove)
-        }
-
-        pvMove match {
-          case m: Move => base.moveToFrontIfExists(m.path, moveDecoder)
-          case _ => base
-        }
-      }
-
-      val moveCount = candidates.count
-      var nextMovePtr = 0
-      val gameOver = moveCount == 0
-
-
-      // TODO: handle case of only one move
-      // TODO: handle case of game over
-
-      def process: Ply = {
-        if (plyIndex > deepestPly) deepestPly = plyIndex
-        boardStack.push()
-        try {
-          if (nextMovePtr < moveCount) {
-            moveDecoder.load(candidates, nextMovePtr)
-            nextMovePtr += 1
-            lastMove = Move(moveDecoder.pathToList, proposeDraw = false)
-
-            moveExecutor.executeFromMoveDecoder(boardStack, moveDecoder)
-            if (depth <= 0) {
-              evaluatorCalls += 1
-              val value = evaluator.evaluate(turnToMove, boardStack)
-              if (value >= beta) {
-                betaCutoffCount += 1
-                parent.answer(beta)
-              } else {
-
-                if (value > alpha) {
-                  alpha = value
-                  alphaCutoffCount += 1
-                  //val move = Move(moveDecoder.pathToList, proposeDraw = false)
-                  val move = lastMove
-                  pv.updateBestMove(plyIndex, move)
-                  probeA += 1
-                }
-
-                this
-              }
-
-            } else {
-              val nextPly = new ConcretePly(
-                root = false,
-                left = left && nextMovePtr == 1,
-                turnToMove = OPPONENT(turnToMove),
-                depth = depth - 1,
-                plyIndex = plyIndex + 1,
-                parent = this,
-                alpha = -beta,
-                beta = -alpha
-              )
-
-              nextPly.process
-            }
-
-          } else {
-            parent.answer(alpha)
-          }
-        } finally {
-          boardStack.pop()
-        }
-      }
-
-      def answer(result: Int): Ply = {
-        val value = -result
-        if (value >= beta) parent.answer(beta)
-        else {
-          if (value >= alpha) {
-            alpha = value
-            //val lastMove = Move(moveDecoder.pathToList, proposeDraw = false)
-            probeB += 1
-            pv.updateBestMove(plyIndex, lastMove)
-          }
-          this
-        }
-      }
-    }
-
-
-
-    class Ply2(root: Boolean,
-               left: Boolean,
-               turnToMove: Color,
-               depth: Int,
-               plyIndex: Int,
-               parent: PlyParent,
-               var alpha: Int,
-               var beta: Int) extends Ply with PlyParent {
       private var initted = false
 
       private var moveDecoder: MoveDecoder = _
@@ -215,20 +112,29 @@ class Searcher(moveGenerator: MoveGenerator,
         } else {
           if(!initted) init()
 
-          if(nextMovePtr < moveCount) {
+          if(moveCount <= 0) {
+            // loss
+            val score = -Searcher.Infinity + depth
+            parent.answer(score)
+          } else if(nextMovePtr < moveCount) {
             boardStack.push()
             try {
               moveDecoder.load(candidates, nextMovePtr)
               nextMovePtr += 1
               lastMove = Move(moveDecoder.pathToList, proposeDraw = false)
 
-              moveExecutor.executeFromMoveDecoder(boardStack, moveDecoder)
+              val wasJump = moveExecutor.executeFromMoveDecoder(boardStack, moveDecoder)
+//              val newDepth = {
+//                if(wasJump) depth   // quiescence
+//                else depth - 1
+//              }
+              val newDepth = depth - 1
 
-              val nextPly = new Ply2(
+              val nextPly = new ConcretePly(
                 root = false,
                 left = left && nextMovePtr == 1,
                 turnToMove = OPPONENT(turnToMove),
-                depth = depth - 1,
+                depth = newDepth,
                 plyIndex = plyIndex + 1,
                 parent = this,
                 alpha = -beta,
@@ -263,15 +169,15 @@ class Searcher(moveGenerator: MoveGenerator,
       }
     }
 
-    private def createRootPly: Ply = new Ply2(
+    private def createRootPly: Ply = new ConcretePly(
       root = true,
       left = true,
       turnToMove = playInput.turnToMove,
       depth = iteration,
       plyIndex = 0,
       parent = NullPlyParent,
-      alpha = Int.MinValue + 100,
-      beta = Int.MaxValue - 100)
+      alpha = -Searcher.Infinity,
+      beta = Searcher.Infinity)
 
 
     private def process(): Unit = {
