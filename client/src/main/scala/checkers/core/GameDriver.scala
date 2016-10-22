@@ -49,7 +49,7 @@ class GameDriver(gameLogicModule: GameLogicModule)
   }
 
   def rotateBoard(model: Model): Option[Model] = {
-    if(model.animation.rotate.nonEmpty) None  // ignore if flip is already in progress
+    if (model.animation.rotate.nonEmpty) None // ignore if flip is already in progress
     else {
       val target = model.boardOrientation.opposite
       val anim = animationPlanner.createBoardRotateAnimation(model.nowTime)
@@ -153,7 +153,7 @@ class GameDriver(gameLogicModule: GameLogicModule)
     val lightState = playerConfig.lightPlayer.initialState
     val turnToMove = rulesSettings.playsFirst
     val boardState = RulesSettings.initialBoard(rulesSettings)
-//        val boardState = BoardExperiments.board3
+    //        val boardState = BoardExperiments.board3
     val beginTurnState = BeginTurnState(boardState, turnToMove, 0, NoDraw)
     val turnEvaluation = evaluateBeginTurn(beginTurnState)
     GameState(rulesSettings, playerConfig, boardState, turnToMove, 0, darkState, lightState, NoDraw, turnEvaluation, 0, 0, Nil)
@@ -249,7 +249,7 @@ class GameDriver(gameLogicModule: GameLogicModule)
   }
 
   def handleBoardMouseDown(model: Model, event: BoardMouseEvent): Option[Model] = {
-    if(event.reactEvent.altKey) cycleOccupant(model, event.squareIndex, event.reactEvent.shiftKey)
+    if (event.reactEvent.altKey) cycleOccupant(model, event.squareIndex, event.reactEvent.shiftKey, event.reactEvent.ctrlKey)
     else model.inputPhase match {
       case BeginHumanTurn => userSelectPiece(model, event.squareIndex, event.piece, Some(event.boardPoint))
       case PieceSelected(piece, squareIndex, validTargetSquares, canCancel) =>
@@ -353,7 +353,7 @@ class GameDriver(gameLogicModule: GameLogicModule)
   }
 
   private def evaluatePosition(gameState: GameState): (Int, Int) = {
-    if(gameState.turnToMove == DARK) {
+    if (gameState.turnToMove == DARK) {
       val score = evaluator.evaluate(DARK, gameState.board)
       (score, -score)
     } else {
@@ -362,35 +362,39 @@ class GameDriver(gameLogicModule: GameLogicModule)
     }
   }
 
-  def cycleOccupant(model: Model, squareIndex: Int, reverse: Boolean = false): Option[Model] = {
-    if(model.inputPhase.waitingForHuman) {
-      val gameState = model.gameState
-      val current = gameState.board.getOccupant(squareIndex)
-      val next = if(!reverse) {
-        if(current == EMPTY) DARKMAN
-        else if(current == DARKMAN) LIGHTMAN
-        else if(current == LIGHTMAN) DARKKING
-        else if(current == DARKKING) LIGHTKING
-        else EMPTY
-      } else {
-        if(current == EMPTY) LIGHTKING
-        else if(current == LIGHTKING) DARKKING
-        else if(current == DARKKING) LIGHTMAN
-        else if(current == LIGHTMAN) DARKMAN
-        else EMPTY
-      }
-      val newBoard = gameState.board.updated(squareIndex, next)
+  def cycleOccupant(model: Model, squareIndex: Int, reverse: Boolean = false, clear: Boolean = false): Option[Model] = {
+    if(!model.inputPhase.waitingForHuman) return None
 
-      val beginTurnState = BeginTurnState(board = newBoard,
-        turnIndex = gameState.turnIndex,
-        turnToMove = gameState.turnToMove,
-        drawStatus = gameState.drawStatus)
-      val turnEvaluation = evaluateBeginTurn(beginTurnState)
+    val gameState = model.gameState
+    val current = gameState.board.getOccupant(squareIndex)
+    val next = if (clear) EMPTY
+    else if (!reverse) {
+      if (current == EMPTY) DARKMAN
+      else if (current == DARKMAN) DARKKING
+      else if (current == DARKKING) LIGHTMAN
+      else if (current == LIGHTMAN) LIGHTKING
+      else EMPTY
+    } else {
+      if (current == EMPTY) LIGHTKING
+      else if (current == LIGHTKING) LIGHTMAN
+      else if (current == LIGHTMAN) DARKKING
+      else if (current == DARKKING) DARKMAN
+      else EMPTY
+    }
 
-      val newState = gameState.copy(board = newBoard, beginTurnEvaluation = turnEvaluation)
-      val newModel = restartTurn(model, newState)
-      Some(newModel)
-    } else None
+    if(current == next) return None
+
+    val newBoard = gameState.board.updated(squareIndex, next)
+
+    val beginTurnState = BeginTurnState(board = newBoard,
+      turnIndex = gameState.turnIndex,
+      turnToMove = gameState.turnToMove,
+      drawStatus = gameState.drawStatus)
+    val turnEvaluation = evaluateBeginTurn(beginTurnState)
+
+    val newState = gameState.copy(board = newBoard, beginTurnEvaluation = turnEvaluation)
+    val newModel = restartTurn(model, newState)
+    Some(newModel)
   }
 
 }
