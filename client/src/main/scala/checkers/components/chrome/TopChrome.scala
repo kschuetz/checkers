@@ -22,6 +22,9 @@ object TopChrome {
         val isPlayerTurn = model.displayTurnToMove == color
         val endingTurn = model.inputPhase.endingTurn
         val jumpIndicator = isPlayerTurn && (!endingTurn) && model.playerMustJump
+        val scoreDisplay = if(model.scoreDisplayEnabled) {
+          Some(model.getScore(color).toString)
+        } else None
 
         PlayerPanel.Props(
           widthPixels = panelWidth,
@@ -30,6 +33,7 @@ object TopChrome {
           playerName = player.displayName,
           isComputerPlayer = player.isComputer,
           clockDisplay = "---",
+          scoreDisplay = scoreDisplay,
           isPlayerTurn = isPlayerTurn,
           endingTurn = endingTurn,
           jumpIndicator = jumpIndicator,

@@ -23,9 +23,11 @@ class GameDriver(gameLogicModule: GameLogicModule)
   private val moveExecutor = gameLogicModule.moveExecutor
   private val drawLogic = gameLogicModule.drawLogic
   private val animationPlanner = gameLogicModule.animationPlanner
+  private val evaluator = gameLogicModule.evaluator
 
   def createInitialModel(nowTime: Double): Model = {
     val gameState = createInitialState
+    val (darkScore, lightScore) = evaluatePosition(gameState)
     val model = {
       val m1 = GameModel(
         nowTime = nowTime,
@@ -33,6 +35,8 @@ class GameDriver(gameLogicModule: GameLogicModule)
         turnStartTime = nowTime,
         inputPhase = BeginHumanTurn,
         gameState = gameState,
+        darkScore = darkScore,
+        lightScore = lightScore,
         boardOrientation = BoardOrientation.Normal,
         pickedUpPiece = None,
         squareAttributesVector = SquareAttributesVector.default,
@@ -227,13 +231,16 @@ class GameDriver(gameLogicModule: GameLogicModule)
         }
     }
 
+    val (darkScore, lightScore) = evaluatePosition(newState)
+
     val clickableSquares = getClickableSquares(inputPhase, newState.moveTree)
     log.info(s"turnToMove: $turnToMove")
     log.info(s"moveTree:  ${newState.moveTree}")
     log.info(s"clickable: $clickableSquares")
     val squareAttributesVector = gameModel.squareAttributesVector.withClickable(clickableSquares).withGhost(Set.empty)
 
-    gameModel.copy(inputPhase = inputPhase, gameState = newState, squareAttributesVector = squareAttributesVector, pickedUpPiece = None)
+    gameModel.copy(inputPhase = inputPhase, gameState = newState, darkScore = darkScore, lightScore = lightScore,
+      squareAttributesVector = squareAttributesVector, pickedUpPiece = None)
   }
 
   private def getPlayInput(gameState: State): PlayInput = {
@@ -344,5 +351,13 @@ class GameDriver(gameLogicModule: GameLogicModule)
 
   }
 
-
+  private def evaluatePosition(gameState: GameState): (Int, Int) = {
+    if(gameState.turnToMove == DARK) {
+      val score = evaluator.evaluate(DARK, gameState.board)
+      (score, -score)
+    } else {
+      val score = evaluator.evaluate(LIGHT, gameState.board)
+      (-score, score)
+    }
+  }
 }

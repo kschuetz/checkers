@@ -48,6 +48,7 @@ class Searcher(moveGenerator: MoveGenerator,
     var probeA: Int = 0
     var probeB: Int = 0
 
+    private val scoreBeforeMove = evaluator.evaluate(playInput.turnToMove, boardStack)
     private val rootCandidates: MoveList = moveGenerator.generateMoves(boardStack, playInput.turnToMove)
 
     trait Ply {
@@ -326,6 +327,7 @@ class Searcher(moveGenerator: MoveGenerator,
     private def logStats(play: Play): Unit = {
       log.info("----------")
       log.info(s"Total cycles used: $totalCyclesUsed")
+      log.info(s"Score before move: $scoreBeforeMove")
       log.info(s"Deepest ply: $deepestPly")
       log.info(s"Evaluations: $evaluatorCalls")
       log.info(s"Alpha cutoffs: $alphaCutoffCount")

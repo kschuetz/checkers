@@ -41,6 +41,10 @@ trait GameModelReader {
   def canClickPieces: Boolean
 
   def playerMustJump: Boolean
+
+  def scoreDisplayEnabled: Boolean
+
+  def getScore(color: Color): Int
 }
 
 case class GameModel(nowTime: Double,
@@ -48,6 +52,8 @@ case class GameModel(nowTime: Double,
                      turnStartTime: Double,
                      inputPhase: InputPhase,
                      gameState: GameState,
+                     darkScore: Int,
+                     lightScore: Int,
                      boardOrientation: BoardOrientation,
                      pickedUpPiece: Option[PickedUpPiece],
                      squareAttributesVector: SquareAttributesVector,
@@ -116,5 +122,8 @@ case class GameModel(nowTime: Double,
 
   override def playerMustJump: Boolean = gameState.beginTurnEvaluation.requiresJump
 
+  override def scoreDisplayEnabled: Boolean = true
+
+  override def getScore(color: Color): Int = if(color == DARK) darkScore else lightScore
 }
 

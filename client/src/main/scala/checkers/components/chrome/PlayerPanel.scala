@@ -19,6 +19,7 @@ object PlayerPanel {
                    playerName: String,
                    isComputerPlayer: Boolean,
                    clockDisplay: String,
+                   scoreDisplay: Option[String],
                    isPlayerTurn: Boolean,
                    endingTurn: Boolean,
                    jumpIndicator: Boolean,
@@ -82,7 +83,17 @@ object PlayerPanel {
 
     }
 
-
+    def scoreDisplay(props: Props) = {
+      val displayText = props.scoreDisplay.getOrElse("")
+      val x = props.widthPixels - 5
+      val y = props.heightPixels - 7
+      <.svg.g(
+        ^.key := "score",
+        ^.svg.textAnchor := "end",
+        ^.svg.transform := s"translate($x,$y)",
+        <.svg.text(displayText)
+      )
+    }
 
     def render(props: Props) = {
       val parts = new js.Array[ReactNode]
@@ -93,6 +104,9 @@ object PlayerPanel {
       }
       if(props.jumpIndicator) {
         parts.push(jumpIndicator(props))
+      }
+      if(props.scoreDisplay.nonEmpty) {
+        parts.push(scoreDisplay(props))
       }
       <.svg.g(
         parts
