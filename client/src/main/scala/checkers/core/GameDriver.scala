@@ -249,7 +249,8 @@ class GameDriver(gameLogicModule: GameLogicModule)
   }
 
   def handleBoardMouseDown(model: Model, event: BoardMouseEvent): Option[Model] = {
-    model.inputPhase match {
+    if(event.reactEvent.altKey) cycleOccupant(model, event.squareIndex, event.reactEvent.shiftKey)
+    else model.inputPhase match {
       case BeginHumanTurn => userSelectPiece(model, event.squareIndex, event.piece, Some(event.boardPoint))
       case PieceSelected(piece, squareIndex, validTargetSquares, canCancel) =>
         val targetSquare = event.squareIndex
@@ -360,4 +361,36 @@ class GameDriver(gameLogicModule: GameLogicModule)
       (-score, score)
     }
   }
+
+  def cycleOccupant(model: Model, squareIndex: Int, reverse: Boolean = false): Option[Model] = {
+    if(model.inputPhase.waitingForHuman) {
+      val gameState = model.gameState
+      val current = gameState.board.getOccupant(squareIndex)
+      val next = if(!reverse) {
+        if(current == EMPTY) DARKMAN
+        else if(current == DARKMAN) LIGHTMAN
+        else if(current == LIGHTMAN) DARKKING
+        else if(current == DARKKING) LIGHTKING
+        else EMPTY
+      } else {
+        if(current == EMPTY) LIGHTKING
+        else if(current == LIGHTKING) DARKKING
+        else if(current == DARKKING) LIGHTMAN
+        else if(current == LIGHTMAN) DARKMAN
+        else EMPTY
+      }
+      val newBoard = gameState.board.updated(squareIndex, next)
+
+      val beginTurnState = BeginTurnState(board = newBoard,
+        turnIndex = gameState.turnIndex,
+        turnToMove = gameState.turnToMove,
+        drawStatus = gameState.drawStatus)
+      val turnEvaluation = evaluateBeginTurn(beginTurnState)
+
+      val newState = gameState.copy(board = newBoard, beginTurnEvaluation = turnEvaluation)
+      val newModel = restartTurn(model, newState)
+      Some(newModel)
+    } else None
+  }
+
 }
