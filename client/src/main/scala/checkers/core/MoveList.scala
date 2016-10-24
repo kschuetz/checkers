@@ -41,9 +41,9 @@ class MoveList(val data: Int8Array,
       MoveList.copyFrame(index, 0, data, newData)
       var from = 0
       var to = 1
-      var i = count
+      var i = count - 1
       while(i > 0) {
-        if(from == index) from += MoveList.frameSize
+        if(from == index) from += 1
         MoveList.copyFrame(from, to, data, newData)
         from += 1
         to += 1
@@ -60,6 +60,14 @@ class MoveList(val data: Int8Array,
       result += decoder.pathToList
     }
     result
+  }
+
+  def toList: List[List[Int]] = {
+    var result = List.empty[List[Int]]
+    foreach { decoder =>
+      result = decoder.pathToList :: result
+    }
+    result.reverse
   }
 
   override def toString: String = s"MoveList(${toSet.toString})"
