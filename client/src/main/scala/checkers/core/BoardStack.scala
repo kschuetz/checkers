@@ -6,6 +6,8 @@ trait BoardStack extends MutableBoardState {
   def push(): Unit
 
   def pop(): Unit
+
+  def level: Int
 }
 
 class BoardStackImpl(val initialCapacity: Int) extends BoardStack with BoardStateWriteImpl {
@@ -47,6 +49,8 @@ class BoardStackImpl(val initialCapacity: Int) extends BoardStack with BoardStat
     offset = offset - frameSize
     if (offset < 0) offset = 0
   }
+
+  def level: Int = offset / frameSize
 
   def toImmutable: BoardState = new BoardState(copyFrame)
 }

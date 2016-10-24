@@ -41,9 +41,9 @@ class MoveList(val data: Int8Array,
       MoveList.copyFrame(index, 0, data, newData)
       var from = 0
       var to = 1
-      var i = count - 1
+      var i = count
       while(i > 0) {
-        if(from == index) from += 1
+        if(from == index) from += MoveList.frameSize
         MoveList.copyFrame(from, to, data, newData)
         from += 1
         to += 1

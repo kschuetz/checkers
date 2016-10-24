@@ -255,6 +255,7 @@ class Searcher(moveGenerator: MoveGenerator,
       log.info(s"Dead ends: $deadEndCount")
       log.info(s"Probe A: $probeA")
       log.info(s"Probe B: $probeB")
+      log.info(s"Board stack level:  ${boardStack.level}")
 
       play match {
         case m: Move =>
