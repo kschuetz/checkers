@@ -77,6 +77,7 @@ class Searcher(moveGenerator: MoveGenerator,
                       depthRemaining: Int,
                       plyIndex: Int,
                       parent: PlyParent,
+                      rootMoveIndex: Int,
                       var alpha: Int,
                       val beta: Int) extends Ply with PlyParent {
       private var initted = false
@@ -119,6 +120,11 @@ class Searcher(moveGenerator: MoveGenerator,
         if (leaf) {
           evaluatorCalls += 1
           val score = evaluator.evaluate(turnToMove, boardStack)
+
+//          if(iteration < 4) {
+//            log.debug(s"value: $rootMoveIndex = $score")
+//          }
+
           parent.answer(score)
         } else {
           if (!initted) init()
@@ -158,6 +164,7 @@ class Searcher(moveGenerator: MoveGenerator,
                   depthRemaining = nextDepthRemaining,
                   plyIndex = plyIndex + 1,
                   parent = this,
+                  rootMoveIndex = if(root) nextMovePtr - 1 else rootMoveIndex,
                   alpha = -beta,
                   beta = -alpha
                 )
@@ -179,7 +186,7 @@ class Searcher(moveGenerator: MoveGenerator,
 
       def answer(result: Int): Ply = {
         val value = -result
-        if (value >= beta && !root) {
+        if (value >= beta) {
           betaCutoffCount += 1
           parent.answer(beta)
         } else {
@@ -202,6 +209,7 @@ class Searcher(moveGenerator: MoveGenerator,
       depthRemaining = iteration,
       plyIndex = 0,
       parent = NullPlyParent,
+      rootMoveIndex = -1,
       alpha = -Searcher.Infinity,
       beta = Searcher.Infinity)
 
@@ -274,6 +282,7 @@ class Searcher(moveGenerator: MoveGenerator,
           val candidateCount = rootCandidates.count
           val moveIndex = rootCandidates.indexOf(m.path)
           log.info(s"Chose move $moveIndex ($candidateCount candidates)")
+          log.info(rootCandidates.toList.toString)
         case _ => ()
       }
 

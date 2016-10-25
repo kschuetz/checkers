@@ -262,9 +262,9 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
 
     var result = TurnAdvantageBonus
     if (turnToPlay == DARK) {
-      result += darkScore - lightScore
+      result += (darkScore - lightScore)
     } else {
-      result += lightScore - darkScore
+      result += (lightScore - darkScore)
     }
 
     if (probe != null) {
