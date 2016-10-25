@@ -2,6 +2,7 @@ package checkers.core
 
 import scala.scalajs.js.typedarray.Int8Array
 import checkers.consts._
+import checkers.core.tables.JumpTable
 
 
 class MoveList(val data: Int8Array,
@@ -31,6 +32,16 @@ class MoveList(val data: Int8Array,
       i += 1
     }
     result
+  }
+
+  def containsJump(jumpTable: JumpTable, moveDecoder: MoveDecoder = null): Boolean = {
+    if(count > 0) {
+      val decoder = if(moveDecoder != null) moveDecoder else new MoveDecoder
+
+      // if any jumps are present, all moves are jumps, so just check index 0
+      decoder.load(this, 0)
+      decoder.containsJump(jumpTable)
+    } else false
   }
 
   def moveToFrontIfExists(path: List[Int], moveDecoder: MoveDecoder = null): MoveList = {
@@ -129,6 +140,15 @@ class MoveDecoder {
     }
 
     result && p == Nil
+  }
+
+  def containsJump(jumpTable: JumpTable): Boolean = {
+    (_pathLength > 1) && {
+      (_pathLength > 2) || {
+        val middle = jumpTable.getMiddle(data(0), data(1))
+        middle >= 0
+      }
+    }
   }
 
   // for tests
