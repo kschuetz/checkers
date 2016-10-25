@@ -22,6 +22,10 @@ package object consts {
   def LIGHTKING: Occupant  = macro lightKingImpl
   def DARKKING: Occupant  = macro darkKingImpl
 
+  val MoveListFrameSize = 12
+
+  def MOVELISTFRAMESIZE: Int = macro moveListFrameSizeImpl
+
   def COLOR(occupant: Occupant): Color = macro colorImpl
   def PIECETYPE(occupant: Occupant): PieceType = macro pieceTypeImpl
   def ISPIECE(occupant: Occupant): Boolean = macro isPieceImpl
@@ -39,6 +43,12 @@ package object consts {
   def lightManImpl(c: blackbox.Context): c.Expr[Occupant] = c.universe.reify(2)
   def darkKingImpl(c: blackbox.Context): c.Expr[Occupant] = c.universe.reify(5)
   def lightKingImpl(c: blackbox.Context): c.Expr[Occupant] = c.universe.reify(6)
+
+
+  def moveListFrameSizeImpl(c: blackbox.Context): c.Expr[Int] = {
+    import c.universe._
+    c.Expr[Int](Literal(Constant(MoveListFrameSize)))
+  }
 
   def colorImpl(c: blackbox.Context)(occupant: c.Expr[Occupant]): c.Expr[Color] = {
     import c.universe._

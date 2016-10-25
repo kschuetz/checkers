@@ -1,6 +1,7 @@
 package checkers.core
 
 import scala.scalajs.js.typedarray.Int8Array
+import checkers.consts._
 
 
 class MoveList(val data: Int8Array,
@@ -83,14 +84,14 @@ class MoveList(val data: Int8Array,
   * Can be reused by calling load.
   */
 class MoveDecoder {
-  val data = new Int8Array(MoveList.frameSize)
+  val data = new Int8Array(MOVELISTFRAMESIZE)
   private var _pathLength = 0
 
   def load(moveList: MoveList, index: Int): Unit = {
     val src = moveList.data
-    var i = index * MoveList.frameSize
+    var i = index * MOVELISTFRAMESIZE
     _pathLength = 0
-    while(_pathLength < MoveList.frameSize) {
+    while(_pathLength < MOVELISTFRAMESIZE) {
       val b = src(i)
       if(b < 0) {
         data(_pathLength) = (b & 127).toByte
@@ -134,7 +135,7 @@ class MoveDecoder {
   def loadFromList(path: List[Int]): Unit = {
     var i = 0
     var current = path
-    while(current.nonEmpty && i < MoveList.frameSize) {
+    while(current.nonEmpty && i < MOVELISTFRAMESIZE) {
       data(i) = current.head.toByte
       current = current.tail
       i += 1
@@ -160,7 +161,7 @@ class MoveDecoder {
   * Used for building compound moves.
   */
 class MovePathStack {
-  private val data = new Int8Array(MoveList.frameSize)
+  private val data = new Int8Array(MOVELISTFRAMESIZE)
   private var ptr: Int = 0
 
   def mark: Int = ptr
@@ -188,7 +189,7 @@ class MovePathStack {
 }
 
 class MoveListBuilder {
-  private val pathSize = MoveList.frameSize
+  private val pathSize = MOVELISTFRAMESIZE
   private var data = MoveList.makeBuffer
   private var ptr = 0
   private var count = 0
@@ -217,16 +218,15 @@ class MoveListBuilder {
 
 
 object MoveList {
-  val frameSize = 12
   val maxMoveCount = 36
-  val bufferSize = frameSize * maxMoveCount
+  val bufferSize = MOVELISTFRAMESIZE * maxMoveCount
 
   def makeBuffer: Int8Array = new Int8Array(bufferSize)
 
   def copyFrame(srcFrameIndex: Int, destFrameIndex: Int, srcData: Int8Array, destData: Int8Array): Unit = {
-    var from = srcFrameIndex * frameSize
-    var to = destFrameIndex * frameSize
-    var i = frameSize
+    var from = srcFrameIndex * MOVELISTFRAMESIZE
+    var to = destFrameIndex * MOVELISTFRAMESIZE
+    var i = MOVELISTFRAMESIZE
     while(i > 0) {
       destData(to) = srcData(from)
       i -= 1
