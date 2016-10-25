@@ -18,7 +18,6 @@ object Searcher {
 
 class Searcher(moveGenerator: MoveGenerator,
                moveExecutor: MoveExecutor,
-               jumpTable: JumpTable,
                evaluator: Evaluator) {
 
   val log = logger.computerPlayer
@@ -79,7 +78,7 @@ class Searcher(moveGenerator: MoveGenerator,
                       plyIndex: Int,
                       parent: PlyParent,
                       var alpha: Int,
-                      var beta: Int) extends Ply with PlyParent {
+                      val beta: Int) extends Ply with PlyParent {
       private var initted = false
 
       private var lastMove: Play = NoPlay
@@ -90,7 +89,6 @@ class Searcher(moveGenerator: MoveGenerator,
       private var nextMovePtr = 0
 
       private def init(): Unit = {
-        if (plyIndex > deepestPly) deepestPly = plyIndex
         val pvMove = if (left) pv.getBestMove(plyIndex) else null
         candidates = {
           val base = if (root) {
@@ -112,18 +110,10 @@ class Searcher(moveGenerator: MoveGenerator,
       }
 
       def process: Ply = {
-        if (!initted) init()
-
-        if (moveCount <= 0) {
-          // loss
-          deadEndCount += 1
-          val score = -Searcher.Infinity + depthRemaining
-          return parent.answer(score)
-        }
+        if (plyIndex > deepestPly) deepestPly = plyIndex
 
         val leaf = if (depthRemaining <= 0) {
-          moveDecoder.load(candidates, 0)
-          !moveDecoder.containsJump(jumpTable) // quiescence check
+          !moveGenerator.mustJump(boardStack, turnToMove)
         } else false
 
         if (leaf) {
@@ -131,57 +121,65 @@ class Searcher(moveGenerator: MoveGenerator,
           val score = evaluator.evaluate(turnToMove, boardStack)
           parent.answer(score)
         } else {
-          //          if (!initted) init()
+          if (!initted) init()
 
-          if (nextMovePtr < moveCount) {
-
-            //            val saveDP = boardStack.darkPieces
-            //            val saveLP = boardStack.lightPieces
-            //            val saveK = boardStack.kings
-
-            boardStack.push()
-            try {
-              moveDecoder.load(candidates, nextMovePtr)
-              nextMovePtr += 1
-              lastMove = Move(moveDecoder.pathToList, proposeDraw = false)
-
-              moveExecutor.executeFromMoveDecoder(boardStack, moveDecoder)
-
-              //              val wasJump = moveExecutor.executeFromMoveDecoder(boardStack, moveDecoder)
-              //              val nextDepthRemaining = {
-              //                if(wasJump && depthRemaining == 1) 1   // quiescence
-              //                else depthRemaining - 1
-              //              }
-              val nextDepthRemaining = math.max(0, depthRemaining - 1)
-
-              val nextPly = new ConcretePly(
-                root = false,
-                left = left && nextMovePtr == 1,
-                turnToMove = OPPONENT(turnToMove),
-                depthRemaining = nextDepthRemaining,
-                plyIndex = plyIndex + 1,
-                parent = this,
-                alpha = -beta,
-                beta = -alpha
-              )
-
-              nextPly.process
-            } finally {
-              boardStack.pop()
-
-              //              assert(boardStack.darkPieces == saveDP)
-              //              assert(boardStack.lightPieces == saveLP)
-              //              assert(boardStack.kings == saveK)
-            }
+          if (moveCount <= 0) {
+            // loss
+            deadEndCount += 1
+            val score = -Searcher.Infinity + depthRemaining
+            parent.answer(score)
           } else {
-            parent.answer(alpha)
+
+            if (nextMovePtr < moveCount) {
+
+              //            val saveDP = boardStack.darkPieces
+              //            val saveLP = boardStack.lightPieces
+              //            val saveK = boardStack.kings
+
+              boardStack.push()
+              try {
+                moveDecoder.load(candidates, nextMovePtr)
+                nextMovePtr += 1
+                lastMove = Move(moveDecoder.pathToList, proposeDraw = false)
+
+                moveExecutor.executeFromMoveDecoder(boardStack, moveDecoder)
+
+                //              val wasJump = moveExecutor.executeFromMoveDecoder(boardStack, moveDecoder)
+                //              val nextDepthRemaining = {
+                //                if(wasJump && depthRemaining == 1) 1   // quiescence
+                //                else depthRemaining - 1
+                //              }
+                val nextDepthRemaining = math.max(0, depthRemaining - 1)
+
+                val nextPly = new ConcretePly(
+                  root = false,
+                  left = left && nextMovePtr == 1,
+                  turnToMove = OPPONENT(turnToMove),
+                  depthRemaining = nextDepthRemaining,
+                  plyIndex = plyIndex + 1,
+                  parent = this,
+                  alpha = -beta,
+                  beta = -alpha
+                )
+
+                nextPly.process
+              } finally {
+                boardStack.pop()
+
+                //              assert(boardStack.darkPieces == saveDP)
+                //              assert(boardStack.lightPieces == saveLP)
+                //              assert(boardStack.kings == saveK)
+              }
+            } else {
+              parent.answer(alpha)
+            }
           }
         }
       }
 
       def answer(result: Int): Ply = {
         val value = -result
-        if (value >= beta) {
+        if (value >= beta && !root) {
           betaCutoffCount += 1
           parent.answer(beta)
         } else {
