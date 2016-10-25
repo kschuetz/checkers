@@ -53,6 +53,13 @@ class Searcher(moveGenerator: MoveGenerator,
     private val boardStack = BoardStack.fromBoard(playInput.board)
     private var boardStackMaxLevel: Int = 0
 
+    log.debug(boardStack.toImmutable.toString)
+    boardStack.push()
+    boardStack.setOccupant(28, DARKKING)
+    log.debug(boardStack.toImmutable.toString)
+    boardStack.pop()
+    log.debug(boardStack.toImmutable.toString)
+
     var probeA: Int = 0
     var probeB: Int = 0
 
@@ -155,14 +162,20 @@ class Searcher(moveGenerator: MoveGenerator,
               try {
                 moveDecoder.load(candidates, nextMovePtr)
                 nextMovePtr += 1
-                lastMove = Move(moveDecoder.pathToList, proposeDraw = false)
+
+                {
+                  val path = moveDecoder.pathToList
+                  val piece = boardStack.getOccupant(path.head)
+                  assert(piece != EMPTY, "square is empty!")
+                  assert(COLOR(piece) == turnToMove, "wrong color!")
+                  lastMove = Move(path, proposeDraw = false)
+                }
 
                 moveExecutor.executeFromMoveDecoder(boardStack, moveDecoder)
 
                 assert(
                   (boardStack.darkPieces != saveDP) ||
-                  (boardStack.lightPieces != saveLP) ||
-                  (boardStack.kings != saveK), "board stack didn't change")
+                  (boardStack.lightPieces != saveLP),  "board stack didn't change")
 
                 //              val wasJump = moveExecutor.executeFromMoveDecoder(boardStack, moveDecoder)
                 //              val nextDepthRemaining = {

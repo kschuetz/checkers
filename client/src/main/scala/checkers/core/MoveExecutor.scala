@@ -66,7 +66,7 @@ class MoveExecutor(rulesSettings: RulesSettings,
     */
   def executeFromMoveDecoder(boardState: MutableBoardState, decoder: MoveDecoder): Boolean = {
     val len = decoder.pathLength
-    assert(len > 1, "path length > 1")
+    assert(len > 1, "path length < 2!")
     val data = decoder.data
     var from = data(0)
     var to: Byte = 0
@@ -76,6 +76,7 @@ class MoveExecutor(rulesSettings: RulesSettings,
       to = data(i)
 
       val piece = boardState.getOccupant(from)
+
       val over = jumpTable.getMiddle(from, to)
       if(over >= 0) {
         wasJump = true
