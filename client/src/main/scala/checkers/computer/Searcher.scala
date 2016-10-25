@@ -20,6 +20,8 @@ class Searcher(moveGenerator: MoveGenerator,
                moveExecutor: MoveExecutor,
                evaluator: Evaluator) {
 
+  val random = new java.util.Random
+
   val log = logger.computerPlayer
 
   def create(playInput: PlayInput, incomingPlayerState: ComputerPlayerState, depthLimit: Option[Int],
@@ -49,6 +51,7 @@ class Searcher(moveGenerator: MoveGenerator,
     private var betaCutoffCount = 0
     private var deadEndCount: Int = 0
     private val boardStack = BoardStack.fromBoard(playInput.board)
+    private var boardStackMaxLevel: Int = 0
 
     var probeA: Int = 0
     var probeB: Int = 0
@@ -90,7 +93,7 @@ class Searcher(moveGenerator: MoveGenerator,
       private var nextMovePtr = 0
 
       private def init(): Unit = {
-        val pvMove = if (left) pv.getBestMove(plyIndex) else null
+        val pvMove: Play = if (left) pv.getBestMove(plyIndex) else null
         candidates = {
           val base = if (root) {
             rootCandidates
@@ -112,6 +115,8 @@ class Searcher(moveGenerator: MoveGenerator,
 
       def process: Ply = {
         if (plyIndex > deepestPly) deepestPly = plyIndex
+        val stackLevel = boardStack.level
+        if(stackLevel > boardStackMaxLevel) boardStackMaxLevel = stackLevel
 
         val leaf = if (depthRemaining <= 0) {
           !moveGenerator.mustJump(boardStack, turnToMove)
@@ -119,6 +124,7 @@ class Searcher(moveGenerator: MoveGenerator,
 
         if (leaf) {
           evaluatorCalls += 1
+//          val score = random.nextInt()
           val score = evaluator.evaluate(turnToMove, boardStack)
 
 //          if(iteration < 4) {
@@ -137,10 +143,13 @@ class Searcher(moveGenerator: MoveGenerator,
           } else {
 
             if (nextMovePtr < moveCount) {
+              if(root) log.debug(s"root - move $nextMovePtr")
 
-              //            val saveDP = boardStack.darkPieces
-              //            val saveLP = boardStack.lightPieces
-              //            val saveK = boardStack.kings
+              if(nextMovePtr == moveCount - 1) probeB += 1
+
+                          val saveDP = boardStack.darkPieces
+                          val saveLP = boardStack.lightPieces
+                          val saveK = boardStack.kings
 
               boardStack.push()
               try {
@@ -149,6 +158,11 @@ class Searcher(moveGenerator: MoveGenerator,
                 lastMove = Move(moveDecoder.pathToList, proposeDraw = false)
 
                 moveExecutor.executeFromMoveDecoder(boardStack, moveDecoder)
+
+                assert(
+                  (boardStack.darkPieces != saveDP) ||
+                  (boardStack.lightPieces != saveLP) ||
+                  (boardStack.kings != saveK), "board stack didn't change")
 
                 //              val wasJump = moveExecutor.executeFromMoveDecoder(boardStack, moveDecoder)
                 //              val nextDepthRemaining = {
@@ -173,9 +187,9 @@ class Searcher(moveGenerator: MoveGenerator,
               } finally {
                 boardStack.pop()
 
-                //              assert(boardStack.darkPieces == saveDP)
-                //              assert(boardStack.lightPieces == saveLP)
-                //              assert(boardStack.kings == saveK)
+                              assert(boardStack.darkPieces == saveDP)
+                              assert(boardStack.lightPieces == saveLP)
+                              assert(boardStack.kings == saveK)
               }
             } else {
               parent.answer(alpha)
@@ -186,15 +200,17 @@ class Searcher(moveGenerator: MoveGenerator,
 
       def answer(result: Int): Ply = {
         val value = -result
-        if (value >= beta) {
+        if (!root && value >= beta) {
           betaCutoffCount += 1
           parent.answer(beta)
         } else {
+          if(plyIndex == 0) log.debug(s"answer: $lastMove, $value, alpha=$alpha")
           if (value > alpha) {
             alphaCutoffCount += 1
             alpha = value
             //val lastMove = Move(moveDecoder.pathToList, proposeDraw = false)
-            probeB += 1
+//            if(root) probeB += 1
+
             pv.updateBestMove(plyIndex, lastMove)
           }
           this
@@ -276,6 +292,7 @@ class Searcher(moveGenerator: MoveGenerator,
       log.info(s"Probe A: $probeA")
       log.info(s"Probe B: $probeB")
       log.info(s"Board stack level:  ${boardStack.level}")
+      log.info(s"Board stack max level:  $boardStackMaxLevel")
 
       play match {
         case m: Move =>

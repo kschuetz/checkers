@@ -66,6 +66,7 @@ class MoveExecutor(rulesSettings: RulesSettings,
     */
   def executeFromMoveDecoder(boardState: MutableBoardState, decoder: MoveDecoder): Boolean = {
     val len = decoder.pathLength
+    assert(len > 1, "path length > 1")
     val data = decoder.data
     var from = data(0)
     var to: Byte = 0
