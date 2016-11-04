@@ -56,14 +56,14 @@ class Searcher(moveGenerator: MoveGenerator,
     private val boardStack = BoardStack.fromBoard(playInput.board)
     private var boardStackMaxLevel: Int = 0
 
-    log.debug(boardStack.toImmutable.toString)
-    boardStack.push()
-    boardStack.setOccupant(28, DARKKING)
-    log.debug(boardStack.toImmutable.toString)
-    boardStack.pop()
-    log.debug(boardStack.toImmutable.toString)
-
-    boardStack.push() // temp
+//    log.debug(boardStack.toImmutable.toString)
+//    boardStack.push()
+//    boardStack.setOccupant(28, DARKKING)
+//    log.debug(boardStack.toImmutable.toString)
+//    boardStack.pop()
+//    log.debug(boardStack.toImmutable.toString)
+//
+//    boardStack.push() // temp
 
     var probeA: Int = 0
     var probeB: Int = 0
@@ -132,7 +132,40 @@ class Searcher(moveGenerator: MoveGenerator,
         initted = true
       }
 
+//      def process: Ply = {
+//        val saveLevel = boardStack.level
+//        val result = process2
+//        val newLevel = boardStack.level
+//
+//        assert(saveLevel == newLevel, "stack level off")
+//        result
+//      }
+
       def process: Ply = {
+        var retval: Ply = null
+
+//        if(captureBoard != null) {
+//          val currentBoard = boardStack.toImmutable
+//          var corrupted = false
+//          if (!BoardUtils.boardStatesEqual(currentBoard, captureBoard)) {
+//            corrupted = true
+//            if (tempErrorCount < 10) {
+//              tempErrorCount += 1
+//
+//              println("---")
+//              println(s"Corrupted: $plyIndex:$nextMovePtr")
+//              println("current board:")
+//              println(currentBoard.toString)
+//              println("board at start:")
+//              println(captureBoard.toString)
+//              println(s"stack ${boardStack.level}")
+//              println(BoardStack.juxtaposedDebugString(boardStack))
+//            }
+//          }
+//          if (corrupted) return parent.answer(alpha)
+//          assert(BoardUtils.boardStatesEqual(currentBoard, captureBoard), s"board stack corrupted! $nextMovePtr")
+//        }
+
         if (plyIndex > deepestPly) deepestPly = plyIndex
         val stackLevel = boardStack.level
         if(stackLevel > boardStackMaxLevel) boardStackMaxLevel = stackLevel
@@ -170,29 +203,31 @@ class Searcher(moveGenerator: MoveGenerator,
                           val saveLP = boardStack.lightPieces
                           val saveK = boardStack.kings
 
-              val currentBoard = boardStack.toImmutable
-              assert(captureBoard != null, "captureBoard is null")
-              assert(currentBoard != null, "currentBoard is null")
-              var corrupted = false
-              if(!BoardUtils.boardStatesEqual(currentBoard, captureBoard)) {
-                corrupted = true
-                if(tempErrorCount < 10) {
-                  tempErrorCount += 1
+              if(captureBoard != null) {
+                val currentBoard = boardStack.toImmutable
+                var corrupted = false
+                if (!BoardUtils.boardStatesEqual(currentBoard, captureBoard)) {
+                  corrupted = true
+                  if (tempErrorCount < 10) {
+                    tempErrorCount += 1
 
-                  println("---")
-                  println(s"Corrupted: $plyIndex:$nextMovePtr")
-                  println("current board:")
-                  println(currentBoard.toString)
-                  println("board at start:")
-                  println(captureBoard.toString)
-                  println("stack:")
-                  println(BoardStack.juxtaposedDebugString(boardStack))
+                    println("---")
+                    println(s"Corrupted: $plyIndex:$nextMovePtr")
+                    println("current board:")
+                    println(currentBoard.toString)
+                    println("board at start:")
+                    println(captureBoard.toString)
+                    println(s"stack ${boardStack.level}")
+                    println(BoardStack.juxtaposedDebugString(boardStack))
+                  }
                 }
+                if (corrupted) return parent.answer(alpha)
+                assert(BoardUtils.boardStatesEqual(currentBoard, captureBoard), s"board stack corrupted! $nextMovePtr")
               }
-              if(corrupted) return parent.answer(alpha)
-              assert(BoardUtils.boardStatesEqual(currentBoard, captureBoard), s"board stack corrupted! $nextMovePtr")
 
+              val saveLevel = boardStack.level
               boardStack.push()
+              assert(boardStack.level == saveLevel + 1)
               try {
                 moveDecoder.load(candidates, nextMovePtr)
                 nextMovePtr += 1
@@ -246,7 +281,7 @@ class Searcher(moveGenerator: MoveGenerator,
                   beta = -alpha
                 )
 
-                nextPly.process
+                retval = nextPly.process
               } finally {
                 boardStack.pop()
 
@@ -254,6 +289,7 @@ class Searcher(moveGenerator: MoveGenerator,
                               assert(boardStack.lightPieces == saveLP)
                               assert(boardStack.kings == saveK)
               }
+              retval
             } else {
               parent.answer(alpha)
             }

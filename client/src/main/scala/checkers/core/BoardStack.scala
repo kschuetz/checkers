@@ -49,7 +49,7 @@ class BoardStackImpl(val initialCapacity: Int) extends BoardStack with BoardStat
 
   def pop(): Unit = {
     offset = offset - frameSize
-    if (offset < 0) offset = 0
+    assert(offset >= 0, "popped empty stack")
   }
 
   def level: Int = offset / frameSize
