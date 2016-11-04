@@ -92,26 +92,35 @@ trait BoardStateReadImpl extends BoardStateRead {
   }
 
   override def toString: String = {
+    renderDebugRows.mkString("", "\n", "\n")
+  }
+
+  def renderDebugRows: Vector[String] = {
     val rows = for {
-      r <- 0 to 7
+      r <- 0 to 9
     } yield {
-      val cells = for {
-        c <- 0 to 7
-      } yield {
-        val idx = BoardPosition(r, c).toSquareIndex
-        if(idx < 0) ' '
-        else {
-          val occupant = getOccupant(idx)
-          if(occupant == DARKMAN) 'd'
-          else if(occupant == DARKKING) 'D'
-          else if(occupant == LIGHTMAN) 'l'
-          else if(occupant == LIGHTKING) 'L'
-          else '-'
+      if(r < 1 || r > 8) {
+        "+--------+"
+      } else {
+        val rowIndex = r - 1
+        val cells = for {
+          c <- 0 to 7
+        } yield {
+          val idx = BoardPosition(rowIndex, c).toSquareIndex
+          if(idx < 0) ' '
+          else {
+            val occupant = getOccupant(idx)
+            if(occupant == DARKMAN) 'd'
+            else if(occupant == DARKKING) 'D'
+            else if(occupant == LIGHTMAN) 'l'
+            else if(occupant == LIGHTKING) 'L'
+            else '-'
+          }
         }
+        cells.mkString("|", "", "|")
       }
-      cells.mkString("|", "", "|")
     }
-    rows.mkString("+--------+\n", "\n", "\n+--------+")
+    rows.toVector
   }
 }
 

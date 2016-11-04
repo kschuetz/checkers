@@ -63,6 +63,8 @@ class Searcher(moveGenerator: MoveGenerator,
     boardStack.pop()
     log.debug(boardStack.toImmutable.toString)
 
+    boardStack.push() // temp
+
     var probeA: Int = 0
     var probeB: Int = 0
 
@@ -112,7 +114,10 @@ class Searcher(moveGenerator: MoveGenerator,
           val base = if (root) {
             rootCandidates
           } else {
-            moveGenerator.generateMoves(boardStack, turnToMove)
+            val b1 = boardStack.toImmutable
+            val temp = moveGenerator.generateMoves(boardStack, turnToMove)
+            assert(BoardUtils.boardStatesEqual(b1, boardStack.toImmutable), "move generator corrupted board stack")
+            temp
           }
 
           pvMove match {
@@ -168,7 +173,24 @@ class Searcher(moveGenerator: MoveGenerator,
               val currentBoard = boardStack.toImmutable
               assert(captureBoard != null, "captureBoard is null")
               assert(currentBoard != null, "currentBoard is null")
-              assert(BoardUtils.boardStatesEqual(currentBoard, captureBoard), "board stack corrupted!")
+              var corrupted = false
+              if(!BoardUtils.boardStatesEqual(currentBoard, captureBoard)) {
+                corrupted = true
+                if(tempErrorCount < 10) {
+                  tempErrorCount += 1
+
+                  println("---")
+                  println(s"Corrupted: $plyIndex:$nextMovePtr")
+                  println("current board:")
+                  println(currentBoard.toString)
+                  println("board at start:")
+                  println(captureBoard.toString)
+                  println("stack:")
+                  println(BoardStack.juxtaposedDebugString(boardStack))
+                }
+              }
+              if(corrupted) return parent.answer(alpha)
+              assert(BoardUtils.boardStatesEqual(currentBoard, captureBoard), s"board stack corrupted! $nextMovePtr")
 
               boardStack.push()
               try {

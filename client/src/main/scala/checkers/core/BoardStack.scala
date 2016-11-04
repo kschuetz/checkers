@@ -8,6 +8,8 @@ trait BoardStack extends MutableBoardState {
   def pop(): Unit
 
   def level: Int
+
+  def debugGetAllItems: List[BoardState]
 }
 
 class BoardStackImpl(val initialCapacity: Int) extends BoardStack with BoardStateWriteImpl {
@@ -53,6 +55,17 @@ class BoardStackImpl(val initialCapacity: Int) extends BoardStack with BoardStat
   def level: Int = offset / frameSize
 
   def toImmutable: BoardState = new BoardState(copyFrame)
+
+  def debugGetAllItems: List[BoardState] = {
+    val saveOffset = offset
+    var result = List.empty[BoardState]
+    while(offset >= 0) {
+      result = toImmutable :: result
+      offset -= frameSize
+    }
+    offset = saveOffset
+    result
+  }
 }
 
 object BoardStack {
@@ -65,5 +78,20 @@ object BoardStack {
     val result = apply(defaultInitialCapacity)
     result.setBoard(boardState)
     result
+  }
+
+  def juxtaposedDebugString(boardStack: BoardStack): String = {
+    val boards = boardStack.debugGetAllItems.toVector
+    var longest = 0
+    val grid = boards.map { board =>
+      val rows = board.renderDebugRows
+      val size = rows.size
+      if(size > longest) longest = size
+      rows
+    }
+    val transposed = (0 until longest).map { rowIndex =>
+      grid.map(_.lift(rowIndex).getOrElse("")).mkString(" ")
+    }
+    transposed.mkString("\n")
   }
 }
