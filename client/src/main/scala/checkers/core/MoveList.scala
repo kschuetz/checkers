@@ -82,7 +82,7 @@ class MoveList(val data: Int8Array,
     result.reverse
   }
 
-  override def toString: String = s"MoveList(${toSet.toString})"
+  override def toString: String = s"MoveList(${toList.toString})"
 }
 
 /**

@@ -5,6 +5,7 @@ import checkers.core.Play.{Move, NoPlay}
 import checkers.core._
 import checkers.core.tables.JumpTable
 import checkers.logger
+import checkers.test.BoardUtils
 import org.scalajs.dom
 
 import scala.annotation.elidable
@@ -41,6 +42,8 @@ class Searcher(moveGenerator: MoveGenerator,
     var totalCyclesUsed = 0
     var deepestPly = 0
     var evaluatorCalls = 0
+
+    var tempErrorCount = 0
 
     val pv = new PrincipalVariation[Play](Searcher.MaxDepth)
     private val moveDecoder = new MoveDecoder
@@ -96,12 +99,16 @@ class Searcher(moveGenerator: MoveGenerator,
 
       private var candidates: MoveList = _
 
+      private var captureBoard: BoardStateRead = _
+
       private var moveCount = 0
       private var nextMovePtr = 0
 
       private def init(): Unit = {
         val pvMove: Play = if (left) pv.getBestMove(plyIndex) else null
         candidates = {
+          captureBoard = boardStack.toImmutable
+
           val base = if (root) {
             rootCandidates
           } else {
@@ -158,6 +165,11 @@ class Searcher(moveGenerator: MoveGenerator,
                           val saveLP = boardStack.lightPieces
                           val saveK = boardStack.kings
 
+              val currentBoard = boardStack.toImmutable
+              assert(captureBoard != null, "captureBoard is null")
+              assert(currentBoard != null, "currentBoard is null")
+              assert(BoardUtils.boardStatesEqual(currentBoard, captureBoard), "board stack corrupted!")
+
               boardStack.push()
               try {
                 moveDecoder.load(candidates, nextMovePtr)
@@ -166,7 +178,23 @@ class Searcher(moveGenerator: MoveGenerator,
                 {
                   val path = moveDecoder.pathToList
                   val piece = boardStack.getOccupant(path.head)
-                  assert(piece != EMPTY, "square is empty!")
+
+                  if(piece == EMPTY && tempErrorCount < 10) {
+                    println(s"ERROR -- $plyIndex")
+                    println(s"moveIndex ${nextMovePtr - 1}: ${path.toString}")
+                    println(boardStack.toString)
+                    println(candidates)
+                    val candidates2 = moveGenerator.generateMoves(boardStack, turnToMove)
+                    println("candidates2:")
+                    println(candidates2)
+                    println("board at start")
+                    println(captureBoard.toString)
+                    println("----")
+
+                    tempErrorCount += 1
+                  }
+
+                  assert(piece != EMPTY, s"square is empty! (${path.toString})  $plyIndex")
                   assert(COLOR(piece) == turnToMove, "wrong color!")
                   lastMove = Move(path, proposeDraw = false)
                 }

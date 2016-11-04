@@ -212,6 +212,30 @@ object MoveGeneratorTests extends TestSuiteBase with DefaultGameLogicTestModule 
               s(25 -> 21)
             ))
           }
+
+          'SimpleMoves3 {
+            val board = BoardUtils.parseBoard(
+              """
+                 l l l l
+                l l l l
+                 l l l l
+                - - - -
+                 - d - -
+                d - d d
+                 d d d d
+                d d d d
+              """)
+
+            testBoard(board, LIGHT, Set(
+              s(20 -> 16),
+              s(20 -> 17),
+              s(21 -> 17),
+              s(21 -> 18),
+              s(22 -> 18),
+              s(22 -> 19),
+              s(23 -> 19)
+            ))
+          }
         }
 
         'CompoundJumps1 {
