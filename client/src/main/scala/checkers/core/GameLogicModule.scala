@@ -1,6 +1,6 @@
 package checkers.core
 
-import checkers.computer.{DefaultEvaluator, Evaluator, Searcher}
+import checkers.computer.{DefaultEvaluator, Evaluator, Searcher, ShufflerFactory}
 import checkers.core.tables.TablesModule
 import com.softwaremill.macwire._
 
@@ -20,19 +20,25 @@ trait GameLogicModule {
   def searcher: Searcher
 
   def evaluator: Evaluator
+
+  def shufflerFactory: ShufflerFactory
 }
 
 class GameLogicModuleFactory(tablesModule: TablesModule,
+                             shufflerFactory: ShufflerFactory,
                              animationSettings: AnimationSettings) extends (RulesSettings => GameLogicModule) {
 
   def apply(rulesSettings: RulesSettings): GameLogicModule = {
     val mySettings = rulesSettings
+    val myShufflerFactory = shufflerFactory
     new GameLogicModule {
       import tablesModule._
 
       val rulesSettings = mySettings
 
       val animSettings = animationSettings
+
+      val shufflerFactory = myShufflerFactory
 
       lazy val drawLogic = wire[DrawLogic]
 

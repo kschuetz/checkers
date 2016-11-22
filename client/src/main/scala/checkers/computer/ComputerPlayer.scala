@@ -6,6 +6,7 @@ import checkers.util.Random
 
 class ComputerPlayer(moveGenerator: MoveGenerator,
                      searcher: Searcher,
+                     shufflerFactory: ShufflerFactory,
                      personality: Personality)
                     (initialSeed: Option[Long]) extends Program {
   // Can be shared between all computations
@@ -45,8 +46,8 @@ class ComputerPlayer(moveGenerator: MoveGenerator,
   private def search(stateIn: ComputerPlayerState, playInput: PlayInput, choices: MoveList, searchParameters: SearchParameters, blunder: Boolean): PlayComputation = {
     //searcher
     val transformResult: PlayResult => PlayResult = if(blunder) executeBlunder(choices) else identity
-    val shuffler: Shuffler = NoShuffle
-    searcher.create(playInput, stateIn, searchParameters.depthLimit, searchParameters.cycleLimit, shuffler, transformResult)
+    val (shuffler, state2) = shufflerFactory.createShuffler(stateIn)
+    searcher.create(playInput, state2, searchParameters.depthLimit, searchParameters.cycleLimit, shuffler, transformResult)
   }
 
   private def selectRandomMove(stateIn: ComputerPlayerState, choices: MoveList): PlayComputation = {
@@ -61,6 +62,7 @@ class ComputerPlayer(moveGenerator: MoveGenerator,
 
 class ComputerPlayerFactory(personality: Personality) extends ProgramFactory {
   def makeProgram(gameLogicModule: GameLogicModule): Program = {
-    new ComputerPlayer(gameLogicModule.moveGenerator, gameLogicModule.searcher, personality)(None)
+    new ComputerPlayer(gameLogicModule.moveGenerator, gameLogicModule.searcher, gameLogicModule.shufflerFactory,
+      personality)(None)
   }
 }
