@@ -24,13 +24,14 @@ class Searcher(moveGenerator: MoveGenerator,
   val log = logger.computerPlayer
 
   def create(playInput: PlayInput, incomingPlayerState: ComputerPlayerState, depthLimit: Option[Int],
-             cycleLimit: Option[Int], transformResult: PlayResult => PlayResult): Search =
-    new Search(playInput, incomingPlayerState, depthLimit, cycleLimit, transformResult)
+             cycleLimit: Option[Int], shuffler: Shuffler, transformResult: PlayResult => PlayResult): Search =
+    new Search(playInput, incomingPlayerState, depthLimit, cycleLimit, shuffler, transformResult)
 
   class Search(playInput: PlayInput,
                incomingPlayerState: ComputerPlayerState,
                depthLimit: Option[Int],
                cycleLimit: Option[Int],
+               shuffler: Shuffler,
                transformResult: PlayResult => PlayResult)
     extends PlayComputation {
 
@@ -144,7 +145,9 @@ class Searcher(moveGenerator: MoveGenerator,
 
           if (nextMovePtr < moveCount) {
             boardStack.push()
-            moveDecoder.load(candidates, nextMovePtr)
+            val moveIndex = shuffler.getMoveIndex(nextMovePtr, moveCount, plyIndex, pvMoveInFront)
+
+            moveDecoder.load(candidates, moveIndex)
             nextMovePtr += 1
 
             val path = moveDecoder.pathToList

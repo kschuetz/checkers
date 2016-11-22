@@ -45,8 +45,8 @@ class ComputerPlayer(moveGenerator: MoveGenerator,
   private def search(stateIn: ComputerPlayerState, playInput: PlayInput, choices: MoveList, searchParameters: SearchParameters, blunder: Boolean): PlayComputation = {
     //searcher
     val transformResult: PlayResult => PlayResult = if(blunder) executeBlunder(choices) else identity
-
-    searcher.create(playInput, stateIn, searchParameters.depthLimit, searchParameters.cycleLimit, transformResult)
+    val shuffler: Shuffler = NoShuffle
+    searcher.create(playInput, stateIn, searchParameters.depthLimit, searchParameters.cycleLimit, shuffler, transformResult)
   }
 
   private def selectRandomMove(stateIn: ComputerPlayerState, choices: MoveList): PlayComputation = {
