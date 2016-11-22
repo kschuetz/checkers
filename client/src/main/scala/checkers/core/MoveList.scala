@@ -44,10 +44,10 @@ class MoveList(val data: Int8Array,
     } else false
   }
 
-  def moveToFrontIfExists(path: List[Int], moveDecoder: MoveDecoder = null): MoveList = {
+  def moveToFrontIfExists(path: List[Int], moveDecoder: MoveDecoder = null): Option[MoveList] = {
     val decoder = if(moveDecoder != null) moveDecoder else new MoveDecoder
     val index = indexOf(path, moveDecoder)
-    if(index < 1) this
+    if(index < 1) None
     else {
       val newData = MoveList.makeBuffer
       MoveList.copyFrame(index, 0, data, newData)
@@ -61,7 +61,7 @@ class MoveList(val data: Int8Array,
         to += 1
         i -= 1
       }
-      new MoveList(newData, count)
+      Option(new MoveList(newData, count))
     }
   }
 

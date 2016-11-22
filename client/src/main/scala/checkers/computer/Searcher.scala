@@ -91,6 +91,7 @@ class Searcher(moveGenerator: MoveGenerator,
 
       private var moveCount = 0
       private var nextMovePtr = 0
+      private var pvMoveInFront = false
 
       private def init(): Unit = {
         val pvMove: Play = if (left) pv.getBestMove(plyIndex) else null
@@ -104,7 +105,10 @@ class Searcher(moveGenerator: MoveGenerator,
           pvMove match {
             case m: Move =>
               probeA += 1
-              base.moveToFrontIfExists(m.path, moveDecoder)
+              base.moveToFrontIfExists(m.path, moveDecoder).fold(base){ moveList =>
+                pvMoveInFront = true
+                moveList
+              }
             case _ => base
           }
         }
@@ -139,34 +143,32 @@ class Searcher(moveGenerator: MoveGenerator,
         } else {
 
           if (nextMovePtr < moveCount) {
-            if(nextMovePtr == moveCount - 1) probeB += 1
-
             boardStack.push()
-              moveDecoder.load(candidates, nextMovePtr)
-              nextMovePtr += 1
+            moveDecoder.load(candidates, nextMovePtr)
+            nextMovePtr += 1
 
-              val path = moveDecoder.pathToList
-              val piece = boardStack.getOccupant(path.head)
+            val path = moveDecoder.pathToList
+            val piece = boardStack.getOccupant(path.head)
 
-              lastMove = Move(path, proposeDraw = false)
+            lastMove = Move(path, proposeDraw = false)
 
-              moveExecutor.executeFromMoveDecoder(boardStack, moveDecoder)
+            moveExecutor.executeFromMoveDecoder(boardStack, moveDecoder)
 
-              val nextDepthRemaining = math.max(0, depthRemaining - 1)
+            val nextDepthRemaining = math.max(0, depthRemaining - 1)
 
-              val nextPly = new ConcretePly(
-                root = false,
-                left = left && nextMovePtr == 1,
-                turnToMove = OPPONENT(turnToMove),
-                depthRemaining = nextDepthRemaining,
-                plyIndex = plyIndex + 1,
-                parent = this,
-                rootMoveIndex = if(root) nextMovePtr - 1 else rootMoveIndex,
-                alpha = -beta,
-                beta = -alpha
-              )
+            val nextPly = new ConcretePly(
+              root = false,
+              left = left && nextMovePtr == 1,
+              turnToMove = OPPONENT(turnToMove),
+              depthRemaining = nextDepthRemaining,
+              plyIndex = plyIndex + 1,
+              parent = this,
+              rootMoveIndex = if(root) nextMovePtr - 1 else rootMoveIndex,
+              alpha = -beta,
+              beta = -alpha
+            )
 
-              nextPly.process
+            nextPly.process
 
           } else {
             parent.answer(alpha)

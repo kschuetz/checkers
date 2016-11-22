@@ -43,7 +43,7 @@ object MoveListTests extends TestSuiteBase
   lazy val moveFirstToFrontProp: Prop[MoveListPropInput] = Prop.test("moveFirstToFront", { input =>
     if(input.paths.nonEmpty) {
       val path = input.paths.head
-      val after = input.moves.moveToFrontIfExists(path)
+      val after = input.moves.moveToFrontIfExists(path).getOrElse(input.moves)
       val afterPaths = after.toList.toVector
       afterPaths == input.paths
     } else true
@@ -53,7 +53,7 @@ object MoveListTests extends TestSuiteBase
   private def moveNToFrontProp(n: Int, name: String): Prop[MoveListPropInput] = Prop.test(name, { input =>
     if(input.paths.size > n) {
       val path = input.paths(n)
-      val after = input.moves.moveToFrontIfExists(path)
+      val after = input.moves.moveToFrontIfExists(path).getOrElse(input.moves)
       val afterPaths = after.toList.toVector
 
       afterPaths.head == path && afterPaths.toSet == input.pathSet
@@ -65,7 +65,7 @@ object MoveListTests extends TestSuiteBase
 
   lazy val moveIllegalToFrontProp: Prop[MoveListPropInput] = Prop.test("moveIllegalToFront", { input =>
     val illegalPath = List(0, 4)
-    val after = input.moves.moveToFrontIfExists(illegalPath)
+    val after = input.moves.moveToFrontIfExists(illegalPath).getOrElse(input.moves)
     val afterPaths = after.toList.toVector
     afterPaths == input.paths
   })
