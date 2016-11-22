@@ -3,10 +3,8 @@ package checkers.computer
 import checkers.consts._
 import checkers.core.Play.{Move, NoPlay}
 import checkers.core._
-import checkers.core.tables.JumpTable
 import checkers.logger
-import checkers.test.BoardUtils
-import org.scalajs.dom
+import org.scalajs.dom.window.performance
 
 import scala.annotation.elidable
 import scala.annotation.elidable._
@@ -42,10 +40,8 @@ class Searcher(moveGenerator: MoveGenerator,
     var totalCyclesUsed = 0
     var deepestPly = 0
     var evaluatorCalls = 0
-
-    var tempErrorCount = 0
-    private var tempDebugOutputLimit = 50
-    private var tempNextPlyId = 1
+    var totalMachineTime = 0d
+    val startTime = performance.now()
 
     val pv = new PrincipalVariation[Play](Searcher.MaxDepth)
     private val moveDecoder = new MoveDecoder
@@ -57,15 +53,6 @@ class Searcher(moveGenerator: MoveGenerator,
     private var deadEndCount: Int = 0
     private val boardStack = BoardStack.fromBoard(playInput.board)
     private var boardStackMaxLevel: Int = 0
-
-//    log.debug(boardStack.toImmutable.toString)
-//    boardStack.push()
-//    boardStack.setOccupant(28, DARKKING)
-//    log.debug(boardStack.toImmutable.toString)
-//    boardStack.pop()
-//    log.debug(boardStack.toImmutable.toString)
-//
-//    boardStack.push() // temp
 
     var probeA: Int = 0
     var probeB: Int = 0
@@ -79,17 +66,12 @@ class Searcher(moveGenerator: MoveGenerator,
 
     trait PlyParent {
       def answer(value: Int): Ply
-
-      def tempPlyId: Int
     }
 
     object NullPlyParent extends PlyParent {
       def answer(value: Int): Ply = {
-        log.debug(s"root ${-value}")
         null
       }
-
-      val tempPlyId = 0
     }
 
     class ConcretePly(root: Boolean,
@@ -107,32 +89,16 @@ class Searcher(moveGenerator: MoveGenerator,
 
       private var candidates: MoveList = _
 
-      private var captureBoard: BoardStateRead = _
-
       private var moveCount = 0
       private var nextMovePtr = 0
-
-      val tempPlyId = {
-        val retval = tempNextPlyId
-        tempNextPlyId += 1
-
-        if(retval < 100) println(s"creating ply $retval (parent = ${parent.tempPlyId}, depthRemaining = $depthRemaining)")
-
-        retval
-      }
 
       private def init(): Unit = {
         val pvMove: Play = if (left) pv.getBestMove(plyIndex) else null
         candidates = {
-          captureBoard = boardStack.toImmutable
-
           val base = if (root) {
             rootCandidates
           } else {
-            val b1 = boardStack.toImmutable
-            val temp = moveGenerator.generateMoves(boardStack, turnToMove)
-            assert(BoardUtils.boardStatesEqual(b1, boardStack.toImmutable), "move generator corrupted board stack")
-            temp
+            moveGenerator.generateMoves(boardStack, turnToMove)
           }
 
           pvMove match {
@@ -147,44 +113,8 @@ class Searcher(moveGenerator: MoveGenerator,
         initted = true
       }
 
-//      def process: Ply = {
-//        val saveLevel = boardStack.level
-//        val result = process2
-//        val newLevel = boardStack.level
-//
-//        assert(saveLevel == newLevel, "stack level off")
-//        result
-//      }
-
       def process: Ply = {
-        var retval: Ply = null
-
-
-        if(tempPlyId < 100) println(s"processing ply $tempPlyId  ($nextMovePtr)  depth: $plyIndex")
-//        if(captureBoard != null) {
-//          val currentBoard = boardStack.toImmutable
-//          var corrupted = false
-//          if (!BoardUtils.boardStatesEqual(currentBoard, captureBoard)) {
-//            corrupted = true
-//            if (tempErrorCount < 10) {
-//              tempErrorCount += 1
-//
-//              println("---")
-//              println(s"Corrupted: $plyIndex:$nextMovePtr")
-//              println("current board:")
-//              println(currentBoard.toString)
-//              println("board at start:")
-//              println(captureBoard.toString)
-//              println(s"stack ${boardStack.level}")
-//              println(BoardStack.juxtaposedDebugString(boardStack))
-//            }
-//          }
-//          if (corrupted) return parent.answer(alpha)
-//          assert(BoardUtils.boardStatesEqual(currentBoard, captureBoard), s"board stack corrupted! $nextMovePtr")
-//        }
-
         if(!initted) {
-
           if (plyIndex > deepestPly) deepestPly = plyIndex
           val stackLevel = boardStack.level
           if (stackLevel > boardStackMaxLevel) boardStackMaxLevel = stackLevel
@@ -195,161 +125,66 @@ class Searcher(moveGenerator: MoveGenerator,
 
           if (leaf) {
             evaluatorCalls += 1
-            //          val score = random.nextInt()
+
             val score = evaluator.evaluate(turnToMove, boardStack)
-
-            //          if(iteration < 4) {
-            //            log.debug(s"value: $rootMoveIndex = $score")
-            //          }
-            if (tempPlyId < 100) println("leaf")
-
             return parent.answer(score)
-          }
+          } else init()
         }
 
-        //else {
-          if (!initted) init()
+        if (moveCount <= 0) {
+          // loss
+          deadEndCount += 1
+          val score = -Searcher.Infinity + depthRemaining
+          parent.answer(score)
+        } else {
 
+          if (nextMovePtr < moveCount) {
+            if(nextMovePtr == moveCount - 1) probeB += 1
 
-          // 11-20-2016 3:50 PM - investigate order nodes are visited
-          if(tempDebugOutputLimit > 0) {
-            println(s"::: debug $tempPlyId :: $plyIndex, $nextMovePtr ($moveCount)")
-            println(BoardStack.juxtaposedDebugString(boardStack))
-            println("---")
-            println("")
+            boardStack.push()
+              moveDecoder.load(candidates, nextMovePtr)
+              nextMovePtr += 1
 
-            tempDebugOutputLimit -= 1
-          }
+              val path = moveDecoder.pathToList
+              val piece = boardStack.getOccupant(path.head)
 
-          if (moveCount <= 0) {
-            // loss
-            deadEndCount += 1
-            val score = -Searcher.Infinity + depthRemaining
-            parent.answer(score)
+              lastMove = Move(path, proposeDraw = false)
+
+              moveExecutor.executeFromMoveDecoder(boardStack, moveDecoder)
+
+              val nextDepthRemaining = math.max(0, depthRemaining - 1)
+
+              val nextPly = new ConcretePly(
+                root = false,
+                left = left && nextMovePtr == 1,
+                turnToMove = OPPONENT(turnToMove),
+                depthRemaining = nextDepthRemaining,
+                plyIndex = plyIndex + 1,
+                parent = this,
+                rootMoveIndex = if(root) nextMovePtr - 1 else rootMoveIndex,
+                alpha = -beta,
+                beta = -alpha
+              )
+
+              nextPly.process
+
           } else {
-
-            if (nextMovePtr < moveCount) {
-              if(root) log.debug(s"root - move $nextMovePtr")
-
-              if(nextMovePtr == moveCount - 1) probeB += 1
-
-                          val saveDP = boardStack.darkPieces
-                          val saveLP = boardStack.lightPieces
-                          val saveK = boardStack.kings
-
-              if(captureBoard != null) {
-                val currentBoard = boardStack.toImmutable
-                var corrupted = false
-                if (!BoardUtils.boardStatesEqual(currentBoard, captureBoard)) {
-                  corrupted = true
-                  if (tempErrorCount < 10) {
-                    tempErrorCount += 1
-
-                    println("---")
-                    println(s"Corrupted: $plyIndex:$nextMovePtr")
-                    println("current board:")
-                    println(currentBoard.toString)
-                    println("board at start:")
-                    println(captureBoard.toString)
-                    println(s"stack ${boardStack.level}")
-                    println(BoardStack.juxtaposedDebugString(boardStack))
-                  }
-                }
-                if (corrupted) return parent.answer(alpha)
-                assert(BoardUtils.boardStatesEqual(currentBoard, captureBoard), s"board stack corrupted! $nextMovePtr")
-              }
-
-              val saveLevel = boardStack.level
-              if(tempPlyId < 100) println(s"push  $tempPlyId")
-              boardStack.push()
-              assert(boardStack.level == saveLevel + 1)
-              try {
-                moveDecoder.load(candidates, nextMovePtr)
-                nextMovePtr += 1
-
-                {
-                  val path = moveDecoder.pathToList
-                  val piece = boardStack.getOccupant(path.head)
-
-                  if(piece == EMPTY && tempErrorCount < 10) {
-                    println(s"ERROR -- $plyIndex")
-                    println(s"moveIndex ${nextMovePtr - 1}: ${path.toString}")
-                    println(boardStack.toString)
-                    println(candidates)
-                    val candidates2 = moveGenerator.generateMoves(boardStack, turnToMove)
-                    println("candidates2:")
-                    println(candidates2)
-                    println("board at start")
-                    println(captureBoard.toString)
-                    println("----")
-
-                    tempErrorCount += 1
-                  }
-
-                  assert(piece != EMPTY, s"square is empty! (${path.toString})  $plyIndex")
-                  assert(COLOR(piece) == turnToMove, "wrong color!")
-                  lastMove = Move(path, proposeDraw = false)
-                }
-
-                moveExecutor.executeFromMoveDecoder(boardStack, moveDecoder)
-
-                assert(
-                  (boardStack.darkPieces != saveDP) ||
-                  (boardStack.lightPieces != saveLP),  "board stack didn't change")
-
-                //              val wasJump = moveExecutor.executeFromMoveDecoder(boardStack, moveDecoder)
-                //              val nextDepthRemaining = {
-                //                if(wasJump && depthRemaining == 1) 1   // quiescence
-                //                else depthRemaining - 1
-                //              }
-                val nextDepthRemaining = math.max(0, depthRemaining - 1)
-
-                val nextPly = new ConcretePly(
-                  root = false,
-                  left = left && nextMovePtr == 1,
-                  turnToMove = OPPONENT(turnToMove),
-                  depthRemaining = nextDepthRemaining,
-                  plyIndex = plyIndex + 1,
-                  parent = this,
-                  rootMoveIndex = if(root) nextMovePtr - 1 else rootMoveIndex,
-                  alpha = -beta,
-                  beta = -alpha
-                )
-
-                retval = nextPly.process
-              } finally {
-//                if(tempPlyId < 100) println(s"pop  $tempPlyId")
-//                boardStack.pop()
-//
-//                              assert(boardStack.darkPieces == saveDP)
-//                              assert(boardStack.lightPieces == saveLP)
-//                              assert(boardStack.kings == saveK)
-              }
-              retval
-            } else {
-              parent.answer(alpha)
-            }
+            parent.answer(alpha)
           }
-        //}
+        }
       }
 
       def answer(result: Int): Ply = {
-        if(tempPlyId < 100) println(s"pop  $tempPlyId")
         boardStack.pop()
 
         val value = -result
         if (!root && value >= beta) {
-          if(tempPlyId < 100) println("beta cutoff")
           betaCutoffCount += 1
           parent.answer(beta)
         } else {
-          if(plyIndex == 0) log.debug(s"answer: $lastMove, $value, alpha=$alpha")
           if (value > alpha) {
             alphaCutoffCount += 1
             alpha = value
-            //val lastMove = Move(moveDecoder.pathToList, proposeDraw = false)
-//            if(root) probeB += 1
-
             pv.updateBestMove(plyIndex, lastMove)
           }
           this
@@ -391,11 +226,15 @@ class Searcher(moveGenerator: MoveGenerator,
         math.min(maxCycles, cyclesRemaining)
       } else maxCycles
 
+      val t0 = performance.now()
       var steps = 0
       while (steps < limit && !done) {
         process()
         steps += 1
       }
+
+      val t1 = performance.now()
+      totalMachineTime += t1 - t0
 
       if (cyclesLimited) {
         cyclesRemaining -= steps
@@ -420,8 +259,12 @@ class Searcher(moveGenerator: MoveGenerator,
 
     @elidable(INFO)
     private def logStats(play: Play): Unit = {
+      val totalTime = performance.now() - startTime
+
       log.info("----------")
       log.info(s"Total cycles used: $totalCyclesUsed")
+      log.info(s"Machine time: ${math.round(totalMachineTime)} ms")
+      log.info(s"Total time: ${math.round(totalTime)} ms")
       log.info(s"Score before move: $scoreBeforeMove")
       log.info(s"Deepest ply: $deepestPly")
       log.info(s"Evaluations: $evaluatorCalls")
