@@ -44,6 +44,8 @@ class Searcher(moveGenerator: MoveGenerator,
     var evaluatorCalls = 0
 
     var tempErrorCount = 0
+    private var tempDebugOutputLimit = 50
+    private var tempNextPlyId = 1
 
     val pv = new PrincipalVariation[Play](Searcher.MaxDepth)
     private val moveDecoder = new MoveDecoder
@@ -77,6 +79,8 @@ class Searcher(moveGenerator: MoveGenerator,
 
     trait PlyParent {
       def answer(value: Int): Ply
+
+      def tempPlyId: Int
     }
 
     object NullPlyParent extends PlyParent {
@@ -84,6 +88,8 @@ class Searcher(moveGenerator: MoveGenerator,
         log.debug(s"root ${-value}")
         null
       }
+
+      val tempPlyId = 0
     }
 
     class ConcretePly(root: Boolean,
@@ -105,6 +111,15 @@ class Searcher(moveGenerator: MoveGenerator,
 
       private var moveCount = 0
       private var nextMovePtr = 0
+
+      val tempPlyId = {
+        val retval = tempNextPlyId
+        tempNextPlyId += 1
+
+        if(retval < 100) println(s"creating ply $retval (parent = ${parent.tempPlyId}, depthRemaining = $depthRemaining)")
+
+        retval
+      }
 
       private def init(): Unit = {
         val pvMove: Play = if (left) pv.getBestMove(plyIndex) else null
@@ -144,6 +159,8 @@ class Searcher(moveGenerator: MoveGenerator,
       def process: Ply = {
         var retval: Ply = null
 
+
+        if(tempPlyId < 100) println(s"processing ply $tempPlyId  ($nextMovePtr)  depth: $plyIndex")
 //        if(captureBoard != null) {
 //          val currentBoard = boardStack.toImmutable
 //          var corrupted = false
@@ -166,26 +183,43 @@ class Searcher(moveGenerator: MoveGenerator,
 //          assert(BoardUtils.boardStatesEqual(currentBoard, captureBoard), s"board stack corrupted! $nextMovePtr")
 //        }
 
-        if (plyIndex > deepestPly) deepestPly = plyIndex
-        val stackLevel = boardStack.level
-        if(stackLevel > boardStackMaxLevel) boardStackMaxLevel = stackLevel
+        if(!initted) {
 
-        val leaf = if (depthRemaining <= 0) {
-          !moveGenerator.mustJump(boardStack, turnToMove)
-        } else false
+          if (plyIndex > deepestPly) deepestPly = plyIndex
+          val stackLevel = boardStack.level
+          if (stackLevel > boardStackMaxLevel) boardStackMaxLevel = stackLevel
 
-        if (leaf) {
-          evaluatorCalls += 1
-//          val score = random.nextInt()
-          val score = evaluator.evaluate(turnToMove, boardStack)
+          val leaf = if (depthRemaining <= 0) {
+            !moveGenerator.mustJump(boardStack, turnToMove)
+          } else false
 
-//          if(iteration < 4) {
-//            log.debug(s"value: $rootMoveIndex = $score")
-//          }
+          if (leaf) {
+            evaluatorCalls += 1
+            //          val score = random.nextInt()
+            val score = evaluator.evaluate(turnToMove, boardStack)
 
-          parent.answer(score)
-        } else {
+            //          if(iteration < 4) {
+            //            log.debug(s"value: $rootMoveIndex = $score")
+            //          }
+            if (tempPlyId < 100) println("leaf")
+
+            return parent.answer(score)
+          }
+        }
+
+        //else {
           if (!initted) init()
+
+
+          // 11-20-2016 3:50 PM - investigate order nodes are visited
+          if(tempDebugOutputLimit > 0) {
+            println(s"::: debug $tempPlyId :: $plyIndex, $nextMovePtr ($moveCount)")
+            println(BoardStack.juxtaposedDebugString(boardStack))
+            println("---")
+            println("")
+
+            tempDebugOutputLimit -= 1
+          }
 
           if (moveCount <= 0) {
             // loss
@@ -226,6 +260,7 @@ class Searcher(moveGenerator: MoveGenerator,
               }
 
               val saveLevel = boardStack.level
+              if(tempPlyId < 100) println(s"push  $tempPlyId")
               boardStack.push()
               assert(boardStack.level == saveLevel + 1)
               try {
@@ -283,23 +318,28 @@ class Searcher(moveGenerator: MoveGenerator,
 
                 retval = nextPly.process
               } finally {
-                boardStack.pop()
-
-                              assert(boardStack.darkPieces == saveDP)
-                              assert(boardStack.lightPieces == saveLP)
-                              assert(boardStack.kings == saveK)
+//                if(tempPlyId < 100) println(s"pop  $tempPlyId")
+//                boardStack.pop()
+//
+//                              assert(boardStack.darkPieces == saveDP)
+//                              assert(boardStack.lightPieces == saveLP)
+//                              assert(boardStack.kings == saveK)
               }
               retval
             } else {
               parent.answer(alpha)
             }
           }
-        }
+        //}
       }
 
       def answer(result: Int): Ply = {
+        if(tempPlyId < 100) println(s"pop  $tempPlyId")
+        boardStack.pop()
+
         val value = -result
         if (!root && value >= beta) {
+          if(tempPlyId < 100) println("beta cutoff")
           betaCutoffCount += 1
           parent.answer(beta)
         } else {
