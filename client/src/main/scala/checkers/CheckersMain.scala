@@ -1,6 +1,6 @@
 package checkers
 
-import checkers.computer.{DefaultPrograms, NoShuffleFactory, ProgramRegistry, ShufflerFactory}
+import checkers.computer._
 import checkers.core.tables.TablesModule
 import checkers.core.{GameFactory, _}
 import checkers.logger._
@@ -42,7 +42,7 @@ object CheckersMain extends js.JSApp {
 
     lazy val tablesModule = wire[TablesModule]
 
-    lazy val shufflerFactory: ShufflerFactory = NoShuffleFactory
+    lazy val shufflerFactory: ShufflerFactory = wire[DefaultShufflerFactory]
 
     lazy val makeGameLogicModule: GameLogicModuleFactory = wire[GameLogicModuleFactory]
 
