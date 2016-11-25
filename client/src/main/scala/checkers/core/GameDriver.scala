@@ -85,7 +85,7 @@ class GameDriver(gameLogicModule: GameLogicModule)
           log.debug(s"walk:  $newMoveTree")
           val remainingMoveTree =
             if (newMoveTree.isEmpty) newMoveTree
-            else newMoveTree.prepend(endSquare, requiresJump = true)
+            else newMoveTree.prepend(endSquare)
           applyMove(gameModel, move, remainingMoveTree)
         }
     }
@@ -152,8 +152,6 @@ class GameDriver(gameLogicModule: GameLogicModule)
     val darkState = playerConfig.darkPlayer.initialState
     val lightState = playerConfig.lightPlayer.initialState
     val turnToMove = rulesSettings.playsFirst
-//    val boardState = RulesSettings.initialBoard(rulesSettings)
-    //        val boardState = BoardExperiments.board3
     val boardState = gameLogicModule.boardInitializer.initialBoard(rulesSettings)
     val beginTurnState = BeginTurnState(boardState, turnToMove, 0, NoDraw)
     val turnEvaluation = evaluateBeginTurn(beginTurnState)

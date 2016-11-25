@@ -239,7 +239,7 @@ class MoveListBuilder {
 
 object MoveList {
   val maxMoveCount = 36
-  val bufferSize = MOVELISTFRAMESIZE * maxMoveCount
+  val bufferSize: Int = MOVELISTFRAMESIZE * maxMoveCount
 
   def makeBuffer: Int8Array = new Int8Array(bufferSize)
 

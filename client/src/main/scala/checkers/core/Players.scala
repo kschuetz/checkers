@@ -25,7 +25,7 @@ case object Human extends Player {
   val difficultyLevel = 0
 }
 case class Computer(program: Program, displayName: String, programId: Option[String], difficultyLevel: Int) extends Player {
-  def initialState = program.initialState
+  def initialState: Opaque = program.initialState
   def isComputer = true
   def isHuman = false
 }

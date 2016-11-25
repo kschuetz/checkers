@@ -33,7 +33,7 @@ object DefaultAnimationSettings extends AnimationSettings {
   val JumpPieceDurationMillis = 900.0
   val ComputerMoveDelayMillis = 750.0
 
-  val RemovePieceComputerDelayMillis = JumpPieceDurationMillis * 0.67
+  val RemovePieceComputerDelayMillis: Double = JumpPieceDurationMillis * 0.67
   val RemovePieceComputerIntervalMillis = JumpPieceDurationMillis
 
   val IllegalPieceSelectionDurationMillis = 750.0

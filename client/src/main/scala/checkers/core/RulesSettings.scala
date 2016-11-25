@@ -14,13 +14,4 @@ object RulesSettings {
   val default = RulesSettings(
     playsFirst = DARK,
     variation = Variation.Standard)
-
-//  def initialBoard(settings: RulesSettings): BoardState = {
-//    val board = BoardState.empty
-//        .updateMany(LIGHTMAN)(Board.lightStartingSquares)
-//        .updateMany(DARKMAN)(Board.darkStartingSquares)
-//
-//    board
-//  }
-
 }

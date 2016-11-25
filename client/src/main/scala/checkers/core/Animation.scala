@@ -40,15 +40,15 @@ object Animation {
                          toSquare: Int,
                          startTime: Double,
                          duration: Double) extends OneTimeAnimation with HidesStaticPiece {
-    def hidesPieceAtSquare = toSquare
+    def hidesPieceAtSquare: Int = toSquare
   }
 
   trait OneTimeDeferredAnimation extends OneTimeAnimation {
     def startMovingTime: Double
     def endTime: Double
 
-    val duration = endTime - startTime
-    val moveDuration = endTime - startMovingTime
+    val duration: Double = endTime - startTime
+    val moveDuration: Double = endTime - startMovingTime
 
     override def linearProgress(nowTime: Double): Double = {
       if(moveDuration <= 0) 1.0
@@ -67,7 +67,7 @@ object Animation {
                           startMovingTime: Double,
                           endTime: Double,
                           isFirst: Boolean) extends OneTimeDeferredAnimation with HidesStaticPiece {
-    def hidesPieceAtSquare = finalSquare
+    def hidesPieceAtSquare: Int = finalSquare
 
     def isLast: Boolean = toSquare == finalSquare
 
@@ -86,7 +86,7 @@ object Animation {
                           startTime: Double,
                           startMovingTime: Double,
                           endTime: Double) extends OneTimeDeferredAnimation with HidesStaticPiece {
-    def hidesPieceAtSquare = toSquare
+    def hidesPieceAtSquare: Int = toSquare
   }
 
   case class IllegalPieceSelection(piece: Occupant,
@@ -94,7 +94,7 @@ object Animation {
                                    startTime: Double,
                                    startMovingTime: Double,
                                    endTime: Double) extends OneTimeDeferredAnimation with HidesStaticPiece {
-    def hidesPieceAtSquare = squareIndex
+    def hidesPieceAtSquare: Int = squareIndex
   }
 
   case class CrowningPiece(square: Int,

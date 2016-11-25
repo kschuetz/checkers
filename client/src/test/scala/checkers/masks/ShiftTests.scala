@@ -213,11 +213,11 @@ object ShiftTests extends TestSuiteBase with BoardGenerators {
     AppliedShifts(forward1, forward1back1, forward2, forward2back1, forward2back2)
   }
 
-  lazy val getShiftsWithMacros = applyShifts(applyShiftMacro) _
-  lazy val getAlternateShifts = applyShifts(alternateApplyShift) _
+  private lazy val getShiftsWithMacros = applyShifts(applyShiftMacro) _
+  private lazy val getAlternateShifts = applyShifts(alternateApplyShift) _
 
 
-  lazy val genShift: Gen[Shift] = Gen.choose(ShiftN, ShiftS, ShiftE, ShiftW,
+  private lazy val genShift: Gen[Shift] = Gen.choose(ShiftN, ShiftS, ShiftE, ShiftW,
     ShiftNW, ShiftNE, ShiftSW, ShiftSE,
     ShiftNW2, ShiftNE2, ShiftSW2, ShiftSE2)
 
@@ -244,15 +244,13 @@ object ShiftTests extends TestSuiteBase with BoardGenerators {
       BoardUtils.boardStatesEqual(board1, board2)
     })
 
-  lazy val forward1Equal = boardsEqualProp("forward1Equal", _.forward1)
-  lazy val forward1back1Equal = boardsEqualProp("forward1back1Equal", _.forward1back1)
-  lazy val forward2Equal = boardsEqualProp("forward2Equal", _.forward2)
-  lazy val forward2back1Equal = boardsEqualProp("forward2back1Equal", _.forward2back1)
-  lazy val forward2back2Equal = boardsEqualProp("forward2back2Equal", _.forward2back2)
+  private lazy val forward1Equal = boardsEqualProp("forward1Equal", _.forward1)
+  private lazy val forward1back1Equal = boardsEqualProp("forward1back1Equal", _.forward1back1)
+  private lazy val forward2Equal = boardsEqualProp("forward2Equal", _.forward2)
+  private lazy val forward2back1Equal = boardsEqualProp("forward2back1Equal", _.forward2back1)
+  private lazy val forward2back2Equal = boardsEqualProp("forward2back2Equal", _.forward2back2)
 
-  lazy val props = forward1Equal & forward1back1Equal & forward2Equal & forward2back1Equal & forward2back2Equal
-
-  lazy val dummy: Prop[ShiftMacroTestInput] = Prop.test("dummy", _ => true)
+  private lazy val props = forward1Equal & forward1back1Equal & forward2Equal & forward2back1Equal & forward2back2Equal
 
   override def tests: Tree[Test] = TestSuite {
     'ShiftMacros {

@@ -9,7 +9,7 @@ sealed trait BeginTurnEvaluation {
 
 object BeginTurnEvaluation {
   case class CanMove(moveTree: MoveTree) extends BeginTurnEvaluation {
-    override def requiresJump = moveTree.requiresJump
+    override def requiresJump: Boolean = moveTree.requiresJump
   }
   case object Draw extends BeginTurnEvaluation {
     override val isGameOver = true

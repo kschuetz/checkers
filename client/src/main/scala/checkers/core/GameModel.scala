@@ -78,7 +78,7 @@ case class GameModel(nowTime: Double,
     }
   }
 
-  def withAnimationModel(newAnimationModel: AnimationModel) = copy(animation = newAnimationModel)
+  def withAnimationModel(newAnimationModel: AnimationModel): GameModel = copy(animation = newAnimationModel)
 
   def getBoardRotation: Double = {
     val offset = animation.rotate.map { anim =>

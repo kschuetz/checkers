@@ -14,13 +14,10 @@ object BoardUtils {
   }
 
   def squareMaskToSet(mask: Int): Set[Int] = {
-//    var board = mask
     var result = Set.empty[Int]
     var i = 0
     var j = 1
     while (i < 32) {
-//      if((board & 1) == 1) result += i
-//      board = board >>> 1
       if((mask & j) != 0) result += i
       j <<= 1
       i += 1
@@ -28,7 +25,7 @@ object BoardUtils {
     result
   }
 
-  val allSquares = (0 to 31).toSet
+  val allSquares: Set[Int] = (0 to 31).toSet
 
   private val parseSquareIndex = List(
     28, 29, 30, 31, 24, 25, 26, 27, 20, 21, 22, 23, 16, 17, 18, 19,

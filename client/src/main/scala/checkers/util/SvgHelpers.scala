@@ -10,7 +10,7 @@ trait SvgHelpers {
   def pointsToPathString(points: Point*): String =
     points.map(pointToPathString).mkString(" ")
 
-  def pathSegment(command: String, points: Point*) =
+  def pathSegment(command: String, points: Point*): String =
     points.map(pointToPathString).mkString(s"$command ", " ", "")
 
 }

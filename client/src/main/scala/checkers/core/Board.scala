@@ -4,6 +4,8 @@ import checkers.components.board.PhysicalBoard
 import checkers.geometry.Point
 import checkers.consts._
 
+import scala.collection.immutable.Range.Inclusive
+
 //           28  29  30  31
 //         24  25  26  27
 //           20  21  22  23
@@ -44,7 +46,7 @@ object Board {
     BoardPosition(7 - row, col)
   }
 
-  val playableSquares = 0 to 31
+  val playableSquares: Inclusive = 0 to 31
 
   val position: Vector[BoardPosition] = playableSquares.map(squareIndexToBoardPosition).toVector
   val squareCenter: Vector[Point] = position.map(PhysicalBoard.positionToPoint)
@@ -57,11 +59,11 @@ object Board {
     (boardPos, boardPos.toSquareIndex, PhysicalBoard.positionToPoint(boardPos))
   }
 
-  val lightStartingSquares = 20 to 31
-  val darkStartingSquares = 0 to 11
+  val lightStartingSquares: Inclusive = 20 to 31
+  val darkStartingSquares: Inclusive = 0 to 11
 
-  val lightCrowningSquares = (0 to 3).toSet
-  val darkCrowningSquares = (28 to 31).toSet
+  val lightCrowningSquares: Set[Int] = (0 to 3).toSet
+  val darkCrowningSquares: Set[Int] = (28 to 31).toSet
 
   def isNorthSquare(squareIndex: Int): Boolean = squareIndex >= 16
 

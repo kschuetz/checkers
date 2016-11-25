@@ -10,8 +10,8 @@ import scala.util.Random
 
 object BoardStateTests extends TestSuiteBase {
 
-  val allPieces = List(LIGHTMAN, DARKMAN, LIGHTKING, DARKKING)
-  val allSquares = Board.playableSquares.toSet
+  private val allPieces = List(LIGHTMAN, DARKMAN, LIGHTKING, DARKKING)
+  private val allSquares = Board.playableSquares.toSet
 
   private def shuffledSquares() = Random.shuffle(Board.playableSquares.toList)
 

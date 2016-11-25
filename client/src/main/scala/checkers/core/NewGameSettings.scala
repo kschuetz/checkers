@@ -19,5 +19,5 @@ object NewGameSettings {
     Some(DefaultPrograms.ids.TrivialPlayer),
     Some(DefaultPrograms.ids.TrivialPlayer))
 
-  val default = standardHumanTrivialPlayer
+  val default: NewGameSettings = standardHumanTrivialPlayer
 }

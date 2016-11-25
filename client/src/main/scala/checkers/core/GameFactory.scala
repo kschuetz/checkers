@@ -7,7 +7,7 @@ class GameFactory(programRegistry: ProgramRegistry,
                   gameLogicModuleFactory: GameLogicModuleFactory,
                   screenLayoutSettingsProvider: ScreenLayoutSettingsProvider) {
 
-  def create(settings: NewGameSettings, host: dom.Node) = {
+  def create(settings: NewGameSettings, host: dom.Node): Game = {
     val darkEntry = for {
       id <- settings.darkProgramId
       entry <- programRegistry.findEntry(id)

@@ -18,12 +18,12 @@ object EvaluatorTests extends TestSuiteBase
   with ColorGenerator
   with BoardGenerators {
 
-  lazy val evaluator = wire[DefaultEvaluator]
-  lazy val moveGenerator = gameLogicModule.moveGenerator
-  lazy val moveDecoder = new MoveDecoder
-  lazy val jumpTable = tablesModule.jumpTable
-  lazy val neighborTable = tablesModule.neighborTable
-  lazy val innerSquares: Set[Int] = BoardUtils.squareMaskToSet(checkers.masks.INNER)
+  private lazy val evaluator = wire[DefaultEvaluator]
+  private lazy val moveGenerator = gameLogicModule.moveGenerator
+  private lazy val moveDecoder = new MoveDecoder
+  private lazy val jumpTable = tablesModule.jumpTable
+  private lazy val neighborTable = tablesModule.neighborTable
+  private lazy val innerSquares: Set[Int] = BoardUtils.squareMaskToSet(checkers.masks.INNER)
 
   private def getMoveList(boardStack: BoardStack, turnToMove: Color): List[List[Int]] = {
     val moveList = moveGenerator.generateMoves(boardStack, turnToMove)
@@ -184,7 +184,7 @@ object EvaluatorTests extends TestSuiteBase
                                 boardStats: BoardStats,
                                 evaluationResult: Int)
 
-  lazy val genEvaluatorPropInput: Gen[EvaluatorPropInput] = for {
+  private lazy val genEvaluatorPropInput: Gen[EvaluatorPropInput] = for {
     turnToMove <- genColor
     board <- genBoard
   } yield {
@@ -204,18 +204,18 @@ object EvaluatorTests extends TestSuiteBase
   private def testProbeCheck(name: String, f: (ProbeData, EvaluatorPropInput) => Boolean): Prop[EvaluatorPropInput] =
     Prop.test(name, { input => f(input.probeData, input) })
 
-  lazy val darkManCount = testProbeCheck("darkManCount", _.dark.manCount == _.boardStats.darkMan)
-  lazy val lightManCount = testProbeCheck("lightManCount", _.light.manCount == _.boardStats.lightMan)
-  lazy val darkKingCount = testProbeCheck("darkKingCount", _.dark.kingCount == _.boardStats.darkKing)
-  lazy val lightKingCount = testProbeCheck("lightKingCount", _.light.kingCount == _.boardStats.lightKing)
+  private lazy val darkManCount = testProbeCheck("darkManCount", _.dark.manCount == _.boardStats.darkMan)
+  private lazy val lightManCount = testProbeCheck("lightManCount", _.light.manCount == _.boardStats.lightMan)
+  private lazy val darkKingCount = testProbeCheck("darkKingCount", _.dark.kingCount == _.boardStats.darkKing)
+  private lazy val lightKingCount = testProbeCheck("lightKingCount", _.light.kingCount == _.boardStats.lightKing)
 
-  lazy val darkAttacks = testProbeCheck("darkAttacks", _.dark.attackSet == _.expectedAttacks.dark)
-  lazy val lightAttacks = testProbeCheck("lightAttacks", _.light.attackSet == _.expectedAttacks.light)
+  private lazy val darkAttacks = testProbeCheck("darkAttacks", _.dark.attackSet == _.expectedAttacks.dark)
+  private lazy val lightAttacks = testProbeCheck("lightAttacks", _.light.attackSet == _.expectedAttacks.light)
 
-  lazy val darkTrappedKings = testProbeCheck("darkTrappedKings", _.dark.trappedKingSet == _.expectedTrappedKings.dark)
-  lazy val lightTrappedKings = testProbeCheck("lightTrappedKings", _.light.trappedKingSet == _.expectedTrappedKings.light)
+  private lazy val darkTrappedKings = testProbeCheck("darkTrappedKings", _.dark.trappedKingSet == _.expectedTrappedKings.dark)
+  private lazy val lightTrappedKings = testProbeCheck("lightTrappedKings", _.light.trappedKingSet == _.expectedTrappedKings.light)
 
-  lazy val evaluatorPropInputProps = darkManCount & lightManCount & darkKingCount & lightKingCount &
+  private lazy val evaluatorPropInputProps = darkManCount & lightManCount & darkKingCount & lightKingCount &
     darkAttacks & lightAttacks & darkTrappedKings & lightTrappedKings
 
 

@@ -16,7 +16,7 @@ class BoardStackImpl(val initialCapacity: Int) extends BoardStack with BoardStat
 
   import BoardState.frameSize
 
-  protected var size = frameSize * initialCapacity
+  protected var size: Int = frameSize * initialCapacity
   protected var data = new Int32Array(size)
   protected var offset = 0
 
