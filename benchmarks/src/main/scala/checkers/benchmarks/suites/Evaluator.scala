@@ -2,19 +2,21 @@ package checkers.benchmarks.suites
 
 import checkers.consts._
 import checkers.computer.DefaultEvaluator
-import checkers.core.{Board, BoardState, RulesSettings}
+import checkers.core.{Board, BoardState, DefaultBoardInitializer, RulesSettings}
 import checkers.test.BoardUtils
 import japgolly.scalajs.benchmark._
 import gui._
 
 object Evaluator {
 
-  val evaluator = new DefaultEvaluator(RulesSettings.default)
-  val emptyBoard = BoardState.empty
+  private val rulesSettings = RulesSettings.default
 
-  val startingBoard = RulesSettings.initialBoard(RulesSettings.default)
+  private val evaluator = new DefaultEvaluator(rulesSettings)
+  private val emptyBoard = BoardState.empty
 
-  val sampleBoard1 = BoardUtils.parseBoard(
+  private val startingBoard = DefaultBoardInitializer.initialBoard(rulesSettings)
+
+  private val sampleBoard1 = BoardUtils.parseBoard(
     """
         - - - -
        - - - -

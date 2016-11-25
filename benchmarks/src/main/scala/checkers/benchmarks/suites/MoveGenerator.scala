@@ -20,7 +20,7 @@ object MoveGenerator {
 
   lazy val moveGenerator: MoveGenerator = wire[MoveGenerator]
 
-  val startingBoard = RulesSettings.initialBoard(rulesSettings)
+  val startingBoard = DefaultBoardInitializer.initialBoard(rulesSettings)
   val startingBoardStack = BoardStack.fromBoard(startingBoard)
 
   val compoundJumpsBoard1 = BoardUtils.parseBoard(

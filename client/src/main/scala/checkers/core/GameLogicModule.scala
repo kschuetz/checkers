@@ -7,6 +7,8 @@ import com.softwaremill.macwire._
 trait GameLogicModule {
   def rulesSettings: RulesSettings
 
+  def boardInitializer: BoardInitializer
+
   def drawLogic: DrawLogic
 
   def moveExecutor: MoveExecutor
@@ -26,33 +28,37 @@ trait GameLogicModule {
 
 class GameLogicModuleFactory(tablesModule: TablesModule,
                              shufflerFactory: ShufflerFactory,
+                             boardInitializer: BoardInitializer,
                              animationSettings: AnimationSettings) extends (RulesSettings => GameLogicModule) {
 
   def apply(rulesSettings: RulesSettings): GameLogicModule = {
     val mySettings = rulesSettings
     val myShufflerFactory = shufflerFactory
+    val myBoardInitializer = boardInitializer
     new GameLogicModule {
       import tablesModule._
 
-      val rulesSettings = mySettings
+      val rulesSettings: RulesSettings = mySettings
 
-      val animSettings = animationSettings
+      val animSettings: AnimationSettings = animationSettings
 
-      val shufflerFactory = myShufflerFactory
+      val shufflerFactory: ShufflerFactory = myShufflerFactory
 
-      lazy val drawLogic = wire[DrawLogic]
+      val boardInitializer: BoardInitializer = myBoardInitializer
 
-      lazy val moveExecutor = wire[MoveExecutor]
+      lazy val drawLogic: DrawLogic = wire[DrawLogic]
 
-      lazy val moveGenerator = wire[MoveGenerator]
+      lazy val moveExecutor: MoveExecutor = wire[MoveExecutor]
 
-      lazy val moveTreeFactory = wire[MoveTreeFactory]
+      lazy val moveGenerator: MoveGenerator = wire[MoveGenerator]
 
-      lazy val animationPlanner = wire[AnimationPlanner]
+      lazy val moveTreeFactory: MoveTreeFactory = wire[MoveTreeFactory]
 
-      lazy val evaluator = wire[DefaultEvaluator]
+      lazy val animationPlanner: AnimationPlanner = wire[AnimationPlanner]
 
-      lazy val searcher = wire[Searcher]
+      lazy val evaluator: DefaultEvaluator = wire[DefaultEvaluator]
+
+      lazy val searcher: Searcher = wire[Searcher]
 
     }
   }

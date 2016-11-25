@@ -42,6 +42,8 @@ object CheckersMain extends js.JSApp {
 
     lazy val tablesModule = wire[TablesModule]
 
+    lazy val boardInitializer: BoardInitializer = DefaultBoardInitializer
+
     lazy val shufflerFactory: ShufflerFactory = wire[DefaultShufflerFactory]
 
     lazy val makeGameLogicModule: GameLogicModuleFactory = wire[GameLogicModuleFactory]

@@ -7,7 +7,7 @@ import checkers.core.tables.JumpTable
   * Key of the map is the from square;  value is a tree containing all moves starting or continuing from there.
   */
 case class MoveTree(next: Map[Int, MoveTree], requiresJump: Boolean) {
-  def isEmpty = next.isEmpty
+  def isEmpty: Boolean = next.isEmpty
   lazy val squares: Set[Int] = next.keySet
 
   def targetSquares(squareIndex: Int): Set[Int] = down(squareIndex).fold(Set.empty[Int])(_.squares)
