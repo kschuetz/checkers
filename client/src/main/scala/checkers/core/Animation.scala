@@ -97,9 +97,13 @@ object Animation {
     def hidesPieceAtSquare: Int = squareIndex
   }
 
-  case class CrowningPiece(square: Int,
+  case class CrowningPiece(color: Color,
+                           squareIndex: Int,
                            startTime: Double,
-                           duration: Double) extends OneTimeAnimation
+                           startMovingTime: Double,
+                           endTime: Double) extends OneTimeDeferredAnimation with HidesStaticPiece {
+    def hidesPieceAtSquare: Int = squareIndex
+  }
 
   case class HintAnimation(fromSquare: Int,
                            toSquare: Int,

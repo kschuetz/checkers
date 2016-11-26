@@ -120,6 +120,15 @@ object DynamicScene {
             val component = JumpingPieceAnimation.component.withKey(k)(props)
             animations.push(component)
 
+          case cp: CrowningPiece =>
+            val k = s"crown-${cp.squareIndex}"
+            val progress = cp.linearProgress(nowTime)
+            if(progress > 0) {
+              val props = CrowningAnimation.Props(cp.color, cp.squareIndex, progress)
+              val component = CrowningAnimation.component.withKey(k)(props)
+              animations.push(component)
+            }
+
           case ips: IllegalPieceSelection =>
             val k = s"illegal-${ips.squareIndex}"
             val progress = ips.linearProgress(nowTime)

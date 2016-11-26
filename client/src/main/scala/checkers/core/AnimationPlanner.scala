@@ -66,6 +66,33 @@ class AnimationPlanner(settings: AnimationSettings) {
       result
     }
 
+    def handleCrowning(startTime: Double, incoming: List[Animation], computerPlayer: Boolean): List[Animation] = {
+      var result = incoming
+      val moveDuration = settings.MovePieceDurationMillis
+      val jumpDuration = settings.JumpPieceDurationMillis
+      var t = startTime
+      input.moveInfo.foreach { moveInfo =>
+        if (computerPlayer) {
+          if (moveInfo.isNormalMove) {
+            t += moveDuration
+          } else {
+            t += jumpDuration
+          }
+        }
+        if (moveInfo.crowned) {
+          val animation = CrowningPiece(
+            color = COLOR(moveInfo.piece),
+            squareIndex = moveInfo.toSquare,
+            startTime = startTime,
+            startMovingTime = t,
+            endTime = t + settings.CrownPieceDurationMillis)
+          result = animation :: result
+        }
+      }
+
+      result
+    }
+
     def handleJumpPieces(startTime: Double, incoming: List[Animation]): List[Animation] = {
       val finalSquare = input.moveInfo.foldLeft(-1) { case (acc, moveInfo) =>
         if (moveInfo.isJump) moveInfo.toSquare
@@ -109,6 +136,7 @@ class AnimationPlanner(settings: AnimationSettings) {
       result = handleJumpPieces(startTime, result)
       result = handleRemovePieces(startTime, settings.RemovePieceComputerDelayMillis,
         settings.RemovePieceComputerIntervalMillis, result)
+      result = handleCrowning(startTime, result, computerPlayer = true)
 
       result
     }
@@ -118,6 +146,7 @@ class AnimationPlanner(settings: AnimationSettings) {
       var result = List.empty[Animation]
       // Moving pieces or jumping pieces are not animated for humans
       result = handleRemovePieces(startTime, settings.RemovePieceHumanDelayMillis, settings.RemovePieceHumanIntervalMillis, result)
+      result = handleCrowning(startTime, result, computerPlayer = false)
       result
     }
 
@@ -147,7 +176,7 @@ class AnimationPlanner(settings: AnimationSettings) {
 
     def handleSquare(square: Int, offset: Double): Double = {
       val piece = boardState.getOccupant(square)
-      if(ISPIECE(piece)) {
+      if (ISPIECE(piece)) {
         val anim = PlacingPiece(piece = piece, toSquare = square, startTime = input.nowTime,
           startMovingTime = offset, endTime = offset + duration)
         newAnimations = anim :: newAnimations
@@ -158,7 +187,7 @@ class AnimationPlanner(settings: AnimationSettings) {
     var i = 0
     var bottomOffset = input.nowTime + settings.PlacePiecesBottomDelayMillis
     var topOffset = input.nowTime + settings.PlacePiecesTopDelayMillis
-    while(i < 16) {
+    while (i < 16) {
       bottomOffset = handleSquare(AnimationPlanner.bottomPlacementOrder(i), bottomOffset)
       topOffset = handleSquare(AnimationPlanner.topPlacementOrder(i), topOffset)
 

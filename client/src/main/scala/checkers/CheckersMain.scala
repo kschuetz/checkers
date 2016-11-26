@@ -48,12 +48,12 @@ object CheckersMain extends js.JSApp {
 //      BoardUtils.parseBoard(
 //        """
 //            - - - -
-//           - - - -
+//           - - d -
 //            - - - -
-//           - l - -
+//           l - - -
+//            d - - -
+//           - - - -
 //            - d - -
-//           - - - -
-//            - - - -
 //           - - - -
 //        """)
 //    )
