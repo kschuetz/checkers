@@ -1,7 +1,7 @@
 package checkers.core
 
 import checkers.consts._
-import checkers.core.InputPhase.ComputerThinking
+import checkers.core.InputPhase.{ComputerThinking, GameOver}
 import checkers.util.Easing
 
 trait GameModelReader {
@@ -41,6 +41,8 @@ trait GameModelReader {
   def canClickPieces: Boolean
 
   def playerMustJump: Boolean
+
+  def gameOverState: Option[GameOverState]
 
   def scoreDisplayEnabled: Boolean
 
@@ -125,5 +127,15 @@ case class GameModel(nowTime: Double,
   override def scoreDisplayEnabled: Boolean = true
 
   override def getScore(color: Color): Int = if(color == DARK) darkScore else lightScore
+
+  override def gameOverState: Option[GameOverState] = inputPhase match {
+    case GameOver(winner) =>
+      val result = winner.fold[GameOverState](GameOverState.Draw){ color =>
+        val player = if(color == DARK) darkPlayer else lightPlayer
+        GameOverState.Winner(color, player)
+      }
+      Some(result)
+    case _ => None
+  }
 }
 

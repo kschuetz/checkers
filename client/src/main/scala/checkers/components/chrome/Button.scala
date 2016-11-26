@@ -1,5 +1,6 @@
 package checkers.components.chrome
 
+import checkers.components.mixins.FontSize
 import checkers.components.{SceneContainerContext, SceneFrame}
 import checkers.components.piece.{PhysicalPiece, PhysicalPieceProps}
 import checkers.consts._
@@ -12,10 +13,7 @@ import org.scalajs.dom.raw.SVGSVGElement
 
 import scala.scalajs.js
 
-object Button extends SvgHelpers {
-
-  protected val fontSize = "fontSize".reactStyle
-
+object Button extends SvgHelpers with FontSize {
 
   case class Props(centerX: Double,
                    centerY: Double,

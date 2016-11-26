@@ -6,6 +6,7 @@ import checkers.core.{GameFactory, _}
 import checkers.logger._
 import checkers.persistence.{LocalStorageNewGameSettingsPersister, NewGameSettingsPersister}
 import checkers.style.GlobalStyles
+import checkers.test.BoardUtils
 import com.softwaremill.macwire._
 import org.scalajs.dom
 
@@ -42,7 +43,20 @@ object CheckersMain extends js.JSApp {
 
     lazy val tablesModule = wire[TablesModule]
 
-    lazy val boardInitializer: BoardInitializer = DefaultBoardInitializer
+//    lazy val boardInitializer: BoardInitializer = DefaultBoardInitializer
+    lazy val boardInitializer: BoardInitializer = new InitializerFromBoard(
+      BoardUtils.parseBoard(
+        """
+            - - - -
+           - - - -
+            - - - -
+           - l - -
+            - d - -
+           - - - -
+            - - - -
+           - - - -
+        """)
+    )
 
     lazy val shufflerFactory: ShufflerFactory = wire[DefaultShufflerFactory]
 
