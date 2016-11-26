@@ -26,8 +26,12 @@ class ComputerPlayer(moveGenerator: MoveGenerator,
       val path = moveDecoder.pathToList
       new ImmediateResult(Play.move(path), stateIn)
     } else {
+      println("play - 1")
+      println(stateIn)
       val state1 = stateIn.asInstanceOf[ComputerPlayerState]
+      println("play - 2")
       val (state2, searchParameters) = personality.getSearchParameters(state1, playInput)
+      println("play - 3")
       val (selectionMethod, r) = MoveSelectionMethod.getRandomMethod(searchParameters.selectionMethodWeights, state2.value)
       val state3 = ComputerPlayerState(r)
 

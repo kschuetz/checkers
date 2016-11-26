@@ -10,7 +10,7 @@ case object Blunder extends MoveSelectionMethod
 case class MoveSelectionMethodWeights(selectBestMove: Int,
                                       selectRandomMove: Int,
                                       blunder: Int) {
-  def totalWeight = selectBestMove + selectRandomMove + blunder
+  def totalWeight: Int = selectBestMove + selectRandomMove + blunder
 }
 
 object MoveSelectionMethodWeights {

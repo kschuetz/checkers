@@ -244,7 +244,7 @@ class GameDriver(gameLogicModule: GameLogicModule)
 
   private def getPlayInput(gameState: State): PlayInput = {
     import gameState._
-    PlayInput(board, gameState.rulesSettings, turnToMove, drawStatus, history)
+    PlayInput(board, gameState.turnIndex, gameState.rulesSettings, turnToMove, drawStatus, history)
   }
 
   def handleBoardMouseDown(model: Model, event: BoardMouseEvent): Option[Model] = {

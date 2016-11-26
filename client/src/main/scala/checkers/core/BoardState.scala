@@ -79,6 +79,17 @@ trait BoardStateReadImpl extends BoardStateRead {
     }
   }
 
+  def countPieces(color: Color): Int = {
+    var result = 0
+    var i = 0
+    while(i < 32) {
+      val code = getOccupant(i)
+      if(COLOR(code) == color) result += 1
+      i += 1
+    }
+    result
+  }
+
   def copyFrameTo(dest: Int32Array, destIndex: Int = 0): Unit = {
     dest(destIndex) = data(offset)
     dest(destIndex + 1) = data(offset + 1)

@@ -1,7 +1,5 @@
 package checkers.core
 
-import checkers.computer.TrivialPlayer
-
 case class PlayerConfig(darkPlayer: Player, lightPlayer: Player)
 
 case class GameConfig(rulesSettings: RulesSettings, playerConfig: PlayerConfig)

@@ -13,11 +13,11 @@ object NewGameSettings {
 
   val standardHumanTrivialPlayer =  NewGameSettings(RulesSettings.default,
     None,
-    Some(DefaultPrograms.ids.TrivialPlayer))
+    Some(DefaultPrograms.ids.DefaultComputerPlayer))
 
   val standardTrivialPlayers =  NewGameSettings(RulesSettings.default,
-    Some(DefaultPrograms.ids.TrivialPlayer),
-    Some(DefaultPrograms.ids.TrivialPlayer))
+    Some(DefaultPrograms.ids.DefaultComputerPlayer),
+    Some(DefaultPrograms.ids.DefaultComputerPlayer))
 
   val default: NewGameSettings = standardHumanTrivialPlayer
 }
