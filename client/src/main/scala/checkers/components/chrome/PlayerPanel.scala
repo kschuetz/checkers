@@ -1,6 +1,7 @@
 package checkers.components.chrome
 
 import checkers.components.SceneFrame
+import checkers.components.mixins.FontHelpers
 import checkers.components.piece.{PhysicalPiece, PhysicalPieceProps}
 import checkers.consts._
 import checkers.core.GameModelReader
@@ -11,7 +12,7 @@ import org.scalajs.dom.raw.SVGSVGElement
 
 import scala.scalajs.js
 
-object PlayerPanel {
+object PlayerPanel extends FontHelpers {
 
   case class Props(widthPixels: Int,
                    heightPixels: Int,
@@ -44,7 +45,7 @@ object PlayerPanel {
         color = props.color,
         isPlayerTurn = props.isPlayerTurn,
         scale = scale,
-        x = scale + 10,
+        x = scale - 10,
         y = props.heightPixels / 2
       )
 
@@ -53,7 +54,7 @@ object PlayerPanel {
 
     def turnIndicator(props: Props) = {
       val y = props.heightPixels / 2
-      val x = 60
+      val x = 40
       val scale = 0.2 * props.heightPixels
       val turnIndicatorProps = TurnIndicator.Props(color = props.color,
         scale = scale, x = x, y = y, pointsRight = true, endingTurn = props.endingTurn)
@@ -72,7 +73,20 @@ object PlayerPanel {
     }
 
     def playerNameDisplay(props: Props) = {
+      val textHeight = 0.27 * props.heightPixels
+      val x = props.widthPixels * 0.24
+      val y = props.heightPixels / 2
 
+      <.svg.text(
+        ^.key := "player-name",
+        ^.`class` := s"player-name-label ${CssHelpers.playerColorClass(props.color)}",
+        ^.svg.x := x,
+        ^.svg.y := y,
+        ^.svg.textAnchor := "left",
+        props.isPlayerTurn ?= (fontWeight := "bold"),
+        fontSize := s"${textHeight}px",
+        props.playerName
+      )
     }
 
     def clockDisplay(props: Props) = {
@@ -99,6 +113,7 @@ object PlayerPanel {
       val parts = new js.Array[ReactNode]
       parts.push(backdrop(props))
       parts.push(pieceAvatar(props))
+      parts.push(playerNameDisplay(props))
       if(props.isPlayerTurn) {
         parts.push(turnIndicator(props))
       }

@@ -1,7 +1,7 @@
 package checkers.components.chrome
 
 import checkers.components.SceneFrame
-import checkers.components.mixins.FontSize
+import checkers.components.mixins.FontHelpers
 import checkers.components.piece.{PhysicalPiece, PhysicalPieceProps}
 import checkers.consts._
 import checkers.core.{ApplicationCallbacks, GameModelReader, GameOverState}
@@ -12,7 +12,7 @@ import org.scalajs.dom.raw.SVGSVGElement
 
 import scala.scalajs.js
 
-object GameOverPanel extends FontSize {
+object GameOverPanel extends FontHelpers {
 
   private val darkWinPieces = Vector(DARKKING, DARKKING, DARKKING, DARKKING)
   private val lightWinPieces = Vector(LIGHTKING, LIGHTKING, LIGHTKING, LIGHTKING)
