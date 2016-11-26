@@ -59,7 +59,7 @@ case class GameModel(nowTime: Double,
                      boardOrientation: BoardOrientation,
                      pickedUpPiece: Option[PickedUpPiece],
                      squareAttributesVector: SquareAttributesVector,
-                     animation: AnimationModel) extends GameModelReader {
+                     animation: AnimationModel) extends GameModelReader with ComputationProcess {
 
   /**
     * Has any animations that affect game play (e.g. moving a piece)

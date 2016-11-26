@@ -60,6 +60,8 @@ object CheckersMain extends js.JSApp {
 
     lazy val shufflerFactory: ShufflerFactory = wire[DefaultShufflerFactory]
 
+    lazy val scheduler: Scheduler = wire[DefaultScheduler]
+
     lazy val makeGameLogicModule: GameLogicModuleFactory = wire[GameLogicModuleFactory]
 
     lazy val gameFactory: GameFactory = wire[GameFactory]

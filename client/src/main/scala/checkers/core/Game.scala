@@ -8,6 +8,7 @@ import org.scalajs.dom.window.performance
 
 
 class Game(gameDriver: GameDriver,
+           scheduler: Scheduler,
            screenLayoutSettingsProvider: ScreenLayoutSettingsProvider)
           (val host: dom.Node) {
   type Model = GameModel
@@ -96,7 +97,8 @@ class Game(gameDriver: GameDriver,
     if (stopped) return
     updateNowTime()
     if (model.hasActiveComputation) {
-      model.runComputations(2000)
+      //model.runComputations(2000)
+      scheduler.executeSlice(model)
       gameDriver.processComputerMoves(model).foreach { newModel =>
         replaceModel(newModel)
       }
