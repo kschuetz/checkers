@@ -18,7 +18,8 @@ class Application(programRegistry: ProgramRegistry,
 
   private lazy val playerChoices: Vector[PlayerChoice] = {
     val computerPlayers = programRegistry.entries.sortWith {
-      case (a, b) => a.difficultyLevel < b.difficultyLevel || a.name < b.name
+      case (a, b) =>
+        a.difficultyLevel < b.difficultyLevel || (a.difficultyLevel == b.difficultyLevel && a.name < b.name)
     } map { entry =>
       PlayerChoice(entry.name, Some(entry.uniqueId), entry.difficultyLevel)
     }
