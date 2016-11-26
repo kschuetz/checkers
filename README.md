@@ -5,6 +5,8 @@
 - Supports Human vs. Computer, Human vs. Human (hot seat), and Computer vs. Computer games.
 - Written in Scala.js.
 
+**[Play it here]**(http://kschuetz.github.io/checkers)
+
 ## Build instructions
 
 ### Prerequisites
