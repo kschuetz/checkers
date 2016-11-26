@@ -1,6 +1,7 @@
 package checkers.computer
 
 import checkers.core._
+import checkers.logger
 import checkers.util.Random
 
 
@@ -11,6 +12,8 @@ class ComputerPlayer(moveGenerator: MoveGenerator,
                     (initialSeed: Option[Long]) extends Program {
   // Can be shared between all computations
   private val moveDecoder = new MoveDecoder
+
+  private lazy val log = logger.computerPlayer
 
   override def initialState: ComputerPlayerState = {
     val random = initialSeed.fold(Random())(seed => Random.apply(seed))
@@ -26,19 +29,25 @@ class ComputerPlayer(moveGenerator: MoveGenerator,
       val path = moveDecoder.pathToList
       new ImmediateResult(Play.move(path), stateIn)
     } else {
-      println("play - 1")
-      println(stateIn)
       val state1 = stateIn.asInstanceOf[ComputerPlayerState]
-      println("play - 2")
       val (state2, searchParameters) = personality.getSearchParameters(state1, playInput)
-      println("play - 3")
+
+      log.info(s"SearchParameters:  ${searchParameters.cycleLimit.getOrElse("---")}, depth limit = ${searchParameters.depthLimit.getOrElse("---")}")
+      log.info("Probabilities:  " + searchParameters.selectionMethodWeights.debugInfoString)
+
       val (selectionMethod, r) = MoveSelectionMethod.getRandomMethod(searchParameters.selectionMethodWeights, state2.value)
       val state3 = ComputerPlayerState(r)
 
       selectionMethod match {
-        case SelectRandomMove => selectRandomMove(state3, choices)
-        case Blunder => search(state3, playInput, choices, searchParameters, blunder = true)
-        case _ => search(state3, playInput, choices, searchParameters, blunder = false)
+        case SelectRandomMove =>
+          log.info("Selecting random move")
+          selectRandomMove(state3, choices)
+        case Blunder =>
+          log.info("Blunder!")
+          search(state3, playInput, choices, searchParameters, blunder = true)
+        case _ =>
+          log.info("Searching for best move")
+          search(state3, playInput, choices, searchParameters, blunder = false)
       }
     }
   }

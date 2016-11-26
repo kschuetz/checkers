@@ -8,48 +8,48 @@ object DifficultyLevels {
   lazy val mainMaxKCycles: Vector[Int] = Vector(50, 100, 150, 250, 500, 1000, 2000, 4000, 6000, 8000, 10000, 15000, 20000)
 
   lazy val phase1Weights: Vector[MoveSelectionMethodWeights] = Vector(
-    weight(20, 5, 1),
-    weight(22, 5, 1),
-    weight(24, 5, 1),
-    weight(26, 5, 1),
-    weight(28, 5, 1),
-    weight(30, 5, 1),
-    weight(32, 5, 1),
-    weight(34, 5, 1),
-    weight(36, 5, 1),
-    weight(38, 5, 1),
     weight(40, 5, 1),
-    weight(42, 5, 1)
+    weight(42, 5, 1),
+    weight(44, 5, 1),
+    weight(46, 5, 1),
+    weight(48, 5, 1),
+    weight(50, 5, 1),
+    weight(52, 5, 1),
+    weight(54, 5, 1),
+    weight(56, 5, 1),
+    weight(58, 5, 1),
+    weight(60, 5, 1),
+    weight(62, 5, 1)
   )
 
   lazy val phase2Weights: Vector[MoveSelectionMethodWeights] = Vector(
-    weight(20, 7, 2),
-    weight(22, 7, 2),
-    weight(24, 7, 2),
-    weight(26, 7, 2),
-    weight(28, 7, 2),
-    weight(30, 7, 2),
-    weight(32, 7, 2),
-    weight(34, 7, 2),
-    weight(36, 7, 2),
-    weight(38, 7, 2),
     weight(40, 7, 2),
-    weight(42, 7, 2)
+    weight(42, 7, 2),
+    weight(44, 7, 2),
+    weight(46, 7, 2),
+    weight(48, 7, 2),
+    weight(50, 7, 2),
+    weight(52, 7, 2),
+    weight(54, 7, 2),
+    weight(56, 7, 2),
+    weight(58, 7, 2),
+    weight(60, 7, 2),
+    weight(62, 7, 2)
   )
 
   lazy val mainWeights: Vector[MoveSelectionMethodWeights] = Vector(
-    weight(50, 8, 2),
-    weight(52, 8, 2),
-    weight(56, 8, 2),
-    weight(60, 7, 2),
-    weight(66, 7, 2),
-    weight(74, 7, 2),
+    weight(60, 8, 2),
+    weight(62, 8, 2),
+    weight(66, 8, 2),
+    weight(70, 7, 2),
+    weight(76, 7, 2),
     weight(84, 7, 2),
-    weight(96, 6, 2),
-    weight(110, 6, 2),
-    weight(126, 6, 2),
-    weight(144, 5, 2),
-    weight(164, 4, 1)
+    weight(94, 7, 2),
+    weight(106, 6, 2),
+    weight(120, 6, 2),
+    weight(136, 6, 2),
+    weight(154, 5, 2),
+    weight(174, 4, 1)
   )
 
 

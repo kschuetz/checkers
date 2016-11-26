@@ -11,6 +11,12 @@ case class MoveSelectionMethodWeights(selectBestMove: Int,
                                       selectRandomMove: Int,
                                       blunder: Int) {
   def totalWeight: Int = selectBestMove + selectRandomMove + blunder
+
+  def debugInfoString: String = {
+    val total = 1.0 * totalWeight
+    if(total == 0) "INVALID"
+    else f"best: ${selectBestMove / total}%.4f, random: ${selectRandomMove / total}%.4f, blunder: ${blunder / total}%.4f"
+  }
 }
 
 object MoveSelectionMethodWeights {
