@@ -4,7 +4,7 @@ import checkers.components.SceneFrame
 import checkers.components.mixins.FontSize
 import checkers.components.piece.{PhysicalPiece, PhysicalPieceProps}
 import checkers.consts._
-import checkers.core.{GameModelReader, GameOverState}
+import checkers.core.{ApplicationCallbacks, GameModelReader, GameOverState}
 import checkers.util.CssHelpers
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
@@ -18,12 +18,17 @@ object GameOverPanel extends FontSize {
   private val lightWinPieces = Vector(LIGHTKING, LIGHTKING, LIGHTKING, LIGHTKING)
   private val drawPieces = Vector(DARKMAN, LIGHTMAN, DARKMAN, LIGHTMAN)
 
-
   case class Props(widthPixels: Int,
                    heightPixels: Int,
-                   gameOverState: GameOverState)
+                   gameOverState: GameOverState,
+                   applicationCallbacks: ApplicationCallbacks)
 
   class GameOverPanelBackend($: BackendScope[Props, Unit]) {
+
+
+    private def handleClick(event: ReactEventI): Callback = {
+      $.props.flatMap(props => props.applicationCallbacks.onNewGameButtonClicked)
+    }
 
     private def backdrop(props: Props) = {
       <.svg.rect(
@@ -32,16 +37,17 @@ object GameOverPanel extends FontSize {
         ^.svg.x := 0,
         ^.svg.y := 0,
         ^.svg.width := props.widthPixels,
-        ^.svg.height := props.heightPixels
+        ^.svg.height := props.heightPixels,
+        ^.svg.rx := 20,
+        ^.svg.ry := 20,
+        ^.onMouseDown ==> handleClick
       )
     }
-
 
     private def textLine(x: Int, y: Int, textHeight: String, caption: String) = {
       <.svg.text(
         ^.svg.x := x,
         ^.svg.y := y,
-        ^.svg.textAnchor := "middle",
         fontSize := textHeight,
         caption
       )
@@ -59,7 +65,7 @@ object GameOverPanel extends FontSize {
 
     private def pieceRow(centerX: Int, centerY: Int, pieceSize: Int, pieces: Vector[Occupant]) = {
       val left = centerX - 3 * pieceSize / 2
-      val scaledSize = 0.9 * pieceSize
+      val scaledSize = 0.95 * pieceSize
       val items = new js.Array[ReactNode]
       (0 to 3).foreach { index =>
         val pieceType = pieces(index)
@@ -90,13 +96,14 @@ object GameOverPanel extends FontSize {
         case GameOverState.Winner(color, player) =>
           val pieces = if(color == DARK) darkWinPieces else lightWinPieces
           parts.push(pieceRow(centerX, pieceRowY, pieceSize, pieces))
-          parts.push(textLine(centerX, 19 * height / 24, textHeight, player.displayName))
+          parts.push(textLine(centerX, 37 * height / 48, textHeight, player.displayName))
           parts.push(textLine(centerX, 11 * height / 12, textHeight, "WINS"))
         case GameOverState.Draw =>
           parts.push(pieceRow(centerX, pieceRowY, pieceSize, drawPieces))
           parts.push(textLine(centerX, 19 * height / 24, textHeight, "DRAW"))
       }
       <.svg.g(
+        ^.`class` := s"game-over-panel",
         parts
       )
     }

@@ -38,7 +38,8 @@ object GameScreen {
         val width = layoutSettings.GameOverPanelWidthPixels
         val height = layoutSettings.GameOverPanelHeightPixels
         val props = GameOverPanel.Props(widthPixels = width,
-          heightPixels = height, gameOverState = gameOverState)
+          heightPixels = height, gameOverState = gameOverState,
+          applicationCallbacks = applicationCallbacks)
         val panel = GameOverPanel(props)
         val translateX = (sceneWidth - width) / 2
         val translateY = gameSceneY + (sceneHeight - height) / 2

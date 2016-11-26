@@ -43,20 +43,20 @@ object CheckersMain extends js.JSApp {
 
     lazy val tablesModule = wire[TablesModule]
 
-//    lazy val boardInitializer: BoardInitializer = DefaultBoardInitializer
-    lazy val boardInitializer: BoardInitializer = new InitializerFromBoard(
-      BoardUtils.parseBoard(
-        """
-            - - - -
-           - - - -
-            - - - -
-           - l - -
-            - d - -
-           - - - -
-            - - - -
-           - - - -
-        """)
-    )
+    lazy val boardInitializer: BoardInitializer = DefaultBoardInitializer
+//    lazy val boardInitializer: BoardInitializer = new InitializerFromBoard(
+//      BoardUtils.parseBoard(
+//        """
+//            - - - -
+//           - - - -
+//            - - - -
+//           - l - -
+//            - d - -
+//           - - - -
+//            - - - -
+//           - - - -
+//        """)
+//    )
 
     lazy val shufflerFactory: ShufflerFactory = wire[DefaultShufflerFactory]
 
