@@ -75,7 +75,8 @@ object PlayerPanel extends FontHelpers {
     def playerNameDisplay(props: Props) = {
       val textHeight = 0.27 * props.heightPixels
       val x = props.widthPixels * 0.24
-      val y = props.heightPixels / 2
+      //val y = props.heightPixels / 2
+      val y = 0.5889 * props.heightPixels
 
       <.svg.text(
         ^.key := "player-name",
