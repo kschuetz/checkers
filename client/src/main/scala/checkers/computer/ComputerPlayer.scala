@@ -12,7 +12,7 @@ class ComputerPlayer(moveGenerator: MoveGenerator,
   // Can be shared between all computations
   private val moveDecoder = new MoveDecoder
 
-  override def initialState = {
+  override def initialState: ComputerPlayerState = {
     val random = initialSeed.fold(Random())(seed => Random.apply(seed))
     ComputerPlayerState(random)
   }
