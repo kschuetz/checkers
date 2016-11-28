@@ -93,7 +93,7 @@ lazy val server = (project in file("server"))
     libraryDependencies ++= Settings.jvmDependencies.value,
     // connect to the client project
     scalaJSProjects := clients,
-    pipelineStages := Seq(scalaJSProd, digest, gzip),
+    pipelineStages := Seq(scalaJSProd),
     // compress CSS
     LessKeys.compress in Assets := true
   )
