@@ -19,5 +19,7 @@ trait DefaultGameLogicTestModule {
 
   lazy val shufflerFactory: ShufflerFactory = new DefaultShufflerFactory
 
+  lazy val boardInitializer: BoardInitializer = DefaultBoardInitializer
+
   lazy val gameLogicModule: GameLogicModule = gameLogicModuleFactory.apply(rulesSettings)
 }
