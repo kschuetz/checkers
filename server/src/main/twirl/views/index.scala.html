@@ -1,4 +1,4 @@
-@(title: String)(implicit env: play.api.Environment)
+@(title: String)(implicit config: play.api.Configuration, env: play.api.Environment)
 @import views.html.tags._
 
 <!DOCTYPE html>
@@ -16,6 +16,6 @@
         </div>
         <div id="dialog-root">
         </div>
-        @playscalajs.html.scripts(projectName = "client", fileName => _asset(fileName).toString)
+        @scalajs.html.scripts(projectName = "client", name => _asset(name).toString, name => getClass.getResource(s"/public/$name") != null)
     </body>
 </html>

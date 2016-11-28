@@ -8,7 +8,8 @@ lazy val shared = (crossProject.crossType(CrossType.Pure) in file("shared"))
     libraryDependencies ++= Settings.sharedDependencies.value
   )
   // set up settings specific to the JS project
-  .jsConfigure(_ enablePlugins ScalaJSPlay)
+//  .jsConfigure(_ enablePlugins ScalaJSPlay)
+  .jsConfigure(_ enablePlugins ScalaJSWeb)
 
 lazy val sharedJVM = shared.jvm.settings(name := "sharedJVM")
 
@@ -48,7 +49,8 @@ lazy val client: Project = (project in file("client"))
     scalaJSUseRhino in Global := true,
     jsEnv := PhantomJSEnv().value
   )
-  .enablePlugins(ScalaJSPlugin, ScalaJSPlay)
+//  .enablePlugins(ScalaJSPlugin, ScalaJSPlay)
+  .enablePlugins(ScalaJSPlugin, ScalaJSWeb)
   .dependsOn(sharedJS)
   .dependsOn(macros)
 
@@ -73,7 +75,7 @@ lazy val benchmarks: Project = (project in file("benchmarks"))
     // use uTest framework for tests
     testFrameworks += new TestFramework("utest.runner.Framework")
   )
-  .enablePlugins(ScalaJSPlugin, ScalaJSPlay)
+  .enablePlugins(ScalaJSPlugin, ScalaJSWeb)
   .dependsOn(client)
   .dependsOn(sharedJS)
   .dependsOn(macros)
@@ -93,6 +95,8 @@ lazy val server = (project in file("server"))
     libraryDependencies ++= Settings.jvmDependencies.value,
     // connect to the client project
     scalaJSProjects := clients,
+    compile in Compile <<= (compile in Compile) dependsOn scalaJSPipeline,
+    pipelineStages in Assets := Seq(scalaJSPipeline),
     pipelineStages := Seq(scalaJSProd),
     // compress CSS
     LessKeys.compress in Assets := true

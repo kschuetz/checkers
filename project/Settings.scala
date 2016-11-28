@@ -35,7 +35,7 @@ object Settings {
 
     val react = "15.3.2"
 
-    val playScripts = "0.5.0"
+    val scalaJsScripts = "1.0.0"
   }
 
   /**
@@ -47,7 +47,8 @@ object Settings {
 
   /** Dependencies only used by the JVM project */
   val jvmDependencies = Def.setting(Seq(
-    "com.vmunier" %% "play-scalajs-scripts" % versions.playScripts,
+//    "com.vmunier" %% "play-scalajs-scripts" % versions.playScripts,
+    "com.vmunier" %% "scalajs-scripts" % versions.scalaJsScripts,
     "com.lihaoyi" %% "utest" % versions.uTest % Test
   ))
 
