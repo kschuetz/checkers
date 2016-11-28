@@ -95,9 +95,7 @@ lazy val server = (project in file("server"))
     libraryDependencies ++= Settings.jvmDependencies.value,
     // connect to the client project
     scalaJSProjects := clients,
-
-    // TODO: fix deprecation warning
-    compile in Compile <<= (compile in Compile) dependsOn scalaJSPipeline,
+    compile in Compile := ((compile in Compile) dependsOn scalaJSPipeline).value,
     pipelineStages in Assets := Seq(scalaJSPipeline),
     pipelineStages := Seq(scalaJSProd),
     // compress CSS
