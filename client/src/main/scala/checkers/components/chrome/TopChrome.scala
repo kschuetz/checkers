@@ -2,6 +2,7 @@ package checkers.components.chrome
 
 import checkers.consts._
 import checkers.core.{GameModelReader, PlayerDescription}
+import checkers.util.Formatting
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
 
@@ -26,8 +27,8 @@ object TopChrome {
           Some(model.getScore(color).toString)
         } else None
 
-        val clock = math.round(model.playerClock(color) / 1000)
-        val clockDisplay = clock.toString
+        val clock = model.playerClock(color)
+        val clockDisplay = Formatting.clockDisplay(clock)
 
         PlayerPanel.Props(
           widthPixels = panelWidth,
