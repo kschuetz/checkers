@@ -80,18 +80,30 @@ object PlayerPanel extends FontHelpers {
 
       <.svg.text(
         ^.key := "player-name",
-        ^.`class` := s"player-name-label ${CssHelpers.playerColorClass(props.color)}",
+        ^.`class` := getClasses(props, "player-name-label"),
         ^.svg.x := x,
         ^.svg.y := y,
         ^.svg.textAnchor := "left",
-        props.isPlayerTurn ?= (fontWeight := "bold"),
+        //props.isPlayerTurn ?= (fontWeight := "bold"),
         fontSize := s"${textHeight}px",
         props.playerName
       )
     }
 
     def clockDisplay(props: Props) = {
-
+      val textHeight = 0.2 * props.heightPixels
+      val x = props.widthPixels * 0.24
+      //val y = props.heightPixels / 2
+      val y = 0.86 * props.heightPixels
+      <.svg.text(
+        ^.key := "clock-display",
+        ^.`class` := getClasses(props, "clock-display"),
+        ^.svg.x := x,
+        ^.svg.y := y,
+        ^.svg.textAnchor := "left",
+        fontSize := s"${textHeight}px",
+        props.clockDisplay
+      )
     }
 
     def indicators(props: Props) = {
@@ -124,9 +136,16 @@ object PlayerPanel extends FontHelpers {
       if(props.scoreDisplay.nonEmpty) {
         parts.push(scoreDisplay(props))
       }
+      if(props.clockDisplay.nonEmpty) {
+        parts.push(clockDisplay(props))
+      }
       <.svg.g(
         parts
       )
+    }
+
+    private def getClasses(props: Props, base: String): String = {
+      s"$base ${CssHelpers.playerColorClass(props.color)} ${CssHelpers.turnStatus(props.isPlayerTurn)}"
     }
   }
 

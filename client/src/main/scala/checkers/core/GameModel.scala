@@ -42,6 +42,8 @@ trait GameModelReader {
 
   def playerMustJump: Boolean
 
+  def playerClock(color: Color): Double
+
   def gameOverState: Option[GameOverState]
 
   def scoreDisplayEnabled: Boolean
@@ -98,37 +100,37 @@ case class GameModel(nowTime: Double,
     copy(nowTime = newTime, animation = newAnimation)
   }
 
-  override def ruleSettings: RulesSettings = gameState.rulesSettings
+  def ruleSettings: RulesSettings = gameState.rulesSettings
 
-  override def turnToMove: Color = gameState.turnToMove
+  def turnToMove: Color = gameState.turnToMove
 
-  override def displayTurnToMove: Color =
+  def displayTurnToMove: Color =
     if(inputPhase.endingTurn) OPPONENT(gameState.turnToMove)
     else gameState.turnToMove
 
-  override def turnIndex: Int = gameState.turnIndex
+  def turnIndex: Int = gameState.turnIndex
 
-  override def history: List[HistoryEntry] = gameState.history
+  def history: List[HistoryEntry] = gameState.history
 
-  override def board: BoardState = gameState.board
+  def board: BoardState = gameState.board
 
-  override def darkPlayer: PlayerDescription = gameState.playerConfig.darkPlayer
+  def darkPlayer: PlayerDescription = gameState.playerConfig.darkPlayer
 
-  override def lightPlayer: PlayerDescription = gameState.playerConfig.lightPlayer
+  def lightPlayer: PlayerDescription = gameState.playerConfig.lightPlayer
 
-  override def drawStatus: DrawStatus = gameState.drawStatus
+  def drawStatus: DrawStatus = gameState.drawStatus
 
-  override def canClickPieces: Boolean = pickedUpPiece.isEmpty
+  def canClickPieces: Boolean = pickedUpPiece.isEmpty
 
-  override def squareAttributes: Vector[SquareAttributes] = squareAttributesVector.items
+  def squareAttributes: Vector[SquareAttributes] = squareAttributesVector.items
 
-  override def playerMustJump: Boolean = gameState.beginTurnEvaluation.requiresJump
+  def playerMustJump: Boolean = gameState.beginTurnEvaluation.requiresJump
 
-  override def scoreDisplayEnabled: Boolean = true
+  def scoreDisplayEnabled: Boolean = true
 
-  override def getScore(color: Color): Int = if(color == DARK) darkScore else lightScore
+  def getScore(color: Color): Int = if(color == DARK) darkScore else lightScore
 
-  override def gameOverState: Option[GameOverState] = inputPhase match {
+  def gameOverState: Option[GameOverState] = inputPhase match {
     case GameOver(winner) =>
       val result = winner.fold[GameOverState](GameOverState.Draw){ color =>
         val player = if(color == DARK) darkPlayer else lightPlayer
@@ -136,6 +138,14 @@ case class GameModel(nowTime: Double,
       }
       Some(result)
     case _ => None
+  }
+
+  def playerClock(color: Color): Double = {
+    val base = if(color == DARK) gameState.darkClock else gameState.lightClock
+    if(gameState.turnToMove == color) {
+      val currentTurnTime = nowTime - turnStartTime
+      base + currentTurnTime
+    } else base
   }
 }
 

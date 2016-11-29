@@ -26,13 +26,16 @@ object TopChrome {
           Some(model.getScore(color).toString)
         } else None
 
+        val clock = math.round(model.playerClock(color) / 1000)
+        val clockDisplay = clock.toString
+
         PlayerPanel.Props(
           widthPixels = panelWidth,
           heightPixels = panelHeight,
           color = color,
           playerName = player.displayName,
           isComputerPlayer = player.isComputer,
-          clockDisplay = "---",
+          clockDisplay = clockDisplay,
           scoreDisplay = scoreDisplay,
           isPlayerTurn = isPlayerTurn,
           endingTurn = endingTurn,

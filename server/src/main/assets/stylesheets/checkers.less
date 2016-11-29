@@ -192,9 +192,7 @@ body {
   fill: #eee;
   pointer-events: none;
   text-anchor: middle;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
+  .no-text-select
 }
 
 .button.enabled {
@@ -205,9 +203,7 @@ body {
   fill: #eee;
   pointer-events: none;
   text-anchor: middle;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
+  .no-text-select
 }
 
 .game-over-panel-backdrop {
@@ -218,9 +214,11 @@ body {
 }
 
 .player-name-label {
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
+  .no-text-select
+}
+
+.player-name-label.my-turn {
+  font-weight: bold;
 }
 
 .player-name-label.dark {
@@ -228,5 +226,18 @@ body {
 }
 
 .player-name-label.light {
+  fill: black;
+}
+
+.clock-display {
+  font-family: monospace;
+  .no-text-select
+}
+
+.clock-display.dark {
+  fill: white;
+}
+
+.clock-display.light {
   fill: black;
 }
