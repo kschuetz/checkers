@@ -91,7 +91,7 @@ object PlayerPanel extends FontHelpers {
     }
 
     def clockDisplay(props: Props) = {
-      val textHeight = 0.2 * props.heightPixels
+      val textHeight = 0.17 * props.heightPixels
       val x = props.widthPixels * 0.24
       //val y = props.heightPixels / 2
       val y = 0.86 * props.heightPixels
