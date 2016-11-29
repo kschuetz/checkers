@@ -33,7 +33,7 @@ class GameDriver(gameLogicModule: GameLogicModule)
         nowTime = nowTime,
         gameStartTime = nowTime,
         turnStartTime = nowTime,
-        inputPhase = BeginHumanTurn,
+        inputPhase = GameStart(gameState),
         gameState = gameState,
         darkScore = darkScore,
         lightScore = lightScore,
@@ -45,7 +45,8 @@ class GameDriver(gameLogicModule: GameLogicModule)
       schedulePlacePieces(m1)
     }
 
-    initTurn(model, gameState)
+    model
+    //initTurn(model, gameState)
   }
 
   def rotateBoard(model: Model): Option[Model] = {
@@ -298,6 +299,8 @@ class GameDriver(gameLogicModule: GameLogicModule)
   def handleAnimationsComplete(model: Model): Option[Model] = {
     log.debug("handleAnimationsComplete")
     model.inputPhase match {
+      case GameStart(nextTurnState) =>
+        Some(initTurn(model, nextTurnState))
       case EndingTurn(nextTurnState) =>
         val turnTime = model.currentTurnClock
         val wasTurn = nextTurnState.opponent

@@ -8,11 +8,16 @@ sealed trait InputPhase {
   def waitingForComputer: Boolean = false
   def waitingForAnimations: Boolean = false
   def endingTurn: Boolean = false
+  def onTheClock: Boolean = true
 }
 
 object InputPhase {
 
-  case object GameStart extends InputPhase
+  case class GameStart(nextState: GameState) extends InputPhase {
+    override def waitingForAnimations: Boolean = true
+
+    override def onTheClock: Boolean = false
+  }
 
   sealed trait HumanMovePhase extends InputPhase {
     override def waitingForHuman: Boolean = true
