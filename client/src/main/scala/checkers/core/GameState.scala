@@ -45,5 +45,13 @@ case class GameState(rulesSettings: RulesSettings,
 
   def withLightState(newState: Opaque): GameState = copy(lightState = newState)
 
+  def addToClock(color: Color, amount: Double): GameState = {
+    if(amount <= 0) this
+    else if(color == DARK) copy(darkClock = darkClock + amount)
+    else copy(lightClock = lightClock + amount)
+  }
+
+  def opponent: Color = OPPONENT(turnToMove)
+
 }
 

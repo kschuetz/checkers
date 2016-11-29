@@ -298,7 +298,11 @@ class GameDriver(gameLogicModule: GameLogicModule)
   def handleAnimationsComplete(model: Model): Option[Model] = {
     log.debug("handleAnimationsComplete")
     model.inputPhase match {
-      case EndingTurn(nextTurnState) => Some(initTurn(model, nextTurnState.asInstanceOf[State]))
+      case EndingTurn(nextTurnState) =>
+        val turnTime = model.currentTurnClock
+        val wasTurn = nextTurnState.opponent
+        val newState = nextTurnState.addToClock(wasTurn, turnTime)
+        Some(initTurn(model, newState))
       case _ => None
     }
   }

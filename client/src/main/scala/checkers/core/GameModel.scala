@@ -44,6 +44,8 @@ trait GameModelReader {
 
   def playerClock(color: Color): Double
 
+  def currentTurnClock: Double
+
   def gameOverState: Option[GameOverState]
 
   def scoreDisplayEnabled: Boolean
@@ -142,10 +144,10 @@ case class GameModel(nowTime: Double,
 
   def playerClock(color: Color): Double = {
     val base = if(color == DARK) gameState.darkClock else gameState.lightClock
-    if(gameState.turnToMove == color) {
-      val currentTurnTime = nowTime - turnStartTime
-      base + currentTurnTime
-    } else base
+    val addCurrentTurn = (gameState.turnToMove == color) != inputPhase.endingTurn    // xor
+    if (addCurrentTurn) base + currentTurnClock else base
   }
+
+  def currentTurnClock: Double = nowTime - turnStartTime
 }
 
