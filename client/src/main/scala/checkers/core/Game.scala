@@ -9,11 +9,14 @@ import org.scalajs.dom.window.performance
 
 class Game(gameDriver: GameDriver,
            scheduler: Scheduler,
+           applicationSettingsProvider: ApplicationSettingsProvider,
            screenLayoutSettingsProvider: ScreenLayoutSettingsProvider)
           (val host: dom.Node) {
   type Model = GameModel
 
   private var _running = false
+  private var lastModelUpdate = performance.now()
+  private var lastUserActivity = lastModelUpdate
 
   private def stopped = !_running
 
@@ -41,14 +44,18 @@ class Game(gameDriver: GameDriver,
   def rotateBoard(): Unit = {
     if(stopped) return
     updateNowTime()
-    gameDriver.rotateBoard(model).foreach(replaceModel)
+    gameDriver.rotateBoard(model).foreach(userReplaceModel)
+  }
+
+  def userActivity(): Unit = {
+    lastUserActivity = performance.now()
   }
 
   object Callbacks extends BoardCallbacks {
     override val onBoardMouseDown = (event: BoardMouseEvent) => Some(Callback {
       logger.inputEvents.info(s"pieceMouseDown ${event.squareIndex}")
       updateNowTime()
-      gameDriver.handleBoardMouseDown(model, event).foreach(replaceModel)
+      gameDriver.handleBoardMouseDown(model, event).foreach(userReplaceModel)
       if (event.squareIndex < 0) {
         logger.inputEvents.debug(model.inputPhase.toString)
         scheduleTick()
@@ -57,7 +64,7 @@ class Game(gameDriver: GameDriver,
 
     override val onBoardMouseMove = (event: BoardMouseEvent) => Some(Callback {
       updateNowTime()
-      gameDriver.handleBoardMouseMove(model, event).foreach(replaceModel)
+      gameDriver.handleBoardMouseMove(model, event).foreach(userReplaceModel)
     })
   }
 
@@ -85,9 +92,13 @@ class Game(gameDriver: GameDriver,
     ReactDOM.render(screen, host)
   }
 
+  private def userReplaceModel(newModel: Model): Unit = {
+    userActivity()
+    model = newModel
+    invalidate()
+  }
 
-
-  private def replaceModel(newModel: Model): Unit = {
+  private def computerReplaceModel(newModel: Model): Unit = {
     model = newModel
     invalidate()
   }
@@ -100,7 +111,7 @@ class Game(gameDriver: GameDriver,
       //model.runComputations(2000)
       scheduler.executeSlice(model)
       gameDriver.processComputerMoves(model).foreach { newModel =>
-        replaceModel(newModel)
+        computerReplaceModel(newModel)
       }
       if (model.hasActiveComputation) {
         scheduleTick()
@@ -115,6 +126,7 @@ class Game(gameDriver: GameDriver,
 
   private def updateNowTime(): Unit = {
     val t = performance.now()
+    lastModelUpdate = t
     model = model.updateNowTime(t)
   }
 

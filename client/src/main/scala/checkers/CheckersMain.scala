@@ -2,7 +2,7 @@ package checkers
 
 import checkers.computer._
 import checkers.core.tables.TablesModule
-import checkers.core.{GameFactory, _}
+import checkers.core.{ApplicationSettingsProvider, GameFactory, _}
 import checkers.logger._
 import checkers.persistence.{LocalStorageNewGameSettingsPersister, NewGameSettingsPersister}
 import checkers.style.GlobalStyles
@@ -38,6 +38,8 @@ object CheckersMain extends js.JSApp {
     }
 
     lazy val screenLayoutSettingsProvider: ScreenLayoutSettingsProvider = ConstantScreenLayoutSettings(DefaultScreenLayoutSettings)
+
+    lazy val applicationSettingsProvider: ApplicationSettingsProvider = DefaultApplicationSettingsProvider
 
     lazy val animationSettings: AnimationSettings = DefaultAnimationSettings
 
