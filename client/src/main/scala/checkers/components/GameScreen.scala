@@ -19,7 +19,7 @@ object GameScreen {
       val sceneWidth = layoutSettings.GameSceneWidthPixels
       val sceneHeight = layoutSettings.GameSceneHeightPixels
       val topChromeProps = TopChrome.Props(gameModel, sceneWidth,
-        layoutSettings.TopChromeHeightPixels)
+        layoutSettings.TopChromeHeightPixels, applicationCallbacks)
       val sideChromeProps = SideChrome.Props(gameModel,  layoutSettings, applicationCallbacks)
 
       val gameSceneY = layoutSettings.TopChromeHeightPixels + layoutSettings.TopChromePaddingPixels

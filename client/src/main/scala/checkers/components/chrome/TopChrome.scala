@@ -1,7 +1,7 @@
 package checkers.components.chrome
 
 import checkers.consts._
-import checkers.core.{GameModelReader, PlayerDescription}
+import checkers.core.{ApplicationCallbacks, GameModelReader, PlayerDescription}
 import checkers.util.Formatting
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
@@ -10,7 +10,8 @@ object TopChrome {
 
   case class Props(gameModel: GameModelReader,
                    widthPixels: Int,
-                   heightPixels: Int)
+                   heightPixels: Int,
+                   applicationCallbacks: ApplicationCallbacks)
 
   class TopChromeBackend($: BackendScope[Props, Unit]) {
 
@@ -27,6 +28,7 @@ object TopChrome {
           Some(model.getScore(color).toString)
         } else None
 
+        val computerThinking = player.isComputer && isPlayerTurn
         val clock = model.playerClock(color)
         val clockDisplay = Formatting.clockDisplay(clock)
 
@@ -41,7 +43,8 @@ object TopChrome {
           isPlayerTurn = isPlayerTurn,
           endingTurn = endingTurn,
           jumpIndicator = jumpIndicator,
-          thinkingIndicator = false
+          thinkingIndicator = computerThinking,
+          rushButtonEnabled = computerThinking
         )
       }
 

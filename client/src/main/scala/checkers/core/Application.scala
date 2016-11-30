@@ -66,6 +66,11 @@ class Application(programRegistry: ProgramRegistry,
       game.foreach(_.rotateBoard())
     }
 
+    override def onRushButtonClicked: Callback = Callback {
+      logger.log.info("rush button clicked")
+      game.foreach(_.humanActivity())
+    }
+
     override def onNewGameDialogResult(result: Result): Callback = Callback {
       closeNewGameDialog()
       result match {

@@ -24,7 +24,8 @@ object PlayerPanel extends FontHelpers {
                    isPlayerTurn: Boolean,
                    endingTurn: Boolean,
                    jumpIndicator: Boolean,
-                   thinkingIndicator: Boolean)
+                   thinkingIndicator: Boolean,
+                   rushButtonEnabled: Boolean)
 
   class PlayerPanelBackend($: BackendScope[Props, Unit]) {
 
