@@ -38,7 +38,8 @@ object IllegalPieceSelectionAnimation {
 
   case class Props(piece: Occupant,
                    squareIndex: Int,
-                   progress: Double)
+                   progress: Double,
+                   rotationDegrees: Double = 0)
 
   class IllegalPieceSelectionAnimationBackend($: BackendScope[Props, Unit]) {
     def render(props: Props) = {
@@ -48,7 +49,8 @@ object IllegalPieceSelectionAnimation {
 
       val physicalPieceProps = PhysicalPieceProps.default.copy(piece = props.piece,
         x = xoffset,
-        y = yoffset)
+        y = yoffset,
+        rotationDegrees = props.rotationDegrees)
       val physicalPiece = PhysicalPiece.apply(physicalPieceProps)
 
       val pt = Board.squareCenter(props.squareIndex)

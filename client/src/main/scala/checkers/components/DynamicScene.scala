@@ -133,7 +133,7 @@ object DynamicScene {
           case ips: IllegalPieceSelection =>
             val k = s"illegal-${ips.squareIndex}"
             val progress = ips.linearProgress(nowTime)
-            val props = IllegalPieceSelectionAnimation.Props(ips.piece, ips.squareIndex, progress)
+            val props = IllegalPieceSelectionAnimation.Props(ips.piece, ips.squareIndex, progress, pieceRotation)
             val component = IllegalPieceSelectionAnimation.component.withKey(k)(props)
             animations.push(component)
 
