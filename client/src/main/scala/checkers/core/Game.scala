@@ -15,8 +15,15 @@ class Game(gameDriver: GameDriver,
   type Model = GameModel
 
   private var _running = false
-  private var lastModelUpdate = performance.now()
-  private var lastUserActivity = lastModelUpdate
+  private var lastRenderTime = performance.now()
+  private var lastHumanActivity = lastRenderTime
+  private var clockTimeoutHandle: Int = 0
+  private var lastClockDisplayHash: Int = 0
+
+  private val applicationSettings = applicationSettingsProvider.applicationSettings
+  private val clockUpdateInterval = applicationSettings.ClockUpdateIntervalMillis
+  private val halfClockInterval = clockUpdateInterval / 2
+  private val powerSaveIdleThreshold = applicationSettings.PowerSaveIdleThresholdSeconds.map(_ * 1000)
 
   private def stopped = !_running
 
@@ -47,12 +54,12 @@ class Game(gameDriver: GameDriver,
     gameDriver.rotateBoard(model).foreach(userReplaceModel)
   }
 
-  def userActivity(): Unit = {
-    lastUserActivity = performance.now()
+  def humanActivity(): Unit = {
+    lastHumanActivity = performance.now()
   }
 
   object Callbacks extends BoardCallbacks {
-    override val onBoardMouseDown = (event: BoardMouseEvent) => Some(Callback {
+    override val onBoardMouseDown: BoardMouseEvent => Option[Callback] = (event: BoardMouseEvent) => Some(Callback {
       logger.inputEvents.info(s"pieceMouseDown ${event.squareIndex}")
       updateNowTime()
       gameDriver.handleBoardMouseDown(model, event).foreach(userReplaceModel)
@@ -62,7 +69,7 @@ class Game(gameDriver: GameDriver,
       }
     })
 
-    override val onBoardMouseMove = (event: BoardMouseEvent) => Some(Callback {
+    override val onBoardMouseMove: BoardMouseEvent => Option[Callback] = (event: BoardMouseEvent) => Some(Callback {
       updateNowTime()
       gameDriver.handleBoardMouseMove(model, event).foreach(userReplaceModel)
     })
@@ -82,7 +89,10 @@ class Game(gameDriver: GameDriver,
         }
       }
     }
+    lastRenderTime = t
+    lastClockDisplayHash = model.clockDisplayHash
     renderModel(model)
+    if(clockTimeoutHandle == 0) scheduleClockTick(clockUpdateInterval)
     if (model.hasActiveAnimations || model.hasActiveComputation) invalidate()
   }
 
@@ -93,7 +103,7 @@ class Game(gameDriver: GameDriver,
   }
 
   private def userReplaceModel(newModel: Model): Unit = {
-    userActivity()
+    humanActivity()
     model = newModel
     invalidate()
   }
@@ -108,7 +118,6 @@ class Game(gameDriver: GameDriver,
     if (stopped) return
     updateNowTime()
     if (model.hasActiveComputation) {
-      //model.runComputations(2000)
       scheduler.executeSlice(model)
       gameDriver.processComputerMoves(model).foreach { newModel =>
         computerReplaceModel(newModel)
@@ -126,8 +135,45 @@ class Game(gameDriver: GameDriver,
 
   private def updateNowTime(): Unit = {
     val t = performance.now()
-    lastModelUpdate = t
+    lastRenderTime = t
     model = model.updateNowTime(t)
+  }
+
+  private def scheduleClockTick(millis: Double): Unit = {
+    cancelClockTick()
+    clockTimeoutHandle = dom.window.setTimeout(clockTick _, millis)
+  }
+
+  private def cancelClockTick(): Unit = {
+    if(clockTimeoutHandle != 0) dom.window.clearTimeout(clockTimeoutHandle)
+    clockTimeoutHandle = 0
+  }
+
+  private def clockTick(): Unit = {
+    clockTimeoutHandle = 0
+    if(stopped) return
+
+    val t = performance.now()
+    val timeSinceLastRender = t - lastRenderTime
+
+    if(model.inputPhase.waitingForHuman) {
+      val timeSinceLastActivity = t - lastHumanActivity
+      if(powerSaveIdleThreshold.exists(_ < timeSinceLastActivity)) return
+    }
+
+    if(timeSinceLastRender < halfClockInterval) {
+      scheduleClockTick(clockUpdateInterval - timeSinceLastRender)
+    } else {
+      updateNowTime()
+
+      // optimization to avoid calling renderModel if clock display hasn't changed
+      val hash = model.clockDisplayHash
+      if(hash != lastClockDisplayHash) {
+        invalidate()
+      } else {
+        scheduleClockTick(clockUpdateInterval)
+      }
+    }
   }
 
 }

@@ -57,12 +57,12 @@ class Application(programRegistry: ProgramRegistry,
     }
 
     override val onNewGameButtonClicked: Callback = Callback {
-      game.foreach(_.userActivity())
+      game.foreach(_.humanActivity())
       openNewGameDialog()
     }
 
     override def onRotateBoardButtonClicked: Callback = Callback {
-      game.foreach(_.userActivity())
+      game.foreach(_.humanActivity())
       game.foreach(_.rotateBoard())
     }
 

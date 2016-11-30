@@ -51,6 +51,8 @@ trait GameModelReader {
   def scoreDisplayEnabled: Boolean
 
   def getScore(color: Color): Int
+
+  def clockDisplayHash: Int
 }
 
 case class GameModel(nowTime: Double,
@@ -150,5 +152,11 @@ case class GameModel(nowTime: Double,
   }
 
   def currentTurnClock: Double = nowTime - turnStartTime
+
+  def clockDisplayHash: Int = {
+    val dark = math.floor(playerClock(DARK) / 1000).toInt
+    val light = math.floor(playerClock(LIGHT) / 1000).toInt
+    (light << 16) | (dark & 0xFFFF)
+  }
 }
 
