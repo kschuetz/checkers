@@ -28,16 +28,20 @@ object Button extends SvgHelpers with FontHelpers {
   private val defaultState = State(depressed = false)
 
   class ButtonBackend($: BackendScope[Props, State]) {
-    def handleMouseDown(e: ReactEventI) = {
-      $.modState(_.copy(depressed = true))
+    def handleMouseDown(e: ReactMouseEventI) = {
+      if(e.button != 0) Callback.empty  // ignore all but left-click
+      else $.modState(_.copy(depressed = true))
     }
 
-    def handleMouseUp(e: ReactEventI) = for {
-      state <- $.state
-      props <- $.props
-      cb <- if(!state.depressed) Callback.empty
-            else props.onClick >> $.modState(_.copy(depressed = false))
-    } yield cb
+    def handleMouseUp(e: ReactMouseEventI) = {
+      if(e.button != 0) Callback.empty    // ignore all but left-click
+      else for {
+        state <- $.state
+        props <- $.props
+        cb <- if(!state.depressed) Callback.empty
+        else props.onClick >> $.modState(_.copy(depressed = false))
+      } yield cb
+    }
 
     def handleMouseOut(e: ReactEventI) = {
       $.modState(_.copy(depressed = false))
