@@ -9,16 +9,18 @@ object PickedUpPiece extends SvgHelpers {
 
   type Model = checkers.core.PickedUpPiece
 
-  type Props = Model
+  case class Props(model: Model,
+                   rotationDegrees: Double)
 
   class PickedUpPieceBackend($: BackendScope[Props, Unit]) {
     def render(props: Props) = {
-      val model = props
+      val model = props.model
       val center = model.movePos // + model.grabOffset
 
       val physicalPieceProps = PhysicalPieceProps.default.copy(piece = model.piece,
         x = center.x,
         y = center.y,
+        rotationDegrees = props.rotationDegrees,
         scale = 1.1)
 
       val physicalPiece = PhysicalPiece.apply(physicalPieceProps)

@@ -85,8 +85,9 @@ object DynamicScene {
         overlayButtons.push(button)
       }
 
-      val pickedUpPiece = model.pickedUpPiece.map { gp =>
-        PickedUpPiece(gp)
+      val pickedUpPiece = model.pickedUpPiece.map { p =>
+        val props = PickedUpPiece.Props(p, rotationDegrees = pieceRotation)
+        PickedUpPiece(props)
       }
 
       val animations = new js.Array[ReactNode]
