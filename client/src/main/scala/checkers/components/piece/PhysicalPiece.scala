@@ -16,7 +16,8 @@ object PhysicalPiece extends SvgHelpers {
   private val kingScaleAdjustment = 1.01
 
   protected case class RenderProps(pieceProps: PhysicalPieceProps,
-                                   decoration: Decoration)
+                                   decoration: Decoration,
+                                   translate: Option[String] = None)
 
   private val Disk = ReactComponentB[(Color, Double)]("Disk")
     .render_P { case (color, radius) =>
@@ -29,7 +30,7 @@ object PhysicalPiece extends SvgHelpers {
 
   class PieceBodyBackend($: BackendScope[RenderProps, Unit]) {
     def render(renderProps: RenderProps) = {
-      val RenderProps(props, decoration) = renderProps
+      val RenderProps(props, decoration, translate) = renderProps
       val color = COLOR(props.piece)
       val classes =
         if (color == DARK) "piece dark" else "piece light"
@@ -40,9 +41,14 @@ object PhysicalPiece extends SvgHelpers {
         pips.push(Decorations.Pip.withKey(pipIndex)((color, pt)))
       }
 
+      val transform = if(props.rotationDegrees != 0) {
+        val rotate = s"rotate(${props.rotationDegrees})"
+        translate.fold(rotate)(s => s"$rotate,$s")
+      } else translate.getOrElse("")
+
       <.svg.g(
         ^.`class` := classes,
-        (props.rotationDegrees != 0) ?= (^.svg.transform := s"rotate(${props.rotationDegrees})"),
+        transform.nonEmpty ?= (^.svg.transform := transform),
         Disk((color, pieceRadius)),
         pips,
         Decorations.PieceDecoration((color, decoration))
@@ -98,14 +104,15 @@ object PhysicalPiece extends SvgHelpers {
       val baseClasses = if (color == DARK) "piece king dark" else "piece king light"
       val scale = props.scale
 
+      val topPieceTranslate = "translate(0.07,-0.11)"
+
       <.svg.g(
         ^.classSet1(baseClasses, "ghost-piece" -> props.ghost),
-//        ^.`class` := classes,
         ^.svg.transform := s"translate(${props.x},${props.y}),scale($scale)",
         Disk((color, pieceRadius)),
         <.svg.g(
-          ^.svg.transform := s"translate(0.07,-0.11),scale($kingScaleAdjustment)",
-          PieceBody(RenderProps(props, Decoration.Crown))
+          ^.svg.transform := s"scale($kingScaleAdjustment)",
+          PieceBody(RenderProps(props, Decoration.Crown, Some(topPieceTranslate)))
         ),
         PieceOverlayButton(props)
       )
