@@ -10,7 +10,8 @@ object CrowningAnimation {
 
   case class Props(color: Color,
                    square: Int,
-                   progress: Double)
+                   progress: Double,
+                   rotationDegrees: Double)
 
   class CrowningAnimationBackend($: BackendScope[Props, Unit]) {
     def render(props: Props) = {
@@ -25,13 +26,15 @@ object CrowningAnimation {
 
       val topProps = PhysicalPieceProps.default.copy(piece = piece,
         x = x,
-        y = y)
+        y = y,
+        rotationDegrees = props.rotationDegrees)
 
       val topPiece = PhysicalPiece.apply(topProps)
 
       val bottomProps = PhysicalPieceProps.default.copy(piece = piece,
         x = dest.x,
-        y = dest.y)
+        y = dest.y,
+        rotationDegrees = props.rotationDegrees)
 
       val bottomPiece = PhysicalPiece.apply(bottomProps)
 

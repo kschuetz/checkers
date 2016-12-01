@@ -125,7 +125,7 @@ object DynamicScene {
             val k = s"crown-${cp.squareIndex}"
             val progress = cp.linearProgress(nowTime)
             if(progress > 0) {
-              val props = CrowningAnimation.Props(cp.color, cp.squareIndex, progress)
+              val props = CrowningAnimation.Props(cp.color, cp.squareIndex, progress, pieceRotation)
               val component = CrowningAnimation.component.withKey(k)(props)
               animations.push(component)
             }
