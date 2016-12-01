@@ -96,28 +96,28 @@ object DynamicScene {
           case rp: RemovingPiece =>
             val k = s"remove-${rp.fromSquare}"
             val progress = rp.linearProgress(nowTime)
-            val props = RemovingPieceAnimation.Props(rp.piece, rp.fromSquare, progress)
+            val props = RemovingPieceAnimation.Props(rp.piece, rp.fromSquare, progress, pieceRotation)
             val component = RemovingPieceAnimation.component.withKey(k)(props)
             animations.push(component)
 
           case pp: PlacingPiece =>
             val k = s"place-${pp.toSquare}"
             val progress = pp.linearProgress(nowTime)
-            val props = PlacingPieceAnimation.Props(pp.piece, pp.toSquare, progress)
+            val props = PlacingPieceAnimation.Props(pp.piece, pp.toSquare, progress, pieceRotation)
             val component = PlacingPieceAnimation.component.withKey(k)(props)
             animations.push(component)
 
           case mp: MovingPiece =>
             val k = s"move-${mp.fromSquare}-${mp.toSquare}"
             val progress = mp.linearProgress(nowTime)
-            val props = MovingPieceAnimation.Props(mp.piece, mp.fromSquare, mp.toSquare, progress)
+            val props = MovingPieceAnimation.Props(mp.piece, mp.fromSquare, mp.toSquare, progress, pieceRotation)
             val component = MovingPieceAnimation.component.withKey(k)(props)
             animations.push(component)
 
           case jp: JumpingPiece if jp.isPieceVisible(nowTime) =>
             val k = s"jump-${jp.fromSquare}-${jp.toSquare}"
             val progress = jp.linearProgress(nowTime)
-            val props = JumpingPieceAnimation.Props(jp.piece, jp.fromSquare, jp.toSquare, progress)
+            val props = JumpingPieceAnimation.Props(jp.piece, jp.fromSquare, jp.toSquare, progress, pieceRotation)
             val component = JumpingPieceAnimation.component.withKey(k)(props)
             animations.push(component)
 

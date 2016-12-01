@@ -10,7 +10,8 @@ object JumpingPieceAnimation {
   case class Props(piece: Occupant,
                    fromSquare: Int,
                    toSquare: Int,
-                   progress: Double)
+                   progress: Double,
+                   rotationDegrees: Double = 0)
 
   class JumpingPieceAnimationBackend($: BackendScope[Props, Unit]) {
     def render(props: Props) = {
@@ -32,7 +33,8 @@ object JumpingPieceAnimation {
       val physicalPieceProps = PhysicalPieceProps.default.copy(piece = props.piece,
         scale = 1 + height,
         x = x,
-        y = y)
+        y = y,
+        rotationDegrees = props.rotationDegrees)
 
       val physicalPiece = PhysicalPiece.apply(physicalPieceProps)
 

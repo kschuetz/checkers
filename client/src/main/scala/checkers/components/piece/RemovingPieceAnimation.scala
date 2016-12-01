@@ -10,7 +10,8 @@ object RemovingPieceAnimation {
 
   case class Props(piece: Occupant,
                    fromSquare: Int,
-                   progress: Double)
+                   progress: Double,
+                   rotationDegrees: Double)
 
   class RemovingAnimationBackend($: BackendScope[Props, Unit]) {
     def render(props: Props) = {
@@ -26,7 +27,8 @@ object RemovingPieceAnimation {
 
       val physicalPieceProps = PhysicalPieceProps.default.copy(piece = props.piece,
         x = x,
-        y = y)
+        y = y,
+        rotationDegrees = props.rotationDegrees)
 
       val physicalPiece = PhysicalPiece.apply(physicalPieceProps)
 
