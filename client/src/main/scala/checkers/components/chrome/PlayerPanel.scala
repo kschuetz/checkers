@@ -4,7 +4,7 @@ import checkers.components.SceneFrame
 import checkers.components.mixins.FontHelpers
 import checkers.components.piece.{PhysicalPiece, PhysicalPieceProps}
 import checkers.consts._
-import checkers.core.GameModelReader
+import checkers.core.{ApplicationCallbacks, GameModelReader}
 import checkers.util.CssHelpers
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
@@ -25,7 +25,8 @@ object PlayerPanel extends FontHelpers {
                    endingTurn: Boolean,
                    jumpIndicator: Boolean,
                    thinkingIndicator: Boolean,
-                   rushButtonEnabled: Boolean)
+                   rushButtonEnabled: Boolean,
+                   applicationCallbacks: ApplicationCallbacks)
 
   class PlayerPanelBackend($: BackendScope[Props, Unit]) {
 
@@ -123,6 +124,20 @@ object PlayerPanel extends FontHelpers {
       )
     }
 
+    def rushButton(props: Props) = {
+      val x = props.widthPixels - 50
+      val y = props.heightPixels / 2
+      val size = 0.4 * props.heightPixels
+      val rushButtonProps = RushButton.Props(
+        centerX = x,
+        centerY = y,
+        width = size,
+        height = size,
+        onClick = props.applicationCallbacks.onRushButtonClicked
+      )
+      RushButton.component.withKey("rush-button")(rushButtonProps)
+    }
+
     def render(props: Props) = {
       val parts = new js.Array[ReactNode]
       parts.push(backdrop(props))
@@ -139,6 +154,9 @@ object PlayerPanel extends FontHelpers {
       }
       if(props.clockDisplay.nonEmpty) {
         parts.push(clockDisplay(props))
+      }
+      if(props.rushButtonEnabled) {
+        parts.push(rushButton(props))
       }
       <.svg.g(
         parts

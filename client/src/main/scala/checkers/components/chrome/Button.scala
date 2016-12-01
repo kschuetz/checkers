@@ -1,17 +1,9 @@
 package checkers.components.chrome
 
 import checkers.components.mixins.FontHelpers
-import checkers.components.{SceneContainerContext, SceneFrame}
-import checkers.components.piece.{PhysicalPiece, PhysicalPieceProps}
-import checkers.consts._
-import checkers.core.GameModelReader
-import checkers.geometry.Point
-import checkers.util.{CssHelpers, SvgHelpers}
+import checkers.util.SvgHelpers
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
-import org.scalajs.dom.raw.SVGSVGElement
-
-import scala.scalajs.js
 
 object Button extends SvgHelpers with FontHelpers {
 
@@ -21,6 +13,7 @@ object Button extends SvgHelpers with FontHelpers {
                    height: Double,
                    caption: String = "",
                    tooltip: Option[String] = None,
+                   enabled: Boolean = true,
                    onClick: Callback = Callback.empty)
 
   case class State(depressed: Boolean)
@@ -47,7 +40,7 @@ object Button extends SvgHelpers with FontHelpers {
       $.modState(_.copy(depressed = false))
     }
 
-    def render(props: Props, state: State) = {
+    def render(props: Props, state: State, children: PropsChildren) = {
       val textHeight = math.round(2 * props.height / 3)
       val textY = 4 + (props.height - textHeight) / 2
 
@@ -56,6 +49,14 @@ object Button extends SvgHelpers with FontHelpers {
       } else {
         (props.centerX, props.centerY)
       }
+
+      val caption = if(props.caption.nonEmpty) {
+        Some(<.svg.text(
+          ^.svg.y := textY,
+          fontSize := s"${textHeight}px",
+          props.caption
+        ))
+      } else None
 
       <.svg.g(
         ^.`class` := "button enabled",
@@ -74,11 +75,8 @@ object Button extends SvgHelpers with FontHelpers {
           ^.svg.rx := 10,
           ^.svg.ry := 10
         ),
-        <.svg.text(
-          ^.svg.y := textY,
-          fontSize := s"${textHeight}px",
-          props.caption
-        )
+        caption,
+        children
       )
     }
 

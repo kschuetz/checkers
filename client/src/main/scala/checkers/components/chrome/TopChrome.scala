@@ -44,7 +44,8 @@ object TopChrome {
           endingTurn = endingTurn,
           jumpIndicator = jumpIndicator,
           thinkingIndicator = computerThinking,
-          rushButtonEnabled = computerThinking
+          rushButtonEnabled = computerThinking,
+          applicationCallbacks = props.applicationCallbacks
         )
       }
 

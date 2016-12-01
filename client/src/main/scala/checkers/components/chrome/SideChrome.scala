@@ -44,6 +44,7 @@ object SideChrome {
         buttonHeight,
         "New Game...",
         Some("Start a new game"),
+        enabled = true,
         props.applicationCallbacks.onNewGameButtonClicked))
 
       currentY += buttonYSpacing
@@ -54,6 +55,7 @@ object SideChrome {
         buttonHeight,
         "Rotate",
         Some("Rotate the view of the board 180 degrees"),
+        enabled = true,
         props.applicationCallbacks.onRotateBoardButtonClicked))
 
       <.svg.svg(
