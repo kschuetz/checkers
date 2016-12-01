@@ -6,6 +6,7 @@ import checkers.consts._
 sealed trait InputPhase {
   def waitingForHuman: Boolean = false
   def waitingForComputer: Boolean = false
+  def waitingForMove: Boolean = false
   def waitingForAnimations: Boolean = false
   def endingTurn: Boolean = false
   def onTheClock: Boolean = true
@@ -21,6 +22,8 @@ object InputPhase {
 
   sealed trait HumanMovePhase extends InputPhase {
     override def waitingForHuman: Boolean = true
+
+    override def waitingForMove: Boolean = true
   }
 
   case object BeginHumanTurn extends HumanMovePhase
@@ -32,6 +35,8 @@ object InputPhase {
 
   case class ComputerThinking(startTime: Double, playComputation: PlayComputation) extends InputPhase {
     override def waitingForComputer: Boolean = true
+
+    override def waitingForMove: Boolean = true
   }
 
   case class EndingTurn(nextTurnState: GameState) extends InputPhase {

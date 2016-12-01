@@ -22,13 +22,14 @@ object TopChrome {
       def createPanelProps(color: Color, player: PlayerDescription) = {
         val model = props.gameModel
         val isPlayerTurn = model.displayTurnToMove == color
+        val waitingForMove = model.inputPhase.waitingForMove
         val endingTurn = model.inputPhase.endingTurn
         val jumpIndicator = isPlayerTurn && (!endingTurn) && model.playerMustJump
         val scoreDisplay = if(model.scoreDisplayEnabled) {
           Some(model.getScore(color).toString)
         } else None
 
-        val computerThinking = player.isComputer && isPlayerTurn
+        val computerThinking = waitingForMove && player.isComputer && isPlayerTurn
         val clock = model.playerClock(color)
         val clockDisplay = Formatting.clockDisplay(clock)
 
@@ -41,6 +42,7 @@ object TopChrome {
           clockDisplay = clockDisplay,
           scoreDisplay = scoreDisplay,
           isPlayerTurn = isPlayerTurn,
+          waitingForMove = waitingForMove,
           endingTurn = endingTurn,
           jumpIndicator = jumpIndicator,
           thinkingIndicator = computerThinking,

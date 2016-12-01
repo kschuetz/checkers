@@ -19,6 +19,7 @@ object PlayerPanel extends FontHelpers {
                    clockDisplay: String,
                    scoreDisplay: Option[String],
                    isPlayerTurn: Boolean,
+                   waitingForMove: Boolean,
                    endingTurn: Boolean,
                    jumpIndicator: Boolean,
                    thinkingIndicator: Boolean,
