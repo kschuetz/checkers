@@ -176,8 +176,7 @@
   fill: black;
 }
 
-
-.button rect {
+.button .button-body rect {
   stroke: #a1a1a1;
   stroke-width: 2px;
   fill: #808080;
@@ -192,6 +191,25 @@
 
 .button.enabled {
   cursor: pointer;
+}
+
+.button.rush-button .button-body rect {
+  fill: #d9dbeb;
+  stroke: #a4a4a4;
+}
+
+.rush-button-glyph {
+  pointer-events: none;
+
+  .ring {
+    stroke: red;
+    fill: none;
+  }
+
+  .slash {
+    fill: red;
+    stroke: none;
+  }
 }
 
 .game-over-panel text {

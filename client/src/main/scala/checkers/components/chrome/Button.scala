@@ -14,6 +14,7 @@ object Button extends SvgHelpers with FontHelpers {
                    caption: String = "",
                    tooltip: Option[String] = None,
                    enabled: Boolean = true,
+                   extraClasses: Map[String, Boolean] = Map.empty,
                    onClick: Callback = Callback.empty)
 
   case class State(depressed: Boolean)
@@ -58,8 +59,11 @@ object Button extends SvgHelpers with FontHelpers {
         ))
       } else None
 
+      val classMap = props.extraClasses + ("enabled" -> props.enabled) + ("disabled" -> !props.enabled)
+
       <.svg.g(
-        ^.`class` := "button enabled",
+//        ^.`class` := "button enabled",
+        ^.classSet1M("button", classMap),
         ^.svg.transform := s"translate($centerX,$centerY)",
         ^.onMouseDown ==> handleMouseDown,
         ^.onMouseUp ==> handleMouseUp,
@@ -67,13 +71,16 @@ object Button extends SvgHelpers with FontHelpers {
 
         <.titleTag(props.tooltip),
 
-        <.svg.rect(
-          ^.svg.x := -(props.width / 2),
-          ^.svg.y := -(props.height / 2),
-          ^.svg.width := props.width,
-          ^.svg.height := props.height,
-          ^.svg.rx := 10,
-          ^.svg.ry := 10
+        <.svg.g(
+          ^.`class` := "button-body",
+          <.svg.rect(
+            ^.svg.x := -(props.width / 2),
+            ^.svg.y := -(props.height / 2),
+            ^.svg.width := props.width,
+            ^.svg.height := props.height,
+            ^.svg.rx := 10,
+            ^.svg.ry := 10
+          )
         ),
         caption,
         children
@@ -88,7 +95,6 @@ object Button extends SvgHelpers with FontHelpers {
     .build
 
   def apply(props: Props) = component(props)
-
 
 
 

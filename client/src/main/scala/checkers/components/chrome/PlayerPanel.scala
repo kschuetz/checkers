@@ -1,14 +1,11 @@
 package checkers.components.chrome
 
-import checkers.components.SceneFrame
 import checkers.components.mixins.FontHelpers
-import checkers.components.piece.{PhysicalPiece, PhysicalPieceProps}
 import checkers.consts._
-import checkers.core.{ApplicationCallbacks, GameModelReader}
+import checkers.core.ApplicationCallbacks
 import checkers.util.CssHelpers
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
-import org.scalajs.dom.raw.SVGSVGElement
 
 import scala.scalajs.js
 
@@ -65,11 +62,11 @@ object PlayerPanel extends FontHelpers {
 
     def jumpIndicator(props: Props) = {
       val x = props.widthPixels - 50
-      val y = props.heightPixels / 2
+      val y = 0.35 * props.heightPixels
       val jumpIndicatorProps = JumpIndicator.Props(opponentColor = OPPONENT(props.color),
         x = x,
         y = y,
-        scale = 0.4 * props.heightPixels
+        scale = 0.37 * props.heightPixels
       )
       JumpIndicator.component.withKey("jump-indicator")(jumpIndicatorProps)
     }
@@ -126,9 +123,10 @@ object PlayerPanel extends FontHelpers {
 
     def rushButton(props: Props) = {
       val x = props.widthPixels - 50
-      val y = props.heightPixels / 2
-      val size = 0.4 * props.heightPixels
+      val y = 0.75 * props.heightPixels
+      val size = 0.37 * props.heightPixels
       val rushButtonProps = RushButton.Props(
+        color = props.color,
         centerX = x,
         centerY = y,
         width = size,

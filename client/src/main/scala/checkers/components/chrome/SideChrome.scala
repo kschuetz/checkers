@@ -45,6 +45,7 @@ object SideChrome {
         "New Game...",
         Some("Start a new game"),
         enabled = true,
+        Map.empty,
         props.applicationCallbacks.onNewGameButtonClicked))
 
       currentY += buttonYSpacing
@@ -56,6 +57,7 @@ object SideChrome {
         "Rotate",
         Some("Rotate the view of the board 180 degrees"),
         enabled = true,
+        Map.empty,
         props.applicationCallbacks.onRotateBoardButtonClicked))
 
       <.svg.svg(
