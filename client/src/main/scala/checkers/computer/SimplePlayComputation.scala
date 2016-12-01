@@ -27,5 +27,5 @@ abstract class SimplePlayComputation extends PlayComputation {
 
   override def isReady: Boolean = answer.isDefined
 
-  override def interrupt(): Unit = { }
+  override def rush(): Unit = { }
 }

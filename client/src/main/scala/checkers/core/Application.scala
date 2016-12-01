@@ -67,8 +67,7 @@ class Application(programRegistry: ProgramRegistry,
     }
 
     override def onRushButtonClicked: Callback = Callback {
-      logger.log.info("rush button clicked")
-      game.foreach(_.humanActivity())
+      game.foreach(_.rushComputer())
     }
 
     override def onNewGameDialogResult(result: Result): Callback = Callback {

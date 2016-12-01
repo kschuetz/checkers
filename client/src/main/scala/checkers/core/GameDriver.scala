@@ -296,6 +296,18 @@ class GameDriver(gameLogicModule: GameLogicModule)
     }
   }
 
+  def rushComputer(model: Model): Option[Model] = {
+    model.inputPhase match {
+      case ct: ComputerThinking =>
+        if(!ct.playComputation.isReady) {
+          log.info("Rushing computer")
+          ct.playComputation.rush()
+          Some(model)
+        } else None
+      case _ => None
+    }
+  }
+
   def handleAnimationsComplete(model: Model): Option[Model] = {
     log.debug("handleAnimationsComplete")
     model.inputPhase match {

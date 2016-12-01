@@ -21,7 +21,7 @@ trait PlayComputation {
     * Advises the computation to wrap things up very soon.  Does not necessarily automatically yield a result,
     * so be sure to keep calling run until a result is ready.
     */
-  def interrupt(): Unit
+  def rush(): Unit
 
 
   /**

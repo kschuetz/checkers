@@ -54,6 +54,11 @@ class Game(gameDriver: GameDriver,
     gameDriver.rotateBoard(model).foreach(userReplaceModel)
   }
 
+  def rushComputer(): Unit = {
+    humanActivity()
+    gameDriver.rushComputer(model).foreach(userReplaceModel)
+  }
+
   def humanActivity(): Unit = {
     lastHumanActivity = performance.now()
   }

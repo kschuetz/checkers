@@ -6,7 +6,7 @@ class ImmediateResult(play: Play, stateOut: Opaque) extends PlayComputation {
 
   override def run(maxCycles: Int): Int = 0
 
-  override def interrupt(): Unit = { }
+  override def rush(): Unit = { }
 
   override def isReady: Boolean = true
 

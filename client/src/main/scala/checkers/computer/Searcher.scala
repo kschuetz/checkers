@@ -250,7 +250,7 @@ class Searcher(moveGenerator: MoveGenerator,
       steps
     }
 
-    override def interrupt(): Unit = {
+    override def rush(): Unit = {
       done = true
     }
 
