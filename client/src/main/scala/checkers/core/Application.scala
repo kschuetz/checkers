@@ -103,7 +103,7 @@ class Application(programRegistry: ProgramRegistry,
 
       logger.log.debug(props.toString)
 
-      val dialog = newGameDialog.component(props)
+      val dialog = newGameDialog.create(props)
 
       ReactDOM.render(dialog, dialogHost)
     }

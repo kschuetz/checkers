@@ -22,7 +22,7 @@ class GameScreen(sceneContainer: SceneContainer,
                  gameOverPanel: GameOverPanel) {
   import GameScreen._
 
-  val component = ReactComponentB[Props]("GameScreen")
+  val create = ReactComponentB[Props]("GameScreen")
     .render_P { case Props(gameModel, layoutSettings, callbacks, applicationCallbacks) =>
       val sceneWidth = layoutSettings.GameSceneWidthPixels
       val sceneHeight = layoutSettings.GameSceneHeightPixels
@@ -48,7 +48,7 @@ class GameScreen(sceneContainer: SceneContainer,
         val props = GameOverPanel.Props(widthPixels = width,
           heightPixels = height, gameOverState = gameOverState,
           applicationCallbacks = applicationCallbacks)
-        val panel = gameOverPanel.component(props)
+        val panel = gameOverPanel.create(props)
         val translateX = (sceneWidth - width) / 2
         val translateY = gameSceneY + (sceneHeight - height) / 2
         val transform = s"translate($translateX,$translateY)"
@@ -58,9 +58,9 @@ class GameScreen(sceneContainer: SceneContainer,
         )
       }
 
-      val topChromeElement = topChrome.component(topChromeProps)
-      val sideChromeElement = sideChrome.component(sideChromeProps)
-      val sceneContainerElement = sceneContainer.component(sceneContainerProps)
+      val topChromeElement = topChrome.create(topChromeProps)
+      val sideChromeElement = sideChrome.create(sideChromeProps)
+      val sceneContainerElement = sceneContainer.create(sceneContainerProps)
 
       <.svg.svg(
         ^.id := "game-screen",

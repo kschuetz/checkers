@@ -57,7 +57,7 @@ class PlayerPanel(pieceAvatar: PieceAvatar,
         y = props.heightPixels / 2
       )
 
-      pieceAvatar.component.withKey("avatar")(avatarProps)
+      pieceAvatar.create.withKey("avatar")(avatarProps)
     }
 
     def makeTurnIndicator(props: Props): ReactElement = {
@@ -66,7 +66,7 @@ class PlayerPanel(pieceAvatar: PieceAvatar,
       val scale = 0.2 * props.heightPixels
       val turnIndicatorProps = TurnIndicator.Props(side = props.side,
         scale = scale, x = x, y = y, pointsRight = true, endingTurn = props.endingTurn)
-      turnIndicator.component.withKey("turn-indicator")(turnIndicatorProps)
+      turnIndicator.create.withKey("turn-indicator")(turnIndicatorProps)
     }
 
     def makeJumpIndicator(props: Props): ReactElement = {
@@ -77,7 +77,7 @@ class PlayerPanel(pieceAvatar: PieceAvatar,
         y = y,
         scale = 0.37 * props.heightPixels
       )
-      jumpIndicator.component.withKey("jump-indicator")(jumpIndicatorProps)
+      jumpIndicator.create.withKey("jump-indicator")(jumpIndicatorProps)
     }
 
     def playerNameDisplay(props: Props): ReactElement = {
@@ -138,7 +138,7 @@ class PlayerPanel(pieceAvatar: PieceAvatar,
         height = size,
         onClick = props.applicationCallbacks.onRushButtonClicked
       )
-      rushButton.component.withKey("rush-button")(rushButtonProps)
+      rushButton.create.withKey("rush-button")(rushButtonProps)
     }
 
     def render(props: Props): ReactElement = {
@@ -171,7 +171,7 @@ class PlayerPanel(pieceAvatar: PieceAvatar,
     }
   }
 
-  val component = ReactComponentB[Props]("PlayerPanel")
+  val create = ReactComponentB[Props]("PlayerPanel")
     .renderBackend[PlayerPanelBackend]
     .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, _) =>
       val result = scope.props != nextProps

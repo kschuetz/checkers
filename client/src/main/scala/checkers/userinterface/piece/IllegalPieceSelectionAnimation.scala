@@ -55,7 +55,7 @@ class IllegalPieceSelectionAnimation(physicalPiece: PhysicalPiece) {
         x = xoffset,
         y = yoffset,
         rotationDegrees = props.rotationDegrees)
-      val pieceElement = physicalPiece.component(physicalPieceProps)
+      val pieceElement = physicalPiece.create(physicalPieceProps)
 
       val pt = Board.squareCenter(props.squareIndex)
 
@@ -71,7 +71,7 @@ class IllegalPieceSelectionAnimation(physicalPiece: PhysicalPiece) {
   }
 
 
-  val component = ReactComponentB[Props]("IllegalPieceSelectionAnimation")
+  val create = ReactComponentB[Props]("IllegalPieceSelectionAnimation")
     .renderBackend[IllegalPieceSelectionAnimationBackend]
     .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, _) =>
       val result = scope.props != nextProps

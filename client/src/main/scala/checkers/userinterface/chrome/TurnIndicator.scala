@@ -22,7 +22,7 @@ object TurnIndicator extends SvgHelpers {
 class TurnIndicator extends SvgHelpers {
   import TurnIndicator._
 
-  val component = ReactComponentB[Props]("TurnIndicator")
+  val create = ReactComponentB[Props]("TurnIndicator")
     .render_P { props =>
       val x0 = 0d
       val (x1, x2) = if(props.pointsRight) {

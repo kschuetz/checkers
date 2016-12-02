@@ -22,7 +22,7 @@ class SquareOverlayButton {
 
   import SquareOverlayButton._
 
-  val component = ReactComponentB[Props]("SquareOverlayButton")
+  val create = ReactComponentB[Props]("SquareOverlayButton")
     .render_P { props =>
       <.svg.rect(
         ^.classSet1("square-button-layer", "welcome" -> props.clickable),

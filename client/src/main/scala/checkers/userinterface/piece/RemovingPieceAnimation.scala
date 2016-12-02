@@ -35,13 +35,13 @@ class RemovingPieceAnimation(physicalPiece: PhysicalPiece) {
         y = y,
         rotationDegrees = props.rotationDegrees)
 
-      val pieceElement = physicalPiece.component(physicalPieceProps)
+      val pieceElement = physicalPiece.create(physicalPieceProps)
 
       pieceElement
     }
   }
 
-  val component = ReactComponentB[Props]("RemovingPieceAnimation")
+  val create = ReactComponentB[Props]("RemovingPieceAnimation")
     .renderBackend[RemovingAnimationBackend]
     .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, _) =>
       val result = scope.props != nextProps

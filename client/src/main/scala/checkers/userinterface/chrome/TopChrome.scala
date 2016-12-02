@@ -59,7 +59,7 @@ class TopChrome(playerPanel: PlayerPanel) {
       def makePanel(panelProps: PlayerPanel.Props, translateX: Int, translateY: Int) = {
         <.svg.g(
           ^.svg.transform := s"translate($translateX,$translateY)",
-          playerPanel.component(panelProps)
+          playerPanel.create(panelProps)
         )
       }
 
@@ -81,7 +81,7 @@ class TopChrome(playerPanel: PlayerPanel) {
     }
   }
 
-  val component = ReactComponentB[Props]("TopChrome")
+  val create = ReactComponentB[Props]("TopChrome")
     .renderBackend[TopChromeBackend]
     //    .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, _) =>
     //      val result = scope.props != nextProps

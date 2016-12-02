@@ -64,7 +64,7 @@ class GameOverPanel(physicalPiece: PhysicalPiece) extends FontHelpers {
         y = y,
         scale = size
       )
-      physicalPiece.component.withKey(key)(pieceProps)
+      physicalPiece.create.withKey(key)(pieceProps)
     }
 
     private def pieceRow(centerX: Int, centerY: Int, pieceSize: Int, pieces: Vector[Occupant]) = {
@@ -114,7 +114,7 @@ class GameOverPanel(physicalPiece: PhysicalPiece) extends FontHelpers {
 
   }
 
-  val component = ReactComponentB[Props]("GameOverPanel")
+  val create = ReactComponentB[Props]("GameOverPanel")
     .renderBackend[GameOverPanelBackend]
     .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, _) =>
       val result = scope.props != nextProps

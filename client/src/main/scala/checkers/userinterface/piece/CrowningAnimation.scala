@@ -35,14 +35,14 @@ class CrowningAnimation(physicalPiece: PhysicalPiece) {
         y = y,
         rotationDegrees = props.rotationDegrees)
 
-      val topPiece = physicalPiece.component(topProps)
+      val topPiece = physicalPiece.create(topProps)
 
       val bottomProps = PhysicalPieceProps.default.copy(piece = piece,
         x = dest.x,
         y = dest.y,
         rotationDegrees = props.rotationDegrees)
 
-      val bottomPiece = physicalPiece.component(bottomProps)
+      val bottomPiece = physicalPiece.create(bottomProps)
 
       <.svg.g(
         bottomPiece,
@@ -52,7 +52,7 @@ class CrowningAnimation(physicalPiece: PhysicalPiece) {
   }
 
 
-  val component = ReactComponentB[Props]("CrowningAnimation")
+  val create = ReactComponentB[Props]("CrowningAnimation")
     .renderBackend[CrowningAnimationBackend]
     .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, _) =>
       val result = scope.props != nextProps

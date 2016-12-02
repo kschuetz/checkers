@@ -18,7 +18,7 @@ class PieceAvatar(physicalPiece: PhysicalPiece) {
 
   import PieceAvatar._
 
-  val component = ReactComponentB[Props]("PieceAvatar")
+  val create = ReactComponentB[Props]("PieceAvatar")
     .render_P { props =>
       val pieceProps = PhysicalPieceProps.default.copy(
         piece = if (props.side == DARK) DARKMAN else LIGHTMAN,
@@ -27,7 +27,7 @@ class PieceAvatar(physicalPiece: PhysicalPiece) {
         x = props.x,
         y = props.y
       )
-      physicalPiece.component(pieceProps)
+      physicalPiece.create(pieceProps)
     }
     .build
 

@@ -95,5 +95,5 @@ class PhysicalBoard {
     }
     .build
 
-  val component = Board
+  val create = Board
 }

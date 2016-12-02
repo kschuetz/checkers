@@ -93,7 +93,7 @@ class Button extends SvgHelpers with FontHelpers {
 
   }
 
-  val component = ReactComponentB[Props]("Button")
+  val create = ReactComponentB[Props]("Button")
     .initialState[State](defaultState)
     .renderBackend[ButtonBackend]
     .build

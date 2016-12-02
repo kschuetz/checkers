@@ -74,7 +74,7 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
         y = 45,
         scale = 90
       )
-      val component = physicalPiece.component(pieceProps)
+      val component = physicalPiece.create(pieceProps)
       <.svg.svg(
         ^.svg.width := 90,
         ^.svg.height := 90,
@@ -391,7 +391,7 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
 
   }
 
-  val component = ReactComponentB[Props]("NewGameDialog")
+  val create = ReactComponentB[Props]("NewGameDialog")
     .initialState_P[State](_.initialState)
     .renderBackend[NewGameDialogBackend]
     .build

@@ -42,14 +42,14 @@ class JumpingPieceAnimation(physicalPiece: PhysicalPiece) {
         y = y,
         rotationDegrees = props.rotationDegrees)
 
-      val pieceElement = physicalPiece.component(physicalPieceProps)
+      val pieceElement = physicalPiece.create(physicalPieceProps)
 
       pieceElement
     }
   }
 
 
-  val component = ReactComponentB[Props]("JumpingPieceAnimation")
+  val create = ReactComponentB[Props]("JumpingPieceAnimation")
     .renderBackend[JumpingPieceAnimationBackend]
     .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, _) =>
       val result = scope.props != nextProps

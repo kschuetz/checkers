@@ -75,11 +75,11 @@ class RushButton(button: Button) extends SvgHelpers {
         onClick =  props.onClick
       )
 
-      button.component(buttonProps, glyph)
+      button.create(buttonProps, glyph)
     }
   }
 
-  val component = ReactComponentB[Props]("RushButton")
+  val create = ReactComponentB[Props]("RushButton")
     .renderBackend[RushButtonBackend]
     .build
 

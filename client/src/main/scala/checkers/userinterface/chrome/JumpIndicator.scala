@@ -48,14 +48,14 @@ class JumpIndicator(physicalPiece: PhysicalPiece) {
         x = 0,
         y = 0
       )
-      physicalPiece.component(pieceProps)
+      physicalPiece.create(pieceProps)
     }
     .build
 
 
 
 
-  val component = ReactComponentB[Props]("JumpIndicator")
+  val create = ReactComponentB[Props]("JumpIndicator")
     .render_P { props =>
 
       val opponentAvatar = OpponentAvatar(props.oppositeSide)

@@ -60,8 +60,8 @@ class SceneFrame(physicalBoard: PhysicalBoard,
         s"translate($translateX,$translateY),scale($scaleX,$scaleY)$rotateTransform"
       }
 
-      val physicalBoardElement = physicalBoard.component()
-      val dynamicSceneElement = dynamicScene.component(dynamicSceneProps)
+      val physicalBoardElement = physicalBoard.create()
+      val dynamicSceneElement = dynamicScene.create(dynamicSceneProps)
       <.svg.g(
         Backdrop((widthPixels, heightPixels)),
         <.svg.g(
@@ -84,7 +84,7 @@ class SceneFrame(physicalBoard: PhysicalBoard,
 
   }
 
-  val component = ReactComponentB[Props]("SceneFrame")
+  val create = ReactComponentB[Props]("SceneFrame")
     .renderBackend[SceneFrameBackend]
     .build
 

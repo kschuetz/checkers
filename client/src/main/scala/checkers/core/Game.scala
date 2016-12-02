@@ -104,7 +104,7 @@ class Game(gameDriver: GameDriver,
 
   private def renderModel(model: Model): Unit = {
     val props = GameScreen.Props(model, screenLayoutSettingsProvider.getScreenLayoutSettings, Callbacks, applicationCallbacks)
-    val screen = gameScreen.component(props)
+    val screen = gameScreen.create(props)
     ReactDOM.render(screen, host)
   }
 

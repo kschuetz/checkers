@@ -124,7 +124,7 @@ class PhysicalPiece(decorations: Decorations) {
     }.build
 
 
-  val component = ReactComponentB[PhysicalPieceProps]("PhysicalPiece")
+  val create = ReactComponentB[PhysicalPieceProps]("PhysicalPiece")
     .render_P { props =>
       if (PIECETYPE(props.piece) == MAN) PieceMan(props) else PieceKing(props)
     }.build

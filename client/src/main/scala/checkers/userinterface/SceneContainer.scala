@@ -37,12 +37,12 @@ class SceneContainer(sceneFrame: SceneFrame) {
         ^.svg.width := s"${gameSceneWidth}px",
         ^.svg.height := s"${gameSceneHeight}px",
         //^.onMouseMove ==> handleMouseMove,
-        sceneFrame.component(sceneFrameProps)
+        sceneFrame.create(sceneFrameProps)
       )
     }
   }
 
-  val component = ReactComponentB[Props]("SceneContainer")
+  val create = ReactComponentB[Props]("SceneContainer")
     .initialState[SceneContainerContext](NullSceneContainerContext)
     .renderBackend[Backend]
     .componentDidMount(_.backend.start)

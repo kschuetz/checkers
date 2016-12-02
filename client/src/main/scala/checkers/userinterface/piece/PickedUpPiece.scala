@@ -28,7 +28,7 @@ class PickedUpPiece(physicalPiece: PhysicalPiece) {
         rotationDegrees = props.rotationDegrees,
         scale = 1.1)
 
-      val pieceElement = physicalPiece.component(physicalPieceProps)
+      val pieceElement = physicalPiece.create(physicalPieceProps)
 
       val side = SIDE(model.piece)
       val classes = if(side == DARK) "picked-up-piece dark" else "picked-up-piece light"
@@ -41,7 +41,7 @@ class PickedUpPiece(physicalPiece: PhysicalPiece) {
     }
   }
 
-  val component = ReactComponentB[Props]("PickedUpPiece")
+  val create = ReactComponentB[Props]("PickedUpPiece")
     .renderBackend[PickedUpPieceBackend]
     .build
 

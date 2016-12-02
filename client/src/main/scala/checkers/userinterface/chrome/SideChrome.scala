@@ -44,7 +44,7 @@ class SideChrome(button: Button) {
       val buttonCenterX = buttonX + (buttonWidth / 2)
       var currentY = buttonY + (buttonHeight / 2)
 
-      val newGameButton = button.component(Button.Props(buttonCenterX,
+      val newGameButton = button.create(Button.Props(buttonCenterX,
         currentY,
         buttonWidth,
         buttonHeight,
@@ -56,7 +56,7 @@ class SideChrome(button: Button) {
 
       currentY += buttonYSpacing
 
-      val rotateBoardButton = button.component(Button.Props(buttonCenterX,
+      val rotateBoardButton = button.create(Button.Props(buttonCenterX,
         currentY,
         buttonWidth,
         buttonHeight,
@@ -76,7 +76,7 @@ class SideChrome(button: Button) {
 
   }
 
-  val component = ReactComponentB[Props]("SideChrome")
+  val create = ReactComponentB[Props]("SideChrome")
     .renderBackend[SideChromeBackend]
     //    .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, _) =>
     //      val result = scope.props != nextProps
