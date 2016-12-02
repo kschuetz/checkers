@@ -1,13 +1,15 @@
 package checkers.core
 
 import checkers.computer.ProgramRegistry
+import checkers.userinterface.GameScreen
 import org.scalajs.dom
 
 class GameFactory(programRegistry: ProgramRegistry,
                   gameLogicModuleFactory: GameLogicModuleFactory,
                   scheduler: Scheduler,
                   applicationSettingsProvider: ApplicationSettingsProvider,
-                  screenLayoutSettingsProvider: ScreenLayoutSettingsProvider) {
+                  screenLayoutSettingsProvider: ScreenLayoutSettingsProvider,
+                  gameScreen: GameScreen) {
 
   def create(settings: NewGameSettings, host: dom.Node): Game = {
     val darkEntry = for {
@@ -48,7 +50,7 @@ class GameFactory(programRegistry: ProgramRegistry,
 
   private def createGame(gameLogicModule: GameLogicModule, gameConfig: GameConfig, host: dom.Node): Game = {
     val driver = new GameDriver(gameLogicModule)(gameConfig.playerConfig)
-    new Game(driver, scheduler, applicationSettingsProvider, screenLayoutSettingsProvider)(host)
+    new Game(driver, scheduler, applicationSettingsProvider, screenLayoutSettingsProvider, gameScreen)(host)
   }
 
 }

@@ -1,4 +1,4 @@
-package checkers.geometry
+package checkers.util
 
 case class Point(x: Double, y: Double) {
   def +(other: Point): Point = Point(x + other.x, y + other.y)

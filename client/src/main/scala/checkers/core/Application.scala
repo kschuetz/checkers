@@ -1,7 +1,7 @@
 package checkers.core
 
-import checkers.components.dialog.{NewGameDialog, PlayerChoice}
-import checkers.components.dialog.NewGameDialog.{NewGameDialogCallbacks, Result}
+import checkers.userinterface.dialog.{NewGameDialog, PlayerChoice}
+import checkers.userinterface.dialog.NewGameDialog.{NewGameDialogCallbacks, Result}
 import checkers.computer.ProgramRegistry
 import checkers.core.tables.TablesModule
 import checkers.logger

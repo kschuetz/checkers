@@ -1,7 +1,7 @@
 package checkers
 
 import checkers.logger._
-import checkers.modules.CoreModule
+import checkers.modules.{CoreModule, UserInterfaceModule}
 import checkers.style.GlobalStyles
 import org.scalajs.dom
 
@@ -26,7 +26,7 @@ object CheckersMain extends js.JSApp {
   }
 
   private def bootstrap(host: dom.Node, dialogHost: dom.Node): Unit = {
-    val module = new CoreModule { }
+    val module = new CoreModule with UserInterfaceModule { }
     val application = module.application
     application.start(host, dialogHost)
   }

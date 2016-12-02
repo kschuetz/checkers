@@ -4,9 +4,12 @@ import checkers.computer.{DefaultPrograms, DefaultShufflerFactory, ProgramRegist
 import checkers.core._
 import checkers.core.tables.TablesModule
 import checkers.persistence.{LocalStorageNewGameSettingsPersister, NewGameSettingsPersister}
+import checkers.userinterface.GameScreen
 import com.softwaremill.macwire.wire
 
 trait CoreModule {
+  protected def gameScreen: GameScreen
+
   lazy val programRegistry: ProgramRegistry = {
     val result = new ProgramRegistry
     DefaultPrograms.registerAll(result)

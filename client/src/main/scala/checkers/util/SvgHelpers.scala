@@ -1,7 +1,5 @@
 package checkers.util
 
-import checkers.geometry.Point
-
 trait SvgHelpers {
 
   def pointToPathString(point: Point): String =

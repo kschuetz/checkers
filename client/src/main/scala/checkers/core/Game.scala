@@ -1,6 +1,6 @@
 package checkers.core
 
-import checkers.components._
+import checkers.userinterface._
 import checkers.logger
 import japgolly.scalajs.react.{Callback, ReactDOM}
 import org.scalajs.dom
@@ -10,7 +10,8 @@ import org.scalajs.dom.window.performance
 class Game(gameDriver: GameDriver,
            scheduler: Scheduler,
            applicationSettingsProvider: ApplicationSettingsProvider,
-           screenLayoutSettingsProvider: ScreenLayoutSettingsProvider)
+           screenLayoutSettingsProvider: ScreenLayoutSettingsProvider,
+           gameScreen: GameScreen)
           (val host: dom.Node) {
   type Model = GameModel
 
@@ -103,7 +104,7 @@ class Game(gameDriver: GameDriver,
 
   private def renderModel(model: Model): Unit = {
     val props = GameScreen.Props(model, screenLayoutSettingsProvider.getScreenLayoutSettings, Callbacks, applicationCallbacks)
-    val screen = GameScreen.apply(props)
+    val screen = gameScreen.component(props)
     ReactDOM.render(screen, host)
   }
 

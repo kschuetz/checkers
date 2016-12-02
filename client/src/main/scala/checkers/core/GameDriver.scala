@@ -1,12 +1,12 @@
 package checkers.core
 
-import checkers.components.BoardMouseEvent
+import checkers.userinterface.BoardMouseEvent
 import checkers.computer.{PlayInput, PlayResult}
 import checkers.consts._
 import checkers.core.BeginTurnEvaluation._
 import checkers.core.InputPhase._
-import checkers.geometry.Point
 import checkers.logger
+import checkers.util.Point
 
 
 class GameDriver(gameLogicModule: GameLogicModule)

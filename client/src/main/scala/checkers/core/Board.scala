@@ -1,8 +1,8 @@
 package checkers.core
 
-import checkers.components.board.PhysicalBoard
-import checkers.geometry.Point
+import checkers.userinterface.board.PhysicalBoard
 import checkers.consts._
+import checkers.util.Point
 
 import scala.collection.immutable.Range.Inclusive
 
