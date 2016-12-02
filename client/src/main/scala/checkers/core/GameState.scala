@@ -6,7 +6,7 @@ import checkers.core.BeginTurnEvaluation.CanMove
 case class GameState(rulesSettings: RulesSettings,
                      playerConfig: PlayerConfig,
                      board: BoardState,
-                     turnToMove: Color,
+                     turnToMove: Side,
                      turnIndex: Int,
                      darkState: Opaque,
                      lightState: Opaque,
@@ -24,8 +24,8 @@ case class GameState(rulesSettings: RulesSettings,
     case _ => None
   }
 
-  def wasDrawProposedBy(color: Color): Boolean = drawStatus match {
-    case DrawProposed(c, _) if c == color => true
+  def wasDrawProposedBy(side: Side): Boolean = drawStatus match {
+    case DrawProposed(c, _) if c == side => true
     case _ => false
   }
 
@@ -45,13 +45,13 @@ case class GameState(rulesSettings: RulesSettings,
 
   def withLightState(newState: Opaque): GameState = copy(lightState = newState)
 
-  def addToClock(color: Color, amount: Double): GameState = {
+  def addToClock(side: Side, amount: Double): GameState = {
     if(amount <= 0) this
-    else if(color == DARK) copy(darkClock = darkClock + amount)
+    else if(side == DARK) copy(darkClock = darkClock + amount)
     else copy(lightClock = lightClock + amount)
   }
 
-  def opponent: Color = OPPONENT(turnToMove)
+  def opponent: Side = OPPONENT(turnToMove)
 
 }
 

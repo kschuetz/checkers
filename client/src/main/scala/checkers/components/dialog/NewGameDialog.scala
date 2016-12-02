@@ -20,24 +20,24 @@ object NewGameDialog {
                 variationChoices: Vector[Variation],
                 darkPlayerIndex: Int,
                 lightPlayerIndex: Int,
-                playsFirst: Color,
+                playsFirst: Side,
                 variationIndex: Int) extends Result
 
   trait NewGameDialogCallbacks {
     def onNewGameDialogResult(result: Result): Callback
   }
 
-  case class PlayerChangeEvent(color: Color,
+  case class PlayerChangeEvent(side: Side,
                                playerIndex: Int)
 
   case class VariationChangeEvent(variationIndex: Int)
 
   case class State(darkPlayerIndex: Int,
                    lightPlayerIndex: Int,
-                   playsFirst: Color,
+                   playsFirst: Side,
                    variationIndex: Int) {
     def withPlayerChange(event: PlayerChangeEvent): State =
-      if (event.color == DARK) {
+      if (event.side == DARK) {
         copy(darkPlayerIndex = event.playerIndex)
       } else {
         copy(lightPlayerIndex = event.playerIndex)
@@ -46,25 +46,25 @@ object NewGameDialog {
     def withVariationChange(event: VariationChangeEvent): State =
       copy(variationIndex = event.variationIndex)
 
-    def withPlaysFirst(color: Color): State =
-      copy(playsFirst = color)
+    def withPlaysFirst(side: Side): State =
+      copy(playsFirst = side)
   }
 
   case class Props(playerChoices: Vector[PlayerChoice],
                    variationChoices: Vector[Variation],
                    initialDarkPlayer: Int,
                    initialLightPlayer: Int,
-                   initialPlaysFirst: Color,
+                   initialPlaysFirst: Side,
                    initialVariationIndex: Int,
                    callbacks: NewGameDialogCallbacks) {
     def initialState: State = State(initialDarkPlayer, initialLightPlayer, initialPlaysFirst, initialVariationIndex)
   }
 
 
-  private val PieceAvatar = ReactComponentB[Color]("NewGameDialogPieceAvatar")
-    .render_P { color =>
+  private val PieceAvatar = ReactComponentB[Side]("NewGameDialogPieceAvatar")
+    .render_P { side =>
       val pieceProps = PhysicalPieceProps.default.copy(
-        piece = if (color == DARK) DARKMAN else LIGHTMAN,
+        piece = if (side == DARK) DARKMAN else LIGHTMAN,
         x = 45,
         y = 45,
         scale = 90
@@ -83,7 +83,7 @@ object NewGameDialog {
   }
 
   trait PlayerSelectorProps {
-    def color: Color
+    def side: Side
 
     def playerChoices: Vector[PlayerChoice]
 
@@ -118,7 +118,7 @@ object NewGameDialog {
       if (newValue < 0) Callback.empty
       else for {
         props <- $.props
-        pce = PlayerChangeEvent(props.color, newValue)
+        pce = PlayerChangeEvent(props.side, newValue)
         cb <- props.callbacks.handlePlayerChanged(pce)
       } yield cb
     }
@@ -130,11 +130,11 @@ object NewGameDialog {
 
 
   trait PlaysFirstCallbacks {
-    def handlePlaysFirstChanged(color: Color): Callback
+    def handlePlaysFirstChanged(side: Side): Callback
   }
 
   trait PlaysFirstProps {
-    def color: Color
+    def side: Side
 
     def playsFirst: Boolean
 
@@ -160,8 +160,8 @@ object NewGameDialog {
       val checked = event.target.checked
       for {
         props <- $.props
-        newColor = if (checked) props.color else OPPONENT(props.color)
-        cb <- props.callbacks.handlePlaysFirstChanged(newColor)
+        newSide = if (checked) props.side else OPPONENT(props.side)
+        cb <- props.callbacks.handlePlaysFirstChanged(newSide)
       } yield cb
     }
   }
@@ -172,7 +172,7 @@ object NewGameDialog {
 
   trait PlayerPanelCallbacks extends PlayerSelectorCallbacks with PlaysFirstCallbacks
 
-  case class PlayerSettingsPanelProps(color: Color,
+  case class PlayerSettingsPanelProps(side: Side,
                                       playerChoices: Vector[PlayerChoice],
                                       playerIndex: Int,
                                       playsFirst: Boolean,
@@ -180,7 +180,7 @@ object NewGameDialog {
 
   class PlayerSettingsPanelBackend($: BackendScope[PlayerSettingsPanelProps, Unit]) {
     def render(props: PlayerSettingsPanelProps) = {
-      val avatar = PieceAvatar(props.color)
+      val avatar = PieceAvatar(props.side)
       val playerSelector = PlayerSelector(props)
       val playsFirst = PlaysFirstCheckbox(props)
 
@@ -305,7 +305,7 @@ object NewGameDialog {
     with GeneralSettingsPanelCallbacks {
 
     def render(props: Props, state: State) = {
-      val darkPlayerProps = PlayerSettingsPanelProps(color = DARK,
+      val darkPlayerProps = PlayerSettingsPanelProps(side = DARK,
         playerChoices = props.playerChoices,
         playerIndex = state.darkPlayerIndex,
         playsFirst = state.playsFirst == DARK,
@@ -314,7 +314,7 @@ object NewGameDialog {
       val darkPlayerPanel = PlayerSettingsPanel(darkPlayerProps)
 
       val lightPlayerProps = darkPlayerProps.copy(
-        color = LIGHT,
+        side = LIGHT,
         playerIndex = state.lightPlayerIndex,
         playsFirst = state.playsFirst != DARK)
 
@@ -360,11 +360,11 @@ object NewGameDialog {
       )
     }
 
-    def handlePlayerChanged(event: PlayerChangeEvent) = $.modState(_.withPlayerChange(event))
+    def handlePlayerChanged(event: PlayerChangeEvent): Callback = $.modState(_.withPlayerChange(event))
 
-    def handlePlaysFirstChanged(color: Color) = $.modState(_.withPlaysFirst(color))
+    def handlePlaysFirstChanged(side: Side): Callback = $.modState(_.withPlaysFirst(side))
 
-    def handleVariationChanged(event: VariationChangeEvent) = $.modState(_.withVariationChange(event))
+    def handleVariationChanged(event: VariationChangeEvent): Callback = $.modState(_.withVariationChange(event))
 
     def onOkClicked: Callback = for {
       props <- $.props

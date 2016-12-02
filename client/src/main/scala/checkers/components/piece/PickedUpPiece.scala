@@ -25,8 +25,8 @@ object PickedUpPiece extends SvgHelpers {
 
       val physicalPiece = PhysicalPiece.apply(physicalPieceProps)
 
-      val color = COLOR(model.piece)
-      val classes = if(color == DARK) "picked-up-piece dark" else "picked-up-piece light"
+      val side = SIDE(model.piece)
+      val classes = if(side == DARK) "picked-up-piece dark" else "picked-up-piece light"
 
       <.svg.g(
         ^.`class` := classes,

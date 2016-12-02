@@ -1,7 +1,7 @@
 package checkers.core
 
 import checkers.consts._
-import checkers.test.generators.{BoardWithMovesGenerators, ColorGenerator}
+import checkers.test.generators.{BoardWithMovesGenerators, SideGenerator}
 import checkers.test.{BoardUtils, DefaultGameLogicTestModule, TestSuiteBase}
 import nyaya.gen._
 import nyaya.prop._
@@ -11,7 +11,7 @@ import utest.framework._
 
 object MoveExecutorTests extends TestSuiteBase
   with DefaultGameLogicTestModule
-  with ColorGenerator
+  with SideGenerator
   with BoardWithMovesGenerators {
 
   lazy val moveGenerator = gameLogicModule.moveGenerator
@@ -22,12 +22,12 @@ object MoveExecutorTests extends TestSuiteBase
   case class MoveExecutorPropInput(moveWasMade: Boolean,
                                    before: BoardStateRead,
                                    after: BoardStateRead,
-                                   turnToMove: Color,
+                                   turnToMove: Side,
                                    path: List[Int],
                                    reversePath: List[Int])
 
 
-  private def makePropInputGen(makeMove: (BoardStack, Color, List[Int]) => Unit): Gen[MoveExecutorPropInput] =
+  private def makePropInputGen(makeMove: (BoardStack, Side, List[Int]) => Unit): Gen[MoveExecutorPropInput] =
     genBoardWithMove.map {
       case BoardWithMove(boardStack, turnToMove, Some(legalMove)) =>
         val before = boardStack.toImmutable
@@ -40,12 +40,12 @@ object MoveExecutorTests extends TestSuiteBase
         MoveExecutorPropInput(moveWasMade = false, boardStack, boardStack, turnToMove, Nil, Nil)
     }
 
-  private def makeMoveWithMoveDecoder(boardStack: BoardStack, turnToMove: Color, path: List[Int]): Unit = {
+  private def makeMoveWithMoveDecoder(boardStack: BoardStack, turnToMove: Side, path: List[Int]): Unit = {
     moveDecoder.loadFromList(path)
     moveExecutor.executeFromMoveDecoder(boardStack, moveDecoder)
   }
 
-  private def makeMoveWithFastExecute(boardStack: BoardStack, turnToMove: Color, path: List[Int]): Unit = {
+  private def makeMoveWithFastExecute(boardStack: BoardStack, turnToMove: Side, path: List[Int]): Unit = {
     var from :: remaining = path
     while(remaining.nonEmpty) {
       val to :: next = remaining
@@ -55,7 +55,7 @@ object MoveExecutorTests extends TestSuiteBase
     }
   }
 
-  private def makeMoveWithExecute(boardStack: BoardStack, turnToMove: Color, path: List[Int]): Unit = {
+  private def makeMoveWithExecute(boardStack: BoardStack, turnToMove: Side, path: List[Int]): Unit = {
     var from :: remaining = path
     while(remaining.nonEmpty) {
       val to :: next = remaining
@@ -78,7 +78,7 @@ object MoveExecutorTests extends TestSuiteBase
       val endSquare = reversePath.head
       if(startSquare == endSquare) {
         // rare case of compound jump ending on same square
-        after.squareHasColor(turnToMove)(endSquare)
+        after.squareHasSide(turnToMove)(endSquare)
       } else {
         after.isSquareEmpty(startSquare)
       }
@@ -88,7 +88,7 @@ object MoveExecutorTests extends TestSuiteBase
   lazy val endSquareCorrectState: Prop[MoveExecutorPropInput] = Prop.test("endSquareCorrectState", {
     case MoveExecutorPropInput(true, before, after, turnToMove, path, reversePath) =>
       val endSquare = reversePath.head
-     after.squareHasColor(turnToMove)(endSquare)
+     after.squareHasSide(turnToMove)(endSquare)
     case _ => true
   })
 

@@ -63,8 +63,8 @@ class NeighborTable {
     twoE = twoE)
 
 
-  def forColor(color: Color): NeighborIndex = {
-    if (color == DARK) Dark
+  def forSide(side: Side): NeighborIndex = {
+    if (side == DARK) Dark
     else Light
   }
 }

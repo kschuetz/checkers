@@ -1,6 +1,6 @@
 package checkers.components.piece
 
-import checkers.consts.{ Color, DARK, LIGHT }
+import checkers.consts.{ Side, DARK, LIGHT }
 import checkers.geometry.Point
 import checkers.util.SvgHelpers
 import japgolly.scalajs.react.vdom.prefix_<^._
@@ -84,9 +84,9 @@ object Decorations extends SvgHelpers {
     }
   }
 
-  val Pip = ReactComponentB[(Color, Point)]("Pip")
-    .render_P { case (color, Point(cx, cy)) =>
-      val classes = if(color == DARK) "pip dark" else "pip light"
+  val Pip = ReactComponentB[(Side, Point)]("Pip")
+    .render_P { case (side, Point(cx, cy)) =>
+      val classes = if(side == DARK) "pip dark" else "pip light"
       <.svg.circle(
         ^.`class` := classes,
         ^.svg.cx := cx,
@@ -113,9 +113,9 @@ object Decorations extends SvgHelpers {
       )
     }.build
 
-  val Crown = ReactComponentB[(Color, Double)]("Crown")
-    .render_P { case (color, scale) =>
-      val classes = if (color == DARK) ("crown-a dark", "crown-b dark", "crown-c dark")
+  val Crown = ReactComponentB[(Side, Double)]("Crown")
+    .render_P { case (side, scale) =>
+      val classes = if (side == DARK) ("crown-a dark", "crown-b dark", "crown-c dark")
         else ("crown-a light", "crown-b light", "crown-c light")
       val parts = new js.Array[ReactNode]
       crownPaths.indices.foreach { idx =>
@@ -131,10 +131,10 @@ object Decorations extends SvgHelpers {
     }.build
 
 
-  val Star = ReactComponentB[(Color, Double)]("Star")
-    .render_P { case (color, scale) =>
+  val Star = ReactComponentB[(Side, Double)]("Star")
+    .render_P { case (side, scale) =>
       val (classesA, classesB) =
-        if(color == DARK) ("star-a dark", "star-b dark")
+        if(side == DARK) ("star-a dark", "star-b dark")
         else ("star-a light", "star-b light")
 
 
@@ -169,10 +169,10 @@ object Decorations extends SvgHelpers {
 
     }.build
 
-  val PieceDecoration = ReactComponentB[(Color, Decoration)]("PieceDecoration")
+  val PieceDecoration = ReactComponentB[(Side, Decoration)]("PieceDecoration")
     .render_P {
-      case (color, Decoration.Star) => Star((color, 0.55))
-      case (color, Decoration.Crown) => Crown((color, 0.55))
+      case (side, Decoration.Star) => Star((side, 0.55))
+      case (side, Decoration.Crown) => Crown((side, 0.55))
     }.build
 
 

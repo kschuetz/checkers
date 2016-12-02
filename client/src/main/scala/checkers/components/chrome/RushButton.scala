@@ -1,6 +1,6 @@
 package checkers.components.chrome
 
-import checkers.consts.Color
+import checkers.consts.Side
 import checkers.util.{CssHelpers, SvgHelpers}
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
@@ -9,7 +9,7 @@ object RushButton extends SvgHelpers {
 
   private lazy val tooltip = Some("Rush the computer into making a move")
 
-  case class Props(color: Color,
+  case class Props(side: Side,
                    centerX: Double,
                    centerY: Double,
                    width: Double,
@@ -54,7 +54,7 @@ object RushButton extends SvgHelpers {
 
       val extraClasses: Map[String, Boolean] = Map(
         "rush-button" -> true,
-        CssHelpers.playerColorClass(props.color) -> true
+        CssHelpers.playerSideClass(props.side) -> true
       )
 
       val buttonProps = Button.Props(

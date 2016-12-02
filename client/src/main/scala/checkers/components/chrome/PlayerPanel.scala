@@ -13,7 +13,7 @@ object PlayerPanel extends FontHelpers {
 
   case class Props(widthPixels: Int,
                    heightPixels: Int,
-                   color: Color,
+                   side: Side,
                    playerName: String,
                    isComputerPlayer: Boolean,
                    clockDisplay: String,
@@ -31,7 +31,7 @@ object PlayerPanel extends FontHelpers {
     def backdrop(props: Props) = {
       <.svg.rect(
         ^.key := "backdrop",
-        ^.`class` := s"player-panel-backdrop ${CssHelpers.playerColorClass(props.color)}",
+        ^.`class` := s"player-panel-backdrop ${CssHelpers.playerSideClass(props.side)}",
         ^.svg.x := 0,
         ^.svg.y := 0,
         ^.svg.width := props.widthPixels,
@@ -42,7 +42,7 @@ object PlayerPanel extends FontHelpers {
     def pieceAvatar(props: Props) = {
       val scale = 0.8 * props.heightPixels
       val avatarProps = PieceAvatar.Props(
-        color = props.color,
+        side = props.side,
         isPlayerTurn = props.isPlayerTurn,
         scale = scale,
         x = scale - 10,
@@ -56,7 +56,7 @@ object PlayerPanel extends FontHelpers {
       val y = props.heightPixels / 2
       val x = 40
       val scale = 0.2 * props.heightPixels
-      val turnIndicatorProps = TurnIndicator.Props(color = props.color,
+      val turnIndicatorProps = TurnIndicator.Props(side = props.side,
         scale = scale, x = x, y = y, pointsRight = true, endingTurn = props.endingTurn)
       TurnIndicator.component.withKey("turn-indicator")(turnIndicatorProps)
     }
@@ -64,7 +64,7 @@ object PlayerPanel extends FontHelpers {
     def jumpIndicator(props: Props) = {
       val x = props.widthPixels - 50
       val y = 0.35 * props.heightPixels
-      val jumpIndicatorProps = JumpIndicator.Props(opponentColor = OPPONENT(props.color),
+      val jumpIndicatorProps = JumpIndicator.Props(oppositeSide = OPPONENT(props.side),
         x = x,
         y = y,
         scale = 0.37 * props.heightPixels
@@ -127,7 +127,7 @@ object PlayerPanel extends FontHelpers {
       val y = 0.75 * props.heightPixels
       val size = 0.37 * props.heightPixels
       val rushButtonProps = RushButton.Props(
-        color = props.color,
+        side = props.side,
         centerX = x,
         centerY = y,
         width = size,
@@ -163,7 +163,7 @@ object PlayerPanel extends FontHelpers {
     }
 
     private def getClasses(props: Props, base: String): String = {
-      s"$base ${CssHelpers.playerColorClass(props.color)} ${CssHelpers.turnStatus(props.isPlayerTurn)}"
+      s"$base ${CssHelpers.playerSideClass(props.side)} ${CssHelpers.turnStatus(props.isPlayerTurn)}"
     }
   }
 

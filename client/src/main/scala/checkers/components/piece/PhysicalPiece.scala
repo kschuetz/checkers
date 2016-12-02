@@ -19,9 +19,9 @@ object PhysicalPiece extends SvgHelpers {
                                    decoration: Decoration,
                                    translate: Option[String] = None)
 
-  private val Disk = ReactComponentB[(Color, Double)]("Disk")
-    .render_P { case (color, radius) =>
-      val classes = if (color == DARK) "disk dark" else "disk light"
+  private val Disk = ReactComponentB[(Side, Double)]("Disk")
+    .render_P { case (side, radius) =>
+      val classes = if (side == DARK) "disk dark" else "disk light"
       <.svg.circle(
         ^.`class` := classes,
         ^.svg.r := radius
@@ -31,14 +31,14 @@ object PhysicalPiece extends SvgHelpers {
   class PieceBodyBackend($: BackendScope[RenderProps, Unit]) {
     def render(renderProps: RenderProps) = {
       val RenderProps(props, decoration, translate) = renderProps
-      val color = COLOR(props.piece)
+      val side = SIDE(props.piece)
       val classes =
-        if (color == DARK) "piece dark" else "piece light"
+        if (side == DARK) "piece dark" else "piece light"
 
       val pips = new js.Array[ReactNode]
       (0 to 11).foreach { pipIndex =>
         val pt = Decorations.pipCoordinates(pipIndex)
-        pips.push(Decorations.Pip.withKey(pipIndex)((color, pt)))
+        pips.push(Decorations.Pip.withKey(pipIndex)((side, pt)))
       }
 
       val transform = if(props.rotationDegrees != 0) {
@@ -49,9 +49,9 @@ object PhysicalPiece extends SvgHelpers {
       <.svg.g(
         ^.`class` := classes,
         transform.nonEmpty ?= (^.svg.transform := transform),
-        Disk((color, pieceRadius)),
+        Disk((side, pieceRadius)),
         pips,
-        Decorations.PieceDecoration((color, decoration))
+        Decorations.PieceDecoration((side, decoration))
       )
 
     }
@@ -81,8 +81,8 @@ object PhysicalPiece extends SvgHelpers {
 
   private val PieceMan = ReactComponentB[PhysicalPieceProps]("Man")
     .render_P { props =>
-      val color = COLOR(props.piece)
-      val baseClasses = if (color == DARK) "piece man dark" else "piece man light"
+      val side = SIDE(props.piece)
+      val baseClasses = if (side == DARK) "piece man dark" else "piece man light"
       val scale = props.scale
       <.svg.g(
         ^.classSet1(baseClasses, "ghost-piece" -> props.ghost),
@@ -100,8 +100,8 @@ object PhysicalPiece extends SvgHelpers {
 
   private val PieceKing = ReactComponentB[PhysicalPieceProps]("King")
     .render_P { props =>
-      val color = COLOR(props.piece)
-      val baseClasses = if (color == DARK) "piece king dark" else "piece king light"
+      val side = SIDE(props.piece)
+      val baseClasses = if (side == DARK) "piece king dark" else "piece king light"
       val scale = props.scale
 
       val topPieceTranslate = "translate(0.07,-0.11)"
@@ -109,7 +109,7 @@ object PhysicalPiece extends SvgHelpers {
       <.svg.g(
         ^.classSet1(baseClasses, "ghost-piece" -> props.ghost),
         ^.svg.transform := s"translate(${props.x},${props.y}),scale($scale)",
-        Disk((color, pieceRadius)),
+        Disk((side, pieceRadius)),
         <.svg.g(
           ^.svg.transform := s"scale($kingScaleAdjustment)",
           PieceBody(RenderProps(props, Decoration.Crown, Some(topPieceTranslate)))

@@ -17,9 +17,9 @@ object MoveGeneratorTests extends TestSuiteBase with DefaultGameLogicTestModule 
   lazy val moveGenerator = gameLogicModule.moveGenerator
   lazy val jumpTable = tablesModule.jumpTable
 
-  private def testBoard(board: BoardState, color: Color, expectedResult: Set[List[Int]]): Unit = {
+  private def testBoard(board: BoardState, side: Side, expectedResult: Set[List[Int]]): Unit = {
     val stack = BoardStack.fromBoard(board)
-    val result = moveGenerator.generateMoves(stack, color).toSet
+    val result = moveGenerator.generateMoves(stack, side).toSet
     assert(result == expectedResult)
   }
 
@@ -43,7 +43,7 @@ object MoveGeneratorTests extends TestSuiteBase with DefaultGameLogicTestModule 
   })
 
   lazy val moveStartOccupiedByCurrentPlayer: Prop[BoardWithMove] = Prop.test("moveStartOccupiedByCurrentPlayer", {
-    case BoardWithMove(board, turnToMove, Some(legalMove)) => board.squareHasColor(turnToMove)(legalMove.head)
+    case BoardWithMove(board, turnToMove, Some(legalMove)) => board.squareHasSide(turnToMove)(legalMove.head)
     case _ => true
   })
 
@@ -51,7 +51,7 @@ object MoveGeneratorTests extends TestSuiteBase with DefaultGameLogicTestModule 
     case BoardWithMove(board, turnToMove, Some(legalMove)) =>
       val opponent = OPPONENT(turnToMove)
       val jumpedOver = jumpTable.getMiddles(legalMove)
-      jumpedOver.forall(board.squareHasColor(opponent))
+      jumpedOver.forall(board.squareHasSide(opponent))
     case _ => true
   })
 

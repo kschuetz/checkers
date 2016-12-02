@@ -81,7 +81,7 @@ class AnimationPlanner(settings: AnimationSettings) {
         }
         if (moveInfo.crowned) {
           val animation = CrowningPiece(
-            color = COLOR(moveInfo.piece),
+            side = SIDE(moveInfo.piece),
             squareIndex = moveInfo.toSquare,
             startTime = startTime,
             startMovingTime = t,

@@ -1,6 +1,6 @@
 package checkers.core
 
-import checkers.test.generators.{BoardWithMovesGenerators, ColorGenerator}
+import checkers.test.generators.{BoardWithMovesGenerators, SideGenerator}
 import checkers.test.{DefaultGameLogicTestModule, TestSuiteBase}
 import nyaya.gen._
 import nyaya.prop._
@@ -10,7 +10,7 @@ import utest.framework._
 
 object MoveListTests extends TestSuiteBase
   with DefaultGameLogicTestModule
-  with ColorGenerator
+  with SideGenerator
   with BoardWithMovesGenerators {
 
   lazy val moveDecoder = new MoveDecoder

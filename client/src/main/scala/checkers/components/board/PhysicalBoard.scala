@@ -28,10 +28,10 @@ object PhysicalBoard {
     val lightSquare = s"$boardSquare $light"
   }
 
-  val Square = ReactComponentB[(Double, Double, Color)]("Square")
-    .render_P { case (centerX, centerY, color) =>
+  val Square = ReactComponentB[(Double, Double, Side)]("Square")
+    .render_P { case (centerX, centerY, side) =>
       val classes =
-        if (color == DARK) Css.darkSquare
+        if (side == DARK) Css.darkSquare
         else Css.lightSquare
 
       <.svg.rect(
@@ -43,13 +43,13 @@ object PhysicalBoard {
       )
     }.build
 
-  val BoardRow = ReactComponentB[(Double, Color)]("BoardRow")
-    .render_P { case (centerY, colorOfFirst) =>
+  val BoardRow = ReactComponentB[(Double, Side)]("BoardRow")
+    .render_P { case (centerY, sideOfFirst) =>
       val squares = new js.Array[ReactNode]
-      (0 to 7).foldLeft(colorOfFirst) { case (color, idx) =>
-        val square: ReactNode = Square.withKey(idx)((idx - boardCenterOffset, 0.0, color))
+      (0 to 7).foldLeft(sideOfFirst) { case (side, idx) =>
+        val square: ReactNode = Square.withKey(idx)((idx - boardCenterOffset, 0.0, side))
         squares.push(square)
-        if(color == DARK) LIGHT else DARK
+        if(side == DARK) LIGHT else DARK
       }
       <.svg.g(
         ^.svg.transform := s"translate(0,$centerY)",
@@ -72,12 +72,12 @@ object PhysicalBoard {
 
   val Board = ReactComponentB[Unit]("Board")
     .render_P { _ =>
-      val upperLeftColor: Color = LIGHT
+      val upperLeftSide: Side = LIGHT
       val rows = new js.Array[ReactNode]
-      (0 to 7).foldLeft(upperLeftColor) { case (color, idx) =>
-        val row: ReactNode = BoardRow.withKey(idx)((idx - boardCenterOffset, color))
+      (0 to 7).foldLeft(upperLeftSide) { case (side, idx) =>
+        val row: ReactNode = BoardRow.withKey(idx)((idx - boardCenterOffset, side))
         rows.push(row)
-        if(color == DARK) LIGHT else DARK
+        if(side == DARK) LIGHT else DARK
       }
       val border = BoardBorder(0.3)
       <.svg.g(

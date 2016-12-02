@@ -221,7 +221,7 @@ class GameDriver(gameLogicModule: GameLogicModule)
     val nowTime = gameModel.nowTime
 
     val inputPhase = newState.beginTurnEvaluation match {
-      case Win(color) => GameOver(Some(color))
+      case Win(side) => GameOver(Some(side))
       case Draw => GameOver(None)
       case _ =>
         if (turnToMove == LIGHT) {

@@ -13,7 +13,7 @@ import scala.scalajs.js
 
 object PieceAvatar {
 
-  case class Props(color: Color,
+  case class Props(side: Side,
                    isPlayerTurn: Boolean,
                    x: Double,
                    y: Double,
@@ -22,7 +22,7 @@ object PieceAvatar {
   val component = ReactComponentB[Props]("PieceAvatar")
     .render_P { props =>
       val pieceProps = PhysicalPieceProps.default.copy(
-        piece = if(props.color == DARK) DARKMAN else LIGHTMAN,
+        piece = if(props.side == DARK) DARKMAN else LIGHTMAN,
         ghost = !props.isPlayerTurn,
         scale = props.scale,
         x = props.x,

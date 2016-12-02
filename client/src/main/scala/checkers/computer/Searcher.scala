@@ -77,7 +77,7 @@ class Searcher(moveGenerator: MoveGenerator,
 
     class ConcretePly(root: Boolean,
                       left: Boolean,
-                      turnToMove: Color,
+                      turnToMove: Side,
                       depthRemaining: Int,
                       plyIndex: Int,
                       parent: PlyParent,

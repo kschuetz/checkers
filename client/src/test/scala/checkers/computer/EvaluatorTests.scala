@@ -4,7 +4,7 @@ import checkers.consts._
 import checkers.core._
 import checkers.core.tables.NeighborIndex
 import checkers.test.BoardUtils.BoardStats
-import checkers.test.generators.{BoardGenerators, ColorGenerator}
+import checkers.test.generators.{BoardGenerators, SideGenerator}
 import checkers.test.{BoardUtils, DefaultGameLogicTestModule, TestSuiteBase}
 import com.softwaremill.macwire._
 import nyaya.gen._
@@ -15,7 +15,7 @@ import utest.framework._
 
 object EvaluatorTests extends TestSuiteBase
   with DefaultGameLogicTestModule
-  with ColorGenerator
+  with SideGenerator
   with BoardGenerators {
 
   private lazy val evaluator = wire[DefaultEvaluator]
@@ -25,17 +25,17 @@ object EvaluatorTests extends TestSuiteBase
   private lazy val neighborTable = tablesModule.neighborTable
   private lazy val innerSquares: Set[Int] = BoardUtils.squareMaskToSet(checkers.masks.INNER)
 
-  private def getMoveList(boardStack: BoardStack, turnToMove: Color): List[List[Int]] = {
+  private def getMoveList(boardStack: BoardStack, turnToMove: Side): List[List[Int]] = {
     val moveList = moveGenerator.generateMoves(boardStack, turnToMove)
     moveDecoder.allPaths(moveList)
   }
 
   case class ExpectedSquares(dark: Set[Int], light: Set[Int])
 
-  private def isColor(color: Color, occupant: Occupant): Boolean = ISPIECE(occupant) && COLOR(occupant) == color
+  private def isSide(side: Side, occupant: Occupant): Boolean = ISPIECE(occupant) && SIDE(occupant) == side
 
   private def getExpectedAttacks(board: BoardStateRead): ExpectedSquares = {
-    def evaluateForColor(color: Color, king: Occupant, neighbors: NeighborIndex): Set[Int] = {
+    def evaluateForSide(side: Side, king: Occupant, neighbors: NeighborIndex): Set[Int] = {
       var result = Set.empty[Int]
       innerSquares.foreach { idx =>
         val isAttack = board.isSquareEmpty(idx) && {
@@ -44,24 +44,24 @@ object EvaluatorTests extends TestSuiteBase
           val backW = board.getOccupant(neighbors.backMoveW(idx))
           val backE = board.getOccupant(neighbors.backMoveE(idx))
 
-          (isColor(color, backW) && !isColor(color, forwardE)) ||
-            (isColor(color, backE) && !isColor(color, forwardW)) ||
-            (!isColor(color, backW) && forwardE == king) ||
-            (!isColor(color, backE) && forwardW == king)
+          (isSide(side, backW) && !isSide(side, forwardE)) ||
+            (isSide(side, backE) && !isSide(side, forwardW)) ||
+            (!isSide(side, backW) && forwardE == king) ||
+            (!isSide(side, backE) && forwardW == king)
         }
         if (isAttack) result += idx
       }
       result
     }
 
-    ExpectedSquares(dark = evaluateForColor(DARK, DARKKING, neighborTable.Dark),
-      light = evaluateForColor(LIGHT, LIGHTKING, neighborTable.Light))
+    ExpectedSquares(dark = evaluateForSide(DARK, DARKKING, neighborTable.Dark),
+      light = evaluateForSide(LIGHT, LIGHTKING, neighborTable.Light))
   }
 
   private def getExpectedTrappedKings(board: BoardStateRead): ExpectedSquares = {
-    def evaluateForColor(color: Color, king: Occupant, opponentKing: Occupant, neighbors: NeighborIndex): Set[Int] = {
-      val opponent = OPPONENT(color)
-      val opponentAt = board.squareHasColor(opponent) _
+    def evaluateForSide(side: Side, king: Occupant, opponentKing: Occupant, neighbors: NeighborIndex): Set[Int] = {
+      val opponent = OPPONENT(side)
+      val opponentAt = board.squareHasSide(opponent) _
       var result = Set.empty[Int]
 
       def checkEscape(forward: Int, move: Int, jump: Int, side: Int): Boolean = {
@@ -121,8 +121,8 @@ object EvaluatorTests extends TestSuiteBase
       result
     }
 
-    ExpectedSquares(dark = evaluateForColor(DARK, DARKKING, LIGHTKING, neighborTable.Dark),
-      light = evaluateForColor(LIGHT, LIGHTKING, DARKKING, neighborTable.Light))
+    ExpectedSquares(dark = evaluateForSide(DARK, DARKKING, LIGHTKING, neighborTable.Dark),
+      light = evaluateForSide(LIGHT, LIGHTKING, DARKKING, neighborTable.Light))
   }
 
 
@@ -175,7 +175,7 @@ object EvaluatorTests extends TestSuiteBase
   }
 
   case class EvaluatorPropInput(board: BoardState,
-                                turnToMove: Color,
+                                turnToMove: Side,
                                 probeData: ProbeData,
                                 darkMoves: List[List[Int]],
                                 lightMoves: List[List[Int]],
@@ -185,7 +185,7 @@ object EvaluatorTests extends TestSuiteBase
                                 evaluationResult: Int)
 
   private lazy val genEvaluatorPropInput: Gen[EvaluatorPropInput] = for {
-    turnToMove <- genColor
+    turnToMove <- genSide
     board <- genBoard
   } yield {
     val boardStack = BoardStack.fromBoard(board)

@@ -97,7 +97,7 @@ object Animation {
     def hidesPieceAtSquare: Int = squareIndex
   }
 
-  case class CrowningPiece(color: Color,
+  case class CrowningPiece(side: Side,
                            squareIndex: Int,
                            startTime: Double,
                            startMovingTime: Double,

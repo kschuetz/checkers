@@ -24,9 +24,9 @@ object IllegalPieceSelectionAnimation {
     }
     .build
 
-  private val NoSymbol = ReactComponentB[Color]("NoSymbol")
-    .render_P { color =>
-      val classes = s"no-symbol ${CssHelpers.playerColorClass(color)}"
+  private val NoSymbol = ReactComponentB[Side]("NoSymbol")
+    .render_P { side =>
+      val classes = s"no-symbol ${CssHelpers.playerSideClass(side)}"
       <.svg.g(
         ^.`class` := classes,
         NoSymbolLeg("skewX(45)"),
@@ -59,7 +59,7 @@ object IllegalPieceSelectionAnimation {
 
       <.svg.g(
         physicalPiece,
-        if(noSymbolShowing) NoSymbol(COLOR(props.piece)) else EmptyTag,
+        if(noSymbolShowing) NoSymbol(SIDE(props.piece)) else EmptyTag,
         ^.svg.transform := s"translate(${pt.x},${pt.y})"
       )
 

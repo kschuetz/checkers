@@ -3,7 +3,7 @@ package checkers.core
 import checkers.consts._
 import checkers.core.Variation.Giveaway
 
-case class RulesSettings(playsFirst: Color,
+case class RulesSettings(playsFirst: Side,
                          variation: Variation) {
   val giveaway: Boolean = variation == Giveaway
 }

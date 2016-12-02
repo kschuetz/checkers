@@ -6,4 +6,4 @@ sealed trait DrawStatus
 
 case object NoDraw extends DrawStatus
 
-case class DrawProposed(color: Color, endTurnIndex: Int) extends DrawStatus
+case class DrawProposed(side: Side, endTurnIndex: Int) extends DrawStatus

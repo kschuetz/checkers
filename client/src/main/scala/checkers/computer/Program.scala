@@ -6,7 +6,7 @@ import checkers.core._
 case class PlayInput(board: BoardState,
                      turnIndex: Int,
                      rulesSettings: RulesSettings,
-                     turnToMove: Color,
+                     turnToMove: Side,
                      drawStatus: DrawStatus,
                      history: List[HistoryEntry])
 

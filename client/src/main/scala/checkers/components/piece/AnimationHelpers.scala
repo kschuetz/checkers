@@ -12,7 +12,7 @@ object AnimationHelpers {
   private lazy val entryPointD = Board.squareCenter(28) - Point(1, 2)
 
   def exitPoint(piece: Occupant, fromSquare: Int): Point = {
-    if(COLOR(piece) == LIGHT) {
+    if(SIDE(piece) == LIGHT) {
       if(Board.isWestSquare(fromSquare)) entryPointA else entryPointB
     } else {
       if(Board.isWestSquare(fromSquare)) entryPointD else entryPointC
@@ -20,7 +20,7 @@ object AnimationHelpers {
   }
 
   def entryPoint(piece: Occupant, toSquare: Int): Point = {
-    if(COLOR(piece) == DARK) {
+    if(SIDE(piece) == DARK) {
       if(Board.isWestSquare(toSquare)) entryPointA else entryPointB
     } else {
       if(Board.isWestSquare(toSquare)) entryPointD else entryPointC

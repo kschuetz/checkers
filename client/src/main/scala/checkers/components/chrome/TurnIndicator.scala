@@ -14,7 +14,7 @@ import scala.scalajs.js
 
 object TurnIndicator extends SvgHelpers {
 
-  case class Props(color: Color,
+  case class Props(side: Side,
                    pointsRight: Boolean = false,
                    endingTurn: Boolean = false,
                    x: Double = 0.0,

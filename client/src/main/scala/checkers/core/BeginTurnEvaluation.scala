@@ -14,13 +14,13 @@ object BeginTurnEvaluation {
   case object Draw extends BeginTurnEvaluation {
     override val isGameOver = true
   }
-  case class Win(color: Color) extends BeginTurnEvaluation {
+  case class Win(side: Side) extends BeginTurnEvaluation {
     override def isGameOver = true
   }
 }
 
 case class BeginTurnState(board: BoardState,
-                          turnToMove: Color,
+                          turnToMove: Side,
                           turnIndex: Int,
                           drawStatus: DrawStatus) {
   def turnsUntilDraw: Option[Int] = drawStatus match {

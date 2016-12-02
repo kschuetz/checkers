@@ -15,9 +15,9 @@ trait BoardStateRead {
 
   def isSquareEmpty(squareIndex: Int): Boolean
 
-  def squareHasColor(color: Color)(squareIndex: Int): Boolean
+  def squareHasSide(side: Side)(squareIndex: Int): Boolean
 
-  def foreach(color: Color)(f: (Int, Occupant) => Unit): Unit
+  def foreach(side: Side)(f: (Int, Occupant) => Unit): Unit
 
   def copyFrameTo(dest: Int32Array, destIndex: Int = 0): Unit
 
@@ -62,29 +62,29 @@ trait BoardStateReadImpl extends BoardStateRead {
     (p & 1) == 0
   }
 
-  def squareHasColor(color: Color)(squareIndex: Int): Boolean = {
-    if(color == LIGHT) {
+  def squareHasSide(side: Side)(squareIndex: Int): Boolean = {
+    if(side == LIGHT) {
       ((lightPieces >>> squareIndex) & 1) != 0
     } else {
       ((darkPieces >>> squareIndex) & 1) != 0
     }
   }
 
-  def foreach(color: Color)(f: (Int, Occupant) => Unit): Unit = {
+  def foreach(side: Side)(f: (Int, Occupant) => Unit): Unit = {
     var i = 0
     while(i < 32) {
       val code = getOccupant(i)
-      if(COLOR(code) == color) { f(i, code) }
+      if(SIDE(code) == side) { f(i, code) }
       i += 1
     }
   }
 
-  def countPieces(color: Color): Int = {
+  def countPieces(side: Side): Int = {
     var result = 0
     var i = 0
     while(i < 32) {
       val code = getOccupant(i)
-      if(COLOR(code) == color) result += 1
+      if(SIDE(code) == side) result += 1
       i += 1
     }
     result

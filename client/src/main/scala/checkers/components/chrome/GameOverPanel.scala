@@ -93,8 +93,8 @@ object GameOverPanel extends FontHelpers {
       parts.push(backdrop(props))
       parts.push(textLine(centerX, 2 * height / 9, textHeight, "GAME OVER"))
       props.gameOverState match {
-        case GameOverState.Winner(color, player) =>
-          val pieces = if(color == DARK) darkWinPieces else lightWinPieces
+        case GameOverState.Winner(side, player) =>
+          val pieces = if(side == DARK) darkWinPieces else lightWinPieces
           parts.push(pieceRow(centerX, pieceRowY, pieceSize, pieces))
           parts.push(textLine(centerX, 37 * height / 48, textHeight, player.displayName))
           parts.push(textLine(centerX, 11 * height / 12, textHeight, "WINS"))

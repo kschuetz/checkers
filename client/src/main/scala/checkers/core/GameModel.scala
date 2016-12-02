@@ -17,10 +17,10 @@ trait GameModelReader {
 
   def board: BoardState
 
-  def turnToMove: Color
+  def turnToMove: Side
 
   // may differ from turnToMove due to waiting for animations
-  def displayTurnToMove: Color
+  def displayTurnToMove: Side
 
   def turnIndex: Int
 
@@ -42,7 +42,7 @@ trait GameModelReader {
 
   def playerMustJump: Boolean
 
-  def playerClock(color: Color): Double
+  def playerClock(side: Side): Double
 
   def currentTurnClock: Double
 
@@ -50,7 +50,7 @@ trait GameModelReader {
 
   def scoreDisplayEnabled: Boolean
 
-  def getScore(color: Color): Int
+  def getScore(side: Side): Int
 
   def clockDisplayHash: Int
 }
@@ -106,9 +106,9 @@ case class GameModel(nowTime: Double,
 
   def ruleSettings: RulesSettings = gameState.rulesSettings
 
-  def turnToMove: Color = gameState.turnToMove
+  def turnToMove: Side = gameState.turnToMove
 
-  def displayTurnToMove: Color =
+  def displayTurnToMove: Side =
     if(inputPhase.endingTurn) OPPONENT(gameState.turnToMove)
     else gameState.turnToMove
 
@@ -132,22 +132,22 @@ case class GameModel(nowTime: Double,
 
   def scoreDisplayEnabled: Boolean = true
 
-  def getScore(color: Color): Int = if(color == DARK) darkScore else lightScore
+  def getScore(side: Side): Int = if(side == DARK) darkScore else lightScore
 
   def gameOverState: Option[GameOverState] = inputPhase match {
     case GameOver(winner) =>
-      val result = winner.fold[GameOverState](GameOverState.Draw){ color =>
-        val player = if(color == DARK) darkPlayer else lightPlayer
-        GameOverState.Winner(color, player)
+      val result = winner.fold[GameOverState](GameOverState.Draw){ side =>
+        val player = if(side == DARK) darkPlayer else lightPlayer
+        GameOverState.Winner(side, player)
       }
       Some(result)
     case _ => None
   }
 
-  def playerClock(color: Color): Double = {
-    val base = if(color == DARK) gameState.darkClock else gameState.lightClock
+  def playerClock(side: Side): Double = {
+    val base = if(side == DARK) gameState.darkClock else gameState.lightClock
     val addCurrentTurn = inputPhase.onTheClock &&
-      ((gameState.turnToMove == color) != inputPhase.endingTurn)    // xor
+      ((gameState.turnToMove == side) != inputPhase.endingTurn)    // xor
     if (addCurrentTurn) base + currentTurnClock else base
   }
 

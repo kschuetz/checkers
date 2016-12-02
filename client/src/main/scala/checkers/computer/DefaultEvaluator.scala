@@ -27,7 +27,7 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
   private val BackRankBonus = 5
   private val RunawayBaseBonus = 47
 
-  def evaluate(turnToPlay: Color, board: BoardStateRead, testProbe: AnyRef = null): Int = {
+  def evaluate(turnToPlay: Side, board: BoardStateRead, testProbe: AnyRef = null): Int = {
     val probe = if (testProbe == null) null else testProbe.asInstanceOf[DefaultEvaluatorTestProbe]
 
     val k = board.kings

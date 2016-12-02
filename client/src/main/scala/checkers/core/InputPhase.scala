@@ -44,7 +44,7 @@ object InputPhase {
     override def endingTurn: Boolean = true
   }
 
-  case class GameOver(winner: Option[Color]) extends InputPhase {
+  case class GameOver(winner: Option[Side]) extends InputPhase {
     override def onTheClock: Boolean = false
   }
 

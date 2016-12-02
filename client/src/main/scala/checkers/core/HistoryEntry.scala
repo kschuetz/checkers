@@ -8,7 +8,7 @@ import checkers.consts._
   * @param play - the play submitted by the player
   */
 case class HistoryEntry(turnIndex: Int,
-                        turnToMove: Color,
+                        turnToMove: Side,
                         board: BoardState,
                         drawStatus: DrawStatus,
                         play: Play)

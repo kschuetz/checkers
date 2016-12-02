@@ -73,8 +73,8 @@ object Board {
 
   def isWestSquare(squareIndex: Int): Boolean = (squareIndex % 4) > 1
 
-  def crowningSquares(color: Color): Set[Int] =
-    if(color == DARK) darkCrowningSquares
+  def crowningSquares(side: Side): Set[Int] =
+    if(side == DARK) darkCrowningSquares
     else lightCrowningSquares
 
   def isCrowningMove(piece: Occupant, destSquare: Int): Boolean = {

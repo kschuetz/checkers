@@ -8,14 +8,14 @@ import japgolly.scalajs.react.vdom.prefix_<^._
 
 object CrowningAnimation {
 
-  case class Props(color: Color,
+  case class Props(side: Side,
                    square: Int,
                    progress: Double,
                    rotationDegrees: Double)
 
   class CrowningAnimationBackend($: BackendScope[Props, Unit]) {
     def render(props: Props) = {
-      val piece = if(props.color == DARK) DARKMAN else LIGHTMAN
+      val piece = if(props.side == DARK) DARKMAN else LIGHTMAN
 
       val entryPoint = AnimationHelpers.exitPoint(piece, props.square)
       val dest = Board.squareCenter(props.square)

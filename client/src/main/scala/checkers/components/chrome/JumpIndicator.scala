@@ -22,9 +22,9 @@ object JumpIndicator extends SvgHelpers {
     z
   """
 
-  private val JumpArrow = ReactComponentB[Color]("JumpIndicatorArrow")
-    .render_P { opponentColor =>
-      val classes = s"jump-indicator-arrow ${CssHelpers.playerColorClass(opponentColor)}"
+  private val JumpArrow = ReactComponentB[Side]("JumpIndicatorArrow")
+    .render_P { oppositeSide =>
+      val classes = s"jump-indicator-arrow ${CssHelpers.playerSideClass(oppositeSide)}"
       <.svg.g(
         <.svg.path(
           ^.`class` := classes,
@@ -34,10 +34,10 @@ object JumpIndicator extends SvgHelpers {
     }
     .build
 
-  private val OpponentAvatar = ReactComponentB[Color]("JumpIndicatorOpponentAvatar")
-    .render_P { color =>
+  private val OpponentAvatar = ReactComponentB[Side]("JumpIndicatorOpponentAvatar")
+    .render_P { side =>
       val pieceProps = PhysicalPieceProps.default.copy(
-        piece = if (color == DARK) DARKMAN else LIGHTMAN,
+        piece = if (side == DARK) DARKMAN else LIGHTMAN,
         ghost = false,
         scale = 1,
         x = 0,
@@ -48,7 +48,7 @@ object JumpIndicator extends SvgHelpers {
     .build
 
 
-  case class Props(opponentColor: Color,
+  case class Props(oppositeSide: Side,
                    x: Double = 0.0,
                    y: Double = 0.0,
                    scale: Double)
@@ -56,8 +56,8 @@ object JumpIndicator extends SvgHelpers {
   val component = ReactComponentB[Props]("JumpIndicator")
     .render_P { props =>
 
-      val opponentAvatar = OpponentAvatar(props.opponentColor)
-      val jumpArrow = JumpArrow(props.opponentColor)
+      val opponentAvatar = OpponentAvatar(props.oppositeSide)
+      val jumpArrow = JumpArrow(props.oppositeSide)
 
       <.svg.g(
         ^.svg.transform := s"translate(${props.x},${props.y}),scale(${props.scale})",

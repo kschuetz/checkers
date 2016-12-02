@@ -8,11 +8,11 @@ class MoveGenerator(rulesSettings: RulesSettings,
                     moveExecutor: MoveExecutor,
                     neighborTable: NeighborTable) {
 
-  def generateMoves(boardState: BoardStack, turnToMove: Color): MoveList = {
+  def generateMoves(boardState: BoardStack, turnToMove: Side): MoveList = {
     val builder = new MoveListBuilder
     val movePath = new MovePathStack
     val dark = turnToMove == DARK
-    val neighborIndex = neighborTable.forColor(turnToMove)
+    val neighborIndex = neighborTable.forSide(turnToMove)
 
     import checkers.masks._
 
@@ -195,7 +195,7 @@ class MoveGenerator(rulesSettings: RulesSettings,
     builder.result
   }
 
-  def mustJump(boardState: BoardStateRead, turnToMove: Color): Boolean = {
+  def mustJump(boardState: BoardStateRead, turnToMove: Side): Boolean = {
     val dark = turnToMove == DARK
     val myPieces = if(dark) boardState.darkPieces else boardState.lightPieces
     val opponentPieces = if(dark) boardState.lightPieces else boardState.darkPieces
