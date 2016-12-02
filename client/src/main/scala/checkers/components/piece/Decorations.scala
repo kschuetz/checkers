@@ -26,7 +26,7 @@ object Decorations extends SvgHelpers {
   private val outerStarRadius = 0.5
   private val innerStarRadius = 0.25
 
-  val pipCoordinates = (0 to 11).map { idx =>
+  val pipCoordinates: Vector[Point] = (0 to 11).map { idx =>
     val theta = idx * math.Pi / 6
     val x = pipDistanceFromCenter * math.sin(theta)
     val y = pipDistanceFromCenter * math.cos(theta)

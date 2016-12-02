@@ -13,7 +13,7 @@ object PhysicalBoard {
   val squareSize: Double = 1.0
   val boardSize: Double = 8
 
-  val squareCenterOffset = squareSize / 2
+  val squareCenterOffset: Double = squareSize / 2
   private val boardCenterOffset = 3.5 * squareSize
 
   def positionToPoint(position: BoardPosition): Point =

@@ -34,7 +34,7 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
     val lp = board.lightPieces
     val dp = board.darkPieces
     val occupied = lp | dp
-    val empty = ~(lp | dp)
+    val empty = ~occupied
     val nonDark = empty | lp
     val nonLight = empty | dp
 
@@ -81,10 +81,10 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
     val kingE = SHIFTW(k)
     val kingS = SHIFTN(k)
     val kingW = SHIFTE(k)
-    val kingNW = SHIFTSE(k)
-    val kingNE = SHIFTSW(k)
-    val kingSW = SHIFTNE(k)
-    val kingSE = SHIFTNW(k)
+    // val kingNW = SHIFTSE(k)
+    // val kingNE = SHIFTSW(k)
+    // val kingSW = SHIFTNE(k)
+    // val kingSE = SHIFTNW(k)
     val kingNW2 = SHIFTSE2(k)
     val kingNE2 = SHIFTSW2(k)
     val kingSW2 = SHIFTNE2(k)

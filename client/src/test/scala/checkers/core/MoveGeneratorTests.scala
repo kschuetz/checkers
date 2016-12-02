@@ -1,6 +1,7 @@
 package checkers.core
 
 import checkers.consts._
+import checkers.core.tables.JumpTable
 import checkers.test.generators.BoardWithMovesGenerators
 import checkers.test.{BoardUtils, DefaultGameLogicTestModule, TestSuiteBase}
 import nyaya.gen._
@@ -13,9 +14,9 @@ import utest.framework._
 object MoveGeneratorTests extends TestSuiteBase with DefaultGameLogicTestModule with BoardWithMovesGenerators {
 
 
-  lazy val moveDecoder = new MoveDecoder
-  lazy val moveGenerator = gameLogicModule.moveGenerator
-  lazy val jumpTable = tablesModule.jumpTable
+  protected lazy val moveDecoder: MoveDecoder = new MoveDecoder
+  protected lazy val moveGenerator: MoveGenerator = gameLogicModule.moveGenerator
+  protected lazy val jumpTable: JumpTable = tablesModule.jumpTable
 
   private def testBoard(board: BoardState, side: Side, expectedResult: Set[List[Int]]): Unit = {
     val stack = BoardStack.fromBoard(board)

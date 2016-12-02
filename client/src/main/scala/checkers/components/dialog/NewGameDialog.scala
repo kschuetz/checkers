@@ -94,7 +94,7 @@ object NewGameDialog {
 
   class PlayerSelectorBackend($: BackendScope[PlayerSelectorProps, Unit]) {
     def render(props: PlayerSelectorProps) = {
-      var items = new js.Array[ReactNode]
+      val items = new js.Array[ReactNode]
       props.playerChoices.indices.foreach { i =>
         val item = props.playerChoices(i)
         val option = <.option(

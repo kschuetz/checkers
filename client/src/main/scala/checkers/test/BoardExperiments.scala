@@ -1,8 +1,10 @@
 package checkers.test
 
+import checkers.core.BoardState
+
 object BoardExperiments {
 
-  lazy val board1 = BoardUtils.parseBoard("""
+  lazy val board1: BoardState = BoardUtils.parseBoard("""
               L - - -
              - - - D
               - l - -
@@ -13,7 +15,7 @@ object BoardExperiments {
              - - - -
     """)
 
-  lazy val board2 = BoardUtils.parseBoard("""
+  lazy val board2: BoardState = BoardUtils.parseBoard("""
               - - - -
              d l - -
               - - - -
@@ -24,7 +26,7 @@ object BoardExperiments {
              - - - -
                                           """)
 
-  lazy val board3 = BoardUtils.parseBoard("""
+  lazy val board3: BoardState = BoardUtils.parseBoard("""
               - - - -
              - - - -
               - - l -

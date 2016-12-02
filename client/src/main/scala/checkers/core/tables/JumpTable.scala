@@ -4,7 +4,7 @@ import scala.scalajs.js.typedarray.Int8Array
 
 
 class JumpTable(neighborTable: NeighborTable) {
-  val data = {
+  private val data = {
     val result = new Int8Array(1024)
     JumpTable.init(result, neighborTable)
     result

@@ -13,8 +13,8 @@ object MoveListTests extends TestSuiteBase
   with SideGenerator
   with BoardWithMovesGenerators {
 
-  lazy val moveDecoder = new MoveDecoder
-  lazy val moveGenerator = gameLogicModule.moveGenerator
+  protected lazy val moveDecoder: MoveDecoder = new MoveDecoder
+  protected lazy val moveGenerator: MoveGenerator = gameLogicModule.moveGenerator
 
   case class MoveListPropInput(moves: MoveList,
                                paths: Vector[List[Int]],
@@ -22,7 +22,7 @@ object MoveListTests extends TestSuiteBase
                                indices: Set[Int])
 
 
-  lazy val genInput: Gen[MoveListPropInput] = genBoardWithMoves.map { boardWithMoves =>
+  private lazy val genInput: Gen[MoveListPropInput] = genBoardWithMoves.map { boardWithMoves =>
     val moves = boardWithMoves.legalMoves
     val paths = moves.toList
     val indices = paths.map(path => moves.indexOf(path, moveDecoder)).toSet
@@ -30,17 +30,17 @@ object MoveListTests extends TestSuiteBase
   }
 
 
-  lazy val uniqueIndicesProp: Prop[MoveListPropInput] = Prop.test("uniqueIndices", { input =>
+  private lazy val uniqueIndicesProp: Prop[MoveListPropInput] = Prop.test("uniqueIndices", { input =>
     input.indices.size == input.paths.size
   })
 
-  lazy val allPathsFound: Prop[MoveListPropInput] = Prop.test("allPathsFound", { input =>
+  private lazy val allPathsFound: Prop[MoveListPropInput] = Prop.test("allPathsFound", { input =>
     input.indices.forall(_ >= 0)
   })
 
-  lazy val indexOfProps = uniqueIndicesProp & allPathsFound
+  private lazy val indexOfProps = uniqueIndicesProp & allPathsFound
 
-  lazy val moveFirstToFrontProp: Prop[MoveListPropInput] = Prop.test("moveFirstToFront", { input =>
+  private lazy val moveFirstToFrontProp: Prop[MoveListPropInput] = Prop.test("moveFirstToFront", { input =>
     if(input.paths.nonEmpty) {
       val path = input.paths.head
       val after = input.moves.moveToFrontIfExists(path).getOrElse(input.moves)
@@ -60,17 +60,17 @@ object MoveListTests extends TestSuiteBase
     } else true
   })
 
-  lazy val moveSecondToFrontProp: Prop[MoveListPropInput] = moveNToFrontProp(1, "moveSecondToFront")
-  lazy val moveThirdToFrontProp: Prop[MoveListPropInput] = moveNToFrontProp(2, "moveThirdToFront")
+  private lazy val moveSecondToFrontProp: Prop[MoveListPropInput] = moveNToFrontProp(1, "moveSecondToFront")
+  private lazy val moveThirdToFrontProp: Prop[MoveListPropInput] = moveNToFrontProp(2, "moveThirdToFront")
 
-  lazy val moveIllegalToFrontProp: Prop[MoveListPropInput] = Prop.test("moveIllegalToFront", { input =>
+  private lazy val moveIllegalToFrontProp: Prop[MoveListPropInput] = Prop.test("moveIllegalToFront", { input =>
     val illegalPath = List(0, 4)
     val after = input.moves.moveToFrontIfExists(illegalPath).getOrElse(input.moves)
     val afterPaths = after.toList.toVector
     afterPaths == input.paths
   })
 
-  lazy val moveToFrontIfExistsProps = moveFirstToFrontProp & moveSecondToFrontProp & moveThirdToFrontProp & moveIllegalToFrontProp
+  private lazy val moveToFrontIfExistsProps = moveFirstToFrontProp & moveSecondToFrontProp & moveThirdToFrontProp & moveIllegalToFrontProp
 
   override def tests: Tree[Test] = TestSuite {
     'MoveExecutor {

@@ -3,7 +3,7 @@ package checkers.computer
 import scala.scalajs.js
 
 class PrincipalVariation[A](val depth: Int) {
-  val size = depth * depth
+  val size: Int = depth * depth
   val line: js.Array[A] = initLine(size)
 
   def getBestMove(ply: Int): A = line(ply)

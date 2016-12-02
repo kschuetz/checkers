@@ -4,6 +4,7 @@ import checkers.consts._
 import checkers.core.Play.{Move, NoPlay}
 import checkers.core._
 import checkers.logger
+import checkers.logger.Logger
 import org.scalajs.dom.window.performance
 
 import scala.annotation.elidable
@@ -12,16 +13,14 @@ import scala.annotation.elidable._
 object Searcher {
   val MaxDepth = 40
 
-  val Infinity = Int.MaxValue - 1000
+  val Infinity: Int = Int.MaxValue - 1000
 }
 
 class Searcher(moveGenerator: MoveGenerator,
                moveExecutor: MoveExecutor,
                evaluator: Evaluator) {
 
-  val random = new java.util.Random
-
-  val log = logger.computerPlayer
+  protected val log = logger.computerPlayer
 
   def create(playInput: PlayInput, incomingPlayerState: ComputerPlayerState, depthLimit: Option[Int],
              cycleLimit: Option[Int], shuffler: Shuffler, transformResult: PlayResult => PlayResult): Search =
@@ -35,14 +34,14 @@ class Searcher(moveGenerator: MoveGenerator,
                transformResult: PlayResult => PlayResult)
     extends PlayComputation {
 
-    val maxDepth = depthLimit.getOrElse(Searcher.MaxDepth)
-    var cyclesRemaining = cycleLimit.getOrElse(0)
-    val cyclesLimited = cycleLimit.nonEmpty
-    var totalCyclesUsed = 0
-    var deepestPly = 0
-    var evaluatorCalls = 0
-    var totalMachineTime = 0d
-    val startTime = performance.now()
+    val maxDepth: Int = depthLimit.getOrElse(Searcher.MaxDepth)
+    var cyclesRemaining: Int = cycleLimit.getOrElse(0)
+    val cyclesLimited: Boolean = cycleLimit.nonEmpty
+    var totalCyclesUsed: Int = 0
+    var deepestPly: Int = 0
+    var evaluatorCalls: Int = 0
+    var totalMachineTime: Double = 0d
+    val startTime: Double = performance.now()
 
     val pv = new PrincipalVariation[Play](Searcher.MaxDepth)
     private val moveDecoder = new MoveDecoder

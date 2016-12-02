@@ -1,6 +1,7 @@
 package checkers.core
 
 import checkers.consts._
+import checkers.core.tables.JumpTable
 import checkers.test.generators.{BoardWithMovesGenerators, SideGenerator}
 import checkers.test.{BoardUtils, DefaultGameLogicTestModule, TestSuiteBase}
 import nyaya.gen._
@@ -14,10 +15,10 @@ object MoveExecutorTests extends TestSuiteBase
   with SideGenerator
   with BoardWithMovesGenerators {
 
-  lazy val moveGenerator = gameLogicModule.moveGenerator
-  lazy val moveExecutor = gameLogicModule.moveExecutor
-  lazy val moveDecoder = new MoveDecoder
-  lazy val jumpTable = tablesModule.jumpTable
+  protected lazy val moveGenerator: MoveGenerator = gameLogicModule.moveGenerator
+  protected lazy val moveExecutor: MoveExecutor = gameLogicModule.moveExecutor
+  protected lazy val moveDecoder: MoveDecoder = new MoveDecoder
+  protected lazy val jumpTable: JumpTable = tablesModule.jumpTable
 
   case class MoveExecutorPropInput(moveWasMade: Boolean,
                                    before: BoardStateRead,
@@ -66,13 +67,13 @@ object MoveExecutorTests extends TestSuiteBase
   }
 
 
-  lazy val genInputWithMoveDecoder = makePropInputGen(makeMoveWithMoveDecoder)
+  private lazy val genInputWithMoveDecoder = makePropInputGen(makeMoveWithMoveDecoder)
 
-  lazy val genInputWithFastExecute = makePropInputGen(makeMoveWithFastExecute)
+  private lazy val genInputWithFastExecute = makePropInputGen(makeMoveWithFastExecute)
 
-  lazy val genInputWithExecute = makePropInputGen(makeMoveWithExecute)
+  private lazy val genInputWithExecute = makePropInputGen(makeMoveWithExecute)
 
-  lazy val startSquareCorrectState: Prop[MoveExecutorPropInput] = Prop.test("startSquareCorrectState", {
+  private lazy val startSquareCorrectState: Prop[MoveExecutorPropInput] = Prop.test("startSquareCorrectState", {
     case MoveExecutorPropInput(true, before, after, turnToMove, path, reversePath) =>
       val startSquare = path.head
       val endSquare = reversePath.head
@@ -85,14 +86,14 @@ object MoveExecutorTests extends TestSuiteBase
     case _ => true
   })
 
-  lazy val endSquareCorrectState: Prop[MoveExecutorPropInput] = Prop.test("endSquareCorrectState", {
+  private lazy val endSquareCorrectState: Prop[MoveExecutorPropInput] = Prop.test("endSquareCorrectState", {
     case MoveExecutorPropInput(true, before, after, turnToMove, path, reversePath) =>
       val endSquare = reversePath.head
      after.squareHasSide(turnToMove)(endSquare)
     case _ => true
   })
 
-  lazy val crownedAppropriately: Prop[MoveExecutorPropInput] = Prop.test("crownedAppropriately", {
+  private lazy val crownedAppropriately: Prop[MoveExecutorPropInput] = Prop.test("crownedAppropriately", {
     case MoveExecutorPropInput(true, before, after, turnToMove, path, reversePath) =>
       val startSquare = path.head
       val endSquare = reversePath.head
@@ -111,14 +112,14 @@ object MoveExecutorTests extends TestSuiteBase
     case _ => true
   })
 
-  lazy val jumpedOverSquaresEmpty: Prop[MoveExecutorPropInput] = Prop.test("jumpedOverSquaresEmpty", {
+  private lazy val jumpedOverSquaresEmpty: Prop[MoveExecutorPropInput] = Prop.test("jumpedOverSquaresEmpty", {
     case MoveExecutorPropInput(true, before, after, turnToMove, path, reversePath) =>
       val jumpedOver = jumpTable.getMiddles(path)
       jumpedOver.forall(after.isSquareEmpty)
     case _ => true
   })
 
-  lazy val allMethodsSameOutcome: Prop[BoardWithMove] = Prop.test("allMethodsSameOutcome", {
+  private lazy val allMethodsSameOutcome: Prop[BoardWithMove] = Prop.test("allMethodsSameOutcome", {
     case BoardWithMove(board, turnToMove, Some(path)) =>
       board.push()
       makeMoveWithMoveDecoder(board, turnToMove, path)
@@ -136,7 +137,7 @@ object MoveExecutorTests extends TestSuiteBase
     case _ => true
   })
 
-  lazy val executeMoveProps = startSquareCorrectState & endSquareCorrectState & crownedAppropriately & jumpedOverSquaresEmpty
+  private lazy val executeMoveProps = startSquareCorrectState & endSquareCorrectState & crownedAppropriately & jumpedOverSquaresEmpty
 
   override def tests: Tree[Test] = TestSuite {
     'MoveExecutor {

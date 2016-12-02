@@ -21,6 +21,6 @@ object EmptyBoardCallbacks extends BoardCallbacks {
     None
   }
 
-  override val onBoardMouseMove = onBoardMouseDown
+  override val onBoardMouseMove: (BoardMouseEvent) => Option[Callback] = onBoardMouseDown
 }
 

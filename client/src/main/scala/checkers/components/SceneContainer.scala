@@ -16,7 +16,7 @@ object SceneContainer {
 
   class Backend($: BackendScope[Props, SceneContainerContext]) {
 
-    def start = {
+    def start: Callback = {
       val target = $.getDOMNode()
       val sceneContainerContext = new MountedSceneContainerContext(target.asInstanceOf[SVGSVGElement])
       $.setState(sceneContainerContext)

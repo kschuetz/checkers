@@ -1,14 +1,14 @@
 package checkers
 
 package object logger {
-  val log = LoggerFactory.getLogger("Log")
+  val log: Logger = LoggerFactory.getLogger("Log")
 
-  val animations = LoggerFactory.getLogger("Animations", Level.OFF)
+  val animations: Logger = LoggerFactory.getLogger("Animations", Level.OFF)
 
-  val inputEvents = LoggerFactory.getLogger("InputEvents")
+  val inputEvents: Logger = LoggerFactory.getLogger("InputEvents")
 
-  val gameDriver = LoggerFactory.getLogger("GameDriver")
+  val gameDriver: Logger = LoggerFactory.getLogger("GameDriver")
 
-  val computerPlayer = LoggerFactory.getPopUpLogger("ComputerPlayer")
+  val computerPlayer: Logger = LoggerFactory.getPopUpLogger("ComputerPlayer")
 
 }

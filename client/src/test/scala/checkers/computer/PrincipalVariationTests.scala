@@ -13,14 +13,14 @@ object PrincipalVariationTests extends TestSuiteBase {
 
   case class TestCase(depth: Int, items: Vector[TestObject])
 
-  lazy val genTestObject: Gen[TestObject] = Gen.choose(1, 100).map(TestObject)
+  private lazy val genTestObject: Gen[TestObject] = Gen.choose(1, 100).map(TestObject)
 
-  lazy val genTestCase: Gen[TestCase] = for {
+  private lazy val genTestCase: Gen[TestCase] = for {
     depth <- Gen.choose(3, 16)
     items <- genTestObject.fill(depth)
   } yield TestCase(depth, items.toVector)
 
-  lazy val works = Prop.test[TestCase]("works", { testCase =>
+  private lazy val works = Prop.test[TestCase]("works", { testCase =>
     val pv = new PrincipalVariation[TestObject](testCase.depth)
     val input = testCase.items
     val indices = input.indices
