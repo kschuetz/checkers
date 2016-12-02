@@ -5,7 +5,7 @@ import checkers.util.SvgHelpers
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
 
-object Button extends SvgHelpers with FontHelpers {
+object Button {
 
   case class Props(centerX: Double,
                    centerY: Double,
@@ -18,6 +18,10 @@ object Button extends SvgHelpers with FontHelpers {
                    onClick: Callback = Callback.empty)
 
   case class State(depressed: Boolean)
+}
+
+class Button extends SvgHelpers with FontHelpers {
+  import Button._
 
   private val defaultState = State(depressed = false)
 
@@ -93,9 +97,5 @@ object Button extends SvgHelpers with FontHelpers {
     .initialState[State](defaultState)
     .renderBackend[ButtonBackend]
     .build
-
-  def apply(props: Props) = component(props)
-
-
 
 }

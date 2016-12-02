@@ -1,18 +1,15 @@
 package checkers.userinterface.chrome
 
-import checkers.userinterface.SceneFrame
+import checkers.consts._
+import checkers.core.{ApplicationCallbacks, GameOverState}
 import checkers.userinterface.mixins.FontHelpers
 import checkers.userinterface.piece.{PhysicalPiece, PhysicalPieceProps}
-import checkers.consts._
-import checkers.core.{ApplicationCallbacks, GameModelReader, GameOverState}
-import checkers.util.CssHelpers
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
-import org.scalajs.dom.raw.SVGSVGElement
 
 import scala.scalajs.js
 
-object GameOverPanel extends FontHelpers {
+object GameOverPanel {
 
   private val darkWinPieces = Vector(DARKKING, DARKKING, DARKKING, DARKKING)
   private val lightWinPieces = Vector(LIGHTKING, LIGHTKING, LIGHTKING, LIGHTKING)
@@ -22,6 +19,13 @@ object GameOverPanel extends FontHelpers {
                    heightPixels: Int,
                    gameOverState: GameOverState,
                    applicationCallbacks: ApplicationCallbacks)
+
+}
+
+class GameOverPanel extends FontHelpers {
+
+  import GameOverPanel._
+
 
   class GameOverPanelBackend($: BackendScope[Props, Unit]) {
 
@@ -94,7 +98,7 @@ object GameOverPanel extends FontHelpers {
       parts.push(textLine(centerX, 2 * height / 9, textHeight, "GAME OVER"))
       props.gameOverState match {
         case GameOverState.Winner(side, player) =>
-          val pieces = if(side == DARK) darkWinPieces else lightWinPieces
+          val pieces = if (side == DARK) darkWinPieces else lightWinPieces
           parts.push(pieceRow(centerX, pieceRowY, pieceSize, pieces))
           parts.push(textLine(centerX, 37 * height / 48, textHeight, player.displayName))
           parts.push(textLine(centerX, 11 * height / 12, textHeight, "WINS"))
@@ -117,8 +121,6 @@ object GameOverPanel extends FontHelpers {
       CallbackTo.pure(result)
     }
     .build
-
-  def apply(props: Props) = component(props)
 
 
 }

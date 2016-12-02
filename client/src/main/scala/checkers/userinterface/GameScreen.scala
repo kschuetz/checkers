@@ -16,7 +16,10 @@ object GameScreen {
 
 }
 
-class GameScreen {
+class GameScreen(sceneContainer: SceneContainer,
+                 topChrome: TopChrome,
+                 sideChrome: SideChrome,
+                 gameOverPanel: GameOverPanel) {
   import GameScreen._
 
   val component = ReactComponentB[Props]("GameScreen")
@@ -39,13 +42,13 @@ class GameScreen {
 
       val sceneContainerProps = SceneContainer.Props(gameModel, layoutSettings, callbacks)
 
-      val gameOverPanel = gameModel.gameOverState.map { gameOverState =>
+      val gameOverPanelElement = gameModel.gameOverState.map { gameOverState =>
         val width = layoutSettings.GameOverPanelWidthPixels
         val height = layoutSettings.GameOverPanelHeightPixels
         val props = GameOverPanel.Props(widthPixels = width,
           heightPixels = height, gameOverState = gameOverState,
           applicationCallbacks = applicationCallbacks)
-        val panel = GameOverPanel(props)
+        val panel = gameOverPanel.component(props)
         val translateX = (sceneWidth - width) / 2
         val translateY = gameSceneY + (sceneHeight - height) / 2
         val transform = s"translate($translateX,$translateY)"
@@ -55,26 +58,28 @@ class GameScreen {
         )
       }
 
+      val topChromeElement = topChrome.component(topChromeProps)
+      val sideChromeElement = sideChrome.component(sideChromeProps)
+      val sceneContainerElement = sceneContainer.component(sceneContainerProps)
+
       <.svg.svg(
         ^.id := "game-screen",
         ^.svg.width := s"${totalWidth}px",
         ^.svg.height := s"${totalHeight}px",
         <.svg.g(
-          TopChrome(topChromeProps)
+          topChromeElement
         ),
         <.svg.g(
-          SceneContainer(sceneContainerProps),
+          sceneContainerElement,
           ^.svg.transform := sceneContainerTransform
         ),
         <.svg.g(
-          SideChrome(sideChromeProps),
+          sideChromeElement,
           ^.svg.transform := sideChromeTransform
         ),
-        gameOverPanel
+        gameOverPanelElement
       )
 
     }.build
-
-  val apply = component
 
 }

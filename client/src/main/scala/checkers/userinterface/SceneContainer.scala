@@ -14,6 +14,12 @@ object SceneContainer {
                    screenLayoutSettings: ScreenLayoutSettings,
                    callbacks: Callbacks)
 
+}
+
+class SceneContainer {
+
+  import SceneContainer._
+
   class Backend($: BackendScope[Props, SceneContainerContext]) {
 
     def start: Callback = {
@@ -42,6 +48,4 @@ object SceneContainer {
     .componentDidMount(_.backend.start)
     .build
 
-
-  def apply(props: Props) = component(props)
 }

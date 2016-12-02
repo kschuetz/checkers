@@ -13,6 +13,11 @@ object TopChrome {
                    heightPixels: Int,
                    applicationCallbacks: ApplicationCallbacks)
 
+}
+
+class TopChrome(playerPanel: PlayerPanel) {
+  import TopChrome._
+
   class TopChromeBackend($: BackendScope[Props, Unit]) {
 
     def render(props: Props) = {
@@ -54,7 +59,7 @@ object TopChrome {
       def makePanel(panelProps: PlayerPanel.Props, translateX: Int, translateY: Int) = {
         <.svg.g(
           ^.svg.transform := s"translate($translateX,$translateY)",
-          PlayerPanel(panelProps)
+          playerPanel.component(panelProps)
         )
       }
 
@@ -83,8 +88,5 @@ object TopChrome {
     //      CallbackTo.pure(result)
     //    }
     .build
-
-  def apply(props: Props) = component(props)
-
 
 }

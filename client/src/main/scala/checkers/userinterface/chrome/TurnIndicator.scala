@@ -1,15 +1,9 @@
 package checkers.userinterface.chrome
 
-import checkers.userinterface.SceneFrame
-import checkers.userinterface.piece.{PhysicalPiece, PhysicalPieceProps}
 import checkers.consts._
-import checkers.core.GameModelReader
-import checkers.util.{CssHelpers, Point, SvgHelpers}
+import checkers.util.{Point, SvgHelpers}
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
-import org.scalajs.dom.raw.SVGSVGElement
-
-import scala.scalajs.js
 
 object TurnIndicator extends SvgHelpers {
 
@@ -22,6 +16,11 @@ object TurnIndicator extends SvgHelpers {
                    baseThickness: Double = 0.68,
                    baseLength: Double = 0.75,
                    headLength: Double = 1.0)
+
+}
+
+class TurnIndicator extends SvgHelpers {
+  import TurnIndicator._
 
   val component = ReactComponentB[Props]("TurnIndicator")
     .render_P { props =>

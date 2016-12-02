@@ -5,7 +5,7 @@ import checkers.util.{CssHelpers, SvgHelpers}
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
 
-object RushButton extends SvgHelpers {
+object RushButton {
 
   private lazy val tooltip = Some("Rush the computer into making a move")
 
@@ -15,6 +15,12 @@ object RushButton extends SvgHelpers {
                    width: Double,
                    height: Double,
                    onClick: Callback = Callback.empty)
+
+}
+
+class RushButton(button: Button) extends SvgHelpers {
+
+  import RushButton._
 
   private case class GlyphProps(scale: Double)
 
@@ -46,7 +52,7 @@ object RushButton extends SvgHelpers {
     .build
 
   class RushButtonBackend($: BackendScope[Props, Unit]) {
-    def render(props: Props) = {
+    def render(props: Props): ReactElement = {
 
       val glyphSize = props.height / 2
 
@@ -69,14 +75,12 @@ object RushButton extends SvgHelpers {
         onClick =  props.onClick
       )
 
-      Button.component(buttonProps, glyph)
+      button.component(buttonProps, glyph)
     }
   }
 
   val component = ReactComponentB[Props]("RushButton")
     .renderBackend[RushButtonBackend]
     .build
-
-  def apply(props: Props) = component(props)
 
 }

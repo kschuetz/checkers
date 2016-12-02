@@ -11,6 +11,12 @@ object SideChrome {
                    layoutSettings: SideChromeLayoutSettings,
                    applicationCallbacks: ApplicationCallbacks)
 
+}
+
+class SideChrome(button: Button) {
+
+  import SideChrome._
+
   private val Backdrop = ReactComponentB[(Int, Int)]("SideChromeBackdrop")
     .render_P { case (width, height) =>
       <.svg.rect(
@@ -38,7 +44,7 @@ object SideChrome {
       val buttonCenterX = buttonX + (buttonWidth / 2)
       var currentY = buttonY + (buttonHeight / 2)
 
-      val newGameButton = Button(Button.Props(buttonCenterX,
+      val newGameButton = button.component(Button.Props(buttonCenterX,
         currentY,
         buttonWidth,
         buttonHeight,
@@ -50,7 +56,7 @@ object SideChrome {
 
       currentY += buttonYSpacing
 
-      val rotateBoardButton = Button(Button.Props(buttonCenterX,
+      val rotateBoardButton = button.component(Button.Props(buttonCenterX,
         currentY,
         buttonWidth,
         buttonHeight,
@@ -77,8 +83,5 @@ object SideChrome {
     //      CallbackTo.pure(result)
     //    }
     .build
-
-  def apply(props: Props) = component(props)
-
 
 }

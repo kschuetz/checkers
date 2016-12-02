@@ -1,8 +1,8 @@
 package checkers.userinterface.chrome
 
-import checkers.userinterface.mixins.FontHelpers
 import checkers.consts._
 import checkers.core.ApplicationCallbacks
+import checkers.userinterface.mixins.FontHelpers
 import checkers.util.CssHelpers
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
@@ -26,9 +26,17 @@ object PlayerPanel extends FontHelpers {
                    rushButtonEnabled: Boolean,
                    applicationCallbacks: ApplicationCallbacks)
 
+}
+
+class PlayerPanel(pieceAvatar: PieceAvatar,
+                  jumpIndicator: JumpIndicator,
+                  turnIndicator: TurnIndicator,
+                  rushButton: RushButton) extends FontHelpers {
+  import PlayerPanel._
+
   class PlayerPanelBackend($: BackendScope[Props, Unit]) {
 
-    def backdrop(props: Props) = {
+    def backdrop(props: Props): ReactElement = {
       <.svg.rect(
         ^.key := "backdrop",
         ^.`class` := s"player-panel-backdrop ${CssHelpers.playerSideClass(props.side)}",
@@ -39,7 +47,7 @@ object PlayerPanel extends FontHelpers {
       )
     }
 
-    def pieceAvatar(props: Props) = {
+    def makePieceAvatar(props: Props): ReactElement = {
       val scale = 0.8 * props.heightPixels
       val avatarProps = PieceAvatar.Props(
         side = props.side,
@@ -49,19 +57,19 @@ object PlayerPanel extends FontHelpers {
         y = props.heightPixels / 2
       )
 
-      PieceAvatar.component.withKey("avatar")(avatarProps)
+      pieceAvatar.component.withKey("avatar")(avatarProps)
     }
 
-    def turnIndicator(props: Props) = {
+    def makeTurnIndicator(props: Props): ReactElement = {
       val y = props.heightPixels / 2
       val x = 40
       val scale = 0.2 * props.heightPixels
       val turnIndicatorProps = TurnIndicator.Props(side = props.side,
         scale = scale, x = x, y = y, pointsRight = true, endingTurn = props.endingTurn)
-      TurnIndicator.component.withKey("turn-indicator")(turnIndicatorProps)
+      turnIndicator.component.withKey("turn-indicator")(turnIndicatorProps)
     }
 
-    def jumpIndicator(props: Props) = {
+    def makeJumpIndicator(props: Props): ReactElement = {
       val x = props.widthPixels - 50
       val y = 0.35 * props.heightPixels
       val jumpIndicatorProps = JumpIndicator.Props(oppositeSide = OPPONENT(props.side),
@@ -69,10 +77,10 @@ object PlayerPanel extends FontHelpers {
         y = y,
         scale = 0.37 * props.heightPixels
       )
-      JumpIndicator.component.withKey("jump-indicator")(jumpIndicatorProps)
+      jumpIndicator.component.withKey("jump-indicator")(jumpIndicatorProps)
     }
 
-    def playerNameDisplay(props: Props) = {
+    def playerNameDisplay(props: Props): ReactElement = {
       val textHeight = 0.27 * props.heightPixels
       val x = props.widthPixels * 0.24
       //val y = props.heightPixels / 2
@@ -90,7 +98,7 @@ object PlayerPanel extends FontHelpers {
       )
     }
 
-    def clockDisplay(props: Props) = {
+    def clockDisplay(props: Props): ReactElement = {
       val textHeight = 0.17 * props.heightPixels
       val x = props.widthPixels * 0.24
       //val y = props.heightPixels / 2
@@ -106,11 +114,7 @@ object PlayerPanel extends FontHelpers {
       )
     }
 
-    def indicators(props: Props) = {
-
-    }
-
-    def scoreDisplay(props: Props) = {
+    def scoreDisplay(props: Props): ReactElement = {
       val displayText = props.scoreDisplay.getOrElse("")
       val x = props.widthPixels - 5
       val y = props.heightPixels - 7
@@ -122,7 +126,7 @@ object PlayerPanel extends FontHelpers {
       )
     }
 
-    def rushButton(props: Props) = {
+    def makeRushButton(props: Props): ReactElement = {
       val x = props.widthPixels - 50
       val y = 0.75 * props.heightPixels
       val size = 0.37 * props.heightPixels
@@ -134,19 +138,19 @@ object PlayerPanel extends FontHelpers {
         height = size,
         onClick = props.applicationCallbacks.onRushButtonClicked
       )
-      RushButton.component.withKey("rush-button")(rushButtonProps)
+      rushButton.component.withKey("rush-button")(rushButtonProps)
     }
 
-    def render(props: Props) = {
+    def render(props: Props): ReactElement = {
       val parts = new js.Array[ReactNode]
       parts.push(backdrop(props))
-      parts.push(pieceAvatar(props))
+      parts.push(makePieceAvatar(props))
       parts.push(playerNameDisplay(props))
       if(props.isPlayerTurn) {
-        parts.push(turnIndicator(props))
+        parts.push(makeTurnIndicator(props))
       }
       if(props.jumpIndicator) {
-        parts.push(jumpIndicator(props))
+        parts.push(makeJumpIndicator(props))
       }
       if(props.scoreDisplay.nonEmpty) {
         parts.push(scoreDisplay(props))
@@ -155,7 +159,7 @@ object PlayerPanel extends FontHelpers {
         parts.push(clockDisplay(props))
       }
       if(props.rushButtonEnabled) {
-        parts.push(rushButton(props))
+        parts.push(makeRushButton(props))
       }
       <.svg.g(
         parts
@@ -174,8 +178,5 @@ object PlayerPanel extends FontHelpers {
       CallbackTo.pure(result)
     }
     .build
-
-  def apply(props: Props) = component(props)
-
 
 }
