@@ -34,7 +34,7 @@ class PlayerPanel(pieceAvatar: PieceAvatar,
                   rushButton: RushButton) extends FontHelpers {
   import PlayerPanel._
 
-  class PlayerPanelBackend($: BackendScope[Props, Unit]) {
+  class Backend($: BackendScope[Props, Unit]) {
 
     def backdrop(props: Props): ReactElement = {
       <.svg.rect(
@@ -172,7 +172,7 @@ class PlayerPanel(pieceAvatar: PieceAvatar,
   }
 
   val create = ReactComponentB[Props]("PlayerPanel")
-    .renderBackend[PlayerPanelBackend]
+    .renderBackend[Backend]
     .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, _) =>
       val result = scope.props != nextProps
       CallbackTo.pure(result)

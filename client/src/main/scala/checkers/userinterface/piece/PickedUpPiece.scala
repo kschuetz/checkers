@@ -17,7 +17,7 @@ object PickedUpPiece extends SvgHelpers {
 class PickedUpPiece(physicalPiece: PhysicalPiece) {
   import PickedUpPiece._
 
-  class PickedUpPieceBackend($: BackendScope[Props, Unit]) {
+  class Backend($: BackendScope[Props, Unit]) {
     def render(props: Props): ReactElement = {
       val model = props.model
       val center = model.movePos // + model.grabOffset
@@ -42,7 +42,7 @@ class PickedUpPiece(physicalPiece: PhysicalPiece) {
   }
 
   val create = ReactComponentB[Props]("PickedUpPiece")
-    .renderBackend[PickedUpPieceBackend]
+    .renderBackend[Backend]
     .build
 
 

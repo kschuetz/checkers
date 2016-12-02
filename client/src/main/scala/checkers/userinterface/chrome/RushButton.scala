@@ -51,7 +51,7 @@ class RushButton(button: Button) extends SvgHelpers {
     }
     .build
 
-  class RushButtonBackend($: BackendScope[Props, Unit]) {
+  class Backend($: BackendScope[Props, Unit]) {
     def render(props: Props): ReactElement = {
 
       val glyphSize = props.height / 2
@@ -80,7 +80,7 @@ class RushButton(button: Button) extends SvgHelpers {
   }
 
   val create = ReactComponentB[Props]("RushButton")
-    .renderBackend[RushButtonBackend]
+    .renderBackend[Backend]
     .build
 
 }

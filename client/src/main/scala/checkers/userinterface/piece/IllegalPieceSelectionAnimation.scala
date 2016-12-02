@@ -45,7 +45,7 @@ class IllegalPieceSelectionAnimation(physicalPiece: PhysicalPiece) {
     .build
 
 
-  class IllegalPieceSelectionAnimationBackend($: BackendScope[Props, Unit]) {
+  class Backend($: BackendScope[Props, Unit]) {
     def render(props: Props): ReactElement = {
       val t = props.progress
       val xoffset = 0.07 * (1 - t) * math.sin(40.5 * t)
@@ -72,7 +72,7 @@ class IllegalPieceSelectionAnimation(physicalPiece: PhysicalPiece) {
 
 
   val create = ReactComponentB[Props]("IllegalPieceSelectionAnimation")
-    .renderBackend[IllegalPieceSelectionAnimationBackend]
+    .renderBackend[Backend]
     .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, _) =>
       val result = scope.props != nextProps
       CallbackTo.pure(result)

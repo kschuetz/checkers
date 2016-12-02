@@ -19,7 +19,7 @@ class CrowningAnimation(physicalPiece: PhysicalPiece) {
 
   import CrowningAnimation._
 
-  class CrowningAnimationBackend($: BackendScope[Props, Unit]) {
+  class Backend($: BackendScope[Props, Unit]) {
     def render(props: Props): ReactElement = {
       val piece = if (props.side == DARK) DARKMAN else LIGHTMAN
 
@@ -53,7 +53,7 @@ class CrowningAnimation(physicalPiece: PhysicalPiece) {
 
 
   val create = ReactComponentB[Props]("CrowningAnimation")
-    .renderBackend[CrowningAnimationBackend]
+    .renderBackend[Backend]
     .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, _) =>
       val result = scope.props != nextProps
       CallbackTo.pure(result)

@@ -25,7 +25,7 @@ class Button extends SvgHelpers with FontHelpers {
 
   private val defaultState = State(depressed = false)
 
-  class ButtonBackend($: BackendScope[Props, State]) {
+  class Backend($: BackendScope[Props, State]) {
     def handleMouseDown(e: ReactMouseEventI): Callback = {
       if(e.button != 0) Callback.empty  // ignore all but left-click
       else $.modState(_.copy(depressed = true))
@@ -95,7 +95,7 @@ class Button extends SvgHelpers with FontHelpers {
 
   val create = ReactComponentB[Props]("Button")
     .initialState[State](defaultState)
-    .renderBackend[ButtonBackend]
+    .renderBackend[Backend]
     .build
 
 }

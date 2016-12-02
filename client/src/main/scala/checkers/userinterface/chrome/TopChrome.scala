@@ -18,7 +18,7 @@ object TopChrome {
 class TopChrome(playerPanel: PlayerPanel) {
   import TopChrome._
 
-  class TopChromeBackend($: BackendScope[Props, Unit]) {
+  class Backend($: BackendScope[Props, Unit]) {
 
     def render(props: Props): ReactElement = {
       val panelWidth = props.widthPixels / 2
@@ -82,7 +82,7 @@ class TopChrome(playerPanel: PlayerPanel) {
   }
 
   val create = ReactComponentB[Props]("TopChrome")
-    .renderBackend[TopChromeBackend]
+    .renderBackend[Backend]
     //    .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, _) =>
     //      val result = scope.props != nextProps
     //      CallbackTo.pure(result)

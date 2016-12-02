@@ -36,7 +36,7 @@ class SceneFrame(physicalBoard: PhysicalBoard,
       )
     }.build
 
-  class SceneFrameBackend($: BackendScope[Props, Unit]) {
+  class Backend($: BackendScope[Props, Unit]) {
     val playfieldRef = Ref[SVGGElement]("playfield")
 
     def render(props: Props): ReactElement = {
@@ -85,7 +85,7 @@ class SceneFrame(physicalBoard: PhysicalBoard,
   }
 
   val create = ReactComponentB[Props]("SceneFrame")
-    .renderBackend[SceneFrameBackend]
+    .renderBackend[Backend]
     .build
 
 

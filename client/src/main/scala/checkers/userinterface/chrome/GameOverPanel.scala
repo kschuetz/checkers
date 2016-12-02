@@ -26,8 +26,7 @@ class GameOverPanel(physicalPiece: PhysicalPiece) extends FontHelpers {
 
   import GameOverPanel._
 
-
-  class GameOverPanelBackend($: BackendScope[Props, Unit]) {
+  class Backend($: BackendScope[Props, Unit]) {
 
 
     private def handleClick(event: ReactEventI): Callback = {
@@ -115,7 +114,7 @@ class GameOverPanel(physicalPiece: PhysicalPiece) extends FontHelpers {
   }
 
   val create = ReactComponentB[Props]("GameOverPanel")
-    .renderBackend[GameOverPanelBackend]
+    .renderBackend[Backend]
     .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, _) =>
       val result = scope.props != nextProps
       CallbackTo.pure(result)

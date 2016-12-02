@@ -29,7 +29,7 @@ class SideChrome(button: Button) {
     }
     .build
 
-  class SideChromeBackend($: BackendScope[Props, Unit]) {
+  class Backend($: BackendScope[Props, Unit]) {
 
     def render(props: Props): ReactElement = {
       val layoutSettings = props.layoutSettings
@@ -77,7 +77,7 @@ class SideChrome(button: Button) {
   }
 
   val create = ReactComponentB[Props]("SideChrome")
-    .renderBackend[SideChromeBackend]
+    .renderBackend[Backend]
     //    .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, _) =>
     //      val result = scope.props != nextProps
     //      CallbackTo.pure(result)

@@ -19,7 +19,7 @@ class JumpingPieceAnimation(physicalPiece: PhysicalPiece) {
 
   import JumpingPieceAnimation._
 
-  class JumpingPieceAnimationBackend($: BackendScope[Props, Unit]) {
+  class Backend($: BackendScope[Props, Unit]) {
     def render(props: Props): ReactElement = {
       val t = Easing.easeInOutQuart(props.progress)
       val ptA = Board.squareCenter(props.fromSquare)
@@ -50,7 +50,7 @@ class JumpingPieceAnimation(physicalPiece: PhysicalPiece) {
 
 
   val create = ReactComponentB[Props]("JumpingPieceAnimation")
-    .renderBackend[JumpingPieceAnimationBackend]
+    .renderBackend[Backend]
     .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, _) =>
       val result = scope.props != nextProps
       CallbackTo.pure(result)
