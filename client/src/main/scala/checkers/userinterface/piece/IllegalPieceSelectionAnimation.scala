@@ -2,12 +2,22 @@ package checkers.userinterface.piece
 
 import checkers.consts._
 import checkers.core.Board
-import checkers.util.{CssHelpers, Point, SvgHelpers}
-import japgolly.scalajs.react._
+import checkers.util.CssHelpers
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
 
 object IllegalPieceSelectionAnimation {
+
+  case class Props(piece: Occupant,
+                   squareIndex: Int,
+                   progress: Double,
+                   rotationDegrees: Double = 0)
+
+}
+
+class IllegalPieceSelectionAnimation(physicalPiece: PhysicalPiece) {
+
+  import IllegalPieceSelectionAnimation._
 
 
   private val NoSymbolLeg = ReactComponentB[String]("NoSymbolLeg")
@@ -34,13 +44,9 @@ object IllegalPieceSelectionAnimation {
     }
     .build
 
-  case class Props(piece: Occupant,
-                   squareIndex: Int,
-                   progress: Double,
-                   rotationDegrees: Double = 0)
 
   class IllegalPieceSelectionAnimationBackend($: BackendScope[Props, Unit]) {
-    def render(props: Props) = {
+    def render(props: Props): ReactElement = {
       val t = props.progress
       val xoffset = 0.07 * (1 - t) * math.sin(40.5 * t)
       val yoffset = 0
@@ -49,15 +55,15 @@ object IllegalPieceSelectionAnimation {
         x = xoffset,
         y = yoffset,
         rotationDegrees = props.rotationDegrees)
-      val physicalPiece = PhysicalPiece.apply(physicalPieceProps)
+      val pieceElement = physicalPiece.component(physicalPieceProps)
 
       val pt = Board.squareCenter(props.squareIndex)
 
       val noSymbolShowing = (t >= 0.1 && t <= 0.3) || (t >= 0.5 && t <= 0.7)
 
       <.svg.g(
-        physicalPiece,
-        if(noSymbolShowing) NoSymbol(SIDE(props.piece)) else EmptyTag,
+        pieceElement,
+        if (noSymbolShowing) NoSymbol(SIDE(props.piece)) else EmptyTag,
         ^.svg.transform := s"translate(${pt.x},${pt.y})"
       )
 
@@ -72,7 +78,5 @@ object IllegalPieceSelectionAnimation {
       CallbackTo.pure(result)
     }
     .build
-
-  def apply(props: Props) = component(props)
 
 }

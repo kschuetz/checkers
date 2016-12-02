@@ -45,7 +45,7 @@ class Button extends SvgHelpers with FontHelpers {
       $.modState(_.copy(depressed = false))
     }
 
-    def render(props: Props, state: State, children: PropsChildren) = {
+    def render(props: Props, state: State, children: PropsChildren): ReactElement = {
       val textHeight = math.round(2 * props.height / 3)
       val textY = 4 + (props.height - textHeight) / 2
 

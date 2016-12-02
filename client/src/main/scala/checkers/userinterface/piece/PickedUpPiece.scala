@@ -12,8 +12,13 @@ object PickedUpPiece extends SvgHelpers {
   case class Props(model: Model,
                    rotationDegrees: Double)
 
+}
+
+class PickedUpPiece(physicalPiece: PhysicalPiece) {
+  import PickedUpPiece._
+
   class PickedUpPieceBackend($: BackendScope[Props, Unit]) {
-    def render(props: Props) = {
+    def render(props: Props): ReactElement = {
       val model = props.model
       val center = model.movePos // + model.grabOffset
 
@@ -23,21 +28,22 @@ object PickedUpPiece extends SvgHelpers {
         rotationDegrees = props.rotationDegrees,
         scale = 1.1)
 
-      val physicalPiece = PhysicalPiece.apply(physicalPieceProps)
+      val pieceElement = physicalPiece.component(physicalPieceProps)
 
       val side = SIDE(model.piece)
       val classes = if(side == DARK) "picked-up-piece dark" else "picked-up-piece light"
 
       <.svg.g(
         ^.`class` := classes,
-        physicalPiece
+        pieceElement
       )
 
     }
   }
 
-  val component = ReactComponentB[Props]("PickedUpPiece").renderBackend[PickedUpPieceBackend].build
+  val component = ReactComponentB[Props]("PickedUpPiece")
+    .renderBackend[PickedUpPieceBackend]
+    .build
 
-  def apply(props: Props) = component(props)
 
 }

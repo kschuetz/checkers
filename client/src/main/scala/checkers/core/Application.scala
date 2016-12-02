@@ -1,11 +1,11 @@
 package checkers.core
 
-import checkers.userinterface.dialog.{NewGameDialog, PlayerChoice}
-import checkers.userinterface.dialog.NewGameDialog.{NewGameDialogCallbacks, Result}
 import checkers.computer.ProgramRegistry
 import checkers.core.tables.TablesModule
 import checkers.logger
 import checkers.persistence.NewGameSettingsPersister
+import checkers.userinterface.dialog.NewGameDialog.{NewGameDialogCallbacks, Result}
+import checkers.userinterface.dialog.{NewGameDialog, PlayerChoice}
 import japgolly.scalajs.react.{Callback, ReactDOM}
 import org.scalajs.dom
 
@@ -14,7 +14,8 @@ class Application(programRegistry: ProgramRegistry,
                   animationSettings: AnimationSettings,
                   newGameSettingsPersister: NewGameSettingsPersister,
                   gameFactory: GameFactory,
-                  makeGameLogicModule: GameLogicModuleFactory)  {
+                  makeGameLogicModule: GameLogicModuleFactory,
+                  newGameDialog: NewGameDialog)  {
 
   private lazy val playerChoices: Vector[PlayerChoice] = {
     val computerPlayers = programRegistry.entries.sortWith {
@@ -102,7 +103,7 @@ class Application(programRegistry: ProgramRegistry,
 
       logger.log.debug(props.toString)
 
-      val dialog = NewGameDialog(props)
+      val dialog = newGameDialog.component(props)
 
       ReactDOM.render(dialog, dialogHost)
     }

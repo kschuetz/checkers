@@ -12,8 +12,14 @@ object RemovingPieceAnimation {
                    progress: Double,
                    rotationDegrees: Double)
 
+}
+
+class RemovingPieceAnimation(physicalPiece: PhysicalPiece) {
+
+  import RemovingPieceAnimation._
+
   class RemovingAnimationBackend($: BackendScope[Props, Unit]) {
-    def render(props: Props) = {
+    def render(props: Props): ReactElement = {
       val t = Easing.easeInQuad(props.progress)
       val ptA = startingPoint(props.piece, props.fromSquare)
       val ptB = AnimationHelpers.exitPoint(props.piece, props.fromSquare)
@@ -29,12 +35,11 @@ object RemovingPieceAnimation {
         y = y,
         rotationDegrees = props.rotationDegrees)
 
-      val physicalPiece = PhysicalPiece.apply(physicalPieceProps)
+      val pieceElement = physicalPiece.component(physicalPieceProps)
 
-      physicalPiece
+      pieceElement
     }
   }
-
 
   val component = ReactComponentB[Props]("RemovingPieceAnimation")
     .renderBackend[RemovingAnimationBackend]
@@ -43,8 +48,6 @@ object RemovingPieceAnimation {
       CallbackTo.pure(result)
     }
     .build
-
-  def apply(props: Props) = component(props)
 
   private def startingPoint(piece: Occupant, fromSquare: Int): Point = {
     Board.squareCenter(fromSquare)

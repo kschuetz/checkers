@@ -18,7 +18,14 @@ object SceneFrame {
                    widthPixels: Int,
                    heightPixels: Int)
 
-  val Backdrop = ReactComponentB[(Int, Int)]("Backdrop")
+}
+
+class SceneFrame(physicalBoard: PhysicalBoard,
+                 dynamicScene: DynamicScene) {
+
+  import SceneFrame._
+
+  private val Backdrop = ReactComponentB[(Int, Int)]("Backdrop")
     .render_P { case (width, height) =>
       <.svg.rect(
         ReactAttr.ClassName := "backdrop",
@@ -32,17 +39,16 @@ object SceneFrame {
   class SceneFrameBackend($: BackendScope[Props, Unit]) {
     val playfieldRef = Ref[SVGGElement]("playfield")
 
-    def render(props: Props) = {
+    def render(props: Props): ReactElement = {
       val Props(model, callbacks, sceneContainerContext, widthPixels, heightPixels) = props
-      val physicalBoard = PhysicalBoard.Board()
       val screenToBoard = makeScreenToBoard(sceneContainerContext)
 
       val boardRotation = props.gameModel.getBoardRotation
-      val rotateTransform = if(boardRotation != 0) s",rotate($boardRotation)" else ""
+      val rotateTransform = if (boardRotation != 0) s",rotate($boardRotation)" else ""
 
       val dynamicSceneProps = DynamicScene.Props(props.gameModel, props.callbacks, props.sceneContainerContext, screenToBoard)
 
-      val transform = if(widthPixels == heightPixels) {
+      val transform = if (widthPixels == heightPixels) {
         val translate = widthPixels / 2.0
         val scale = scaleForDimension(widthPixels)
         s"translate($translate,$translate),scale($scale)$rotateTransform"
@@ -54,14 +60,15 @@ object SceneFrame {
         s"translate($translateX,$translateY),scale($scaleX,$scaleY)$rotateTransform"
       }
 
-      val dynamicScene = DynamicScene(dynamicSceneProps)
+      val physicalBoardElement = physicalBoard.component()
+      val dynamicSceneElement = dynamicScene.component(dynamicSceneProps)
       <.svg.g(
         Backdrop((widthPixels, heightPixels)),
         <.svg.g(
           ^.ref := playfieldRef,
           ^.svg.transform := transform,
-          physicalBoard,
-          dynamicScene
+          physicalBoardElement,
+          dynamicSceneElement
         )
       )
     }
@@ -78,11 +85,9 @@ object SceneFrame {
   }
 
   val component = ReactComponentB[Props]("SceneFrame")
-      .renderBackend[SceneFrameBackend]
-      .build
+    .renderBackend[SceneFrameBackend]
+    .build
 
-
-  def apply(model: Props) = component(model)
 
   private def scaleForDimension(dimensionPixels: Int): Double = {
     // when board is 800 x 800, scene needs to be scaled 90 times

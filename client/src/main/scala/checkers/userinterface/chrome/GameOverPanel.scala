@@ -22,7 +22,7 @@ object GameOverPanel {
 
 }
 
-class GameOverPanel extends FontHelpers {
+class GameOverPanel(physicalPiece: PhysicalPiece) extends FontHelpers {
 
   import GameOverPanel._
 
@@ -64,7 +64,7 @@ class GameOverPanel extends FontHelpers {
         y = y,
         scale = size
       )
-      PhysicalPiece.apply.withKey(key)(pieceProps)
+      physicalPiece.component.withKey(key)(pieceProps)
     }
 
     private def pieceRow(centerX: Int, centerY: Int, pieceSize: Int, pieces: Vector[Occupant]) = {
@@ -83,7 +83,7 @@ class GameOverPanel extends FontHelpers {
     }
 
 
-    def render(props: Props) = {
+    def render(props: Props): ReactElement = {
       val centerX = props.widthPixels / 2
       val height = props.heightPixels
       val textHeight = {

@@ -1,6 +1,6 @@
 package checkers.userinterface.piece
 
-import checkers.consts.{DARK, LIGHT, Side}
+import checkers.consts.{DARK, Side}
 import checkers.util.{Point, SvgHelpers}
 import japgolly.scalajs.react.vdom.prefix_<^._
 import japgolly.scalajs.react.{ReactComponentB, ReactNode}
@@ -17,7 +17,7 @@ object Decoration {
 
 }
 
-object Decorations extends SvgHelpers {
+class Decorations extends SvgHelpers {
 
   private val pipDistanceFromEdge = 0.01
   private val pipDistanceFromCenter = PhysicalPiece.pieceRadius - pipDistanceFromEdge

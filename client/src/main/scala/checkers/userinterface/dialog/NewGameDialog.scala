@@ -60,6 +60,11 @@ object NewGameDialog {
     def initialState: State = State(initialDarkPlayer, initialLightPlayer, initialPlaysFirst, initialVariationIndex)
   }
 
+}
+
+class NewGameDialog(physicalPiece: PhysicalPiece) {
+
+  import NewGameDialog._
 
   private val PieceAvatar = ReactComponentB[Side]("NewGameDialogPieceAvatar")
     .render_P { side =>
@@ -69,7 +74,7 @@ object NewGameDialog {
         y = 45,
         scale = 90
       )
-      val component = PhysicalPiece.apply(pieceProps)
+      val component = physicalPiece.component(pieceProps)
       <.svg.svg(
         ^.svg.width := 90,
         ^.svg.height := 90,
@@ -384,14 +389,11 @@ object NewGameDialog {
       result <- props.callbacks.onNewGameDialogResult(data)
     } yield result
 
-
   }
 
   val component = ReactComponentB[Props]("NewGameDialog")
     .initialState_P[State](_.initialState)
     .renderBackend[NewGameDialogBackend]
     .build
-
-  def apply(props: Props) = component(props)
 
 }

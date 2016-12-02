@@ -24,7 +24,7 @@ object JumpIndicator extends SvgHelpers {
 
 }
 
-class JumpIndicator {
+class JumpIndicator(physicalPiece: PhysicalPiece) {
   import JumpIndicator._
 
   private val JumpArrow = ReactComponentB[Side]("JumpIndicatorArrow")
@@ -48,7 +48,7 @@ class JumpIndicator {
         x = 0,
         y = 0
       )
-      PhysicalPiece.apply(pieceProps)
+      physicalPiece.component(pieceProps)
     }
     .build
 

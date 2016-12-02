@@ -13,8 +13,14 @@ object MovingPieceAnimation {
                    progress: Double,
                    rotationDegrees: Double)
 
+}
+
+class MovingPieceAnimation(physicalPiece: PhysicalPiece) {
+
+  import MovingPieceAnimation._
+
   class MovingPieceAnimationBackend($: BackendScope[Props, Unit]) {
-    def render(props: Props) = {
+    def render(props: Props): ReactElement = {
       val t = Easing.easeInOutQuart(props.progress)
       val ptA = Board.squareCenter(props.fromSquare)
       val ptB = Board.squareCenter(props.toSquare)
@@ -30,12 +36,11 @@ object MovingPieceAnimation {
         y = y,
         rotationDegrees = props.rotationDegrees)
 
-      val physicalPiece = PhysicalPiece.apply(physicalPieceProps)
+      val pieceElement = physicalPiece.component(physicalPieceProps)
 
-      physicalPiece
+      pieceElement
     }
   }
-
 
   val component = ReactComponentB[Props]("MovingPieceAnimation")
     .renderBackend[MovingPieceAnimationBackend]
@@ -44,7 +49,5 @@ object MovingPieceAnimation {
       CallbackTo.pure(result)
     }
     .build
-
-  def apply(props: Props) = component(props)
 
 }

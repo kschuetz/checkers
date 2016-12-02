@@ -20,7 +20,7 @@ class TopChrome(playerPanel: PlayerPanel) {
 
   class TopChromeBackend($: BackendScope[Props, Unit]) {
 
-    def render(props: Props) = {
+    def render(props: Props): ReactElement = {
       val panelWidth = props.widthPixels / 2
       val panelHeight = props.heightPixels
 

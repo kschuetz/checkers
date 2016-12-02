@@ -16,6 +16,12 @@ object SquareOverlayButton {
                    screenToBoard: Point => Point,
                    callbacks: BoardCallbacks)
 
+}
+
+class SquareOverlayButton {
+
+  import SquareOverlayButton._
+
   val component = ReactComponentB[Props]("SquareOverlayButton")
     .render_P { props =>
       <.svg.rect(
@@ -29,8 +35,6 @@ object SquareOverlayButton {
       )
 
     }.build
-
-  def apply(props: Props) = component(props)
 
   private def handleMouseDown(props: Props)(event: ReactMouseEvent): Option[Callback] = {
     val boardEvent = makeBoardEvent(props, event)

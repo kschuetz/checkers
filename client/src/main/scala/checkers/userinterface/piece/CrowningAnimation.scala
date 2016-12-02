@@ -13,9 +13,15 @@ object CrowningAnimation {
                    progress: Double,
                    rotationDegrees: Double)
 
+}
+
+class CrowningAnimation(physicalPiece: PhysicalPiece) {
+
+  import CrowningAnimation._
+
   class CrowningAnimationBackend($: BackendScope[Props, Unit]) {
-    def render(props: Props) = {
-      val piece = if(props.side == DARK) DARKMAN else LIGHTMAN
+    def render(props: Props): ReactElement = {
+      val piece = if (props.side == DARK) DARKMAN else LIGHTMAN
 
       val entryPoint = AnimationHelpers.exitPoint(piece, props.square)
       val dest = Board.squareCenter(props.square)
@@ -29,14 +35,14 @@ object CrowningAnimation {
         y = y,
         rotationDegrees = props.rotationDegrees)
 
-      val topPiece = PhysicalPiece.apply(topProps)
+      val topPiece = physicalPiece.component(topProps)
 
       val bottomProps = PhysicalPieceProps.default.copy(piece = piece,
         x = dest.x,
         y = dest.y,
         rotationDegrees = props.rotationDegrees)
 
-      val bottomPiece = PhysicalPiece.apply(bottomProps)
+      val bottomPiece = physicalPiece.component(bottomProps)
 
       <.svg.g(
         bottomPiece,
@@ -53,7 +59,5 @@ object CrowningAnimation {
       CallbackTo.pure(result)
     }
     .build
-
-  def apply(props: Props) = component(props)
 
 }

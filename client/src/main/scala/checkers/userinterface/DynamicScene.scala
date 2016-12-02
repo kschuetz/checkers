@@ -22,6 +22,19 @@ object DynamicScene {
                    sceneContainerContext: SceneContainerContext,
                    screenToBoard: Point => Point)
 
+}
+
+class DynamicScene(physicalPiece: PhysicalPiece,
+                   squareOverlayButton: SquareOverlayButton,
+                   pickedUpPiece: PickedUpPiece,
+                   movingPieceAnimation: MovingPieceAnimation,
+                   removingPieceAnimation: RemovingPieceAnimation,
+                   jumpingPieceAnimation: JumpingPieceAnimation,
+                   placingPieceAnimation: PlacingPieceAnimation,
+                   crowningAnimation: CrowningAnimation,
+                   illegalPieceSelectionAnimation: IllegalPieceSelectionAnimation) {
+  import DynamicScene._
+
   val component = ReactComponentB[Props]("DynamicScene")
     .render_P { case Props(model, callbacks, sceneContainerContext, screenToBoard) =>
 
@@ -62,8 +75,8 @@ object DynamicScene {
             screenToBoard = screenToBoard,
             callbacks = callbacks)
 
-          val physicalPiece = PhysicalPiece.apply.withKey(k)(pieceProps)
-          staticPieces.push(physicalPiece)
+          val pieceElement = physicalPiece.component.withKey(k)(pieceProps)
+          staticPieces.push(pieceElement)
         }
       }
 
@@ -81,13 +94,13 @@ object DynamicScene {
 
         val props = SquareOverlayButton.Props(squareIndex, occupant, pt.x, pt.y, squareAttributes.clickable,
           screenToBoard = screenToBoard, callbacks = callbacks)
-        val button = SquareOverlayButton.component.withKey(k)(props)
+        val button = squareOverlayButton.component.withKey(k)(props)
         overlayButtons.push(button)
       }
 
-      val pickedUpPiece = model.pickedUpPiece.map { p =>
+      val pickedUpPieceElement = model.pickedUpPiece.map { p =>
         val props = PickedUpPiece.Props(p, rotationDegrees = pieceRotation)
-        PickedUpPiece(props)
+        pickedUpPiece.component(props)
       }
 
       val animations = new js.Array[ReactNode]
@@ -97,28 +110,28 @@ object DynamicScene {
             val k = s"remove-${rp.fromSquare}"
             val progress = rp.linearProgress(nowTime)
             val props = RemovingPieceAnimation.Props(rp.piece, rp.fromSquare, progress, pieceRotation)
-            val component = RemovingPieceAnimation.component.withKey(k)(props)
+            val component = removingPieceAnimation.component.withKey(k)(props)
             animations.push(component)
 
           case pp: PlacingPiece =>
             val k = s"place-${pp.toSquare}"
             val progress = pp.linearProgress(nowTime)
             val props = PlacingPieceAnimation.Props(pp.piece, pp.toSquare, progress, pieceRotation)
-            val component = PlacingPieceAnimation.component.withKey(k)(props)
+            val component = placingPieceAnimation.component.withKey(k)(props)
             animations.push(component)
 
           case mp: MovingPiece =>
             val k = s"move-${mp.fromSquare}-${mp.toSquare}"
             val progress = mp.linearProgress(nowTime)
             val props = MovingPieceAnimation.Props(mp.piece, mp.fromSquare, mp.toSquare, progress, pieceRotation)
-            val component = MovingPieceAnimation.component.withKey(k)(props)
+            val component = movingPieceAnimation.component.withKey(k)(props)
             animations.push(component)
 
           case jp: JumpingPiece if jp.isPieceVisible(nowTime) =>
             val k = s"jump-${jp.fromSquare}-${jp.toSquare}"
             val progress = jp.linearProgress(nowTime)
             val props = JumpingPieceAnimation.Props(jp.piece, jp.fromSquare, jp.toSquare, progress, pieceRotation)
-            val component = JumpingPieceAnimation.component.withKey(k)(props)
+            val component = jumpingPieceAnimation.component.withKey(k)(props)
             animations.push(component)
 
           case cp: CrowningPiece =>
@@ -126,7 +139,7 @@ object DynamicScene {
             val progress = cp.linearProgress(nowTime)
             if(progress > 0) {
               val props = CrowningAnimation.Props(cp.side, cp.squareIndex, progress, pieceRotation)
-              val component = CrowningAnimation.component.withKey(k)(props)
+              val component = crowningAnimation.component.withKey(k)(props)
               animations.push(component)
             }
 
@@ -134,7 +147,7 @@ object DynamicScene {
             val k = s"illegal-${ips.squareIndex}"
             val progress = ips.linearProgress(nowTime)
             val props = IllegalPieceSelectionAnimation.Props(ips.piece, ips.squareIndex, progress, pieceRotation)
-            val component = IllegalPieceSelectionAnimation.component.withKey(k)(props)
+            val component = illegalPieceSelectionAnimation.component.withKey(k)(props)
             animations.push(component)
 
           case _ => ()
@@ -144,13 +157,9 @@ object DynamicScene {
         overlayButtons,
         staticPiecesLayer,
         animations,
-        pickedUpPiece
+        pickedUpPieceElement
       )
 
     }.build
-
-
-  def apply(props: Props) = component(props)
-
 
 }

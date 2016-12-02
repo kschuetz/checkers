@@ -12,8 +12,14 @@ object PlacingPieceAnimation {
                    progress: Double,
                    rotationDegrees: Double)
 
+}
+
+class PlacingPieceAnimation(physicalPiece: PhysicalPiece) {
+
+  import PlacingPieceAnimation._
+
   class PlacingAnimationBackend($: BackendScope[Props, Unit]) {
-    def render(props: Props) = {
+    def render(props: Props): ReactElement = {
       val t = Easing.easeInQuad(props.progress)
       val ptA = AnimationHelpers.entryPoint(props.piece, props.toSquare)
       val ptB = endingPoint(props.piece, props.toSquare)
@@ -29,9 +35,9 @@ object PlacingPieceAnimation {
         y = y,
         rotationDegrees = props.rotationDegrees)
 
-      val physicalPiece = PhysicalPiece.apply(physicalPieceProps)
+      val pieceElement = physicalPiece.component(physicalPieceProps)
 
-      physicalPiece
+      pieceElement
     }
   }
 
@@ -43,8 +49,6 @@ object PlacingPieceAnimation {
       CallbackTo.pure(result)
     }
     .build
-
-  def apply(props: Props) = component(props)
 
   private def endingPoint(piece: Occupant, fromSquare: Int): Point = {
     Board.squareCenter(fromSquare)

@@ -5,10 +5,13 @@ import checkers.core._
 import checkers.core.tables.TablesModule
 import checkers.persistence.{LocalStorageNewGameSettingsPersister, NewGameSettingsPersister}
 import checkers.userinterface.GameScreen
+import checkers.userinterface.dialog.NewGameDialog
 import com.softwaremill.macwire.wire
 
 trait CoreModule {
   protected def gameScreen: GameScreen
+
+  protected def newGameDialog: NewGameDialog
 
   lazy val programRegistry: ProgramRegistry = {
     val result = new ProgramRegistry

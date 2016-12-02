@@ -28,7 +28,12 @@ object PhysicalBoard {
     val lightSquare = s"$boardSquare $light"
   }
 
-  val Square = ReactComponentB[(Double, Double, Side)]("Square")
+}
+
+class PhysicalBoard {
+  import PhysicalBoard._
+
+  private val Square = ReactComponentB[(Double, Double, Side)]("Square")
     .render_P { case (centerX, centerY, side) =>
       val classes =
         if (side == DARK) Css.darkSquare
@@ -43,7 +48,7 @@ object PhysicalBoard {
       )
     }.build
 
-  val BoardRow = ReactComponentB[(Double, Side)]("BoardRow")
+  private val BoardRow = ReactComponentB[(Double, Side)]("BoardRow")
     .render_P { case (centerY, sideOfFirst) =>
       val squares = new js.Array[ReactNode]
       (0 to 7).foldLeft(sideOfFirst) { case (side, idx) =>
@@ -57,7 +62,7 @@ object PhysicalBoard {
       )
     }.build
 
-  val BoardBorder = ReactComponentB[Double]("BoardBorder")
+  private val BoardBorder = ReactComponentB[Double]("BoardBorder")
     .render_P { thickness =>
       val origin = -4 - thickness
       val width = 8 + 2 * thickness
@@ -70,7 +75,7 @@ object PhysicalBoard {
       )
     }.build
 
-  val Board = ReactComponentB[Unit]("Board")
+  private val Board = ReactComponentB[Unit]("Board")
     .render_P { _ =>
       val upperLeftSide: Side = LIGHT
       val rows = new js.Array[ReactNode]
@@ -90,4 +95,5 @@ object PhysicalBoard {
     }
     .build
 
+  val component = Board
 }

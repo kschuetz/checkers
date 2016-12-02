@@ -31,7 +31,7 @@ class SideChrome(button: Button) {
 
   class SideChromeBackend($: BackendScope[Props, Unit]) {
 
-    def render(props: Props) = {
+    def render(props: Props): ReactElement = {
       val layoutSettings = props.layoutSettings
       val widthPixels = layoutSettings.SideChromeWidthPixels
       val heightPixels = layoutSettings.GameSceneHeightPixels

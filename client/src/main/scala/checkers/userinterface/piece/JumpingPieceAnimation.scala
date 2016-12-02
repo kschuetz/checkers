@@ -13,8 +13,14 @@ object JumpingPieceAnimation {
                    progress: Double,
                    rotationDegrees: Double = 0)
 
+}
+
+class JumpingPieceAnimation(physicalPiece: PhysicalPiece) {
+
+  import JumpingPieceAnimation._
+
   class JumpingPieceAnimationBackend($: BackendScope[Props, Unit]) {
-    def render(props: Props) = {
+    def render(props: Props): ReactElement = {
       val t = Easing.easeInOutQuart(props.progress)
       val ptA = Board.squareCenter(props.fromSquare)
       val ptB = Board.squareCenter(props.toSquare)
@@ -36,9 +42,9 @@ object JumpingPieceAnimation {
         y = y,
         rotationDegrees = props.rotationDegrees)
 
-      val physicalPiece = PhysicalPiece.apply(physicalPieceProps)
+      val pieceElement = physicalPiece.component(physicalPieceProps)
 
-      physicalPiece
+      pieceElement
     }
   }
 
@@ -50,7 +56,5 @@ object JumpingPieceAnimation {
       CallbackTo.pure(result)
     }
     .build
-
-  def apply(props: Props) = component(props)
 
 }

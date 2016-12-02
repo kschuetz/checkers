@@ -18,6 +18,12 @@ object PhysicalPiece extends SvgHelpers {
                                    decoration: Decoration,
                                    translate: Option[String] = None)
 
+}
+
+class PhysicalPiece(decorations: Decorations) {
+
+  import PhysicalPiece._
+
   private val Disk = ReactComponentB[(Side, Double)]("Disk")
     .render_P { case (side, radius) =>
       val classes = if (side == DARK) "disk dark" else "disk light"
@@ -28,7 +34,7 @@ object PhysicalPiece extends SvgHelpers {
     }.build
 
   class PieceBodyBackend($: BackendScope[RenderProps, Unit]) {
-    def render(renderProps: RenderProps) = {
+    def render(renderProps: RenderProps): ReactElement = {
       val RenderProps(props, decoration, translate) = renderProps
       val side = SIDE(props.piece)
       val classes =
@@ -36,11 +42,11 @@ object PhysicalPiece extends SvgHelpers {
 
       val pips = new js.Array[ReactNode]
       (0 to 11).foreach { pipIndex =>
-        val pt = Decorations.pipCoordinates(pipIndex)
-        pips.push(Decorations.Pip.withKey(pipIndex)((side, pt)))
+        val pt = decorations.pipCoordinates(pipIndex)
+        pips.push(decorations.Pip.withKey(pipIndex)((side, pt)))
       }
 
-      val transform = if(props.rotationDegrees != 0) {
+      val transform = if (props.rotationDegrees != 0) {
         val rotate = s"rotate(${props.rotationDegrees})"
         translate.fold(rotate)(s => s"$rotate,$s")
       } else translate.getOrElse("")
@@ -50,7 +56,7 @@ object PhysicalPiece extends SvgHelpers {
         transform.nonEmpty ?= (^.svg.transform := transform),
         Disk((side, pieceRadius)),
         pips,
-        Decorations.PieceDecoration((side, decoration))
+        decorations.PieceDecoration((side, decoration))
       )
 
     }
@@ -59,11 +65,11 @@ object PhysicalPiece extends SvgHelpers {
 
   private val PieceBody = ReactComponentB[RenderProps]("PieceBody")
     .renderBackend[PieceBodyBackend]
-//    .shouldComponentUpdateCB(_ => CallbackTo.pure(false))
+    //    .shouldComponentUpdateCB(_ => CallbackTo.pure(false))
     .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, _) =>
-      val result = scope.props.pieceProps.rotationDegrees != nextProps.pieceProps.rotationDegrees
-      CallbackTo.pure(result)
-    }
+    val result = scope.props.pieceProps.rotationDegrees != nextProps.pieceProps.rotationDegrees
+    CallbackTo.pure(result)
+  }
     .shouldComponentUpdateCB(_ => CallbackTo.pure(false))
     .build
 
@@ -85,7 +91,7 @@ object PhysicalPiece extends SvgHelpers {
       val scale = props.scale
       <.svg.g(
         ^.classSet1(baseClasses, "ghost-piece" -> props.ghost),
-//        ^.`class` := baseClasses,
+        //        ^.`class` := baseClasses,
         ^.svg.transform := s"translate(${props.x},${props.y}),scale($scale)",
         PieceBody(RenderProps(props, Decoration.Star)),
         PieceOverlayButton(props)
@@ -122,9 +128,6 @@ object PhysicalPiece extends SvgHelpers {
     .render_P { props =>
       if (PIECETYPE(props.piece) == MAN) PieceMan(props) else PieceKing(props)
     }.build
-
-  val apply = component
-
 
   private def handlePieceMouseDown(props: PhysicalPieceProps)(event: ReactMouseEvent): Option[Callback] = {
     val screenPoint = Point(event.clientX, event.clientY)

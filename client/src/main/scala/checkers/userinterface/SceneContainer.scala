@@ -16,7 +16,7 @@ object SceneContainer {
 
 }
 
-class SceneContainer {
+class SceneContainer(sceneFrame: SceneFrame) {
 
   import SceneContainer._
 
@@ -28,7 +28,7 @@ class SceneContainer {
       $.setState(sceneContainerContext)
     }
 
-    def render(props: Props, state: SceneContainerContext) = {
+    def render(props: Props, state: SceneContainerContext): ReactElement = {
       val gameSceneWidth = props.screenLayoutSettings.GameSceneWidthPixels
       val gameSceneHeight = props.screenLayoutSettings.GameSceneHeightPixels
       val sceneFrameProps = SceneFrame.Props(props.gameModel, props.callbacks, state, gameSceneWidth, gameSceneHeight)
@@ -37,7 +37,7 @@ class SceneContainer {
         ^.svg.width := s"${gameSceneWidth}px",
         ^.svg.height := s"${gameSceneHeight}px",
         //^.onMouseMove ==> handleMouseMove,
-        SceneFrame(sceneFrameProps)
+        sceneFrame.component(sceneFrameProps)
       )
     }
   }

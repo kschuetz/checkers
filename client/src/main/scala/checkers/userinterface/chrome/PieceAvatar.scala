@@ -14,7 +14,7 @@ object PieceAvatar {
 
 }
 
-class PieceAvatar {
+class PieceAvatar(physicalPiece: PhysicalPiece) {
 
   import PieceAvatar._
 
@@ -27,7 +27,7 @@ class PieceAvatar {
         x = props.x,
         y = props.y
       )
-      PhysicalPiece.apply(pieceProps)
+      physicalPiece.component(pieceProps)
     }
     .build
 
