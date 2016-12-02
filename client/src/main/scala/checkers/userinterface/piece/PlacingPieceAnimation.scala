@@ -14,14 +14,15 @@ object PlacingPieceAnimation {
 
 }
 
-class PlacingPieceAnimation(physicalPiece: PhysicalPiece) {
+class PlacingPieceAnimation(physicalPiece: PhysicalPiece,
+                            animationEntryPoints: AnimationEntryPoints) {
 
   import PlacingPieceAnimation._
 
   class Backend($: BackendScope[Props, Unit]) {
     def render(props: Props): ReactElement = {
       val t = Easing.easeInQuad(props.progress)
-      val ptA = AnimationHelpers.entryPoint(props.piece, props.toSquare)
+      val ptA = animationEntryPoints.entryPoint(props.piece, props.toSquare)
       val ptB = endingPoint(props.piece, props.toSquare)
 
       val x0 = ptA.x

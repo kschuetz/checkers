@@ -57,4 +57,6 @@ trait UserInterfaceModule {
   lazy val decorations: Decorations = wire[Decorations]
 
   lazy val newGameDialog: NewGameDialog = wire[NewGameDialog]
+
+  lazy val animationEntryPoints: AnimationEntryPoints = DefaultAnimationEntryPoints
 }

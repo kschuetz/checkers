@@ -4,7 +4,13 @@ import checkers.consts._
 import checkers.core.Board
 import checkers.util.Point
 
-object AnimationHelpers {
+trait AnimationEntryPoints {
+  def entryPoint(piece: Occupant, toSquare: Int): Point
+
+  def exitPoint(piece: Occupant, fromSquare: Int): Point
+}
+
+object DefaultAnimationEntryPoints extends AnimationEntryPoints {
 
   private lazy val entryPointA = Board.squareCenter(2) + Point(1, 2)
   private lazy val entryPointB = Board.squareCenter(3) + Point(1, 2)

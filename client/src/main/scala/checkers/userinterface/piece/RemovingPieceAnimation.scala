@@ -14,7 +14,8 @@ object RemovingPieceAnimation {
 
 }
 
-class RemovingPieceAnimation(physicalPiece: PhysicalPiece) {
+class RemovingPieceAnimation(physicalPiece: PhysicalPiece,
+                             animationEntryPoints: AnimationEntryPoints) {
 
   import RemovingPieceAnimation._
 
@@ -22,7 +23,7 @@ class RemovingPieceAnimation(physicalPiece: PhysicalPiece) {
     def render(props: Props): ReactElement = {
       val t = Easing.easeInQuad(props.progress)
       val ptA = startingPoint(props.piece, props.fromSquare)
-      val ptB = AnimationHelpers.exitPoint(props.piece, props.fromSquare)
+      val ptB = animationEntryPoints.exitPoint(props.piece, props.fromSquare)
 
       val x0 = ptA.x
       val x = x0 + t * (ptB.x - x0)

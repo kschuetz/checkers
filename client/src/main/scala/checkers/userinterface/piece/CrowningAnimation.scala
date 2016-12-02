@@ -15,7 +15,8 @@ object CrowningAnimation {
 
 }
 
-class CrowningAnimation(physicalPiece: PhysicalPiece) {
+class CrowningAnimation(physicalPiece: PhysicalPiece,
+                        animationEntryPoints: AnimationEntryPoints) {
 
   import CrowningAnimation._
 
@@ -23,7 +24,7 @@ class CrowningAnimation(physicalPiece: PhysicalPiece) {
     def render(props: Props): ReactElement = {
       val piece = if (props.side == DARK) DARKMAN else LIGHTMAN
 
-      val entryPoint = AnimationHelpers.exitPoint(piece, props.square)
+      val entryPoint = animationEntryPoints.exitPoint(piece, props.square)
       val dest = Board.squareCenter(props.square)
 
       val t = Easing.easeInQuad(props.progress)
