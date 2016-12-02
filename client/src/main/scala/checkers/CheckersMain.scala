@@ -1,13 +1,8 @@
 package checkers
 
-import checkers.computer._
-import checkers.core.tables.TablesModule
-import checkers.core.{ApplicationSettingsProvider, GameFactory, _}
 import checkers.logger._
-import checkers.persistence.{LocalStorageNewGameSettingsPersister, NewGameSettingsPersister}
+import checkers.modules.CoreModule
 import checkers.style.GlobalStyles
-import checkers.test.BoardUtils
-import com.softwaremill.macwire._
 import org.scalajs.dom
 
 import scala.scalajs.js
@@ -31,47 +26,8 @@ object CheckersMain extends js.JSApp {
   }
 
   private def bootstrap(host: dom.Node, dialogHost: dom.Node): Unit = {
-    lazy val programRegistry = {
-      val result = new ProgramRegistry
-      DefaultPrograms.registerAll(result)
-      result
-    }
-
-    lazy val screenLayoutSettingsProvider: ScreenLayoutSettingsProvider = ConstantScreenLayoutSettings(DefaultScreenLayoutSettings)
-
-    lazy val applicationSettingsProvider: ApplicationSettingsProvider = DefaultApplicationSettingsProvider
-
-    lazy val animationSettings: AnimationSettings = DefaultAnimationSettings
-
-    lazy val tablesModule = wire[TablesModule]
-
-    lazy val boardInitializer: BoardInitializer = DefaultBoardInitializer
-//    lazy val boardInitializer: BoardInitializer = new InitializerFromBoard(
-//      BoardUtils.parseBoard(
-//        """
-//            - - - -
-//           - - d -
-//            - - - -
-//           l - - -
-//            d - - -
-//           - - - -
-//            - d - -
-//           - - - -
-//        """)
-//    )
-
-    lazy val shufflerFactory: ShufflerFactory = wire[DefaultShufflerFactory]
-
-    lazy val scheduler: Scheduler = wire[DefaultScheduler]
-
-    lazy val makeGameLogicModule: GameLogicModuleFactory = wire[GameLogicModuleFactory]
-
-    lazy val gameFactory: GameFactory = wire[GameFactory]
-
-    lazy val newGameSettingsPersister: NewGameSettingsPersister = LocalStorageNewGameSettingsPersister
-
-    lazy val application: Application = wire[Application]
-
+    val module = new CoreModule { }
+    val application = module.application
     application.start(host, dialogHost)
   }
 
