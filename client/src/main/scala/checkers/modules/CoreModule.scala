@@ -19,7 +19,9 @@ trait CoreModule {
     result
   }
 
-  lazy val screenLayoutSettingsProvider: ScreenLayoutSettingsProvider = ConstantScreenLayoutSettings(DefaultScreenLayoutSettings)
+  lazy val screenLayoutSettingsProvider: ScreenLayoutSettingsProvider = wire[ScreenLayoutAdapter]
+
+//    ConstantScreenLayoutSettings(DefaultScreenLayoutSettings)
 
   lazy val applicationSettingsProvider: ApplicationSettingsProvider = DefaultApplicationSettingsProvider
 

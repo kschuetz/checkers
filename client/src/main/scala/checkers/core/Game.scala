@@ -108,8 +108,16 @@ class Game(gameDriver: GameDriver,
     }
   }
 
+  private def getBrowserEnvironment: BrowserEnvironment = {
+    val viewPortWidth = dom.window.innerWidth
+    val viewPortHeight = dom.window.innerHeight
+    BrowserEnvironment(viewPortWidth, viewPortHeight)
+  }
+
   private def renderModel(model: Model): Unit = {
-    val props = GameScreen.Props(model, screenLayoutSettingsProvider.getScreenLayoutSettings, Callbacks, applicationCallbacks)
+    val environment = getBrowserEnvironment
+    val screenLayoutSettings = screenLayoutSettingsProvider.getScreenLayoutSettings(environment)
+    val props = GameScreen.Props(model, screenLayoutSettings, Callbacks, applicationCallbacks)
     val screen = gameScreen.create(props)
     ReactDOM.render(screen, host)
   }

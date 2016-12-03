@@ -25,10 +25,12 @@ trait ScreenLayoutSettings extends SideChromeLayoutSettings with GameOverPanelLa
 }
 
 trait ScreenLayoutSettingsProvider {
-  def getScreenLayoutSettings: ScreenLayoutSettings
+  def getScreenLayoutSettings(viewPortInfo: ViewPortInfo): ScreenLayoutSettings
 }
 
-case class ConstantScreenLayoutSettings(getScreenLayoutSettings: ScreenLayoutSettings) extends ScreenLayoutSettingsProvider
+case class ConstantScreenLayoutSettings(settings: ScreenLayoutSettings) extends ScreenLayoutSettingsProvider {
+  def getScreenLayoutSettings(viewPortInfo: ViewPortInfo): ScreenLayoutSettings = settings
+}
 
 object DefaultScreenLayoutSettings extends ScreenLayoutSettings {
 
