@@ -98,8 +98,14 @@ class Game(gameDriver: GameDriver,
     lastRenderTime = t
     lastClockDisplayHash = model.clockDisplayHash
     renderModel(model)
+
     if(clockTimeoutHandle == 0) scheduleClockTick(clockUpdateInterval)
-    if (model.hasActiveAnimations || model.hasActiveComputation) invalidate()
+
+    if(model.hasActiveAnimations) {
+      invalidate()
+    } else if (model.hasActiveComputation) {
+      scheduleTick()
+    }
   }
 
   private def renderModel(model: Model): Unit = {
@@ -119,7 +125,6 @@ class Game(gameDriver: GameDriver,
     invalidate()
   }
 
-
   private def tick(): Unit = {
     if (stopped) return
     updateNowTime()
@@ -130,6 +135,7 @@ class Game(gameDriver: GameDriver,
       }
       if (model.hasActiveComputation) {
         scheduleTick()
+        if(clockTimeoutHandle == 0) scheduleClockTick(clockUpdateInterval)
       }
     }
   }
@@ -141,7 +147,6 @@ class Game(gameDriver: GameDriver,
 
   private def updateNowTime(): Unit = {
     val t = performance.now()
-    lastRenderTime = t
     model = model.updateNowTime(t)
   }
 
