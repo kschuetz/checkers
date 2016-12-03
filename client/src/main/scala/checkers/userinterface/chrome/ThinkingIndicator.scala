@@ -18,6 +18,8 @@ object ThinkingIndicator {
                    segmentCount: Int,
                    segmentOffset: Double)
 
+  private val Roundness: Double = 7 / 11.7
+
 }
 
 class ThinkingIndicator extends SvgHelpers {
@@ -84,6 +86,8 @@ class ThinkingIndicator extends SvgHelpers {
 
       val clipPathId = s"ti-clip-path-${CssHelpers.playerSideClass(props.side)}"
 
+      val r = math.floor(Roundness * props.heightPixels).toInt
+
       val clipPath = <.svg.defs(
         <.svg.clipPathTag(
           ^.id := clipPathId,
@@ -91,9 +95,21 @@ class ThinkingIndicator extends SvgHelpers {
             ^.svg.x := left,
             ^.svg.y := top,
             ^.svg.width := totalWidth,
-            ^.svg.height := props.heightPixels
+            ^.svg.height := props.heightPixels,
+            ^.svg.rx := r,
+            ^.svg.ry := r
           )
         )
+      )
+
+      val border = <.svg.rect(
+        ^.`class` := "border",
+        ^.svg.x := left,
+        ^.svg.y := top,
+        ^.svg.width := totalWidth,
+        ^.svg.height := props.heightPixels,
+        ^.svg.rx := r,
+        ^.svg.ry := r
       )
 
       val segmentGroup = {
@@ -115,6 +131,7 @@ class ThinkingIndicator extends SvgHelpers {
         ^.`class` := s"thinking-indicator ${CssHelpers.playerSideClass(props.side)}",
         ^.svg.transform := s"translate(${props.centerX},${props.centerY})",
         clipPath,
+        border,
         clippedGroup
       )
     }

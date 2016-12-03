@@ -51,7 +51,7 @@ class TopChrome(playerPanel: PlayerPanel) {
           endingTurn = endingTurn,
           clockVisible = true,
           jumpIndicator = jumpIndicator,
-          thinkingIndicator = player.isComputer, //computerThinking,
+          thinkingIndicator = computerThinking,
           rushButtonEnabled = computerThinking,
           applicationCallbacks = props.applicationCallbacks
         )
