@@ -52,9 +52,6 @@ class JumpIndicator(physicalPiece: PhysicalPiece) {
     }
     .build
 
-
-
-
   val create = ReactComponentB[Props]("JumpIndicator")
     .render_P { props =>
 

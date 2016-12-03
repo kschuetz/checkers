@@ -16,11 +16,12 @@ object PlayerPanel extends FontHelpers {
                    side: Side,
                    playerName: String,
                    isComputerPlayer: Boolean,
-                   clockSeconds: Option[Int],
+                   clockSeconds: Int,
                    scoreDisplay: Option[String],
                    isPlayerTurn: Boolean,
                    waitingForMove: Boolean,
                    endingTurn: Boolean,
+                   clockVisible: Boolean,
                    jumpIndicator: Boolean,
                    thinkingIndicator: Boolean,
                    rushButtonEnabled: Boolean,
@@ -81,6 +82,25 @@ class PlayerPanel(pieceAvatar: PieceAvatar,
       jumpIndicator.create.withKey("jump-indicator")(jumpIndicatorProps)
     }
 
+    def makeThinkingIndicator(props: Props): ReactElement = {
+      val centerX = 0.575 * props.widthPixels
+      val totalWidth = 0.45 * props.widthPixels
+      val centerY = 0.8 * props.heightPixels
+      val segmentCount = 10
+      val segmentWidth = totalWidth / segmentCount
+      val offset = (props.clockSeconds % 4) / 4.0
+      val thinkingIndicatorProps = ThinkingIndicator.Props(
+        side = props.side,
+        centerX = centerX,
+        centerY = centerY,
+        heightPixels = 0.13 * props.heightPixels,
+        segmentWidthPixels = segmentWidth,
+        segmentCount = segmentCount,
+        segmentOffset = offset
+      )
+      thinkingIndicator.create.withKey("thinking-indicator")(thinkingIndicatorProps)
+    }
+
     def playerNameDisplay(props: Props): ReactElement = {
       val textHeight = 0.27 * props.heightPixels
       val x = props.widthPixels * 0.24
@@ -99,8 +119,8 @@ class PlayerPanel(pieceAvatar: PieceAvatar,
       )
     }
 
-    def clockDisplay(props: Props, timeSeconds: Int): ReactElement = {
-      val clockText = Formatting.clockDisplay(timeSeconds)
+    def clockDisplay(props: Props): ReactElement = {
+      val clockText = Formatting.clockDisplay(props.clockSeconds)
       val textHeight = 0.17 * props.heightPixels
       val x = props.widthPixels * 0.24
       //val y = props.heightPixels / 2
@@ -154,11 +174,14 @@ class PlayerPanel(pieceAvatar: PieceAvatar,
       if(props.jumpIndicator) {
         parts.push(makeJumpIndicator(props))
       }
+      if(props.thinkingIndicator) {
+        parts.push(makeThinkingIndicator(props))
+      }
       if(props.scoreDisplay.nonEmpty) {
         parts.push(scoreDisplay(props))
       }
-      props.clockSeconds.foreach { clockSeconds =>
-        parts.push(clockDisplay(props, clockSeconds))
+      if(props.clockVisible) {
+        parts.push(clockDisplay(props))
       }
       if(props.rushButtonEnabled) {
         parts.push(makeRushButton(props))

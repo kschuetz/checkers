@@ -1,13 +1,22 @@
 package checkers.userinterface.chrome
 
 import checkers.consts._
-import checkers.util.{Point, SvgHelpers}
+import checkers.util.{CssHelpers, SvgHelpers}
 import japgolly.scalajs.react._
+import japgolly.scalajs.react.vdom.ReactAttr
 import japgolly.scalajs.react.vdom.prefix_<^._
+
+import scala.scalajs.js
 
 object ThinkingIndicator {
 
-  case class Props(phase: Double)
+  case class Props(side: Side,
+                   centerX: Double,
+                   centerY: Double,
+                   heightPixels: Double,
+                   segmentWidthPixels: Double,
+                   segmentCount: Int,
+                   segmentOffset: Double)
 
 }
 
@@ -16,4 +25,107 @@ class ThinkingIndicator extends SvgHelpers {
   import ThinkingIndicator._
 
 
+  private case class SegmentGroupProps(height: Double,
+                                       segmentWidth: Double,
+                                       segmentCount: Int)
+
+  private val SegmentGroup = ReactComponentB[SegmentGroupProps]("ThinkingIndicatorSegmentGroup")
+    .render_P { props =>
+      val height = props.height
+      val y = -height / 2
+      val segmentCount = 2 + props.segmentCount   // 1 extra on both the left and right
+      val segmentWidth = props.segmentWidth
+      val halfSegmentWidth = segmentWidth / 2
+      var x = -(segmentCount * halfSegmentWidth)
+      var i = 0
+      val segments = new js.Array[ReactNode]
+      while(i < segmentCount) {
+        val even = <.svg.rect(
+          ^.key := 2 * i,
+          ^.`class` := "segment even",
+          ^.svg.x := x,
+          ^.svg.y := y,
+          ^.svg.width := halfSegmentWidth,
+          ^.svg.height := height
+        )
+        segments.push(even)
+        val odd = <.svg.rect(
+          ^.key := 2 * i + 1,
+          ^.`class` := "segment odd",
+          ^.svg.x := x + halfSegmentWidth,
+          ^.svg.y := y,
+          ^.svg.width := halfSegmentWidth,
+          ^.svg.height := height
+        )
+        segments.push(odd)
+        x += segmentWidth
+        i += 1
+      }
+      <.svg.g(
+        ^.`class` := "segment-group",
+        ^.svg.transform := "skewX(-45)",
+        segments
+      )
+    }
+    .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, _) =>
+      CallbackTo.pure(false)
+    }
+    .build
+
+  // for some reason, React insists on "clipPath" rather than "clip-path"
+  private val clipPathAttr = ReactAttr.Generic("clipPath")
+
+  class Backend($: BackendScope[Props, Unit]) {
+
+    def render(props: Props): ReactElement = {
+      val totalWidth = props.segmentCount * props.segmentWidthPixels
+      val left = -totalWidth / 2
+      val top = -props.heightPixels / 2
+
+      val clipPathId = s"ti-clip-path-${CssHelpers.playerSideClass(props.side)}"
+
+      val clipPath = <.svg.defs(
+        <.svg.clipPathTag(
+          ^.id := clipPathId,
+          <.svg.rect(
+            ^.svg.x := left,
+            ^.svg.y := top,
+            ^.svg.width := totalWidth,
+            ^.svg.height := props.heightPixels
+          )
+        )
+      )
+
+      val segmentGroup = {
+        val offsetPixels = props.segmentOffset * props.segmentWidthPixels
+        val sgProps = SegmentGroupProps(props.heightPixels, props.segmentWidthPixels, props.segmentCount)
+        <.svg.g(
+          ^.svg.transform := s"translate($offsetPixels, 0)",
+          SegmentGroup(sgProps)
+        )
+      }
+
+      val clippedGroup = <.svg.g(
+//        ^.svg.clipPath := s"url(#$clipPathId)",
+        clipPathAttr := s"url(#$clipPathId)",
+        segmentGroup
+      )
+
+      <.svg.g(
+        ^.`class` := s"thinking-indicator ${CssHelpers.playerSideClass(props.side)}",
+        ^.svg.transform := s"translate(${props.centerX},${props.centerY})",
+        clipPath,
+        clippedGroup
+      )
+    }
+
+  }
+
+  val create = ReactComponentB[Props]("ThinkingIndicator")
+    .renderBackend[Backend]
+//    .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, _) =>
+//      val result = scope.props != nextProps
+//      CallbackTo.pure(result)
+//    }
+    .build
 }

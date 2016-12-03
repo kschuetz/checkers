@@ -44,13 +44,14 @@ class TopChrome(playerPanel: PlayerPanel) {
           side = side,
           playerName = player.displayName,
           isComputerPlayer = player.isComputer,
-          clockSeconds = Some(clockSeconds),
+          clockSeconds = clockSeconds,
           scoreDisplay = scoreDisplay,
           isPlayerTurn = isPlayerTurn,
           waitingForMove = waitingForMove,
           endingTurn = endingTurn,
+          clockVisible = true,
           jumpIndicator = jumpIndicator,
-          thinkingIndicator = computerThinking,
+          thinkingIndicator = player.isComputer, //computerThinking,
           rushButtonEnabled = computerThinking,
           applicationCallbacks = props.applicationCallbacks
         )
