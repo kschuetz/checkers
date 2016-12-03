@@ -3,7 +3,7 @@ package checkers.userinterface.chrome
 import checkers.consts._
 import checkers.core.ApplicationCallbacks
 import checkers.userinterface.mixins.FontHelpers
-import checkers.util.CssHelpers
+import checkers.util.{CssHelpers, Formatting}
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
 
@@ -16,7 +16,7 @@ object PlayerPanel extends FontHelpers {
                    side: Side,
                    playerName: String,
                    isComputerPlayer: Boolean,
-                   clockDisplay: String,
+                   clockSeconds: Option[Int],
                    scoreDisplay: Option[String],
                    isPlayerTurn: Boolean,
                    waitingForMove: Boolean,
@@ -31,6 +31,7 @@ object PlayerPanel extends FontHelpers {
 class PlayerPanel(pieceAvatar: PieceAvatar,
                   jumpIndicator: JumpIndicator,
                   turnIndicator: TurnIndicator,
+                  thinkingIndicator: ThinkingIndicator,
                   rushButton: RushButton) extends FontHelpers {
   import PlayerPanel._
 
@@ -98,7 +99,8 @@ class PlayerPanel(pieceAvatar: PieceAvatar,
       )
     }
 
-    def clockDisplay(props: Props): ReactElement = {
+    def clockDisplay(props: Props, timeSeconds: Int): ReactElement = {
+      val clockText = Formatting.clockDisplay(timeSeconds)
       val textHeight = 0.17 * props.heightPixels
       val x = props.widthPixels * 0.24
       //val y = props.heightPixels / 2
@@ -110,7 +112,7 @@ class PlayerPanel(pieceAvatar: PieceAvatar,
         ^.svg.y := y,
         ^.svg.textAnchor := "left",
         fontSize := s"${textHeight}px",
-        props.clockDisplay
+        clockText
       )
     }
 
@@ -155,8 +157,8 @@ class PlayerPanel(pieceAvatar: PieceAvatar,
       if(props.scoreDisplay.nonEmpty) {
         parts.push(scoreDisplay(props))
       }
-      if(props.clockDisplay.nonEmpty) {
-        parts.push(clockDisplay(props))
+      props.clockSeconds.foreach { clockSeconds =>
+        parts.push(clockDisplay(props, clockSeconds))
       }
       if(props.rushButtonEnabled) {
         parts.push(makeRushButton(props))

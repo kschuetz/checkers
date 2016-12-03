@@ -1,10 +1,10 @@
 package checkers.util
 
 object Formatting {
-  def clockDisplay(timeMillis: Double): String = {
-    val totalSeconds = math.floor(timeMillis / 1000).toInt
-    val hours = totalSeconds / 3600
-    val remainder = totalSeconds % 3600
+
+  def clockDisplay(timeSeconds: Int): String = {
+    val hours = timeSeconds / 3600
+    val remainder = timeSeconds % 3600
     val minutes = remainder / 60
     val seconds = remainder % 60
     if(hours > 0) {

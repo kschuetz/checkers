@@ -30,6 +30,8 @@ trait UserInterfaceModule {
 
   lazy val turnIndicator: TurnIndicator = wire[TurnIndicator]
 
+  lazy val thinkingIndicator: ThinkingIndicator = wire[ThinkingIndicator]
+
   lazy val button: Button = wire[Button]
 
   lazy val rushButton: RushButton = wire[RushButton]

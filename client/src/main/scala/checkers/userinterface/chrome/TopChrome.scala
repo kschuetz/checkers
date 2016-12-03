@@ -2,7 +2,7 @@ package checkers.userinterface.chrome
 
 import checkers.consts._
 import checkers.core.{ApplicationCallbacks, GameModelReader, PlayerDescription}
-import checkers.util.Formatting
+import checkers.util.{ClockUtils, Formatting}
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
 
@@ -36,7 +36,7 @@ class TopChrome(playerPanel: PlayerPanel) {
 
         val computerThinking = waitingForMove && player.isComputer && isPlayerTurn
         val clock = model.playerClock(side)
-        val clockDisplay = Formatting.clockDisplay(clock)
+        val clockSeconds = ClockUtils.toSeconds(clock)
 
         PlayerPanel.Props(
           widthPixels = panelWidth,
@@ -44,7 +44,7 @@ class TopChrome(playerPanel: PlayerPanel) {
           side = side,
           playerName = player.displayName,
           isComputerPlayer = player.isComputer,
-          clockDisplay = clockDisplay,
+          clockSeconds = Some(clockSeconds),
           scoreDisplay = scoreDisplay,
           isPlayerTurn = isPlayerTurn,
           waitingForMove = waitingForMove,

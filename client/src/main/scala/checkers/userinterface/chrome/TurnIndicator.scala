@@ -5,7 +5,7 @@ import checkers.util.{Point, SvgHelpers}
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
 
-object TurnIndicator extends SvgHelpers {
+object TurnIndicator {
 
   case class Props(side: Side,
                    pointsRight: Boolean = false,
