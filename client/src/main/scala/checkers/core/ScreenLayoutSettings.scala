@@ -32,7 +32,7 @@ case class ConstantScreenLayoutSettings(settings: ScreenLayoutSettings) extends 
   def getScreenLayoutSettings(viewPortInfo: ViewPortInfo): ScreenLayoutSettings = settings
 }
 
-object DefaultScreenLayoutSettings extends ScreenLayoutSettings {
+trait  DefaultScreenLayoutSettings extends ScreenLayoutSettings {
 
   override def GameSceneWidthPixels: Int = 800
 
@@ -40,7 +40,7 @@ object DefaultScreenLayoutSettings extends ScreenLayoutSettings {
 
   override def TopChromeHeightPixels: Int = 90
 
-  override def SideChromeWidthPixels: Int = 250
+  override def SideChromeWidthPixels: Int = 200
 
   override def TopChromePaddingPixels: Int = 6
 
