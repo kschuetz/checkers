@@ -13,7 +13,7 @@ trait DefaultGameLogicTestModule {
 
   lazy val tablesModule: TablesModule = wire[TablesModule]
 
-  lazy val animationSettings: AnimationSettings = DefaultAnimationSettings
+  lazy val animationSettings: AnimationSettings = wire[DefaultAnimationSettings]
 
   lazy val gameLogicModuleFactory: GameLogicModuleFactory = wire[GameLogicModuleFactory]
 

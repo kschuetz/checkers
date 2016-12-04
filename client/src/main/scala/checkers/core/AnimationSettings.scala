@@ -27,7 +27,7 @@ trait AnimationSettings {
 
 
 
-trait DefaultAnimationSettings extends AnimationSettings {
+class DefaultAnimationSettings extends AnimationSettings {
   val RemovePieceDurationMillis = 330.0
   val RemovePieceHumanDelayMillis = 115.0
   val RemovePieceHumanIntervalMillis = 115.0

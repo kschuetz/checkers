@@ -25,7 +25,7 @@ trait CoreModule {
 
   lazy val applicationSettingsProvider: ApplicationSettingsProvider = DefaultApplicationSettingsProvider
 
-  lazy val animationSettings: AnimationSettings = new DefaultAnimationSettings { }
+  lazy val animationSettings: AnimationSettings = wire[DefaultAnimationSettings]
 
   lazy val tablesModule: TablesModule = wire[TablesModule]
 
