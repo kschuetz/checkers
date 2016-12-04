@@ -12,9 +12,9 @@ class ScreenLayoutAdapter extends ScreenLayoutSettingsProvider {
 
   private val thresholds = Vector(
     (1024, 896),
-    (924, 796),
-    (824, 696),
-    (724, 596))
+    (914, 786),
+    (804, 676),
+    (694, 566))
 
   private lazy val levels = Vector(
     // large
@@ -27,6 +27,8 @@ class ScreenLayoutAdapter extends ScreenLayoutSettingsProvider {
 
       override def TopChromeHeightPixels: Int = 80
 
+      override def SideChromeWidthPixels: Int = 190
+
       override def SideChromeButtonHeightPixels: Int = 42
     },
 
@@ -36,6 +38,8 @@ class ScreenLayoutAdapter extends ScreenLayoutSettingsProvider {
       override def GameSceneHeightPixels: Int = 600
 
       override def TopChromeHeightPixels: Int = 70
+
+      override def SideChromeWidthPixels: Int = 180
 
       override def SideChromeButtonHeightPixels: Int = 36
     },
@@ -47,6 +51,8 @@ class ScreenLayoutAdapter extends ScreenLayoutSettingsProvider {
 
       override def TopChromeHeightPixels: Int = 60
 
+      override def SideChromeWidthPixels: Int = 170
+
       override def SideChromeButtonHeightPixels: Int = 30
     }
   ).lift
@@ -57,6 +63,8 @@ class ScreenLayoutAdapter extends ScreenLayoutSettingsProvider {
     override def GameSceneHeightPixels: Int = 400
 
     override def TopChromeHeightPixels: Int = 50
+
+    override def SideChromeWidthPixels: Int = 160
 
     override def SideChromeButtonHeightPixels: Int = 24
   }
