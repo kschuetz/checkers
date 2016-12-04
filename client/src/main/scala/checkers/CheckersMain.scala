@@ -4,6 +4,7 @@ import checkers.logger._
 import checkers.modules.{CoreModule, UserInterfaceModule}
 import checkers.style.GlobalStyles
 import org.scalajs.dom
+import org.scalajs.dom.UIEvent
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSExport
@@ -28,7 +29,12 @@ object CheckersMain extends js.JSApp {
   private def bootstrap(host: dom.Node, dialogHost: dom.Node): Unit = {
     val module = new CoreModule with UserInterfaceModule { }
     val application = module.application
-    application.start(host, dialogHost)
+
+    val session = application.start(host, dialogHost)
+
+    dom.window.onresize = { event: UIEvent =>
+      session.windowResized()
+    }
   }
 
 }

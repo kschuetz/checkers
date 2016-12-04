@@ -19,6 +19,7 @@ class Game(gameDriver: GameDriver,
   private var lastRenderTime = performance.now()
   private var lastHumanActivity = lastRenderTime
   private var clockTimeoutHandle: Int = 0
+  private var resizeTimeoutHandle: Int = 0
   private var lastClockDisplayHash: Int = 0
 
   private val applicationSettings = applicationSettingsProvider.applicationSettings
@@ -62,6 +63,16 @@ class Game(gameDriver: GameDriver,
 
   def humanActivity(): Unit = {
     lastHumanActivity = performance.now()
+  }
+
+  def windowResized(): Unit = {
+    def update(): Unit = {
+      resizeTimeoutHandle = 0
+      invalidate()
+    }
+
+    if(resizeTimeoutHandle != 0) dom.window.clearTimeout(resizeTimeoutHandle)
+    resizeTimeoutHandle = dom.window.setTimeout(update _, 100)
   }
 
   object Callbacks extends BoardCallbacks {

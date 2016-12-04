@@ -57,6 +57,10 @@ class Application(programRegistry: ProgramRegistry,
       game = None
     }
 
+    def windowResized(): Unit = {
+      game.foreach(_.windowResized())
+    }
+
     override val onNewGameButtonClicked: Callback = Callback {
       game.foreach(_.humanActivity())
       openNewGameDialog()
@@ -113,10 +117,10 @@ class Application(programRegistry: ProgramRegistry,
     }
   }
 
-  def start(gameHost: dom.Node, dialogHost: dom.Node): Unit = {
+  def start(gameHost: dom.Node, dialogHost: dom.Node): Session = {
     val session = new Session(gameHost, dialogHost)
     session.run()
+    session
   }
-
 
 }
