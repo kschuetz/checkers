@@ -1,5 +1,7 @@
 package checkers.core
 
+import checkers.logger
+
 class ScreenLayoutAdapter extends ScreenLayoutSettingsProvider {
 
   private case class CacheSettings(width: Int,
@@ -22,18 +24,30 @@ class ScreenLayoutAdapter extends ScreenLayoutSettingsProvider {
       override def GameSceneWidthPixels: Int = 700
 
       override def GameSceneHeightPixels: Int = 700
+
+      override def TopChromeHeightPixels: Int = 80
+
+      override def SideChromeButtonHeightPixels: Int = 42
     },
 
     new DefaultScreenLayoutSettings {
       override def GameSceneWidthPixels: Int = 600
 
       override def GameSceneHeightPixels: Int = 600
+
+      override def TopChromeHeightPixels: Int = 70
+
+      override def SideChromeButtonHeightPixels: Int = 36
     },
 
     new DefaultScreenLayoutSettings {
       override def GameSceneWidthPixels: Int = 500
 
       override def GameSceneHeightPixels: Int = 500
+
+      override def TopChromeHeightPixels: Int = 60
+
+      override def SideChromeButtonHeightPixels: Int = 30
     }
   ).lift
 
@@ -41,6 +55,10 @@ class ScreenLayoutAdapter extends ScreenLayoutSettingsProvider {
     override def GameSceneWidthPixels: Int = 400
 
     override def GameSceneHeightPixels: Int = 400
+
+    override def TopChromeHeightPixels: Int = 50
+
+    override def SideChromeButtonHeightPixels: Int = 24
   }
 
   private def getSettings(width: Int, height: Int): ScreenLayoutSettings = {
@@ -60,7 +78,7 @@ class ScreenLayoutAdapter extends ScreenLayoutSettingsProvider {
     else {
       val newSettings = getSettings(width, height)
 
-      println(s"ScreenLayoutAdapter:  width = $width, height = $height")
+      logger.log.info(s"Adapting screen layout for dimensions ($width × $height)")
 
       cache = CacheSettings(width, height, newSettings)
       newSettings

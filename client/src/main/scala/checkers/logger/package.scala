@@ -9,6 +9,6 @@ package object logger {
 
   val gameDriver: Logger = LoggerFactory.getLogger("GameDriver")
 
-  val computerPlayer: Logger = LoggerFactory.getPopUpLogger("ComputerPlayer")
+  val computerPlayer: Logger = LoggerFactory.getLogger("ComputerPlayer")
 
 }
