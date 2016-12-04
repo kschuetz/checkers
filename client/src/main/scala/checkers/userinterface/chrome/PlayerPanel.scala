@@ -64,7 +64,7 @@ class PlayerPanel(pieceAvatar: PieceAvatar,
 
     def makeTurnIndicator(props: Props): ReactElement = {
       val y = props.heightPixels / 2
-      val x = 40
+      val x = 0.1 * props.widthPixels
       val scale = 0.2 * props.heightPixels
       val turnIndicatorProps = TurnIndicator.Props(side = props.side,
         scale = scale, x = x, y = y, pointsRight = true, endingTurn = props.endingTurn)

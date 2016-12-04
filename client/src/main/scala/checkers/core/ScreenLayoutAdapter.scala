@@ -68,8 +68,6 @@ class ScreenLayoutAdapter extends ScreenLayoutSettingsProvider {
     levels(idx).getOrElse(smallest)
   }
 
-  private lazy val largeScreen: ScreenLayoutSettings = new DefaultScreenLayoutSettings {}
-
   override def getScreenLayoutSettings(viewPortInfo: ViewPortInfo): ScreenLayoutSettings = {
     val width = viewPortInfo.viewPortWidth.toInt
     val height = viewPortInfo.viewPortHeight.toInt
