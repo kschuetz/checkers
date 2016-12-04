@@ -70,7 +70,7 @@ class ThinkingIndicator extends SvgHelpers {
       )
     }
     .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, _) =>
-      CallbackTo.pure(false)
+      CallbackTo.pure(scope.props != nextProps)
     }
     .build
 
@@ -122,7 +122,6 @@ class ThinkingIndicator extends SvgHelpers {
       }
 
       val clippedGroup = <.svg.g(
-//        ^.svg.clipPath := s"url(#$clipPathId)",
         clipPathAttr := s"url(#$clipPathId)",
         segmentGroup
       )
@@ -140,9 +139,5 @@ class ThinkingIndicator extends SvgHelpers {
 
   val create = ReactComponentB[Props]("ThinkingIndicator")
     .renderBackend[Backend]
-//    .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, _) =>
-//      val result = scope.props != nextProps
-//      CallbackTo.pure(result)
-//    }
     .build
 }

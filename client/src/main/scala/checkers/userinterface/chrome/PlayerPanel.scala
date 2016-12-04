@@ -72,7 +72,7 @@ class PlayerPanel(pieceAvatar: PieceAvatar,
     }
 
     def makeJumpIndicator(props: Props): ReactElement = {
-      val x = props.widthPixels - 50
+      val x = 0.875 * props.widthPixels
       val y = 0.35 * props.heightPixels
       val jumpIndicatorProps = JumpIndicator.Props(oppositeSide = OPPONENT(props.side),
         x = x,
@@ -149,7 +149,7 @@ class PlayerPanel(pieceAvatar: PieceAvatar,
     }
 
     def makeRushButton(props: Props): ReactElement = {
-      val x = props.widthPixels - 50
+      val x = 0.875 * props.widthPixels
       val y = 0.75 * props.heightPixels
       val size = 0.37 * props.heightPixels
       val rushButtonProps = RushButton.Props(
