@@ -53,6 +53,8 @@ trait GameModelReader {
   def getScore(side: Side): Int
 
   def clockDisplayHash: Int
+
+  def hintButtonEnabled: Boolean
 }
 
 case class GameModel(nowTime: Double,
@@ -158,5 +160,7 @@ case class GameModel(nowTime: Double,
     val light = math.floor(playerClock(LIGHT) / 1000).toInt
     (light << 16) | (dark & 0xFFFF)
   }
+
+  def hintButtonEnabled: Boolean = false
 }
 

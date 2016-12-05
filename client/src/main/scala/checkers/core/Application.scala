@@ -75,6 +75,10 @@ class Application(programRegistry: ProgramRegistry,
       game.foreach(_.rushComputer())
     }
 
+    override def onHintButtonClicked: Callback = Callback {
+      println("Hint button clicked")
+    }
+
     override def onNewGameDialogResult(result: Result): Callback = Callback {
       closeNewGameDialog()
       result match {

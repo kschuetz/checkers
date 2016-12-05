@@ -66,12 +66,26 @@ class SideChrome(button: Button) {
         Map.empty,
         props.applicationCallbacks.onRotateBoardButtonClicked))
 
+      currentY += buttonYSpacing
+
+      val hintButton = button.create(Button.Props(buttonCenterX,
+        currentY,
+        buttonWidth,
+        buttonHeight,
+        "Hint",
+        None,
+        enabled = props.gameModel.hintButtonEnabled,
+        Map.empty,
+        props.applicationCallbacks.onHintButtonClicked))
+
       <.svg.svg(
         ^.`class` := "side-chrome",
         Backdrop((widthPixels, heightPixels)),
         newGameButton,
-        rotateBoardButton
+        rotateBoardButton,
+        hintButton
       )
+
     }
 
   }
