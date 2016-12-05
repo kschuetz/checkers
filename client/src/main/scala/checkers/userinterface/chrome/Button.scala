@@ -66,12 +66,11 @@ class Button extends SvgHelpers with FontHelpers {
       val classMap = props.extraClasses + ("enabled" -> props.enabled) + ("disabled" -> !props.enabled)
 
       <.svg.g(
-//        ^.`class` := "button enabled",
         ^.classSet1M("button", classMap),
         ^.svg.transform := s"translate($centerX,$centerY)",
-        ^.onMouseDown ==> handleMouseDown,
-        ^.onMouseUp ==> handleMouseUp,
-        ^.onMouseOut ==> handleMouseOut,
+        props.enabled ?= (^.onMouseDown ==> handleMouseDown),
+        props.enabled ?= (^.onMouseUp ==> handleMouseUp),
+        props.enabled ?= (^.onMouseOut ==> handleMouseOut),
 
         <.titleTag(props.tooltip),
 

@@ -1,6 +1,6 @@
 package checkers.modules
 
-import checkers.computer.{DefaultPrograms, DefaultShufflerFactory, ProgramRegistry, ShufflerFactory}
+import checkers.computer._
 import checkers.core._
 import checkers.core.tables.TablesModule
 import checkers.persistence.{LocalStorageNewGameSettingsPersister, NewGameSettingsPersister}
@@ -45,6 +45,10 @@ trait CoreModule {
   //    )
 
   lazy val shufflerFactory: ShufflerFactory = wire[DefaultShufflerFactory]
+
+  lazy val mentorConfig: MentorConfig = wire[DefaultMentorConfig]
+
+  lazy val mentorFactory: MentorFactory = wire[MentorFactory]
 
   lazy val scheduler: Scheduler = wire[DefaultScheduler]
 

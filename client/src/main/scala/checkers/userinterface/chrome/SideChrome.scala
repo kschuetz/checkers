@@ -5,6 +5,8 @@ import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.ReactAttr
 import japgolly.scalajs.react.vdom.prefix_<^._
 
+import scala.scalajs.js
+
 object SideChrome {
 
   case class Props(gameModel: GameModelReader,
@@ -41,10 +43,12 @@ class SideChrome(button: Button) {
       val buttonHeight = layoutSettings.SideChromeButtonHeightPixels
       val buttonYSpacing = buttonHeight + layoutSettings.SideChromeButtonPaddingPixelsY
 
+      val parts = new js.Array[ReactNode]
+
       val buttonCenterX = buttonX + (buttonWidth / 2)
       var currentY = buttonY + (buttonHeight / 2)
 
-      val newGameButton = button.create(Button.Props(buttonCenterX,
+      val newGameButton = button.create.withKey("new-game-button")(Button.Props(buttonCenterX,
         currentY,
         buttonWidth,
         buttonHeight,
@@ -54,9 +58,11 @@ class SideChrome(button: Button) {
         Map.empty,
         props.applicationCallbacks.onNewGameButtonClicked))
 
+      parts.push(newGameButton)
+
       currentY += buttonYSpacing
 
-      val rotateBoardButton = button.create(Button.Props(buttonCenterX,
+      val rotateBoardButton = button.create.withKey("rotate-button")(Button.Props(buttonCenterX,
         currentY,
         buttonWidth,
         buttonHeight,
@@ -66,24 +72,29 @@ class SideChrome(button: Button) {
         Map.empty,
         props.applicationCallbacks.onRotateBoardButtonClicked))
 
+      parts.push(rotateBoardButton)
+
       currentY += buttonYSpacing
 
-      val hintButton = button.create(Button.Props(buttonCenterX,
-        currentY,
-        buttonWidth,
-        buttonHeight,
-        "Hint",
-        None,
-        enabled = props.gameModel.hintButtonEnabled,
-        Map.empty,
-        props.applicationCallbacks.onHintButtonClicked))
+      if(props.gameModel.hintButtonEnabled) {
+        val hintButton = button.create.withKey("hint-button")(Button.Props(buttonCenterX,
+          currentY,
+          buttonWidth,
+          buttonHeight,
+          "Hint",
+          None,
+          enabled = true,
+          Map.empty,
+          props.applicationCallbacks.onHintButtonClicked))
+
+        parts.push(hintButton)
+      }
+
 
       <.svg.svg(
         ^.`class` := "side-chrome",
         Backdrop((widthPixels, heightPixels)),
-        newGameButton,
-        rotateBoardButton,
-        hintButton
+        parts
       )
 
     }

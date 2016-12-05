@@ -8,7 +8,8 @@ import checkers.util.Random
 class ComputerPlayer(moveGenerator: MoveGenerator,
                      searcher: Searcher,
                      shufflerFactory: ShufflerFactory,
-                     personality: Personality)
+                     personality: Personality,
+                     isMentor: Boolean = false)
                     (initialSeed: Option[Long]) extends Program {
   // Can be shared between all computations
   private val moveDecoder = new MoveDecoder
