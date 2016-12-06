@@ -1,11 +1,12 @@
 package checkers.core
 
-import checkers.computer.ProgramRegistry
+import checkers.computer.{MentorFactory, Program, ProgramRegistry}
 import checkers.userinterface.GameScreen
 import org.scalajs.dom
 
 class GameFactory(programRegistry: ProgramRegistry,
                   gameLogicModuleFactory: GameLogicModuleFactory,
+                  mentorFactory: MentorFactory,
                   scheduler: Scheduler,
                   applicationSettingsProvider: ApplicationSettingsProvider,
                   screenLayoutSettingsProvider: ScreenLayoutSettingsProvider,
@@ -35,18 +36,22 @@ class GameFactory(programRegistry: ProgramRegistry,
     val darkPlayer = darkComputer.getOrElse(Human)
     val lightPlayer = lightComputer.getOrElse(Human)
 
-    val gameConfig = GameConfig(settings.rulesSettings, PlayerConfig(darkPlayer, lightPlayer))
+    val darkMentor = createMentor(gameLogicModule, darkPlayer)
+    val lightMentor = createMentor(gameLogicModule, lightPlayer)
+
+    val mentorConfig = MentorConfig(darkMentor, lightMentor)
+
+    val gameConfig = GameConfig(settings.rulesSettings, PlayerConfig(darkPlayer, lightPlayer), mentorConfig)
     createGame(gameLogicModule, gameConfig, host)
   }
 
-//  // Human vs. TrivialPlayer
-//  def createSimple1(host: dom.Node) = create(NewGameSettings.standardHumanTrivialPlayer, host)
-//
-//  // Human vs. Human
-//  def createSimple2(host: dom.Node) = create(NewGameSettings.standardHumanHuman, host)
-//
-//  // Trivial Player vs. Trivial Player
-//  def createSimple3(host: dom.Node) = create(NewGameSettings.standardTrivialPlayers, host)
+
+  private def createMentor(gameLogicModule: GameLogicModule, player: Player): Option[Program] = {
+    if(player.isComputer) None
+    else {
+      Option(mentorFactory.makeProgram(gameLogicModule))
+    }
+  }
 
   private def createGame(gameLogicModule: GameLogicModule, gameConfig: GameConfig, host: dom.Node): Game = {
     val driver = new GameDriver(gameLogicModule)(gameConfig.playerConfig)
