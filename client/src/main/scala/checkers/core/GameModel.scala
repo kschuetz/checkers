@@ -62,8 +62,7 @@ case class GameModel(nowTime: Double,
                      turnStartTime: Double,
                      inputPhase: InputPhase,
                      gameState: GameState,
-                     darkScore: Int,
-                     lightScore: Int,
+                     currentTurnSnapshot: Snapshot,
                      boardOrientation: BoardOrientation,
                      pickedUpPiece: Option[PickedUpPiece],
                      squareAttributesVector: SquareAttributesVector,
@@ -134,7 +133,11 @@ case class GameModel(nowTime: Double,
 
   def scoreDisplayEnabled: Boolean = true
 
-  def getScore(side: Side): Int = if(side == DARK) darkScore else lightScore
+  def getScore(side: Side): Int = if(side == DARK) {
+    currentTurnSnapshot.darkScore
+  } else {
+    currentTurnSnapshot.lightScore
+  }
 
   def gameOverState: Option[GameOverState] = inputPhase match {
     case GameOver(winner) =>

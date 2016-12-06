@@ -1,11 +1,8 @@
 package checkers.core
 
+import checkers.computer.Program
 import checkers.consts._
 import checkers.core.BeginTurnEvaluation.CanMove
-
-case class PlayerState(opaque: Opaque,
-                       mentorOpaque: Option[Opaque],
-                       clock: Double)
 
 case class GameState(rulesSettings: RulesSettings,
                      playerConfig: PlayerConfig,
@@ -56,6 +53,12 @@ case class GameState(rulesSettings: RulesSettings,
     withPlayerState(side, newState)
   }
 
+  def withMentorOpaque(side: Side, newOpaque: Opaque): GameState = {
+    val prevState = playerState(side)
+    val newState = prevState.copy(mentorOpaque = Option(newOpaque))
+    withPlayerState(side, newState)
+  }
+
   def withPlayerState(side: Side, newState: PlayerState): GameState = {
     if(side == DARK) copy(darkState = newState) else copy(lightState = newState)
   }
@@ -72,6 +75,13 @@ case class GameState(rulesSettings: RulesSettings,
   }
 
   def opponent: Side = OPPONENT(turnToMove)
+
+  def mentor(side: Side): Option[(Program, Opaque)] = for {
+    mentor <- mentorConfig.getMentor(side)
+    mentorOpaque <- playerState(side).mentorOpaque
+  } yield (mentor, mentorOpaque)
+
+  def hasMentor(side: Side): Boolean = mentorConfig.hasMentor(side) && playerState(side).mentorOpaque.isDefined
 
 }
 

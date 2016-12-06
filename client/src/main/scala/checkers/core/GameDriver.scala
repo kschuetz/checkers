@@ -28,7 +28,7 @@ class GameDriver(gameLogicModule: GameLogicModule)
 
   def createInitialModel(nowTime: Double): Model = {
     val gameState = createInitialState
-    val (darkScore, lightScore) = evaluatePosition(gameState)
+    val snapshot = createSnapshot(gameState)
     val model = {
       val m1 = GameModel(
         nowTime = nowTime,
@@ -36,8 +36,7 @@ class GameDriver(gameLogicModule: GameLogicModule)
         turnStartTime = nowTime,
         inputPhase = GameStart(gameState),
         gameState = gameState,
-        darkScore = darkScore,
-        lightScore = lightScore,
+        currentTurnSnapshot = snapshot,
         boardOrientation = BoardOrientation.Normal,
         pickedUpPiece = None,
         squareAttributesVector = SquareAttributesVector.default,
@@ -113,7 +112,8 @@ class GameDriver(gameLogicModule: GameLogicModule)
     val moveInfo = go(move.path, Nil).reverse
     val newBoard = boardState.toImmutable
 
-    val entry = HistoryEntry(gameState.turnIndex, gameState.turnToMove, gameState.board, gameState.drawStatus, move)
+    val entry = HistoryEntry(gameState.turnIndex, gameState.turnToMove, gameState.board,
+      gameState.drawStatus, move)
     val newGameState = if (endsTurn) {
       val beginTurnState = BeginTurnState(board = newBoard,
         turnIndex = gameState.turnIndex + 1,
@@ -235,16 +235,31 @@ class GameDriver(gameLogicModule: GameLogicModule)
           getPlayInput(newState))
     }
 
-    val (darkScore, lightScore) = evaluatePosition(newState)
-
     val clickableSquares = getClickableSquares(inputPhase, newState.moveTree)
     log.info(s"turnToMove: $turnToMove")
     log.info(s"moveTree:  ${newState.moveTree}")
     log.info(s"clickable: $clickableSquares")
     val squareAttributesVector = gameModel.squareAttributesVector.withClickable(clickableSquares).withGhost(Set.empty)
 
-    gameModel.copy(inputPhase = inputPhase, gameState = newState, darkScore = darkScore, lightScore = lightScore,
+    val snapshot = createSnapshot(newState)
+
+    gameModel.copy(inputPhase = inputPhase, gameState = newState, currentTurnSnapshot = snapshot,
       squareAttributesVector = squareAttributesVector, pickedUpPiece = None)
+  }
+
+  private def createSnapshot(gameState: GameState): Snapshot = {
+    val (darkScore, lightScore) = evaluatePosition(gameState)
+    Snapshot(
+      gameClock = 0, //TODO
+      turnIndex = gameState.turnIndex,
+      turnToMove = gameState.turnToMove,
+      board = gameState.board,
+      drawStatus = gameState.drawStatus,
+      darkState = gameState.darkState,
+      lightState = gameState.lightState,
+      darkScore = darkScore,
+      lightScore = lightScore
+    )
   }
 
   private def getPlayInput(gameState: State): PlayInput = {

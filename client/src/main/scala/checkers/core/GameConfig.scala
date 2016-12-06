@@ -8,6 +8,8 @@ case class PlayerConfig(darkPlayer: Player, lightPlayer: Player) {
 }
 
 case class MentorConfig(darkMentor: Option[Program], lightMentor: Option[Program]) {
+  def hasMentor(side: Side): Boolean = if(side == DARK) darkMentor.isDefined else lightMentor.isDefined
+
   def getMentor(side: Side): Option[Program] = if(side == DARK) darkMentor else lightMentor
 }
 
