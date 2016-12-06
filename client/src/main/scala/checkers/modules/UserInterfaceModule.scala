@@ -7,6 +7,7 @@ import checkers.userinterface.{DynamicScene, GameScreen, SceneContainer, SceneFr
 import checkers.userinterface.chrome._
 import checkers.userinterface.dialog.NewGameDialog
 import checkers.userinterface.piece._
+import checkers.userinterface.widgets.Arrow
 
 trait UserInterfaceModule {
   lazy val gameScreen: GameScreen = wire[GameScreen]
@@ -52,6 +53,10 @@ trait UserInterfaceModule {
   lazy val placingAnimation: PlacingPieceAnimation = wire[PlacingPieceAnimation]
 
   lazy val illegalPieceSelectionAnimation: IllegalPieceSelectionAnimation = wire[IllegalPieceSelectionAnimation]
+
+  lazy val arrow: Arrow = wire[Arrow]
+
+  lazy val showHintAnimation: ShowHintAnimation = wire[ShowHintAnimation]
 
   lazy val pickedUpPiece: PickedUpPiece = wire[PickedUpPiece]
 

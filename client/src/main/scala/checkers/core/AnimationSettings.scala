@@ -55,7 +55,7 @@ class DefaultAnimationSettings extends AnimationSettings {
 
   val BoardRotateDurationMillis: Double = 1200.0
 
-  val ShowHintDurationMillis: Double = 3000.0
+  val ShowHintDurationMillis: Double = 2625.0
 
   val ShowHintFlashDurationMillis: Double = 750.0
 

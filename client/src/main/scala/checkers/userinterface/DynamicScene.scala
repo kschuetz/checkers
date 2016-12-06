@@ -33,7 +33,9 @@ class DynamicScene(physicalPiece: PhysicalPiece,
                    jumpingPieceAnimation: JumpingPieceAnimation,
                    placingPieceAnimation: PlacingPieceAnimation,
                    crowningAnimation: CrowningAnimation,
-                   illegalPieceSelectionAnimation: IllegalPieceSelectionAnimation) {
+                   illegalPieceSelectionAnimation: IllegalPieceSelectionAnimation,
+                   showHintAnimation: ShowHintAnimation) {
+
   import DynamicScene._
 
   val create = ReactComponentB[Props]("DynamicScene")
@@ -89,9 +91,9 @@ class DynamicScene(physicalPiece: PhysicalPiece,
       val overlayButtons = new js.Array[ReactNode]
       Board.allSquares.foreach { case (boardPos, squareIndex, pt) =>
         val k = s"s-${boardPos.row}-${boardPos.col}"
-        val squareAttributes = if(squareIndex >= 0) model.squareAttributes(squareIndex)
-          else SquareAttributes.default
-        val occupant = if(squareIndex > 0) boardState.getOccupant(squareIndex) else EMPTY
+        val squareAttributes = if (squareIndex >= 0) model.squareAttributes(squareIndex)
+        else SquareAttributes.default
+        val occupant = if (squareIndex > 0) boardState.getOccupant(squareIndex) else EMPTY
 
         val props = SquareOverlayButton.Props(squareIndex, occupant, pt.x, pt.y, squareAttributes.clickable,
           screenToBoard = screenToBoard, callbacks = callbacks)
@@ -107,51 +109,57 @@ class DynamicScene(physicalPiece: PhysicalPiece,
       val animations = new js.Array[ReactNode]
       val nowTime = model.nowTime
       model.animation.play.foreach {
-          case rp: RemovingPiece =>
-            val k = s"remove-${rp.fromSquare}"
-            val progress = rp.linearProgress(nowTime)
-            val props = RemovingPieceAnimation.Props(rp.piece, rp.fromSquare, progress, pieceRotation)
-            val component = removingPieceAnimation.create.withKey(k)(props)
+        case rp: RemovingPiece =>
+          val k = s"remove-${rp.fromSquare}"
+          val progress = rp.linearProgress(nowTime)
+          val props = RemovingPieceAnimation.Props(rp.piece, rp.fromSquare, progress, pieceRotation)
+          val component = removingPieceAnimation.create.withKey(k)(props)
+          animations.push(component)
+
+        case pp: PlacingPiece =>
+          val k = s"place-${pp.toSquare}"
+          val progress = pp.linearProgress(nowTime)
+          val props = PlacingPieceAnimation.Props(pp.piece, pp.toSquare, progress, pieceRotation)
+          val component = placingPieceAnimation.create.withKey(k)(props)
+          animations.push(component)
+
+        case mp: MovingPiece =>
+          val k = s"move-${mp.fromSquare}-${mp.toSquare}"
+          val progress = mp.linearProgress(nowTime)
+          val props = MovingPieceAnimation.Props(mp.piece, mp.fromSquare, mp.toSquare, progress, pieceRotation)
+          val component = movingPieceAnimation.create.withKey(k)(props)
+          animations.push(component)
+
+        case jp: JumpingPiece if jp.isPieceVisible(nowTime) =>
+          val k = s"jump-${jp.fromSquare}-${jp.toSquare}"
+          val progress = jp.linearProgress(nowTime)
+          val props = JumpingPieceAnimation.Props(jp.piece, jp.fromSquare, jp.toSquare, progress, pieceRotation)
+          val component = jumpingPieceAnimation.create.withKey(k)(props)
+          animations.push(component)
+
+        case cp: CrowningPiece =>
+          val k = s"crown-${cp.squareIndex}"
+          val progress = cp.linearProgress(nowTime)
+          if (progress > 0) {
+            val props = CrowningAnimation.Props(cp.side, cp.squareIndex, progress, pieceRotation)
+            val component = crowningAnimation.create.withKey(k)(props)
             animations.push(component)
+          }
 
-          case pp: PlacingPiece =>
-            val k = s"place-${pp.toSquare}"
-            val progress = pp.linearProgress(nowTime)
-            val props = PlacingPieceAnimation.Props(pp.piece, pp.toSquare, progress, pieceRotation)
-            val component = placingPieceAnimation.create.withKey(k)(props)
-            animations.push(component)
+        case ips: IllegalPieceSelection =>
+          val k = s"illegal-${ips.squareIndex}"
+          val progress = ips.linearProgress(nowTime)
+          val props = IllegalPieceSelectionAnimation.Props(ips.piece, ips.squareIndex, progress, pieceRotation)
+          val component = illegalPieceSelectionAnimation.create.withKey(k)(props)
+          animations.push(component)
 
-          case mp: MovingPiece =>
-            val k = s"move-${mp.fromSquare}-${mp.toSquare}"
-            val progress = mp.linearProgress(nowTime)
-            val props = MovingPieceAnimation.Props(mp.piece, mp.fromSquare, mp.toSquare, progress, pieceRotation)
-            val component = movingPieceAnimation.create.withKey(k)(props)
-            animations.push(component)
+        case _ => ()
+      }
 
-          case jp: JumpingPiece if jp.isPieceVisible(nowTime) =>
-            val k = s"jump-${jp.fromSquare}-${jp.toSquare}"
-            val progress = jp.linearProgress(nowTime)
-            val props = JumpingPieceAnimation.Props(jp.piece, jp.fromSquare, jp.toSquare, progress, pieceRotation)
-            val component = jumpingPieceAnimation.create.withKey(k)(props)
-            animations.push(component)
-
-          case cp: CrowningPiece =>
-            val k = s"crown-${cp.squareIndex}"
-            val progress = cp.linearProgress(nowTime)
-            if(progress > 0) {
-              val props = CrowningAnimation.Props(cp.side, cp.squareIndex, progress, pieceRotation)
-              val component = crowningAnimation.create.withKey(k)(props)
-              animations.push(component)
-            }
-
-          case ips: IllegalPieceSelection =>
-            val k = s"illegal-${ips.squareIndex}"
-            val progress = ips.linearProgress(nowTime)
-            val props = IllegalPieceSelectionAnimation.Props(ips.piece, ips.squareIndex, progress, pieceRotation)
-            val component = illegalPieceSelectionAnimation.create.withKey(k)(props)
-            animations.push(component)
-
-          case _ => ()
+      model.animation.hint.foreach { ha =>
+        val props = ShowHintAnimation.Props(ha.fromSquare, ha.toSquare, ha.flashDuration, ha.duration, nowTime - ha.startTime)
+        val component = showHintAnimation.create.withKey("hint")(props)
+        animations.push(component)
       }
 
       <.svg.g(
