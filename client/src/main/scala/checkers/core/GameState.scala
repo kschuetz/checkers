@@ -4,10 +4,12 @@ import checkers.consts._
 import checkers.core.BeginTurnEvaluation.CanMove
 
 case class PlayerState(opaque: Opaque,
+                       mentorOpaque: Option[Opaque],
                        clock: Double)
 
 case class GameState(rulesSettings: RulesSettings,
                      playerConfig: PlayerConfig,
+                     mentorConfig: MentorConfig,
                      board: BoardState,
                      turnToMove: Side,
                      turnIndex: Int,

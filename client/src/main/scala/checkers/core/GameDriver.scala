@@ -10,7 +10,8 @@ import checkers.util.Point
 
 
 class GameDriver(gameLogicModule: GameLogicModule)
-                (playerConfig: PlayerConfig) {
+                (playerConfig: PlayerConfig,
+                 mentorConfig: MentorConfig) {
 
   private val log = logger.gameDriver
 
@@ -148,14 +149,21 @@ class GameDriver(gameLogicModule: GameLogicModule)
     (playEvents, newModel)
   }
 
+  private def createInitialPlayerState(side: Side): PlayerState = {
+    val mentorOpaque = mentorConfig.getMentor(side).map(_.initialOpaque)
+    val playerOpaque = playerConfig.getPlayer(side).initialOpaque
+    PlayerState(playerOpaque, mentorOpaque, 0)
+  }
+
   private def createInitialState: State = {
-    val darkState = PlayerState(playerConfig.darkPlayer.initialOpaque, 0)
-    val lightState = PlayerState(playerConfig.lightPlayer.initialOpaque, 0)
+    val darkState = createInitialPlayerState(DARK)
+    val lightState = createInitialPlayerState(LIGHT)
     val turnToMove = rulesSettings.playsFirst
     val boardState = gameLogicModule.boardInitializer.initialBoard(rulesSettings)
     val beginTurnState = BeginTurnState(boardState, turnToMove, 0, NoDraw)
     val turnEvaluation = evaluateBeginTurn(beginTurnState)
-    GameState(rulesSettings, playerConfig, boardState, turnToMove, 0, darkState, lightState, NoDraw, turnEvaluation, Nil)
+    GameState(rulesSettings, playerConfig, mentorConfig, boardState, turnToMove, 0, darkState, lightState,
+      NoDraw, turnEvaluation, Nil)
   }
 
   private def evaluateBeginTurn(beginTurnState: BeginTurnState): BeginTurnEvaluation = {

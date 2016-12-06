@@ -54,7 +54,7 @@ class GameFactory(programRegistry: ProgramRegistry,
   }
 
   private def createGame(gameLogicModule: GameLogicModule, gameConfig: GameConfig, host: dom.Node): Game = {
-    val driver = new GameDriver(gameLogicModule)(gameConfig.playerConfig)
+    val driver = new GameDriver(gameLogicModule)(gameConfig.playerConfig, gameConfig.mentorConfig)
     new Game(driver, scheduler, applicationSettingsProvider, screenLayoutSettingsProvider, gameScreen)(host)
   }
 
