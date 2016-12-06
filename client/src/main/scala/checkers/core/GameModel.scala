@@ -147,7 +147,7 @@ case class GameModel(nowTime: Double,
   }
 
   def playerClock(side: Side): Double = {
-    val base = if(side == DARK) gameState.darkClock else gameState.lightClock
+    val base = gameState.clock(side)
     val addCurrentTurn = inputPhase.onTheClock &&
       ((gameState.turnToMove == side) != inputPhase.endingTurn)    // xor
     if (addCurrentTurn) base + currentTurnClock else base

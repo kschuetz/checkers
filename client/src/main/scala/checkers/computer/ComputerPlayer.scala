@@ -16,7 +16,7 @@ class ComputerPlayer(moveGenerator: MoveGenerator,
 
   private lazy val log = logger.computerPlayer
 
-  override def initialState: ComputerPlayerState = {
+  override def initialOpaque: ComputerPlayerState = {
     val random = initialSeed.fold(Random())(seed => Random.apply(seed))
     ComputerPlayerState(random)
   }

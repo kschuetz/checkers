@@ -11,7 +11,7 @@ case class PlayInput(board: BoardState,
                      history: List[HistoryEntry])
 
 trait Program {
-  def initialState: Opaque
+  def initialOpaque: Opaque
 
   def play(state: Opaque, playInput: PlayInput): PlayComputation
 }

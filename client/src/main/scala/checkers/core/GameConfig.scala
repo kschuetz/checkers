@@ -1,6 +1,10 @@
 package checkers.core
 
-case class PlayerConfig(darkPlayer: Player, lightPlayer: Player)
+import checkers.consts._
+
+case class PlayerConfig(darkPlayer: Player, lightPlayer: Player) {
+  def getPlayer(side: Side): Player = if(side == DARK) darkPlayer else lightPlayer
+}
 
 case class GameConfig(rulesSettings: RulesSettings, playerConfig: PlayerConfig)
 

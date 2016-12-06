@@ -3,17 +3,22 @@ package checkers.core
 import checkers.consts._
 import checkers.core.BeginTurnEvaluation.CanMove
 
+case class PlayerState(opaque: Opaque,
+                       clock: Double)
+
 case class GameState(rulesSettings: RulesSettings,
                      playerConfig: PlayerConfig,
                      board: BoardState,
                      turnToMove: Side,
                      turnIndex: Int,
-                     darkState: Opaque,
-                     lightState: Opaque,
+                     darkState: PlayerState,
+                     lightState: PlayerState,
+//                     darkState: Opaque,
+//                     lightState: Opaque,
                      drawStatus: DrawStatus,
                      beginTurnEvaluation: BeginTurnEvaluation,
-                     darkClock: Double,
-                     lightClock: Double,
+//                     darkClock: Double,
+//                     lightClock: Double,
                      history: List[HistoryEntry]) {
 
   def currentPlayer: PlayerDescription =
@@ -41,14 +46,31 @@ case class GameState(rulesSettings: RulesSettings,
     case _ => MoveTree.empty
   }
 
-  def withDarkState(newState: Opaque): GameState = copy(darkState = newState)
+  def playerState(side: Side): PlayerState = {
+    if(side == DARK) darkState else lightState
+  }
 
-  def withLightState(newState: Opaque): GameState = copy(lightState = newState)
+  def playerOpaque(side: Side): Opaque = playerState(side).opaque
+
+  def withOpaque(side: Side, newOpaque: Opaque): GameState = {
+    val prevState = playerState(side)
+    val newState = prevState.copy(opaque = newOpaque)
+    withPlayerState(side, newState)
+  }
+
+  def withPlayerState(side: Side, newState: PlayerState): GameState = {
+    if(side == DARK) copy(darkState = newState) else copy(lightState = newState)
+  }
+
+  def clock(side: Side): Double = playerState(side).clock
 
   def addToClock(side: Side, amount: Double): GameState = {
     if(amount <= 0) this
-    else if(side == DARK) copy(darkClock = darkClock + amount)
-    else copy(lightClock = lightClock + amount)
+    else {
+      val prevState = playerState(side)
+      val newState = prevState.copy(clock = prevState.clock + amount)
+      withPlayerState(side, newState)
+    }
   }
 
   def opponent: Side = OPPONENT(turnToMove)
