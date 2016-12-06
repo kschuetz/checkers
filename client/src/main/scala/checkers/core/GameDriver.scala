@@ -60,6 +60,20 @@ class GameDriver(gameLogicModule: GameLogicModule)
     }
   }
 
+  def userShowHint(model: Model): Option[Model] = {
+    if(model.animation.isShowingHint) None
+    else model.hintState match {
+      case MentorAvailable(mentor, mentorOpaque) =>
+        val playInput = getPlayInput(model.gameState)
+        val computation = mentor.play(mentorOpaque, playInput)
+        val newHintState = ComputingHint(model.nowTime, model.turnToMove, computation)
+        Some(model.copy(hintState = newHintState))
+      case answer: MentorAnswer =>
+        scheduleHintAnimation(model, answer)
+      case _ => None
+    }
+  }
+
   private def schedulePlacePieces(model: Model): Model = {
     val input = PlacePiecesAnimationInput(model.nowTime, model.animation, model.board)
     animationPlanner.placeAllPieces(input).fold(model)(model.withAnimationModel)
@@ -336,11 +350,10 @@ class GameDriver(gameLogicModule: GameLogicModule)
         val newGameState = model.gameState.withMentorOpaque(ch.side, newOpaque)
         val answer = Hint.fromPlay(play).fold[MentorAnswer](NoSuggestion)(HintAvailable)
         val newModel = model.copy(gameState = newGameState, hintState = answer)
-        val animationInput = HintAnimationInput(nowTime = model.nowTime, animationModel = model.animation,
-          hint = answer)
 
-        val result = animationPlanner.showHint(animationInput).fold(model)(model.withAnimationModel)
-        Some(result)
+        log.info(s"Mentor provided hint: $answer")
+
+        scheduleHintAnimation(newModel, answer).orElse(Some(newModel))
       case _ => None
     }
   }
@@ -407,6 +420,13 @@ class GameDriver(gameLogicModule: GameLogicModule)
     val input = MoveAnimationPlanInput(nowTime = model.nowTime, animationModel = model.animation,
       isComputerPlayer = isComputerPlayer, moveInfo = moveInfo)
     animationPlanner.scheduleMoveAnimations(input).fold(model)(model.withAnimationModel)
+  }
+
+  private def scheduleHintAnimation(model: Model, hint: MentorAnswer): Option[Model] = {
+    val animationInput = HintAnimationInput(nowTime = model.nowTime, animationModel = model.animation,
+      hint = hint)
+
+    animationPlanner.showHint(animationInput).map(model.withAnimationModel)
   }
 
   private def handleIllegalPieceSelection(model: Model, squareIndex: Int, piece: Occupant): Option[Model] = {

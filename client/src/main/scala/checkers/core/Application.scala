@@ -76,7 +76,7 @@ class Application(programRegistry: ProgramRegistry,
     }
 
     override def onHintButtonClicked: Callback = Callback {
-      println("Hint button clicked")
+      game.foreach(_.showHint())
     }
 
     override def onNewGameDialogResult(result: Result): Callback = Callback {
