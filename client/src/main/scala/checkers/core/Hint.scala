@@ -35,7 +35,7 @@ case class HintAvailable(hint: Hint) extends MentorAnswer {
 object Hint {
   def fromPlay(play: Play): Option[Hint] = {
     play match {
-      case Play.Move(startSquare :: endSquare :: Nil, _) => Some(Hint(startSquare, endSquare))
+      case Play.Move(startSquare :: endSquare :: _, _) => Some(Hint(startSquare, endSquare))
       case _ => None
     }
   }
