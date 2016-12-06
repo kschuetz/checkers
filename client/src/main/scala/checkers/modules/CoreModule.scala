@@ -46,7 +46,7 @@ trait CoreModule {
 
   lazy val shufflerFactory: ShufflerFactory = wire[DefaultShufflerFactory]
 
-  lazy val mentorConfig: MentorConfig = wire[DefaultMentorConfig]
+  lazy val mentorConfig: MentorSettings = wire[DefaultMentorSettings]
 
   lazy val mentorFactory: MentorFactory = wire[MentorFactory]
 

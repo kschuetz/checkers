@@ -1,13 +1,13 @@
 package checkers.computer
 
-trait MentorConfig {
+trait MentorSettings {
   def Phase1MaxKCycles: Int
   def Phase2MaxKCycles: Int
   def MainMaxKCycles: Int
   def LateMaxKCycles: Int
 }
 
-class DefaultMentorConfig extends MentorConfig {
+class DefaultMentorSettings extends MentorSettings {
   def Phase1MaxKCycles: Int = 100
 
   def Phase2MaxKCycles: Int = 100

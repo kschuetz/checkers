@@ -3,7 +3,7 @@ package checkers.computer
 import checkers.core.GameLogicModule
 
 
-class MentorPersonality(mentorConfig: MentorConfig) extends Personality {
+class MentorPersonality(mentorConfig: MentorSettings) extends Personality {
 
   def getSearchParameters(playerState: ComputerPlayerState, playInput: PlayInput): (ComputerPlayerState, SearchParameters) = {
     val myPieceCount = playInput.board.countPieces(playInput.turnToMove)
@@ -18,7 +18,7 @@ class MentorPersonality(mentorConfig: MentorConfig) extends Personality {
   }
 }
 
-class MentorFactory(mentorConfig: MentorConfig) extends ProgramFactory {
+class MentorFactory(mentorConfig: MentorSettings) extends ProgramFactory {
   private val personality = new MentorPersonality(mentorConfig)
   override def makeProgram(gameLogicModule: GameLogicModule): Program = {
     new ComputerPlayer(gameLogicModule.moveGenerator, gameLogicModule.searcher, gameLogicModule.shufflerFactory,
