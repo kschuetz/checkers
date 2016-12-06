@@ -76,17 +76,30 @@ case class GameModel(nowTime: Double,
 
   def hasActiveAnimations: Boolean = animation.hasActiveAnimations(nowTime)
 
-  def hasActiveComputation: Boolean = inputPhase.waitingForComputer
+  def hasActiveComputation: Boolean = inputPhase.waitingForComputer || hintState.waitingForComputer
 
   def waitingForAnimations: Boolean = inputPhase.waitingForAnimations
 
   def runComputations(maxCycles: Int): Int = {
-    inputPhase match {
-      case ct: ComputerThinking =>
-        ct.playComputation.run(maxCycles)
+    (inputPhase, hintState) match {
+      case (ct: ComputerThinking, ch: ComputingHint) =>
+        val sliceCycles = math.max(1, maxCycles / 2)
+        val slice1 = ct.playComputation.run(sliceCycles)
+        val slice2 = ch.playComputation.run(sliceCycles)
+        slice1 + slice2
+      case (ct: ComputerThinking, _) => ct.playComputation.run(maxCycles)
+      case (_, ch: ComputingHint) => ch.playComputation.run(maxCycles)
       case _ => 0
     }
   }
+
+//  def runComputations(maxCycles: Int): Int = {
+//    inputPhase match {
+//      case ct: ComputerThinking =>
+//        ct.playComputation.run(maxCycles)
+//      case _ => 0
+//    }
+//  }
 
   def withAnimationModel(newAnimationModel: AnimationModel): GameModel = copy(animation = newAnimationModel)
 

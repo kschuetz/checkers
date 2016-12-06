@@ -17,6 +17,10 @@ case class PlacePiecesAnimationInput(nowTime: Double,
                                      animationModel: AnimationModel,
                                      boardState: BoardStateRead)
 
+case class HintAnimationInput(nowTime: Double,
+                              animationModel: AnimationModel,
+                              hint: MentorAnswer)
+
 class AnimationPlanner(settings: AnimationSettings) {
 
   private val log = logger.animations
@@ -166,6 +170,10 @@ class AnimationPlanner(settings: AnimationSettings) {
     val animation = IllegalPieceSelection(input.piece, input.squareIndex, input.nowTime,
       startMovingTime, startMovingTime + settings.IllegalPieceSelectionDurationMillis)
     Some(input.animationModel.addPlayAnim(animation))
+  }
+
+  def showHint(input: HintAnimationInput): Option[AnimationModel] = {
+    None
   }
 
   def placeAllPieces(input: PlacePiecesAnimationInput): Option[AnimationModel] = {

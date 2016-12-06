@@ -302,7 +302,14 @@ class GameDriver(gameLogicModule: GameLogicModule)
     }
   }
 
-  def processComputerMoves(model: Model): Option[Model] = {
+  def processComputations(model: Model): Option[Model] = {
+   processComputerPlayerMoves(model) match {
+     case result @ Some(model1) => processHints(model1).orElse(result)
+     case None => processHints(model)
+   }
+  }
+
+  private def processComputerPlayerMoves(model: Model): Option[Model] = {
     model.inputPhase match {
       case ct: ComputerThinking =>
         if (ct.playComputation.isReady) {
@@ -317,6 +324,23 @@ class GameDriver(gameLogicModule: GameLogicModule)
           }
 
         } else None
+      case _ => None
+    }
+  }
+
+  private def processHints(model: Model): Option[Model] = {
+    model.hintState match {
+      case ch: ComputingHint if ch.playComputation.isReady =>
+        val PlayResult(play, newOpaque) = ch.playComputation.result
+
+        val newGameState = model.gameState.withMentorOpaque(ch.side, newOpaque)
+        val answer = Hint.fromPlay(play).fold[MentorAnswer](NoSuggestion)(HintAvailable)
+        val newModel = model.copy(gameState = newGameState, hintState = answer)
+        val animationInput = HintAnimationInput(nowTime = model.nowTime, animationModel = model.animation,
+          hint = answer)
+
+        val result = animationPlanner.showHint(animationInput).fold(model)(model.withAnimationModel)
+        Some(result)
       case _ => None
     }
   }

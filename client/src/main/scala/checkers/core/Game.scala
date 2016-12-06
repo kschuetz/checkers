@@ -149,7 +149,7 @@ class Game(gameDriver: GameDriver,
     updateNowTime()
     if (model.hasActiveComputation) {
       scheduler.executeSlice(model)
-      gameDriver.processComputerMoves(model).foreach { newModel =>
+      gameDriver.processComputations(model).foreach { newModel =>
         computerReplaceModel(newModel)
       }
       if (model.hasActiveComputation) {
