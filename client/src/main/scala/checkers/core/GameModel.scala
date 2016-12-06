@@ -63,6 +63,7 @@ case class GameModel(nowTime: Double,
                      inputPhase: InputPhase,
                      gameState: GameState,
                      currentTurnSnapshot: Snapshot,
+                     hintState: HintState,
                      boardOrientation: BoardOrientation,
                      pickedUpPiece: Option[PickedUpPiece],
                      squareAttributesVector: SquareAttributesVector,
@@ -164,6 +165,6 @@ case class GameModel(nowTime: Double,
     (light << 16) | (dark & 0xFFFF)
   }
 
-  def hintButtonEnabled: Boolean = false
+  def hintButtonEnabled: Boolean = hintState.hintButtonVisible
 }
 

@@ -37,6 +37,7 @@ class GameDriver(gameLogicModule: GameLogicModule)
         inputPhase = GameStart(gameState),
         gameState = gameState,
         currentTurnSnapshot = snapshot,
+        hintState = NoMentorAvailable,
         boardOrientation = BoardOrientation.Normal,
         pickedUpPiece = None,
         squareAttributesVector = SquareAttributesVector.default,
@@ -74,7 +75,7 @@ class GameDriver(gameLogicModule: GameLogicModule)
 
       case Play.AcceptDraw =>
         if (drawLogic.canAcceptDraw(gameState)) {
-          val newState = gameState.acceptDraw
+          val newState = gameState.acceptDraw(gameModel.currentTurnSnapshot)
           val newModel = gameModel.copy(gameState = newState, inputPhase = InputPhase.GameOver(None))
           Some((PlayEvents.acceptedDraw, newModel))
 
@@ -112,8 +113,7 @@ class GameDriver(gameLogicModule: GameLogicModule)
     val moveInfo = go(move.path, Nil).reverse
     val newBoard = boardState.toImmutable
 
-    val entry = HistoryEntry(gameState.turnIndex, gameState.turnToMove, gameState.board,
-      gameState.drawStatus, move)
+    val entry = HistoryEntry(gameModel.currentTurnSnapshot, move)
     val newGameState = if (endsTurn) {
       val beginTurnState = BeginTurnState(board = newBoard,
         turnIndex = gameState.turnIndex + 1,
@@ -162,7 +162,7 @@ class GameDriver(gameLogicModule: GameLogicModule)
     val boardState = gameLogicModule.boardInitializer.initialBoard(rulesSettings)
     val beginTurnState = BeginTurnState(boardState, turnToMove, 0, NoDraw)
     val turnEvaluation = evaluateBeginTurn(beginTurnState)
-    GameState(rulesSettings, playerConfig, mentorConfig, boardState, turnToMove, 0, darkState, lightState,
+    GameState(rulesSettings, playerConfig, mentorConfig, 0, boardState, turnToMove, 0, darkState, lightState,
       NoDraw, turnEvaluation, Nil)
   }
 
@@ -203,9 +203,19 @@ class GameDriver(gameLogicModule: GameLogicModule)
     }
   }
 
+  private def initHintState(gameModel: Model): Model = {
+    val hintState = if(gameModel.inputPhase.waitingForHuman) {
+      gameModel.gameState.currentMentor.fold[HintState](NoMentorAvailable) {
+        case (mentor, mentorOpaque) => MentorAvailable(mentor, mentorOpaque)
+      }
+    } else NoMentorAvailable
+    gameModel.copy(hintState = hintState)
+  }
+
 
   private def initTurn(gameModel: Model, newState: State): Model = {
-    restartTurn(gameModel, newState).copy(turnStartTime = gameModel.nowTime)
+    val model1 = restartTurn(gameModel, newState).copy(turnStartTime = gameModel.nowTime)
+    initHintState(model1)
   }
 
   /**

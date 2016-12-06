@@ -3,12 +3,8 @@ package checkers.core
 import checkers.consts._
 
 /**
-  * @param board - the state of the board *before* the play
-  * @param drawStatus - the draw status *before* the play
+  * @param snapshot - the state of the game at the beginning of the turn
   * @param play - the play submitted by the player
   */
-case class HistoryEntry(turnIndex: Int,
-                        turnToMove: Side,
-                        board: BoardState,
-                        drawStatus: DrawStatus,
+case class HistoryEntry(snapshot: Snapshot,
                         play: Play)

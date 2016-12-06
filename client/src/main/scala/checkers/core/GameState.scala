@@ -7,6 +7,7 @@ import checkers.core.BeginTurnEvaluation.CanMove
 case class GameState(rulesSettings: RulesSettings,
                      playerConfig: PlayerConfig,
                      mentorConfig: MentorConfig,
+                     gameClock: Double,
                      board: BoardState,
                      turnToMove: Side,
                      turnIndex: Int,
@@ -29,8 +30,9 @@ case class GameState(rulesSettings: RulesSettings,
     case _ => false
   }
 
-  def acceptDraw: GameState = {
-    val entry = HistoryEntry(turnIndex, turnToMove, board, drawStatus, Play.AcceptDraw)
+  // TODO: rewrite this
+  def acceptDraw(snapshot: Snapshot): GameState = {
+    val entry = HistoryEntry(snapshot, Play.AcceptDraw)
     copy(turnIndex = turnIndex + 1,
       turnToMove = OPPONENT(turnToMove),
       history = entry :: history)
@@ -80,6 +82,8 @@ case class GameState(rulesSettings: RulesSettings,
     mentor <- mentorConfig.getMentor(side)
     mentorOpaque <- playerState(side).mentorOpaque
   } yield (mentor, mentorOpaque)
+
+  def currentMentor: Option[(Program, Opaque)] = mentor(turnToMove)
 
   def hasMentor(side: Side): Boolean = mentorConfig.hasMentor(side) && playerState(side).mentorOpaque.isDefined
 
