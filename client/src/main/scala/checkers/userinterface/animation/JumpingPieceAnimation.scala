@@ -1,7 +1,8 @@
-package checkers.userinterface.piece
+package checkers.userinterface.animation
 
 import checkers.consts._
 import checkers.core.Board
+import checkers.userinterface.piece.{PhysicalPiece, PhysicalPieceProps}
 import checkers.util.Easing
 import japgolly.scalajs.react._
 

@@ -1,5 +1,6 @@
 package checkers.modules
 
+import checkers.userinterface.animation._
 import checkers.userinterface.board.{PhysicalBoard, SquareOverlayButton}
 import com.softwaremill.macwire.wire
 import checkers.userinterface.{DynamicScene, GameScreen, SceneContainer, SceneFrame}

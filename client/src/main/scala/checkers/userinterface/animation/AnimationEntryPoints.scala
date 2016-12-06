@@ -1,4 +1,4 @@
-package checkers.userinterface.piece
+package checkers.userinterface.animation
 
 import checkers.consts._
 import checkers.core.Board

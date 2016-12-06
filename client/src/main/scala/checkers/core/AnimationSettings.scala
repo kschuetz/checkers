@@ -22,6 +22,9 @@ trait AnimationSettings {
   def PlacePiecesIntervalMillis: Double
   def PlacePieceDurationMillis: Double
 
+  def ShowHintDurationMillis: Double
+  def ShowHintFlashDurationMillis: Double
+
   def BoardRotateDurationMillis: Double
 }
 
@@ -51,4 +54,9 @@ class DefaultAnimationSettings extends AnimationSettings {
   val PlacePieceDurationMillis: Double = 275.0
 
   val BoardRotateDurationMillis: Double = 1200.0
+
+  val ShowHintDurationMillis: Double = 3000.0
+
+  val ShowHintFlashDurationMillis: Double = 750.0
+
 }

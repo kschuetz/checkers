@@ -107,6 +107,7 @@ object Animation {
 
   case class HintAnimation(fromSquare: Int,
                            toSquare: Int,
+                           flashDuration: Double,
                            startTime: Double,
                            duration: Double) extends OneTimeAnimation
 

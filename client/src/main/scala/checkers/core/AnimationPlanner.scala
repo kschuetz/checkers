@@ -173,7 +173,15 @@ class AnimationPlanner(settings: AnimationSettings) {
   }
 
   def showHint(input: HintAnimationInput): Option[AnimationModel] = {
-    None
+    val animation = input.hint match {
+      case HintAvailable(hint) =>
+        val animation = HintAnimation(hint.startSquare, hint.endSquare, settings.ShowHintFlashDurationMillis,
+          input.nowTime, settings.ShowHintDurationMillis)
+        Some(animation)
+
+      case _ => None
+    }
+    Some(input.animationModel.copy(hint = animation))
   }
 
   def placeAllPieces(input: PlacePiecesAnimationInput): Option[AnimationModel] = {

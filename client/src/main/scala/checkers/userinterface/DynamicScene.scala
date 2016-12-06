@@ -5,6 +5,7 @@ import checkers.userinterface.piece._
 import checkers.consts._
 import checkers.core.Animation._
 import checkers.core.{Board, GameModelReader, SquareAttributes}
+import checkers.userinterface.animation._
 import checkers.util.Point
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
