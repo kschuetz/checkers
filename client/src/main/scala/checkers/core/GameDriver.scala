@@ -46,7 +46,6 @@ class GameDriver(gameLogicModule: GameLogicModule)
     }
 
     model
-    //initTurn(model, gameState)
   }
 
   def rotateBoard(model: Model): Option[Model] = {
@@ -226,11 +225,6 @@ class GameDriver(gameLogicModule: GameLogicModule)
       case _ =>
         getInputPhase(nowTime, playerConfig.getPlayer(turnToMove), newState.playerOpaque(turnToMove),
           getPlayInput(newState))
-//        if (turnToMove == LIGHT) {
-//          getInputPhase(nowTime, playerConfig.lightPlayer, newState.lightState, )
-//        } else {
-//          getInputPhase(nowTime, playerConfig.darkPlayer, newState.darkState, getPlayInput(newState))
-//        }
     }
 
     val (darkScore, lightScore) = evaluatePosition(newState)
@@ -282,12 +276,6 @@ class GameDriver(gameLogicModule: GameLogicModule)
           val PlayResult(play, newPlayerState) = ct.playComputation.result
 
           val newGameState = model.gameState.withOpaque(model.gameState.turnToMove, newPlayerState)
-
-//          val newGameState = if (model.gameState.turnToMove == DARK) {
-//            model.gameState.withDarkState(newPlayerState)
-//          } else {
-//            model.gameState.withLightState(newPlayerState)
-//          }
 
           val newModel = model.copy(gameState = newGameState)
           applyPlay(newModel, play).map { case (playEvents, result) =>

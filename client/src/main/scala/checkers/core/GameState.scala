@@ -13,12 +13,8 @@ case class GameState(rulesSettings: RulesSettings,
                      turnIndex: Int,
                      darkState: PlayerState,
                      lightState: PlayerState,
-//                     darkState: Opaque,
-//                     lightState: Opaque,
                      drawStatus: DrawStatus,
                      beginTurnEvaluation: BeginTurnEvaluation,
-//                     darkClock: Double,
-//                     lightClock: Double,
                      history: List[HistoryEntry]) {
 
   def currentPlayer: PlayerDescription =
