@@ -9,6 +9,7 @@ object Arrow {
                    headLength: Double,
                    headWidth: Double,
                    baseWidth: Double,
+                   baseOffset: Double = 0,
                    extraClasses: Map[String, Boolean] = Map.empty)
 }
 
@@ -17,12 +18,14 @@ class Arrow extends SvgHelpers {
 
   class Backend($: BackendScope[Props, Unit]) {
     def render(props: Props) = {
+      val yOffset = props.baseOffset
+
       val x0 = 0d
       val x1 = props.baseWidth / 2
       val x2 = props.headWidth / 2
-      val y0 = -props.totalLength
-      val y1 = props.headLength - props.totalLength
-      val y2 = 0d
+      val y0 = yOffset - props.totalLength
+      val y1 = yOffset + props.headLength - props.totalLength
+      val y2 = yOffset
 
       val pathString = pointsToPathString(
         Point(x0, y0),

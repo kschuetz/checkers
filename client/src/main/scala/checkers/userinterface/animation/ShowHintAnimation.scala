@@ -46,7 +46,7 @@ class ShowHintAnimation(arrow: Arrow) {
         val deg = math.toDegrees(rad)
         if(dir.x < 0) -deg else deg
       }
-      val arrowProps = Arrow.Props(length, 0.5, 0.75, 0.25, classes)
+      val arrowProps = Arrow.Props(length - 0.23, 0.5, 0.75, 0.25, -0.115, classes)
       val arrowElement = arrow.create(arrowProps)
       <.svg.g(
         ^.svg.transform := s"translate(${ptA.x},${ptA.y}),rotate($angle)",
