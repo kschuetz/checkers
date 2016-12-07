@@ -29,19 +29,19 @@ class GameLogEntry(physicalPiece: PhysicalPiece) extends FontHelpers with ClipPa
 
     def render(props: Props) = {
       val stripe = getStripeClass(props)
-      val textHeight = 0.4 * props.heightPixels
+      val textHeight = 0.46 * props.heightPixels
 
       val fontSizeValue = s"${textHeight}px"
 
       val textBottom = 0.7 * props.heightPixels
       val turnIndexLeft = 0.05 * props.widthPixels
-      val turnIndexRight = 0.25 * props.widthPixels
-      val descriptionLeft = 0.4 * props.widthPixels
+      val turnIndexRight = 0.23 * props.widthPixels
+      val descriptionLeft = 0.44 * props.widthPixels
       val descriptionRight = 0.95 * props.widthPixels
 
       val halfHeight = 0.5 * props.heightPixels
       val avatarX = (turnIndexRight + descriptionLeft) / 2
-      val avatarScale = math.min(0.8 * props.heightPixels, 0.8 * (descriptionLeft - turnIndexRight))
+      val avatarScale = math.min(0.92 * props.heightPixels, 0.92 * (descriptionLeft - turnIndexRight))
 
       val backdrop = <.svg.rect(
         ^.key := "backdrop",

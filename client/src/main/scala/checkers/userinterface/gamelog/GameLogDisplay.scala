@@ -36,7 +36,7 @@ class GameLogDisplay(notation: Notation,
       var y = 0d
 
       def addEntryPanel(snapshot: Snapshot, play: Option[Play]): Unit = {
-        val moveDescription = for {
+        var moveDescription = for {
           p <- play
           desc <- notation.notationForPlay(p)
         } yield desc
