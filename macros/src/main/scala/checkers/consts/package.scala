@@ -14,6 +14,9 @@ package object consts {
   def MAN: PieceType = macro manImpl
   def KING: PieceType = macro kingImpl
 
+  def MAKEMAN(side: Side): Occupant = macro makeManImpl
+  def MAKEKING(side: Side): Occupant = macro makeKingImpl
+
   type Occupant = Int
 
   def EMPTY: Occupant = macro emptyImpl
@@ -73,6 +76,16 @@ package object consts {
   def isPieceImpl(c: blackbox.Context)(occupant: c.Expr[Occupant]): c.Expr[Boolean] = {
     import c.universe._
     c.Expr[Boolean](q"$occupant > 0")
+  }
+
+  def makeManImpl(c: blackbox.Context)(side: c.Expr[Side]): c.Expr[Occupant] = {
+    import c.universe._
+    c.Expr[Occupant](q"if(side == LIGHT) LIGHTMAN else DARKMAN")
+  }
+
+  def makeKingImpl(c: blackbox.Context)(side: c.Expr[Side]): c.Expr[Occupant] = {
+    import c.universe._
+    c.Expr[Occupant](q"if(side == LIGHT) LIGHTKING else DARKKING")
   }
 
 }

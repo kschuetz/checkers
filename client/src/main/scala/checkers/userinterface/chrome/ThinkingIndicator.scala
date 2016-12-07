@@ -1,6 +1,7 @@
 package checkers.userinterface.chrome
 
 import checkers.consts._
+import checkers.userinterface.mixins.ClipPathHelpers
 import checkers.util.{CssHelpers, SvgHelpers}
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.ReactAttr
@@ -22,7 +23,7 @@ object ThinkingIndicator {
 
 }
 
-class ThinkingIndicator extends SvgHelpers {
+class ThinkingIndicator extends SvgHelpers with ClipPathHelpers {
 
   import ThinkingIndicator._
 
@@ -73,9 +74,6 @@ class ThinkingIndicator extends SvgHelpers {
       CallbackTo.pure(scope.props != nextProps)
     }
     .build
-
-  // for some reason, React insists on "clipPath" rather than "clip-path"
-  private val clipPathAttr = ReactAttr.Generic("clipPath")
 
   class Backend($: BackendScope[Props, Unit]) {
 
