@@ -29,11 +29,11 @@ class GameLogEntry(physicalPiece: PhysicalPiece) extends FontHelpers with ClipPa
 
     def render(props: Props) = {
       val stripe = getStripeClass(props)
-      val textHeight = 0.8 * props.heightPixels
+      val textHeight = 0.4 * props.heightPixels
 
       val fontSizeValue = s"${textHeight}px"
 
-      val textBottom = 0.9 * props.heightPixels
+      val textBottom = 0.7 * props.heightPixels
       val turnIndexLeft = 0.05 * props.widthPixels
       val turnIndexRight = 0.25 * props.widthPixels
       val descriptionLeft = 0.4 * props.widthPixels
@@ -41,7 +41,7 @@ class GameLogEntry(physicalPiece: PhysicalPiece) extends FontHelpers with ClipPa
 
       val halfHeight = 0.5 * props.heightPixels
       val avatarX = (turnIndexRight + descriptionLeft) / 2
-      val avatarScale = math.min(textHeight, 0.8 * (descriptionLeft - turnIndexRight))
+      val avatarScale = math.min(0.8 * props.heightPixels, 0.8 * (descriptionLeft - turnIndexRight))
 
       val backdrop = <.svg.rect(
         ^.key := "backdrop",
@@ -58,7 +58,7 @@ class GameLogEntry(physicalPiece: PhysicalPiece) extends FontHelpers with ClipPa
         ^.`class` := "turn-index",
         ^.svg.x := turnIndexRight,
         ^.svg.y := textBottom,
-        ^.svg.textAnchor := "right",
+        ^.svg.textAnchor := "end",
         fontSize := fontSizeValue,
         turnIndexCaption
       )
@@ -68,7 +68,7 @@ class GameLogEntry(physicalPiece: PhysicalPiece) extends FontHelpers with ClipPa
           ^.`class` := "description",
           ^.svg.x := descriptionLeft,
           ^.svg.y := textBottom,
-          ^.svg.textAnchor := "left",
+          ^.svg.textAnchor := "begin",
           fontSize := fontSizeValue,
           caption
         )
@@ -110,6 +110,7 @@ class GameLogEntry(physicalPiece: PhysicalPiece) extends FontHelpers with ClipPa
       <.svg.g(
         ^.`class` := "game-log-entry",
         ^.svg.transform := transform,
+        textClipPath,
         backdrop,
         textElements,
         avatar

@@ -1,5 +1,6 @@
 package checkers.modules
 
+import checkers.core.Notation
 import checkers.userinterface.animation._
 import checkers.userinterface.board.{PhysicalBoard, SquareOverlayButton}
 import checkers.userinterface.chrome._
@@ -11,6 +12,8 @@ import checkers.userinterface.{DynamicScene, GameScreen, SceneContainer, SceneFr
 import com.softwaremill.macwire.wire
 
 trait UserInterfaceModule {
+  protected def notation: Notation
+
   lazy val gameScreen: GameScreen = wire[GameScreen]
 
   lazy val gameOverPanel: GameOverPanel = wire[GameOverPanel]

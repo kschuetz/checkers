@@ -9,6 +9,10 @@ import checkers.userinterface.dialog.NewGameDialog
 import com.softwaremill.macwire.wire
 
 trait CoreModule {
+  protected def tablesModule: TablesModule
+
+  protected def notation: Notation
+
   protected def gameScreen: GameScreen
 
   protected def newGameDialog: NewGameDialog
@@ -26,8 +30,6 @@ trait CoreModule {
   lazy val applicationSettingsProvider: ApplicationSettingsProvider = DefaultApplicationSettingsProvider
 
   lazy val animationSettings: AnimationSettings = wire[DefaultAnimationSettings]
-
-  lazy val tablesModule: TablesModule = wire[TablesModule]
 
   lazy val boardInitializer: BoardInitializer = DefaultBoardInitializer
   //    lazy val boardInitializer: BoardInitializer = new InitializerFromBoard(

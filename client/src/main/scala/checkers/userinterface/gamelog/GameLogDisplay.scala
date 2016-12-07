@@ -1,6 +1,6 @@
 package checkers.userinterface.gamelog
 
-import checkers.core.{GameModelReader, Play, Snapshot}
+import checkers.core.{GameModelReader, Notation, Play, Snapshot}
 import checkers.userinterface.mixins.ClipPathHelpers
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
@@ -18,7 +18,8 @@ object GameLogDisplay {
 
 }
 
-class GameLogDisplay(gameLogEntry: GameLogEntry) extends ClipPathHelpers {
+class GameLogDisplay(notation: Notation,
+                     gameLogEntry: GameLogEntry) extends ClipPathHelpers {
 
   import GameLogDisplay._
 
@@ -35,7 +36,11 @@ class GameLogDisplay(gameLogEntry: GameLogEntry) extends ClipPathHelpers {
       var y = 0d
 
       def addEntryPanel(snapshot: Snapshot, play: Option[Play]): Unit = {
-        val moveDescription = play.map(_.toString)
+        val moveDescription = for {
+          p <- play
+          desc <- notation.notationForPlay(p)
+        } yield desc
+
         val key = s"${snapshot.turnIndex}"
         val entryPanelProps = GameLogEntry.Props(
           widthPixels = entryWidth,
@@ -52,7 +57,9 @@ class GameLogDisplay(gameLogEntry: GameLogEntry) extends ClipPathHelpers {
         y += entryHeight
       }
 
-      addEntryPanel(gameModel.currentTurnSnapshot, None)
+      if(gameModel.inputPhase.waitingForMove) {
+        addEntryPanel(gameModel.currentTurnSnapshot, None)
+      }
       var historyEntries = gameModel.history
 
       while (y < clientHeight && historyEntries.nonEmpty) {
@@ -62,7 +69,7 @@ class GameLogDisplay(gameLogEntry: GameLogEntry) extends ClipPathHelpers {
       }
 
       val backdrop = <.svg.rect(
-        ^.`class` := "backdrop",
+        ^.`class` := "game-log-backdrop",
         ^.svg.x := 0,
         ^.svg.y := 0,
         ^.svg.width := props.widthPixels,
