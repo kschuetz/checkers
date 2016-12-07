@@ -75,6 +75,7 @@ class DynamicScene(physicalPiece: PhysicalPiece,
             clickable = squareAttributes.clickable,
             highlighted = squareAttributes.highlighted,
             ghost = squareAttributes.ghost,
+            simplified = false,
             screenToBoard = screenToBoard,
             callbacks = callbacks)
 

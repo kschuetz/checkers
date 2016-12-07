@@ -18,6 +18,4 @@ class Notation(jumpTable: JumpTable) {
     case _ => None
   }
 
-
-
 }

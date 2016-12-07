@@ -37,6 +37,7 @@ class SideChrome(button: Button,
   class Backend($: BackendScope[Props, Unit]) {
 
     def render(props: Props): ReactElement = {
+      val gameModel = props.gameModel
       val layoutSettings = props.layoutSettings
       val widthPixels = layoutSettings.SideChromeWidthPixels
       val heightPixels = layoutSettings.GameSceneHeightPixels
@@ -80,7 +81,7 @@ class SideChrome(button: Button,
 
       currentY += buttonYSpacing
 
-      if(props.gameModel.hintButtonEnabled) {
+      if(gameModel.hintButtonEnabled) {
         val hintButton = button.create.withKey("hint-button")(Button.Props(buttonCenterX,
           currentY,
           buttonWidth,
@@ -103,7 +104,8 @@ class SideChrome(button: Button,
       val gameLogHeight = gameLogBottom - gameLogTop
       if(gameLogHeight > 0) {
         val gameLogProps = GameLogDisplay.Props(gameLogLeft, gameLogTop, gameLogWidth, gameLogHeight,
-          logEntryHeightPixels, props.gameModel)
+          logEntryHeightPixels, gameModel.gameLogUpdateId, gameModel.inputPhase.waitingForMove,
+          gameModel.currentTurnSnapshot, gameModel.history)
         val element = gameLogDisplay.create.withKey("game-log")(gameLogProps)
         parts.push(element)
       }

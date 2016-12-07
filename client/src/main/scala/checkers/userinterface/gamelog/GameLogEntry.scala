@@ -95,7 +95,8 @@ class GameLogEntry(physicalPiece: PhysicalPiece) extends FontHelpers with ClipPa
           piece = piece,
           x = avatarX,
           y = halfHeight,
-          scale = avatarScale)
+          scale = avatarScale,
+          simplified = true)
         physicalPiece.create(avatarProps)
       }
 

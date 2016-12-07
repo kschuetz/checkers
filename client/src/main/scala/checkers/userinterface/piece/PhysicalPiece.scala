@@ -40,10 +40,14 @@ class PhysicalPiece(decorations: Decorations) {
       val classes =
         if (side == DARK) "piece dark" else "piece light"
 
+      val showPips = !props.simplified
+
       val pips = new js.Array[ReactNode]
-      (0 to 11).foreach { pipIndex =>
-        val pt = decorations.pipCoordinates(pipIndex)
-        pips.push(decorations.Pip.withKey(pipIndex)((side, pt)))
+      if(showPips) {
+        (0 to 11).foreach { pipIndex =>
+          val pt = decorations.pipCoordinates(pipIndex)
+          pips.push(decorations.Pip.withKey(pipIndex)((side, pt)))
+        }
       }
 
       val transform = if (props.rotationDegrees != 0) {

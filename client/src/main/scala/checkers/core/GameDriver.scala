@@ -41,6 +41,7 @@ class GameDriver(gameLogicModule: GameLogicModule)
         boardOrientation = BoardOrientation.Normal,
         pickedUpPiece = None,
         squareAttributesVector = SquareAttributesVector.default,
+        gameLogUpdateId = 1,
         animation = AnimationModel.empty)
 
       schedulePlacePieces(m1)
@@ -155,7 +156,7 @@ class GameDriver(gameLogicModule: GameLogicModule)
 
     val playEvents = if (endsTurn) PlayEvents.turnEnded else PlayEvents.partialTurn(remainingMoveTree)
     val newModel = {
-      val m1 = gameModel.copy(gameState = newGameState)
+      val m1 = gameModel.copy(gameState = newGameState, gameLogUpdateId = gameModel.gameLogUpdateId + 1)
       log.info(newGameState.board.toString)
       scheduleMoveAnimations(m1, moveInfo, isComputerPlayer)
     }

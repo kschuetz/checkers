@@ -1,6 +1,6 @@
 package checkers.userinterface.gamelog
 
-import checkers.core.{GameModelReader, Notation, Play, Snapshot}
+import checkers.core._
 import checkers.userinterface.mixins.ClipPathHelpers
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
@@ -14,7 +14,21 @@ object GameLogDisplay {
                    widthPixels: Double,
                    heightPixels: Double,
                    entryHeightPixels: Double,
-                   gameModel: GameModelReader)
+                   updateId: Int,
+                   waitingForMove: Boolean,
+                   currentSnapshot: Snapshot,
+                   history: List[HistoryEntry]) {
+
+    def shouldUpdate(other: Props): Boolean = {
+      (updateId != other.updateId) ||
+        (waitingForMove != other.waitingForMove) ||
+        (upperLeftX != other.upperLeftX) ||
+        (upperLeftY != other.upperLeftY) ||
+        (widthPixels != other.widthPixels) ||
+        (heightPixels != other.heightPixels) ||
+        (entryHeightPixels != other.entryHeightPixels)
+    }
+  }
 
 }
 
@@ -25,7 +39,6 @@ class GameLogDisplay(notation: Notation,
 
   class Backend($: BackendScope[Props, Unit]) {
     def render(props: Props): ReactElement = {
-      val gameModel = props.gameModel
       val entryHeight = props.entryHeightPixels
       val clientHeight = props.heightPixels
       val entryLeftX = 0
@@ -57,10 +70,10 @@ class GameLogDisplay(notation: Notation,
         y += entryHeight
       }
 
-      if(gameModel.inputPhase.waitingForMove) {
-        addEntryPanel(gameModel.currentTurnSnapshot, None)
+      if(props.waitingForMove) {
+        addEntryPanel(props.currentSnapshot, None)
       }
-      var historyEntries = gameModel.history
+      var historyEntries = props.history
 
       while (y < clientHeight && historyEntries.nonEmpty) {
         val historyEntry :: next = historyEntries
@@ -90,5 +103,9 @@ class GameLogDisplay(notation: Notation,
 
   val create = ReactComponentB[Props]("GameLogDisplay")
     .renderBackend[Backend]
+    .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, _) =>
+      val result = scope.props.shouldUpdate(nextProps)
+      CallbackTo.pure(result)
+    }
     .build
 }

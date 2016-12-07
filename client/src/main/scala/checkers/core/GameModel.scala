@@ -57,6 +57,8 @@ trait GameModelReader {
   def hintButtonEnabled: Boolean
 
   def currentTurnSnapshot: Snapshot
+
+  def gameLogUpdateId: Int
 }
 
 case class GameModel(nowTime: Double,
@@ -69,6 +71,7 @@ case class GameModel(nowTime: Double,
                      boardOrientation: BoardOrientation,
                      pickedUpPiece: Option[PickedUpPiece],
                      squareAttributesVector: SquareAttributesVector,
+                     gameLogUpdateId: Int,
                      animation: AnimationModel) extends GameModelReader with ComputationProcess {
 
   /**
