@@ -156,12 +156,16 @@ class AnimationPlanner(settings: AnimationSettings) {
 
     val newAnimations = if (input.isComputerPlayer) scheduleForComputer else scheduleForHuman
 
-    newAnimations match {
-      case Nil => None
-      case anims =>
-        log.debug(s"scheduling anims: $anims")
-        Some(input.animationModel.addPlayAnims(anims))
-    }
+    val haveNewAnimations = newAnimations.nonEmpty
+    val needCancelHint = input.animationModel.hint.nonEmpty
+
+    if(haveNewAnimations || needCancelHint) {
+      if(haveNewAnimations) {
+        log.debug(s"scheduling anims: $newAnimations")
+      }
+      val newModel = input.animationModel.cancelHintAnimation.addPlayAnims(newAnimations)
+      Some(newModel)
+    } else None
   }
 
   def illegalPieceSelection(input: IllegalPieceAnimationInput): Option[AnimationModel] = {

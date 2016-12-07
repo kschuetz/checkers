@@ -28,6 +28,9 @@ case class AnimationModel(play: List[Animation],
     copy(play = newAnim :: play)
 
   def isShowingHint: Boolean = hint.nonEmpty
+
+  def cancelHintAnimation: AnimationModel =
+    if(hint.isEmpty) this else copy(hint = None)
 }
 
 

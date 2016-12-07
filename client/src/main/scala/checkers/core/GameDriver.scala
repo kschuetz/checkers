@@ -37,7 +37,7 @@ class GameDriver(gameLogicModule: GameLogicModule)
         inputPhase = GameStart(gameState),
         gameState = gameState,
         currentTurnSnapshot = snapshot,
-        hintState = NoMentorAvailable,
+        hintState = NullHintState,
         boardOrientation = BoardOrientation.Normal,
         pickedUpPiece = None,
         squareAttributesVector = SquareAttributesVector.default,

@@ -11,6 +11,8 @@ sealed trait HintState {
   def waitingForComputer: Boolean = false
 }
 
+case object NullHintState extends HintState
+
 case object NoMentorAvailable extends HintState
 
 case class MentorAvailable(mentor: Program, mentorOpaque: Opaque) extends HintState {
