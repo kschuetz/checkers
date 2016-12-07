@@ -4,23 +4,42 @@ trait GameSceneHeight {
   def GameSceneHeightPixels: Int
 }
 
-trait SideChromeLayoutSettings extends GameSceneHeight {
+trait GameLogLayoutSettings {
+  def GameLogPaddingPixelsX: Int
+
+  def GameLogPaddingPixelsY: Int
+
+  def GameLogEntryHeightPixels: Int
+}
+
+trait SideChromeLayoutSettings extends GameSceneHeight with GameLogLayoutSettings {
   def SideChromeWidthPixels: Int
+
   def SideChromePaddingPixels: Int
+
   def SideChromeButtonPaddingPixelsX: Int
+
   def SideChromeButtonPaddingPixelsY: Int
+
   def SideChromeButtonAreaPaddingY: Int
+
   def SideChromeButtonHeightPixels: Int
 }
 
 trait GameOverPanelLayoutSettings {
   def GameOverPanelWidthPixels: Int
+
   def GameOverPanelHeightPixels: Int
 }
 
-trait ScreenLayoutSettings extends SideChromeLayoutSettings with GameOverPanelLayoutSettings {
+trait ScreenLayoutSettings
+  extends SideChromeLayoutSettings
+    with GameOverPanelLayoutSettings {
+
   def GameSceneWidthPixels: Int
+
   def TopChromeHeightPixels: Int
+
   def TopChromePaddingPixels: Int
 }
 
@@ -32,7 +51,7 @@ case class ConstantScreenLayoutSettings(settings: ScreenLayoutSettings) extends 
   def getScreenLayoutSettings(viewPortInfo: ViewPortInfo): ScreenLayoutSettings = settings
 }
 
-trait  DefaultScreenLayoutSettings extends ScreenLayoutSettings {
+trait DefaultScreenLayoutSettings extends ScreenLayoutSettings {
 
   override def GameSceneWidthPixels: Int = 800
 
@@ -57,4 +76,10 @@ trait  DefaultScreenLayoutSettings extends ScreenLayoutSettings {
   override def GameOverPanelWidthPixels: Int = 400
 
   override def GameOverPanelHeightPixels: Int = 200
+
+  override def GameLogPaddingPixelsX: Int = 10
+
+  override def GameLogPaddingPixelsY: Int = 10
+
+  override def GameLogEntryHeightPixels: Int = 40
 }

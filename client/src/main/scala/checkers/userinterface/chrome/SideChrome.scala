@@ -1,6 +1,7 @@
 package checkers.userinterface.chrome
 
 import checkers.core.{ApplicationCallbacks, GameModelReader, SideChromeLayoutSettings}
+import checkers.userinterface.gamelog.GameLogDisplay
 import checkers.userinterface.widgets.Button
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.ReactAttr
@@ -16,7 +17,8 @@ object SideChrome {
 
 }
 
-class SideChrome(button: Button) {
+class SideChrome(button: Button,
+                 gameLogDisplay: GameLogDisplay) {
 
   import SideChrome._
 
@@ -43,6 +45,7 @@ class SideChrome(button: Button) {
       val buttonWidth = widthPixels - (2 * buttonX)
       val buttonHeight = layoutSettings.SideChromeButtonHeightPixels
       val buttonYSpacing = buttonHeight + layoutSettings.SideChromeButtonPaddingPixelsY
+      val logEntryHeightPixels = layoutSettings.GameLogEntryHeightPixels
 
       val parts = new js.Array[ReactNode]
 
@@ -91,6 +94,19 @@ class SideChrome(button: Button) {
         parts.push(hintButton)
       }
 
+      currentY += buttonYSpacing
+
+      val gameLogLeft = layoutSettings.GameLogPaddingPixelsX
+      val gameLogWidth = widthPixels - (2 * gameLogLeft)
+      val gameLogTop = currentY
+      val gameLogBottom = heightPixels - layoutSettings.GameLogPaddingPixelsY
+      val gameLogHeight = gameLogBottom - gameLogTop
+      if(gameLogHeight > 0) {
+        val gameLogProps = GameLogDisplay.Props(gameLogLeft, gameLogTop, gameLogWidth, gameLogHeight,
+          logEntryHeightPixels, props.gameModel)
+        val element = gameLogDisplay.create.withKey("game-log")(gameLogProps)
+        parts.push(element)
+      }
 
       <.svg.svg(
         ^.`class` := "side-chrome",

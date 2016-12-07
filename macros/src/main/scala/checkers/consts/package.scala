@@ -80,12 +80,12 @@ package object consts {
 
   def makeManImpl(c: blackbox.Context)(side: c.Expr[Side]): c.Expr[Occupant] = {
     import c.universe._
-    c.Expr[Occupant](q"if(side == LIGHT) LIGHTMAN else DARKMAN")
+    c.Expr[Occupant](q"if($side == LIGHT) LIGHTMAN else DARKMAN")
   }
 
   def makeKingImpl(c: blackbox.Context)(side: c.Expr[Side]): c.Expr[Occupant] = {
     import c.universe._
-    c.Expr[Occupant](q"if(side == LIGHT) LIGHTKING else DARKKING")
+    c.Expr[Occupant](q"if($side == LIGHT) LIGHTKING else DARKKING")
   }
 
 }

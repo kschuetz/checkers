@@ -8,17 +8,21 @@ import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
 
 object GameLogEntry {
+
   case class Props(widthPixels: Double,
                    heightPixels: Double,
                    turnIndex: Int,
                    side: Side,
-                   moveDescription: String)
+                   moveDescription: Option[String],
+                   upperLeftX: Double = 0,
+                   upperLeftY: Double = 0)
 
   private def getStripeClass(props: Props): String =
-    if(props.turnIndex % 2 == 0) "even" else "odd"
+    if (props.turnIndex % 2 == 0) "even" else "odd"
 }
 
 class GameLogEntry(physicalPiece: PhysicalPiece) extends FontHelpers with ClipPathHelpers {
+
   import GameLogEntry._
 
   class Backend($: BackendScope[Props, Unit]) {
@@ -59,14 +63,17 @@ class GameLogEntry(physicalPiece: PhysicalPiece) extends FontHelpers with ClipPa
         turnIndexCaption
       )
 
-      val descriptionLabel = <.svg.text(
-        ^.`class` := "description",
-        ^.svg.x := descriptionLeft,
-        ^.svg.y := textBottom,
-        ^.svg.textAnchor := "left",
-        fontSize := fontSizeValue,
-        props.moveDescription
-      )
+      val descriptionLabel = props.moveDescription.map { caption =>
+        <.svg.text(
+          ^.`class` := "description",
+          ^.svg.x := descriptionLeft,
+          ^.svg.y := textBottom,
+          ^.svg.textAnchor := "left",
+          fontSize := fontSizeValue,
+          caption
+        )
+      }
+
 
       val clipPathId = s"game-log-clip-path-${props.turnIndex}"
 
@@ -83,7 +90,7 @@ class GameLogEntry(physicalPiece: PhysicalPiece) extends FontHelpers with ClipPa
       )
 
       val avatar = {
-        val piece = 1 //MAKEMAN(props.side)
+        val piece = MAKEMAN(props.side)
         val avatarProps = PhysicalPieceProps.default.copy(
           piece = piece,
           x = avatarX,
@@ -98,8 +105,11 @@ class GameLogEntry(physicalPiece: PhysicalPiece) extends FontHelpers with ClipPa
         descriptionLabel
       )
 
+      val transform = s"translate(${props.upperLeftX},${props.upperLeftY})"
+
       <.svg.g(
         ^.`class` := "game-log-entry",
+        ^.svg.transform := transform,
         backdrop,
         textElements,
         avatar

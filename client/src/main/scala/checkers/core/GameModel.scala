@@ -55,6 +55,8 @@ trait GameModelReader {
   def clockDisplayHash: Int
 
   def hintButtonEnabled: Boolean
+
+  def currentTurnSnapshot: Snapshot
 }
 
 case class GameModel(nowTime: Double,

@@ -2,12 +2,13 @@ package checkers.modules
 
 import checkers.userinterface.animation._
 import checkers.userinterface.board.{PhysicalBoard, SquareOverlayButton}
-import com.softwaremill.macwire.wire
-import checkers.userinterface.{DynamicScene, GameScreen, SceneContainer, SceneFrame}
 import checkers.userinterface.chrome._
 import checkers.userinterface.dialog.NewGameDialog
+import checkers.userinterface.gamelog.{GameLogDisplay, GameLogEntry}
 import checkers.userinterface.piece._
 import checkers.userinterface.widgets.{Arrow, Button, DirectedArrow}
+import checkers.userinterface.{DynamicScene, GameScreen, SceneContainer, SceneFrame}
+import com.softwaremill.macwire.wire
 
 trait UserInterfaceModule {
   lazy val gameScreen: GameScreen = wire[GameScreen]
@@ -67,6 +68,10 @@ trait UserInterfaceModule {
   lazy val decorations: Decorations = wire[Decorations]
 
   lazy val newGameDialog: NewGameDialog = wire[NewGameDialog]
+
+  lazy val gameLogEntry: GameLogEntry = wire[GameLogEntry]
+
+  lazy val gameLog: GameLogDisplay = wire[GameLogDisplay]
 
   lazy val animationEntryPoints: AnimationEntryPoints = DefaultAnimationEntryPoints
 }
