@@ -1,12 +1,9 @@
 package checkers.userinterface.animation
 
-import checkers.consts._
 import checkers.core.Board
-import checkers.userinterface.piece.{PhysicalPiece, PhysicalPieceProps}
-import checkers.userinterface.widgets.Arrow
-import checkers.util.{Easing, Point}
+import checkers.userinterface.widgets.DirectedArrow
+import checkers.util.Point
 import japgolly.scalajs.react._
-import japgolly.scalajs.react.vdom.prefix_<^._
 
 object ShowHintAnimation {
 
@@ -16,9 +13,7 @@ object ShowHintAnimation {
                    totalDuration: Double,
                    timeSinceStart: Double)
 
-  private val up = Point(0, -1)
-
-  private val baseClasses= Map("hint-arrow" -> true)
+  private val baseClasses = Map("hint-arrow" -> true)
 
   private val classesHi = baseClasses + ("high" -> true)
 
@@ -26,7 +21,7 @@ object ShowHintAnimation {
 
 }
 
-class ShowHintAnimation(arrow: Arrow) {
+class ShowHintAnimation(directedArrow: DirectedArrow) {
 
   import ShowHintAnimation._
 
@@ -38,20 +33,11 @@ class ShowHintAnimation(arrow: Arrow) {
 
       val ptA = Board.squareCenter(props.fromSquare)
       val ptB = Board.squareCenter(props.toSquare)
-      val center = ptB - ptA
-      val length = center.magnitude
-      val dir = center / length
-      val angle = {
-        val rad = math.acos(dir.dot(up))
-        val deg = math.toDegrees(rad)
-        if(dir.x < 0) -deg else deg
-      }
-      val arrowProps = Arrow.Props(length - 0.23, 0.5, 0.75, 0.25, -0.115, classes)
-      val arrowElement = arrow.create(arrowProps)
-      <.svg.g(
-        ^.svg.transform := s"translate(${ptA.x},${ptA.y}),rotate($angle)",
-        arrowElement
-      )
+      val arrowProps = DirectedArrow.Props(
+        source = ptA, dest = ptB, headLength = 0.5, headWidth = 0.75, baseWidth = 0.25,
+        sourceMargin = 0.115, destMargin = 0.115, classes)
+
+      directedArrow.create(arrowProps)
     }
   }
 
