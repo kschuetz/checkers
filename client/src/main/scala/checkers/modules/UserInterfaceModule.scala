@@ -7,7 +7,7 @@ import checkers.userinterface.{DynamicScene, GameScreen, SceneContainer, SceneFr
 import checkers.userinterface.chrome._
 import checkers.userinterface.dialog.NewGameDialog
 import checkers.userinterface.piece._
-import checkers.userinterface.widgets.{Arrow, DirectedArrow}
+import checkers.userinterface.widgets.{Arrow, Button, DirectedArrow}
 
 trait UserInterfaceModule {
   lazy val gameScreen: GameScreen = wire[GameScreen]

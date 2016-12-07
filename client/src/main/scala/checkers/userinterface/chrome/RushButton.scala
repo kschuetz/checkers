@@ -1,6 +1,7 @@
 package checkers.userinterface.chrome
 
 import checkers.consts.Side
+import checkers.userinterface.widgets.Button
 import checkers.util.{CssHelpers, SvgHelpers}
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._

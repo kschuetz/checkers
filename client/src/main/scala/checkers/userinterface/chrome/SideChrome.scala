@@ -1,6 +1,7 @@
 package checkers.userinterface.chrome
 
 import checkers.core.{ApplicationCallbacks, GameModelReader, SideChromeLayoutSettings}
+import checkers.userinterface.widgets.Button
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.ReactAttr
 import japgolly.scalajs.react.vdom.prefix_<^._

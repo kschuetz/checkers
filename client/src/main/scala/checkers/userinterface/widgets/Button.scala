@@ -1,4 +1,4 @@
-package checkers.userinterface.chrome
+package checkers.userinterface.widgets
 
 import checkers.userinterface.mixins.FontHelpers
 import checkers.util.SvgHelpers
