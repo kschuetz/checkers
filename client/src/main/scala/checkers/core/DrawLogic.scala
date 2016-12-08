@@ -1,5 +1,7 @@
 package checkers.core
 
+import checkers.consts.Side
+
 trait DrawLogic {
   def initialDrawStatus: DrawStatus
 
