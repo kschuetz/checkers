@@ -88,13 +88,13 @@ class GameDriver(gameLogicModule: GameLogicModule)
     play match {
       case Play.NoPlay => None
 
-      case Play.AcceptDraw =>
-        if (drawLogic.canAcceptDraw(gameState)) {
-          val newState = gameState.acceptDraw(gameModel.currentTurnSnapshot)
-          val newModel = gameModel.copy(gameState = newState, inputPhase = InputPhase.GameOver(None))
-          Some((PlayEvents.acceptedDraw, newModel))
-
-        } else None
+//      case Play.AcceptDraw =>
+//        if (drawLogic.canAcceptDraw(gameState)) {
+//          val newState = gameState.acceptDraw(gameModel.currentTurnSnapshot)
+//          val newModel = gameModel.copy(gameState = newState, inputPhase = InputPhase.GameOver(None))
+//          Some((PlayEvents.acceptedDraw, newModel))
+//
+//        } else None
 
       case move: Play.Move =>
         gameState.moveTree.walk(move.path).map { case (endSquare, newMoveTree) =>

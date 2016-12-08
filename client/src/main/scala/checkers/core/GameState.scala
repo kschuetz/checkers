@@ -20,23 +20,13 @@ case class GameState(rulesSettings: RulesSettings,
   def currentPlayer: PlayerDescription =
     if (turnToMove == DARK) playerConfig.darkPlayer else playerConfig.lightPlayer
 
-  def turnsUntilDraw: Option[Int] = drawStatus match {
-    case DrawProposed(_, endTurnIndex) => Some(endTurnIndex - turnIndex)
-    case _ => None
-  }
-
-  def wasDrawProposedBy(side: Side): Boolean = drawStatus match {
-    case DrawProposed(c, _) if c == side => true
-    case _ => false
-  }
-
-  // TODO: rewrite this
-  def acceptDraw(snapshot: Snapshot): GameState = {
-    val entry = HistoryEntry(snapshot, Play.AcceptDraw)
-    copy(turnIndex = turnIndex + 1,
-      turnToMove = OPPONENT(turnToMove),
-      history = entry :: history)
-  }
+//  // TODO: rewrite this
+//  def acceptDraw(snapshot: Snapshot): GameState = {
+//    val entry = HistoryEntry(snapshot, Play.AcceptDraw)
+//    copy(turnIndex = turnIndex + 1,
+//      turnToMove = OPPONENT(turnToMove),
+//      history = entry :: history)
+//  }
 
   def moveTree: MoveTree = beginTurnEvaluation match {
     case CanMove(tree) => tree
