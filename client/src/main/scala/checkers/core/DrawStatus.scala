@@ -1,9 +1,13 @@
 package checkers.core
 
-import checkers.consts._
+trait DrawStatus extends Serializable {
+  def isDraw: Boolean
 
-sealed trait DrawStatus
+  def turnsRemainingHint: Option[Int]
+}
 
-case object NoDraw extends DrawStatus
+object NullDrawStatus extends DrawStatus {
+  override def isDraw: Boolean = false
 
-case class DrawProposed(side: Side, endTurnIndex: Int) extends DrawStatus
+  override def turnsRemainingHint: Option[Int] = None
+}

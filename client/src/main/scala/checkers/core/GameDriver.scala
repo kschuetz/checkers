@@ -175,10 +175,10 @@ class GameDriver(gameLogicModule: GameLogicModule)
     val lightState = createInitialPlayerState(LIGHT)
     val turnToMove = rulesSettings.playsFirst
     val boardState = gameLogicModule.boardInitializer.initialBoard(rulesSettings)
-    val beginTurnState = BeginTurnState(boardState, turnToMove, 0, NoDraw)
+    val beginTurnState = BeginTurnState(boardState, turnToMove, 0, NullDrawStatus)
     val turnEvaluation = evaluateBeginTurn(beginTurnState)
     GameState(rulesSettings, playerConfig, mentorConfig, 0, boardState, turnToMove, 0, darkState, lightState,
-      NoDraw, turnEvaluation, Nil)
+      NullDrawStatus, turnEvaluation, Nil)
   }
 
   private def evaluateBeginTurn(beginTurnState: BeginTurnState): BeginTurnEvaluation = {

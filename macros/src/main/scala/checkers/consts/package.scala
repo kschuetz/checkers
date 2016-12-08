@@ -35,6 +35,11 @@ package object consts {
   def ISEMPTY(occupant: Occupant): Boolean = macro isEmptyImpl
   def OPPONENT(side: Side): Side = macro opponentImpl
 
+  def PROPOSEDDRAW: Int = macro proposedDrawImpl
+  def PIECEADVANCED: Int = macro pieceAdvancedImpl
+  def PIECECROWNED: Int = macro pieceCrownedImpl
+  def PIECECAPTURED: Int = macro pieceCapturedImpl
+
   def darkImpl(c: blackbox.Context): c.Expr[Side] = c.universe.reify(0)
   def lightImpl(c: blackbox.Context): c.Expr[Side] = c.universe.reify(1)
 
@@ -47,6 +52,10 @@ package object consts {
   def darkKingImpl(c: blackbox.Context): c.Expr[Occupant] = c.universe.reify(5)
   def lightKingImpl(c: blackbox.Context): c.Expr[Occupant] = c.universe.reify(6)
 
+  def proposedDrawImpl(c: blackbox.Context): c.Expr[Int] = c.universe.reify(1)
+  def pieceAdvancedImpl(c: blackbox.Context): c.Expr[Int] = c.universe.reify(2)
+  def pieceCrownedImpl(c: blackbox.Context): c.Expr[Int] = c.universe.reify(4)
+  def pieceCapturedImpl(c: blackbox.Context): c.Expr[Int] = c.universe.reify(8)
 
   def moveListFrameSizeImpl(c: blackbox.Context): c.Expr[Int] = {
     import c.universe._

@@ -23,9 +23,6 @@ case class BeginTurnState(board: BoardState,
                           turnToMove: Side,
                           turnIndex: Int,
                           drawStatus: DrawStatus) {
-  def turnsUntilDraw: Option[Int] = drawStatus match {
-    case DrawProposed(_, endTurnIndex) => Some(endTurnIndex - turnIndex)
-    case _ => None
-  }
+  def turnsUntilDraw: Option[Int] = drawStatus.turnsRemainingHint
 }
 

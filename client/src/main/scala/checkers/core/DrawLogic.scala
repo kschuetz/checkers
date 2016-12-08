@@ -1,11 +1,10 @@
 package checkers.core
 
-class DrawLogic(rulesSettings: RulesSettings) {
-  def canProposeDraw(gameState: GameState): Option[Int] = {
-    None
-  }
+trait DrawLogic {
+  def initialDrawStatus: DrawStatus
 
-  def canAcceptDraw(gameState: GameState): Boolean = {
-    true
-  }
+  def updateDrawStatus(input: DrawStatus,
+                       turnIndex: Int,
+                       board: BoardStateRead,
+                       events: Int): DrawStatus
 }

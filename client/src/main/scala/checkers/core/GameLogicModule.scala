@@ -46,7 +46,7 @@ class GameLogicModuleFactory(tablesModule: TablesModule,
 
       val boardInitializer: BoardInitializer = myBoardInitializer
 
-      lazy val drawLogic: DrawLogic = wire[DrawLogic]
+      lazy val drawLogic: DrawLogic = wire[DefaultDrawLogic]
 
       lazy val moveExecutor: MoveExecutor = wire[MoveExecutor]
 
