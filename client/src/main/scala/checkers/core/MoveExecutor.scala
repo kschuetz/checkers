@@ -13,6 +13,14 @@ case class MoveInfo(piece: Occupant,
                     crowned: Boolean) {
   def isJump: Boolean = removedPiece.nonEmpty
   def isNormalMove: Boolean = removedPiece.isEmpty
+
+  def getMoveEvents: Int ={
+    var result = 0
+    if(removedPiece.nonEmpty) result = result | PIECECAPTURED
+    if(crowned) result = result | PIECECROWNED | PIECEADVANCED
+    if(PIECETYPE(piece) == MAN) result = result | PIECEADVANCED
+    result
+  }
 }
 
 class MoveExecutor(rulesSettings: RulesSettings,

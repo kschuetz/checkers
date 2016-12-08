@@ -115,25 +115,31 @@ class GameDriver(gameLogicModule: GameLogicModule)
 
     log.debug(s"applyMove: remaining tree = $remainingMoveTree")
 
+    var eventFlags = 0
+
     def go(path: List[Int], result: List[MoveInfo]): List[MoveInfo] = {
       path match {
         case Nil => result
         case _ :: Nil => result
         case from :: (more@(to :: _)) =>
           val info = moveExecutor.execute(boardState, from, to)
+          eventFlags = eventFlags | info.getMoveEvents
           go(more, info :: result)
       }
     }
 
     val moveInfo = go(move.path, Nil).reverse
     val newBoard = boardState.toImmutable
+    val newTurnIndex = gameState.turnIndex + 1
+
+    val newDrawStatus = drawLogic.updateDrawStatus(gameState.drawStatus, newTurnIndex, newBoard, eventFlags)
 
     val entry = HistoryEntry(gameModel.currentTurnSnapshot, move)
     val newGameState = if (endsTurn) {
       val beginTurnState = BeginTurnState(board = newBoard,
-        turnIndex = gameState.turnIndex + 1,
+        turnIndex = newTurnIndex,
         turnToMove = OPPONENT(gameState.turnToMove),
-        drawStatus = gameState.drawStatus)
+        drawStatus = newDrawStatus)
       val turnEvaluation = evaluateBeginTurn(beginTurnState)
       log.info(turnEvaluation.toString)
       gameState.copy(board = newBoard,
@@ -175,14 +181,14 @@ class GameDriver(gameLogicModule: GameLogicModule)
     val lightState = createInitialPlayerState(LIGHT)
     val turnToMove = rulesSettings.playsFirst
     val boardState = gameLogicModule.boardInitializer.initialBoard(rulesSettings)
-    val beginTurnState = BeginTurnState(boardState, turnToMove, 0, NullDrawStatus)
+    val beginTurnState = BeginTurnState(boardState, turnToMove, 0, drawLogic.initialDrawStatus)
     val turnEvaluation = evaluateBeginTurn(beginTurnState)
     GameState(rulesSettings, playerConfig, mentorConfig, 0, boardState, turnToMove, 0, darkState, lightState,
-      NullDrawStatus, turnEvaluation, Nil)
+      beginTurnState.drawStatus, turnEvaluation, Nil)
   }
 
   private def evaluateBeginTurn(beginTurnState: BeginTurnState): BeginTurnEvaluation = {
-    if (beginTurnState.turnsUntilDraw.exists(_ <= 0)) Draw
+    if (beginTurnState.drawStatus.isDraw) Draw
     else {
       val turnToMove = beginTurnState.turnToMove
       val boardStack = BoardStack.fromBoard(beginTurnState.board)

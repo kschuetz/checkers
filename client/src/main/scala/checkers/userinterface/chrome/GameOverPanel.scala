@@ -47,8 +47,9 @@ class GameOverPanel(physicalPiece: PhysicalPiece) extends FontHelpers {
       )
     }
 
-    private def textLine(x: Int, y: Int, textHeight: String, caption: String) = {
+    private def textLine(x: Int, y: Int, textHeight: String, caption: String, key: String) = {
       <.svg.text(
+        ^.key := key,
         ^.svg.x := x,
         ^.svg.y := y,
         fontSize := textHeight,
@@ -77,6 +78,7 @@ class GameOverPanel(physicalPiece: PhysicalPiece) extends FontHelpers {
         items.push(item)
       }
       <.svg.g(
+        ^.key := "piece-row",
         items
       )
     }
@@ -94,16 +96,16 @@ class GameOverPanel(physicalPiece: PhysicalPiece) extends FontHelpers {
 
       val parts = new js.Array[ReactNode]
       parts.push(backdrop(props))
-      parts.push(textLine(centerX, 2 * height / 9, textHeight, "GAME OVER"))
+      parts.push(textLine(centerX, 2 * height / 9, textHeight, "GAME OVER", "t1"))
       props.gameOverState match {
         case GameOverState.Winner(side, player) =>
           val pieces = if (side == DARK) darkWinPieces else lightWinPieces
           parts.push(pieceRow(centerX, pieceRowY, pieceSize, pieces))
-          parts.push(textLine(centerX, 37 * height / 48, textHeight, player.displayName))
-          parts.push(textLine(centerX, 11 * height / 12, textHeight, "WINS"))
+          parts.push(textLine(centerX, 37 * height / 48, textHeight, player.displayName, "t2"))
+          parts.push(textLine(centerX, 11 * height / 12, textHeight, "WINS", "t3"))
         case GameOverState.Draw =>
           parts.push(pieceRow(centerX, pieceRowY, pieceSize, drawPieces))
-          parts.push(textLine(centerX, 19 * height / 24, textHeight, "DRAW"))
+          parts.push(textLine(centerX, 19 * height / 24, textHeight, "DRAW", "t4"))
       }
       <.svg.g(
         ^.`class` := s"game-over-panel",
