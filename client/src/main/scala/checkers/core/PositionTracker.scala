@@ -30,7 +30,22 @@ private class PositionTracker2(position1: Position, position2: Position) extends
     } else if (position3 == position2) {
       (2, new MultiPositionTracker(Map(position1 -> 1, position2 -> 2)))
     } else {
-      (1, new MultiPositionTracker(Map(position1 -> 1, position2 -> 1, position3 -> 1)))
+      (1, new PositionTracker3(position1, position2, position3))
+    }
+  }
+}
+
+private class PositionTracker3(position1: Position, position2: Position, position3: Position) extends PositionTracker {
+  def addPosition(board: BoardStateRead): (Int, PositionTracker) = {
+    val position4 = getPosition(board)
+    if (position4 == position1) {
+      (2, new MultiPositionTracker(Map(position1 -> 2, position2 -> 1, position3 -> 1)))
+    } else if (position4 == position2) {
+      (2, new MultiPositionTracker(Map(position1 -> 1, position2 -> 2, position3 -> 1)))
+    } else if (position4 == position3) {
+      (2, new MultiPositionTracker(Map(position1 -> 1, position2 -> 1, position3 -> 2)))
+    } else {
+      (1, new MultiPositionTracker(Map(position1 -> 1, position2 -> 1, position3 -> 1, position4 -> 1)))
     }
   }
 }
