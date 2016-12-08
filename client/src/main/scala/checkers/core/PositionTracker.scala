@@ -17,4 +17,10 @@ object PositionTracker {
   type Position = (Int, Int, Int)
 
   val empty: PositionTracker = new PositionTracker(Map.empty)
+
+  def reset(boardState: BoardStateRead): PositionTracker = {
+    val key = (boardState.kings, boardState.darkPieces, boardState.lightPieces)
+    val positions = Map(key -> 1)
+    new PositionTracker(positions)
+  }
 }
