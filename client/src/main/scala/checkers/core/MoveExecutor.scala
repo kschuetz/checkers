@@ -69,17 +69,17 @@ class MoveExecutor(rulesSettings: RulesSettings,
   }
 
   /**
-    * Runs the contents of a MoveDecoder (which can include compound moves), but returns no metadata.
-    * @return if true, move was a jump
+    * Runs the contents of a MoveDecoder (which can include compound moves).
+    * @return combination of possible flags: PIECECAPTURED, PIECEADVANCED, PIECECROWNED
     */
-  def executeFromMoveDecoder(boardState: MutableBoardState, decoder: MoveDecoder): Boolean = {
+  def executeFromMoveDecoder(boardState: MutableBoardState, decoder: MoveDecoder): Int = {
     val len = decoder.pathLength
     assert(len > 1, "path length < 2!")
     val data = decoder.data
     var from = data(0)
     var to: Byte = 0
     var i = 1
-    var wasJump: Boolean = false
+    var returnEvents: Int = 0
     while (i < len) {
       to = data(i)
 
@@ -87,7 +87,7 @@ class MoveExecutor(rulesSettings: RulesSettings,
 
       val over = jumpTable.getMiddle(from, to)
       if(over >= 0) {
-        wasJump = true
+        returnEvents |= PIECECAPTURED
         boardState.setOccupant(over, EMPTY)
       }
 
@@ -96,17 +96,21 @@ class MoveExecutor(rulesSettings: RulesSettings,
       val m = 1 << to
       if(piece == LIGHTMAN && (m & checkers.masks.CROWNLIGHT) != 0) {
         boardState.setOccupant(to, LIGHTKING)
+        returnEvents |= PIECECROWNED
       } else if (piece == DARKMAN && (m & checkers.masks.CROWNDARK) != 0) {
         boardState.setOccupant(to, DARKKING)
+        returnEvents |= PIECECROWNED
       } else {
         boardState.setOccupant(to, piece)
       }
+
+      if(PIECETYPE(piece) == MAN) returnEvents |= PIECEADVANCED
 
       from = to
       i += 1
     }
 
-    wasJump
+    returnEvents
   }
 
   /**

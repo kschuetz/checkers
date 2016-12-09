@@ -43,6 +43,8 @@ class Searcher(moveGenerator: MoveGenerator,
     var totalMachineTime: Double = 0d
     val startTime: Double = performance.now()
 
+    val rootTurnIndex: Int = playInput.turnIndex
+
     val pv = new PrincipalVariation[Play](Searcher.MaxDepth)
     private val moveDecoder = new MoveDecoder
     private var iteration = 0
@@ -143,6 +145,11 @@ class Searcher(moveGenerator: MoveGenerator,
 //          val score = -Searcher.Infinity + depthRemaining
           val score = new Outcome(ENCODEOUTCOME(LOSS, depthRemaining))
           parent.answer(score)
+        } else if(drawStatus.isDraw) {
+
+          val outcome = new Outcome(ENCODEOUTCOME(DRAW, depthRemaining))
+          parent.answer(outcome)
+
         } else {
 
           if (nextMovePtr < moveCount) {
@@ -157,11 +164,11 @@ class Searcher(moveGenerator: MoveGenerator,
 
             lastMove = Move(path, proposeDraw = false)
 
-            moveExecutor.executeFromMoveDecoder(boardStack, moveDecoder)
+            val eventFlags = moveExecutor.executeFromMoveDecoder(boardStack, moveDecoder)
+
+            val nextDrawStatus = drawLogic.updateDrawStatus(drawStatus, rootTurnIndex + plyIndex, boardStack, eventFlags)
 
             val nextDepthRemaining = math.max(0, depthRemaining - 1)
-
-            val nextDrawStatus = drawStatus
 
             val nextPly = new ConcretePly(
               root = false,
