@@ -81,6 +81,7 @@ class Searcher(moveGenerator: MoveGenerator,
                       plyIndex: Int,
                       parent: PlyParent,
                       rootMoveIndex: Int,
+                      drawStatus: DrawStatus,
                       var alpha: Outcome,
                       val beta: Outcome) extends Ply with PlyParent {
       private var initted = false
@@ -160,6 +161,8 @@ class Searcher(moveGenerator: MoveGenerator,
 
             val nextDepthRemaining = math.max(0, depthRemaining - 1)
 
+            val nextDrawStatus = drawStatus
+
             val nextPly = new ConcretePly(
               root = false,
               left = left && nextMovePtr == 1,
@@ -168,6 +171,7 @@ class Searcher(moveGenerator: MoveGenerator,
               plyIndex = plyIndex + 1,
               parent = this,
               rootMoveIndex = if(root) nextMovePtr - 1 else rootMoveIndex,
+              drawStatus = nextDrawStatus,
               alpha = beta.negate,
               beta = alpha.negate
             )
@@ -206,6 +210,7 @@ class Searcher(moveGenerator: MoveGenerator,
       plyIndex = 0,
       parent = NullPlyParent,
       rootMoveIndex = -1,
+      drawStatus = playInput.drawStatus,
       alpha = Outcome.Worst,
       beta = Outcome.Best)
 
