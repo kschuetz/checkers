@@ -5,18 +5,21 @@ import checkers.consts._
 /*
  Rules for Outcomes:
 
- WIN > SCORE > DRAW > LOSS
-
- -WIN(depth)   == LOSS(depth)
- -LOSS(depth)  == WIN(depth)
- -DRAW(depth)  == DRAW(depth)
- -SCORE(value) == SCORE(-value)
+ Value:
+   WIN > SCORE > DRAW > LOSS
 
  When comparing the value of equal types:
    WIN:   lower depth is better
    LOSS:  higher depth is better
    DRAW:  higher depth is better
    SCORE: higher score is better
+
+ Negating:
+
+   -WIN(depth)   == LOSS(depth)
+   -LOSS(depth)  == WIN(depth)
+   -DRAW(depth)  == DRAW(depth)     (Negating a DRAW results in itself, as a draw is equally unfavorable to both sides)
+   -SCORE(value) == SCORE(-value)
 
  */
 
