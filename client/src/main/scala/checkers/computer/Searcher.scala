@@ -65,11 +65,11 @@ class Searcher(moveGenerator: MoveGenerator,
     }
 
     trait PlyParent {
-      def answer(value: Int): Ply
+      def answer(value: Outcome): Ply
     }
 
     object NullPlyParent extends PlyParent {
-      def answer(value: Int): Ply = {
+      def answer(value: Outcome): Ply = {
         null
       }
     }
@@ -81,8 +81,8 @@ class Searcher(moveGenerator: MoveGenerator,
                       plyIndex: Int,
                       parent: PlyParent,
                       rootMoveIndex: Int,
-                      var alpha: Int,
-                      val beta: Int) extends Ply with PlyParent {
+                      var alpha: Outcome,
+                      val beta: Outcome) extends Ply with PlyParent {
       private var initted = false
 
       private var lastMove: Play = NoPlay
@@ -131,14 +131,16 @@ class Searcher(moveGenerator: MoveGenerator,
             evaluatorCalls += 1
 
             val score = evaluator.evaluate(turnToMove, boardStack)
-            return parent.answer(score)
+            val outcome = new Outcome(ENCODEOUTCOME(SCORE, score))
+            return parent.answer(outcome)
           } else init()
         }
 
         if (moveCount <= 0) {
           // loss
           deadEndCount += 1
-          val score = -Searcher.Infinity + depthRemaining
+//          val score = -Searcher.Infinity + depthRemaining
+          val score = new Outcome(ENCODEOUTCOME(LOSS, depthRemaining))
           parent.answer(score)
         } else {
 
@@ -166,8 +168,8 @@ class Searcher(moveGenerator: MoveGenerator,
               plyIndex = plyIndex + 1,
               parent = this,
               rootMoveIndex = if(root) nextMovePtr - 1 else rootMoveIndex,
-              alpha = -beta,
-              beta = -alpha
+              alpha = beta.negate,
+              beta = alpha.negate
             )
 
             nextPly.process
@@ -178,10 +180,10 @@ class Searcher(moveGenerator: MoveGenerator,
         }
       }
 
-      def answer(result: Int): Ply = {
+      def answer(result: Outcome): Ply = {
         boardStack.pop()
 
-        val value = -result
+        val value = result.negate
         if (!root && value >= beta) {
           betaCutoffCount += 1
           parent.answer(beta)
@@ -204,8 +206,8 @@ class Searcher(moveGenerator: MoveGenerator,
       plyIndex = 0,
       parent = NullPlyParent,
       rootMoveIndex = -1,
-      alpha = -Searcher.Infinity,
-      beta = Searcher.Infinity)
+      alpha = Outcome.Worst,
+      beta = Outcome.Best)
 
 
     private def process(): Unit = {

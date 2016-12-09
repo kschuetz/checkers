@@ -2,6 +2,24 @@ package checkers.computer
 
 import checkers.consts._
 
+/*
+ Rules for Outcomes:
+
+ WIN > SCORE > DRAW > LOSS
+
+ -WIN(depth)   == LOSS(depth)
+ -LOSS(depth)  == WIN(depth)
+ -DRAW(depth)  == DRAW(depth)
+ -SCORE(value) == SCORE(-value)
+
+ When comparing the value of equal types:
+   WIN:   lower depth is better
+   LOSS:  higher depth is better
+   DRAW:  higher depth is better
+   SCORE: higher score is better
+
+ */
+
 class Outcome(val underlying: EncodedOutcome) extends AnyVal {
 
   def outcomeType: OutcomeType = OUTCOMETYPE(underlying)
@@ -51,6 +69,6 @@ class Outcome(val underlying: EncodedOutcome) extends AnyVal {
 }
 
 object Outcome {
-  val Best: EncodedOutcome = ENCODEOUTCOME(WIN, 0)
-  val Worst: EncodedOutcome = ENCODEOUTCOME(LOSS, 0)
+  val Best: Outcome = new Outcome(ENCODEOUTCOME(WIN, 0))
+  val Worst: Outcome = new Outcome(ENCODEOUTCOME(LOSS, 0))
 }
