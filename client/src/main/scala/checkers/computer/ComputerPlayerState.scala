@@ -10,3 +10,11 @@ case class ComputerPlayerState(value: Random) extends Opaque {
     (result, ComputerPlayerState(nextRandom))
   }
 }
+
+
+object ComputerPlayerState {
+  def createRandom: ComputerPlayerState = {
+    val value = Random()
+    ComputerPlayerState(value)
+  }
+}

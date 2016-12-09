@@ -18,7 +18,8 @@ object Searcher {
 
 class Searcher(moveGenerator: MoveGenerator,
                moveExecutor: MoveExecutor,
-               evaluator: Evaluator) {
+               evaluator: Evaluator,
+               drawLogic: DrawLogic) {
 
   protected val log = logger.computerPlayer
 
