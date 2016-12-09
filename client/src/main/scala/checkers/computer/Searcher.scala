@@ -4,7 +4,6 @@ import checkers.consts._
 import checkers.core.Play.{Move, NoPlay}
 import checkers.core._
 import checkers.logger
-import checkers.logger.Logger
 import org.scalajs.dom.window.performance
 
 import scala.annotation.elidable

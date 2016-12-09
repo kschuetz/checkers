@@ -1,32 +1,69 @@
 package checkers.benchmarks.suites
 
+import checkers.computer.{ComputerPlayerState, DefaultShufflerFactory, NoShuffleFactory, PlayInput, Searcher, Shuffler, ShufflerFactory}
 import checkers.consts._
-import checkers.computer.{ComputerPlayerState, DefaultEvaluator, DefaultShufflerFactory}
 import checkers.core._
-import checkers.test.BoardUtils
-import japgolly.scalajs.benchmark._
-import gui._
+import com.softwaremill.macwire._
+import japgolly.scalajs.benchmark.gui._
+import japgolly.scalajs.benchmark.{Benchmark, _}
 
 object Searcher {
 
-  private val rulesSettings = RulesSettings.default
+  private case class Params(searcher: Searcher,
+                            playInput: PlayInput,
+                            incomingPlayerState: ComputerPlayerState,
+                            shuffler: Shuffler)
 
-//  private val moveExecutor = new MoveExecutor()
 
-  private val evaluator = new DefaultEvaluator(rulesSettings)
-  private val emptyBoard = BoardState.empty
+  private def createParams(drawLogicEnabled: Boolean, shufflerEnabled: Boolean): Params = {
+    val gameLogicModule = new DefaultGameLogicModule {
+      override lazy val drawLogic: DrawLogic = if (drawLogicEnabled) {
+        wire[DefaultDrawLogic]
+      } else NullDrawLogic
 
-  private val startingBoard = DefaultBoardInitializer.initialBoard(rulesSettings)
+      override lazy val shufflerFactory: ShufflerFactory = if (shufflerEnabled) {
+        wire[DefaultShufflerFactory]
+      } else NoShuffleFactory
+    }
 
-  private val shufflerFactory = new DefaultShufflerFactory
+    val playerState0 = ComputerPlayerState.createRandom
+    val (shuffler, playerState1) = gameLogicModule.shufflerFactory.createShuffler(playerState0)
+    val drawStatus = gameLogicModule.drawLogic.initialDrawStatus
+    val board = gameLogicModule.boardInitializer.initialBoard(gameLogicModule.rulesSettings)
+    val playInput = PlayInput(board, 0, gameLogicModule.rulesSettings, DARK, drawStatus, Nil)
+    Params(gameLogicModule.searcher, playInput, playerState1, shuffler)
+  }
 
-  private val shuffler = shufflerFactory.createShuffler(ComputerPlayerState.createRandom)
+  private lazy val testCase1 = createParams(drawLogicEnabled = true, shufflerEnabled = true)
+  private lazy val testCase2 = createParams(drawLogicEnabled = true, shufflerEnabled = false)
+  private lazy val testCase3 = createParams(drawLogicEnabled = false, shufflerEnabled = true)
+  private lazy val testCase4 = createParams(drawLogicEnabled = false, shufflerEnabled = false)
+
+
+  private def runSearch(params: Params): Unit = {
+    val search = params.searcher.create(params.playInput, params.incomingPlayerState,
+      None, None, params.shuffler, identity)
+
+    search.run(1000)
+  }
 
   val suite = GuiSuite(
     Suite("Searcher Benchmarks")(
 
-      Benchmark("with DefaultDrawLogic and DefaultShuffler") {
+      Benchmark("DefaultDrawLogic, DefaultShuffler") {
+        runSearch(testCase1)
+      },
 
+      Benchmark("DefaultDrawLogic, no shuffler") {
+        runSearch(testCase2)
+      },
+
+      Benchmark("no draw logic, DefaultShuffler") {
+        runSearch(testCase3)
+      },
+
+      Benchmark("no draw logic, no shuffler") {
+        runSearch(testCase4)
       }
 
     )
