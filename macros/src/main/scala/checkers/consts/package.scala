@@ -25,6 +25,22 @@ package object consts {
   def LIGHTKING: Occupant  = macro lightKingImpl
   def DARKKING: Occupant  = macro darkKingImpl
 
+  type EncodedOutcome = Int
+  type OutcomeType = Int
+  type OutcomeValue = Int
+
+  def WIN: OutcomeType = macro winImpl
+  def SCORE: OutcomeType = macro scoreImpl
+  def DRAW: OutcomeType = macro drawImpl
+  def LOSS: OutcomeType = macro lossImpl
+
+  def ENCODEOUTCOME(outcomeType: OutcomeType, outcomeValue: OutcomeValue): EncodedOutcome = macro encodeOutcomeImpl
+
+  def OUTCOMETYPE(encodedOutcome: EncodedOutcome): OutcomeType = macro outcomeTypeImpl
+
+  def OUTCOMEVALUE(encodedOutcome: EncodedOutcome): OutcomeValue = macro outcomeValueImpl
+
+
   val MoveListFrameSize = 12
 
   def MOVELISTFRAMESIZE: Int = macro moveListFrameSizeImpl
@@ -51,6 +67,11 @@ package object consts {
   def lightManImpl(c: blackbox.Context): c.Expr[Occupant] = c.universe.reify(2)
   def darkKingImpl(c: blackbox.Context): c.Expr[Occupant] = c.universe.reify(5)
   def lightKingImpl(c: blackbox.Context): c.Expr[Occupant] = c.universe.reify(6)
+
+  def winImpl(c: blackbox.Context): c.Expr[Int] = c.universe.reify(3)
+  def scoreImpl(c: blackbox.Context): c.Expr[Int] = c.universe.reify(2)
+  def drawImpl(c: blackbox.Context): c.Expr[Int] = c.universe.reify(1)
+  def lossImpl(c: blackbox.Context): c.Expr[Int] = c.universe.reify(0)
 
   def proposedDrawImpl(c: blackbox.Context): c.Expr[Int] = c.universe.reify(1)
   def pieceAdvancedImpl(c: blackbox.Context): c.Expr[Int] = c.universe.reify(2)
@@ -95,6 +116,21 @@ package object consts {
   def makeKingImpl(c: blackbox.Context)(side: c.Expr[Side]): c.Expr[Occupant] = {
     import c.universe._
     c.Expr[Occupant](q"if($side == LIGHT) LIGHTKING else DARKKING")
+  }
+
+  def encodeOutcomeImpl(c: blackbox.Context)(outcomeType: c.Expr[OutcomeType], outcomeValue: c.Expr[OutcomeValue]): c.Expr[EncodedOutcome] = {
+    import c.universe._
+    c.Expr[EncodedOutcome](q"($outcomeValue << 2) | $outcomeType")
+  }
+
+  def outcomeTypeImpl(c: blackbox.Context)(encodedOutcome: c.Expr[EncodedOutcome]): c.Expr[OutcomeType] = {
+    import c.universe._
+    c.Expr[OutcomeType](q"$encodedOutcome & 3")
+  }
+
+  def outcomeValueImpl(c: blackbox.Context)(encodedOutcome: c.Expr[EncodedOutcome]): c.Expr[OutcomeType] = {
+    import c.universe._
+    c.Expr[OutcomeType](q"$encodedOutcome >> 2")
   }
 
 }
