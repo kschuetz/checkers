@@ -1,8 +1,8 @@
 package checkers.benchmarks.suites
 
-import checkers.computer.{ComputerPlayerState, DefaultShufflerFactory, NoShuffleFactory, PlayInput, Searcher, Shuffler, ShufflerFactory}
 import checkers.consts._
 import checkers.core._
+import checkers.computer._
 import com.softwaremill.macwire._
 import japgolly.scalajs.benchmark.gui._
 import japgolly.scalajs.benchmark.{Benchmark, _}
