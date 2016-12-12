@@ -33,6 +33,8 @@ trait CoreModule {
 
   lazy val initialSeedsProvider: InitialSeedsProvider = DefaultInitialSeedsProvider
 
+  lazy val moveSelectionMethodChooser: MoveSelectionMethodChooser = DefaultMoveSelectionMethodChooser
+
   lazy val boardInitializer: BoardInitializer = DefaultBoardInitializer
   //    lazy val boardInitializer: BoardInitializer = new InitializerFromBoard(
   //      BoardUtils.parseBoard(

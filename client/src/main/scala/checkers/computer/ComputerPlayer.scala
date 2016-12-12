@@ -8,6 +8,7 @@ import checkers.util.Random
 class ComputerPlayer(moveGenerator: MoveGenerator,
                      searcher: Searcher,
                      shufflerFactory: ShufflerFactory,
+                     moveSelectionMethodChooser: MoveSelectionMethodChooser,
                      personality: Personality,
                      isMentor: Boolean = false)
                     (initialSeed: Option[Long]) extends Program {
@@ -36,7 +37,7 @@ class ComputerPlayer(moveGenerator: MoveGenerator,
       log.info(s"SearchParameters:  ${searchParameters.cycleLimit.getOrElse("---")}, depth limit = ${searchParameters.depthLimit.getOrElse("---")}")
       log.info("Probabilities:  " + searchParameters.selectionMethodWeights.debugInfoString)
 
-      val (selectionMethod, r) = MoveSelectionMethod.getRandomMethod(searchParameters.selectionMethodWeights, state2.value)
+      val (selectionMethod, r) = moveSelectionMethodChooser.chooseMethod(searchParameters.selectionMethodWeights, state2.value)
       val state3 = ComputerPlayerState(r)
 
       selectionMethod match {
@@ -77,6 +78,6 @@ class ComputerPlayer(moveGenerator: MoveGenerator,
 class ComputerPlayerFactory(personality: Personality) extends ProgramFactory {
   def makeProgram(gameLogicModule: GameLogicModule, initialSeed: Option[Long]): Program = {
     new ComputerPlayer(gameLogicModule.moveGenerator, gameLogicModule.searcher, gameLogicModule.shufflerFactory,
-      personality)(initialSeed)
+      gameLogicModule.moveSelectionMethodChooser, personality)(initialSeed)
   }
 }

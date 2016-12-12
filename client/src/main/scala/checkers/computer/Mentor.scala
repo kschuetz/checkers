@@ -22,6 +22,6 @@ class MentorFactory(mentorConfig: MentorSettings) extends ProgramFactory {
   private val personality = new MentorPersonality(mentorConfig)
   override def makeProgram(gameLogicModule: GameLogicModule, initialSeed: Option[Long]): Program = {
     new ComputerPlayer(gameLogicModule.moveGenerator, gameLogicModule.searcher, gameLogicModule.shufflerFactory,
-      personality, isMentor = true)(initialSeed)
+      gameLogicModule.moveSelectionMethodChooser, personality, isMentor = true)(initialSeed)
   }
 }

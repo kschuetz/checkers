@@ -24,6 +24,8 @@ trait GameLogicModule {
   def evaluator: Evaluator
 
   def shufflerFactory: ShufflerFactory
+
+  def moveSelectionMethodChooser: MoveSelectionMethodChooser
 }
 
 trait DefaultGameLogicModule extends GameLogicModule {
@@ -52,11 +54,14 @@ trait DefaultGameLogicModule extends GameLogicModule {
   lazy val evaluator: DefaultEvaluator = wire[DefaultEvaluator]
 
   lazy val searcher: Searcher = wire[Searcher]
+
+  lazy val moveSelectionMethodChooser: MoveSelectionMethodChooser = DefaultMoveSelectionMethodChooser
 }
 
 class GameLogicModuleFactory(tablesModule: TablesModule,
                              shufflerFactory: ShufflerFactory,
                              boardInitializer: BoardInitializer,
+                             moveSelectionMethodChooser: MoveSelectionMethodChooser,
                              animationSettings: AnimationSettings) extends (RulesSettings => GameLogicModule) {
 
   def apply(rulesSettings: RulesSettings): GameLogicModule = {
@@ -64,6 +69,8 @@ class GameLogicModuleFactory(tablesModule: TablesModule,
     val mySettings = rulesSettings
     val myShufflerFactory = shufflerFactory
     val myBoardInitializer = boardInitializer
+    val myMoveSelectionMethodChooser = moveSelectionMethodChooser
+
     new DefaultGameLogicModule {
       override lazy val tablesModule: TablesModule = myTablesModule
 
@@ -74,6 +81,8 @@ class GameLogicModuleFactory(tablesModule: TablesModule,
       override lazy val shufflerFactory: ShufflerFactory = myShufflerFactory
 
       override lazy val boardInitializer: BoardInitializer = myBoardInitializer
+
+      override lazy val moveSelectionMethodChooser: MoveSelectionMethodChooser = myMoveSelectionMethodChooser
     }
   }
 
