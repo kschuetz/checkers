@@ -31,24 +31,18 @@ trait CoreModule {
 
   lazy val animationSettings: AnimationSettings = wire[DefaultAnimationSettings]
 
-  lazy val initialSeedsProvider: InitialSeedsProvider = DefaultInitialSeedsProvider
+//  lazy val initialSeedsProvider: InitialSeedsProvider = DefaultInitialSeedsProvider
 
-  lazy val moveSelectionMethodChooser: MoveSelectionMethodChooser = DefaultMoveSelectionMethodChooser
+  lazy val initialSeedsProvider: InitialSeedsProvider =
+    StaticInitialSeedsProvider(InitialSeeds.default.copy(darkPlayer = Some(1000), lightPlayer = Some(1000)))
+
+//  lazy val moveSelectionMethodChooser: MoveSelectionMethodChooser = DefaultMoveSelectionMethodChooser
+
+  // temporary
+  lazy val moveSelectionMethodChooser: MoveSelectionMethodChooser = AlwaysSelectBestMove
+
 
   lazy val boardInitializer: BoardInitializer = DefaultBoardInitializer
-  //    lazy val boardInitializer: BoardInitializer = new InitializerFromBoard(
-  //      BoardUtils.parseBoard(
-  //        """
-  //            - - - -
-  //           - - d -
-  //            - - - -
-  //           l - - -
-  //            d - - -
-  //           - - - -
-  //            - d - -
-  //           - - - -
-  //        """)
-  //    )
 
   lazy val shufflerFactory: ShufflerFactory = wire[DefaultShufflerFactory]
 

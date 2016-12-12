@@ -1,8 +1,8 @@
 package checkers.test
 
-import checkers.computer.{DefaultShufflerFactory, ShufflerFactory}
-import checkers.core.tables.TablesModule
+import checkers.computer.{DefaultMoveSelectionMethodChooser, DefaultShufflerFactory, MoveSelectionMethodChooser, ShufflerFactory}
 import checkers.core._
+import checkers.core.tables.TablesModule
 import com.softwaremill.macwire._
 
 
@@ -20,6 +20,8 @@ trait DefaultGameLogicTestModule {
   lazy val shufflerFactory: ShufflerFactory = new DefaultShufflerFactory
 
   lazy val boardInitializer: BoardInitializer = DefaultBoardInitializer
+
+  lazy val moveSelectionMethodChooser: MoveSelectionMethodChooser = DefaultMoveSelectionMethodChooser
 
   lazy val gameLogicModule: GameLogicModule = gameLogicModuleFactory.apply(rulesSettings)
 }

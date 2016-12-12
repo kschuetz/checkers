@@ -219,9 +219,29 @@ object EvaluatorTests extends TestSuiteBase
     darkAttacks & lightAttacks & darkTrappedKings & lightTrappedKings
 
 
+  case class EqualSideCheckPropInput(board: BoardState,
+                                     swapped: BoardState,
+                                     turnToMove: Side)
+
+  private lazy val genEqualSideCheckPropInput: Gen[EqualSideCheckPropInput] = for {
+    turnToMove <- genSide
+    board <- genBoard
+  } yield {
+    val swapped = BoardUtils.swapSides(board)
+    EqualSideCheckPropInput(board, swapped, turnToMove)
+  }
+
+  private lazy val sidesEvaluatedEqually: Prop[EqualSideCheckPropInput] = Prop.test("sidesEvaluatedEqually", { input =>
+    val score1 = evaluator.evaluate(input.turnToMove, input.board)
+    val score2 = evaluator.evaluate(OPPONENT(input.turnToMove), input.swapped)
+    score1 == score2
+  })
+
+
   override def tests: Tree[Test] = TestSuite {
     'Evaluator {
       genEvaluatorPropInput.mustSatisfy(evaluatorPropInputProps)
+      genEqualSideCheckPropInput.mustSatisfy(sidesEvaluatedEqually)
     }
 
   }

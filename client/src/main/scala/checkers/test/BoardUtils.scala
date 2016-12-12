@@ -48,6 +48,16 @@ object BoardUtils {
 
   }
 
+  def swapSides(input: BoardStateRead): BoardState = {
+    val darkPieces = input.darkPieces
+    val lightPieces = input.lightPieces
+    val darkKings = input.darkPieces & darkPieces
+    val lightKings = input.kings & lightPieces
+
+    val newKings = (lightPieces & darkKings) | (darkPieces & lightKings)
+    BoardState.createFromMasks(lightPieces, darkPieces, newKings)
+  }
+
   case class BoardStats(empty: Int,
                         darkMan: Int,
                         darkKing: Int,

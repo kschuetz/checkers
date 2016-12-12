@@ -237,4 +237,12 @@ object BoardState {
     other.copyFrameTo(frame)
     new BoardState(frame)
   }
+
+  def createFromMasks(darkPieces: Int, lightPieces: Int, kings: Int): BoardState = {
+    val frame = createFrame
+    frame(0) = kings
+    frame(1) = lightPieces
+    frame(2) = darkPieces
+    new BoardState(frame)
+  }
 }
