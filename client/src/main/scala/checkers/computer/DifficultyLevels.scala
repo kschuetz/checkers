@@ -3,9 +3,12 @@ package checkers.computer
 object DifficultyLevels {
   val LevelCount = 12
 
-  lazy val phase1MaxKCycles: Vector[Int] = Vector(50, 75, 75, 200, 200, 200, 400, 400, 800, 800, 1600, 3200, 4000)
-  lazy val phase2MaxKCycles: Vector[Int] = Vector(50, 200, 300, 400, 500, 1000, 1600, 2000, 2400, 3000, 4000, 6000, 10000)
-  lazy val mainMaxKCycles: Vector[Int] = Vector(75, 200, 300, 500, 1000, 2000, 4000, 8000, 12000, 16000, 20000, 30000, 40000)
+//  lazy val phase1MaxKCycles: Vector[Int] = Vector(50, 75, 75, 200, 200, 200, 400, 400, 800, 800, 1600, 3200, 4000)
+//  lazy val phase2MaxKCycles: Vector[Int] = Vector(50, 200, 300, 400, 500, 1000, 1600, 2000, 2400, 3000, 4000, 6000, 10000)
+//  lazy val mainMaxKCycles: Vector[Int] = Vector(75, 200, 300, 500, 1000, 2000, 4000, 8000, 12000, 16000, 20000, 30000, 40000)
+  lazy val phase1MaxKCycles: Vector[Int] = Vector(50, 100, 200, 400, 800, 1000, 1300, 1700, 2200, 2800, 3500, 4300, 5200)
+  lazy val phase2MaxKCycles: Vector[Int] = Vector(50, 100, 200, 400, 800, 1200, 2000, 3000, 4200, 5600, 7200, 9000, 11000)
+  lazy val mainMaxKCycles: Vector[Int] = Vector(50, 100, 200, 400, 800, 1600, 3200, 6400, 12500, 25000, 40000, 70000, 100000)
 
   lazy val phase1Weights: Vector[MoveSelectionMethodWeights] = Vector(
     weight(100, 5, 1),

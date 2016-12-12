@@ -18,6 +18,9 @@ object DefaultPrograms {
       val phase1 = ProgressivePhase(1000 * phase1MaxKCycles(level), phase1Weights(level))
       val phase2 = ProgressivePhase(1000 * phase2MaxKCycles(level), phase2Weights(level))
       val mainPhase = ProgressivePhase(1000 * mainMaxKCycles(level), mainWeights(level))
+
+      println(s"level:  $level   $mainPhase")
+
       val personality = new ProgressivePlayer(phase1, phase2, mainPhase)
       val player = new ComputerPlayerFactory(personality)
       val difficultyLevel = level + 1
