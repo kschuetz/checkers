@@ -234,7 +234,10 @@ object EvaluatorTests extends TestSuiteBase
   private lazy val sidesEvaluatedEqually: Prop[EqualSideCheckPropInput] = Prop.test("sidesEvaluatedEqually", { input =>
     val score1 = evaluator.evaluate(input.turnToMove, input.board)
     val score2 = evaluator.evaluate(OPPONENT(input.turnToMove), input.swapped)
-    score1 == score2
+
+    val result = score1 == score2
+    if(!result) println(s"score1; $score1,  score2: $score2")
+    result
   })
 
 

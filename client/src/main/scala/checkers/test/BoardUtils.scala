@@ -7,7 +7,7 @@ object BoardUtils {
 
   def boardStatesEqual(b1: BoardStateRead, b2: BoardStateRead): Boolean = {
     b1.darkPieces == b2.darkPieces &&
-    b1.lightPieces == b2.lightPieces && {
+      b1.lightPieces == b2.lightPieces && {
       val nonEmpty = b1.darkPieces & b1.lightPieces
       (b1.kings & nonEmpty) == (b2.kings & nonEmpty)
     }
@@ -18,7 +18,7 @@ object BoardUtils {
     var i = 0
     var j = 1
     while (i < 32) {
-      if((mask & j) != 0) result += i
+      if ((mask & j) != 0) result += i
       j <<= 1
       i += 1
     }
@@ -40,22 +40,32 @@ object BoardUtils {
       case 'L' => LIGHTKING
     }.toVector
 
-    if(occupants.length != 32) throw new Exception("Input must have 32 squares")
+    if (occupants.length != 32) throw new Exception("Input must have 32 squares")
 
-    occupants.zip(parseSquareIndex).foldLeft(BoardState.empty){ case (result, (occ, idx)) =>
+    occupants.zip(parseSquareIndex).foldLeft(BoardState.empty) { case (result, (occ, idx)) =>
       result.updated(idx, occ)
     }
 
   }
 
   def swapSides(input: BoardStateRead): BoardState = {
-    val darkPieces = input.darkPieces
-    val lightPieces = input.lightPieces
-    val darkKings = input.darkPieces & darkPieces
-    val lightKings = input.kings & lightPieces
+    var result = BoardState.empty
+    var i = 0
+    while (i < 32) {
+      val occupant = input.getOccupant(i)
+      val j = 31 - i
 
-    val newKings = (lightPieces & darkKings) | (darkPieces & lightKings)
-    BoardState.createFromMasks(lightPieces, darkPieces, newKings)
+      val newOccupant =
+        if (occupant == DARKMAN) LIGHTMAN
+        else if (occupant == LIGHTMAN) DARKMAN
+        else if (occupant == DARKKING) LIGHTKING
+        else if (occupant == LIGHTKING) DARKKING
+        else EMPTY
+
+      result = result.updated(j, newOccupant)
+      i += 1
+    }
+    result
   }
 
   case class BoardStats(empty: Int,
