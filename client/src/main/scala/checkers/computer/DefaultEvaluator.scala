@@ -22,12 +22,12 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
 
   private val DogHoleBonus = 10
   private val DustHolePenalty = 2
-  private val TrappedKingPenalty = 45
+  private val TrappedKingPenalty = 43
   private val TurnAdvantageBonus = 3
   private val BackRankBonus = 5
-  private val RunawayBaseBonus = 47
+  private val RunawayBaseBonus = 46
 
-  private val Exchange = 180
+  private val ExchangeIncentive = 180
 
   def evaluate(turnToPlay: Side, board: BoardStateRead, testProbe: AnyRef = null): Int = {
     val probe = if (testProbe == null) null else testProbe.asInstanceOf[DefaultEvaluatorTestProbe]
@@ -261,15 +261,16 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
 
     val exchangeHint = {
       val denom = darkMaterialScore + lightMaterialScore
-      if(denom > 0) {
-        Exchange * (darkMaterialScore - lightMaterialScore) / denom
+      val result = if(denom > 0) {
+        ExchangeIncentive * (darkMaterialScore - lightMaterialScore) / denom
       } else 0
+      if(turnToPlay == DARK) result else -result
     }
 
     val darkScore = (darkMaterialScore + darkRunawayBonus + darkDogHoleBonus + darkBackRankBonus
       + exchangeHint - darkDustHolePenalty)
     val lightScore = (lightMaterialScore + lightRunawayBonus + lightDogHoleBonus + lightBackRankBonus
-      - exchangeHint - lightDustHolePenalty)
+      + exchangeHint - lightDustHolePenalty)
 
     var result = TurnAdvantageBonus
     if (turnToPlay == DARK) {
