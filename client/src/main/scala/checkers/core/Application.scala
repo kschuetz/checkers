@@ -15,6 +15,7 @@ class Application(programRegistry: ProgramRegistry,
                   newGameSettingsPersister: NewGameSettingsPersister,
                   gameFactory: GameFactory,
                   makeGameLogicModule: GameLogicModuleFactory,
+                  initialSeedsProvider: InitialSeedsProvider,
                   newGameDialog: NewGameDialog)  {
 
   private lazy val playerChoices: Vector[PlayerChoice] = {
@@ -37,9 +38,9 @@ class Application(programRegistry: ProgramRegistry,
     var game: Option[Game] = None
     var lastUsedSettings: Option[NewGameSettings] = None
 
-    def startNewGame(settings: NewGameSettings): Unit = {
+    def startNewGame(settings: NewGameSettings, initialSeeds: InitialSeeds): Unit = {
       stopGame()
-      val newGame = gameFactory.create(settings, gameHost)
+      val newGame = gameFactory.create(settings, initialSeeds, gameHost)
       game = Some(newGame)
       lastUsedSettings = Some(settings)
       newGameSettingsPersister.saveNewGameSettings(settings)
@@ -49,7 +50,8 @@ class Application(programRegistry: ProgramRegistry,
 
     def run(): Unit = {
       val newGameSettings = newGameSettingsPersister.loadNewGameSettings.getOrElse(NewGameSettings.default)
-      startNewGame(newGameSettings)
+      val initialSeeds = initialSeedsProvider.getInitialSeeds
+      startNewGame(newGameSettings, initialSeeds)
     }
 
     def stopGame(): Unit = {
@@ -85,7 +87,8 @@ class Application(programRegistry: ProgramRegistry,
         case NewGameDialog.Cancel => ()
         case input: NewGameDialog.Ok =>
           val settings = makeNewGameSettings(input)
-          startNewGame(settings)
+          val initialSeeds = initialSeedsProvider.getInitialSeeds
+          startNewGame(settings, initialSeeds)
       }
     }
 

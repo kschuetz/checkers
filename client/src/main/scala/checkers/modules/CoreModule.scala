@@ -31,6 +31,8 @@ trait CoreModule {
 
   lazy val animationSettings: AnimationSettings = wire[DefaultAnimationSettings]
 
+  lazy val initialSeedsProvider: InitialSeedsProvider = DefaultInitialSeedsProvider
+
   lazy val boardInitializer: BoardInitializer = DefaultBoardInitializer
   //    lazy val boardInitializer: BoardInitializer = new InitializerFromBoard(
   //      BoardUtils.parseBoard(

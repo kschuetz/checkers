@@ -75,8 +75,8 @@ class ComputerPlayer(moveGenerator: MoveGenerator,
 }
 
 class ComputerPlayerFactory(personality: Personality) extends ProgramFactory {
-  def makeProgram(gameLogicModule: GameLogicModule): Program = {
+  def makeProgram(gameLogicModule: GameLogicModule, initialSeed: Option[Long]): Program = {
     new ComputerPlayer(gameLogicModule.moveGenerator, gameLogicModule.searcher, gameLogicModule.shufflerFactory,
-      personality)(None)
+      personality)(initialSeed)
   }
 }

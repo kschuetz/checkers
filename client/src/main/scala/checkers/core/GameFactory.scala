@@ -12,7 +12,7 @@ class GameFactory(programRegistry: ProgramRegistry,
                   screenLayoutSettingsProvider: ScreenLayoutSettingsProvider,
                   gameScreen: GameScreen) {
 
-  def create(settings: NewGameSettings, host: dom.Node): Game = {
+  def create(settings: NewGameSettings, initialSeeds: InitialSeeds, host: dom.Node): Game = {
     val darkEntry = for {
       id <- settings.darkProgramId
       entry <- programRegistry.findEntry(id)
@@ -27,17 +27,17 @@ class GameFactory(programRegistry: ProgramRegistry,
 
     val darkComputer = for {
       entry <- darkEntry
-    } yield entry.makeComputerPlayer(gameLogicModule)
+    } yield entry.makeComputerPlayer(gameLogicModule, initialSeeds.darkPlayer)
 
     val lightComputer = for {
       entry <- lightEntry
-    } yield entry.makeComputerPlayer(gameLogicModule)
+    } yield entry.makeComputerPlayer(gameLogicModule, initialSeeds.lightPlayer)
 
     val darkPlayer = darkComputer.getOrElse(Human)
     val lightPlayer = lightComputer.getOrElse(Human)
 
-    val darkMentor = createMentor(gameLogicModule, darkPlayer)
-    val lightMentor = createMentor(gameLogicModule, lightPlayer)
+    val darkMentor = createMentor(gameLogicModule, darkPlayer, initialSeeds.darkMentor)
+    val lightMentor = createMentor(gameLogicModule, lightPlayer, initialSeeds.lightMentor)
 
     val mentorConfig = MentorConfig(darkMentor, lightMentor)
 
@@ -46,10 +46,10 @@ class GameFactory(programRegistry: ProgramRegistry,
   }
 
 
-  private def createMentor(gameLogicModule: GameLogicModule, player: Player): Option[Program] = {
+  private def createMentor(gameLogicModule: GameLogicModule, player: Player, initialSeed: Option[Long]): Option[Program] = {
     if(player.isComputer) None
     else {
-      Option(mentorFactory.makeProgram(gameLogicModule))
+      Option(mentorFactory.makeProgram(gameLogicModule, initialSeed))
     }
   }
 

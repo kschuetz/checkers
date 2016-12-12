@@ -6,8 +6,8 @@ case class ProgramRegistryEntry(name: String,
                                 uniqueId: String,
                                 difficultyLevel: Int,
                                 factory: ProgramFactory) {
-  def makeComputerPlayer(gameLogicModule: GameLogicModule): Computer = {
-    val program = factory.makeProgram(gameLogicModule)
+  def makeComputerPlayer(gameLogicModule: GameLogicModule, initialSeed: Option[Long]): Computer = {
+    val program = factory.makeProgram(gameLogicModule, initialSeed)
     Computer(program = program,
       displayName = name,
       programId = Some(uniqueId),
