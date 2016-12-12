@@ -167,7 +167,7 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
       val u2 = safeForLight & (SHIFTNE(safeForLight) | SHIFTNW(safeForLight))
       val u3 = safeForLight & (SHIFTNE(u2) | SHIFTNW(u2))
       val u4 = safeForLight & (SHIFTNE(u3) | SHIFTNW(u3))
-      (safeForLight & LIGHTBACK) | (u2 & DARKSECOND) | (u3 & DARKTHIRD) | (u4 & DARKFOURTH)
+      (safeForLight & DARKBACK) | (u2 & DARKSECOND) | (u3 & DARKTHIRD) | (u4 & DARKFOURTH)
     }
 
     // Has access to unimpeded path
@@ -215,7 +215,7 @@ class DefaultEvaluator(rulesSettings: RulesSettings) extends Evaluator {
           darkMaterialScore += Man
 
           if(((unimpededDark >>> i) & 1) != 0) {
-            val distanceFromBack = (32 - i) >> 2
+            val distanceFromBack = (31 - i) >> 2
             darkRunawayBonus += RunawayBaseBonus - (distanceFromBack * TurnAdvantageBonus)
           }
         }
