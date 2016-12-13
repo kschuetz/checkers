@@ -4,6 +4,7 @@ import checkers.consts._
 import checkers.core.Play.{Move, NoPlay}
 import checkers.core._
 import checkers.logger
+import checkers.logger.Logger
 import org.scalajs.dom.window.performance
 
 import scala.annotation.elidable
@@ -20,11 +21,17 @@ class Searcher(moveGenerator: MoveGenerator,
                evaluator: Evaluator,
                drawLogic: DrawLogic) {
 
-  protected val log = logger.computerPlayer
+  protected val log: Logger = logger.computerPlayer
 
   def create(playInput: PlayInput, incomingPlayerState: ComputerPlayerState, depthLimit: Option[Int],
              cycleLimit: Option[Int], shuffler: Shuffler, transformResult: PlayResult => PlayResult): Search =
     new Search(playInput, incomingPlayerState, depthLimit, cycleLimit, shuffler, transformResult)
+
+  def withLogger(logger: Logger): Searcher = {
+    new Searcher(moveGenerator, moveExecutor, evaluator, drawLogic) {
+      override protected val log: Logger = logger
+    }
+  }
 
   class Search(playInput: PlayInput,
                incomingPlayerState: ComputerPlayerState,

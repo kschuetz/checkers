@@ -2,6 +2,8 @@ package checkers.computer
 
 import checkers.consts._
 import checkers.core._
+import checkers.logger
+import checkers.logger.NullLogger
 import checkers.test.generators.{BoardGenerators, SideGenerator}
 import checkers.test.{BoardUtils, DefaultGameLogicTestModule, TestSuiteBase}
 import nyaya.gen._
@@ -15,7 +17,8 @@ object SearcherTests extends TestSuiteBase
   with SideGenerator
   with BoardGenerators {
 
-  private lazy val searcher = gameLogicModule.searcher
+
+  private lazy val searcher = gameLogicModule.searcher.withLogger(NullLogger)
 
   private lazy val drawLogic = gameLogicModule.drawLogic
 
