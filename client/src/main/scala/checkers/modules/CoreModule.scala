@@ -31,16 +31,15 @@ trait CoreModule {
 
   lazy val animationSettings: AnimationSettings = wire[DefaultAnimationSettings]
 
-//  lazy val initialSeedsProvider: InitialSeedsProvider = DefaultInitialSeedsProvider
+  lazy val initialSeedsProvider: InitialSeedsProvider = DefaultInitialSeedsProvider
 
-  lazy val initialSeedsProvider: InitialSeedsProvider =
-    StaticInitialSeedsProvider(InitialSeeds.default.copy(darkPlayer = Some(1000), lightPlayer = Some(1000)))
+  lazy val moveSelectionMethodChooser: MoveSelectionMethodChooser = DefaultMoveSelectionMethodChooser
 
-//  lazy val moveSelectionMethodChooser: MoveSelectionMethodChooser = DefaultMoveSelectionMethodChooser
-
-  // temporary
-  lazy val moveSelectionMethodChooser: MoveSelectionMethodChooser = AlwaysSelectBestMove
-
+  // *** temporary for balancing  ***
+//  lazy val initialSeedsProvider: InitialSeedsProvider =
+//    StaticInitialSeedsProvider(InitialSeeds.default.copy(darkPlayer = Some(1000), lightPlayer = Some(1000)))
+//  lazy val moveSelectionMethodChooser: MoveSelectionMethodChooser = AlwaysSelectBestMove
+  // ***
 
   lazy val boardInitializer: BoardInitializer = DefaultBoardInitializer
 
