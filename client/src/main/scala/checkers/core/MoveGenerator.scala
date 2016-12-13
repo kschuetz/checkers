@@ -4,9 +4,16 @@ import checkers.consts._
 import checkers.core.tables.NeighborTable
 import checkers.masks._
 
-class MoveGenerator(rulesSettings: RulesSettings,
-                    moveExecutor: MoveExecutor,
-                    neighborTable: NeighborTable) {
+trait MoveGenerator {
+  def generateMoves(boardState: BoardStack, turnToMove: Side): MoveList
+
+  def mustJump(boardState: BoardStateRead, turnToMove: Side): Boolean
+}
+
+
+class DefaultMoveGenerator(rulesSettings: RulesSettings,
+                           moveExecutor: MoveExecutor,
+                           neighborTable: NeighborTable) extends MoveGenerator {
 
   def generateMoves(boardState: BoardStack, turnToMove: Side): MoveList = {
     val builder = new MoveListBuilder
@@ -17,9 +24,9 @@ class MoveGenerator(rulesSettings: RulesSettings,
     import checkers.masks._
 
     def go(limitToPieces: Int, jumpsOnly: Boolean): Boolean = {
-      val myPieces = if(dark) boardState.darkPieces else boardState.lightPieces
+      val myPieces = if (dark) boardState.darkPieces else boardState.lightPieces
       val myPiecesOfInterest = myPieces & limitToPieces
-      val opponentPieces = if(dark) boardState.lightPieces else boardState.darkPieces
+      val opponentPieces = if (dark) boardState.lightPieces else boardState.darkPieces
       val kings = boardState.kings
       val notOccupied = ~(myPieces | opponentPieces)
       val myKings = myPiecesOfInterest & kings
@@ -43,7 +50,7 @@ class MoveGenerator(rulesSettings: RulesSettings,
       var oppBackL = 0
       var oppFrontL = 0
 
-      if(dark) {
+      if (dark) {
         noFrontR = SHIFTSW(notOccupied)
         noFrontR2 = SHIFTSW(noFrontR)
         noFrontL = SHIFTSE(notOccupied)
@@ -53,7 +60,6 @@ class MoveGenerator(rulesSettings: RulesSettings,
         oppFrontL = SHIFTSE(opponentPieces)
 
       } else {
-
         noFrontR = SHIFTNW(notOccupied)
         noFrontR2 = SHIFTNW(noFrontR)
         noFrontL = SHIFTNE(notOccupied)
@@ -71,7 +77,7 @@ class MoveGenerator(rulesSettings: RulesSettings,
 
       if (myKings != 0) {
 
-        if(dark) {
+        if (dark) {
           noBackR = SHIFTNW(notOccupied)
           noBackL = SHIFTNE(notOccupied)
 
@@ -115,7 +121,7 @@ class MoveGenerator(rulesSettings: RulesSettings,
             }
           }
 
-          if(endOfMove) {
+          if (endOfMove) {
             movePath.push(to)
             builder.addPath(movePath)
           }
@@ -130,24 +136,24 @@ class MoveGenerator(rulesSettings: RulesSettings,
 
         var i = 0
         var b = 1
-        while(i < 32) {
-          if((jumpFrontR & b) != 0) {
+        while (i < 32) {
+          if ((jumpFrontR & b) != 0) {
             followJump(i.toByte, forwardJumpE(i).toByte)
           }
-          if((jumpBackR & b) != 0) {
+          if ((jumpBackR & b) != 0) {
             followJump(i.toByte, backJumpE(i).toByte)
           }
-          if((jumpFrontL & b) != 0) {
+          if ((jumpFrontL & b) != 0) {
             followJump(i.toByte, forwardJumpW(i).toByte)
           }
-          if((jumpBackL & b) != 0) {
+          if ((jumpBackL & b) != 0) {
             followJump(i.toByte, backJumpW(i).toByte)
           }
           b = b << 1
           i += 1
         }
 
-      } else if(!jumpsOnly) {
+      } else if (!jumpsOnly) {
 
         moveFrontR = myPiecesOfInterest & noFrontR
         moveFrontL = myPiecesOfInterest & noFrontL
@@ -169,17 +175,17 @@ class MoveGenerator(rulesSettings: RulesSettings,
           var i = 0
           var b = 1
 
-          while(i < 32) {
-            if((moveFrontR & b) != 0) {
+          while (i < 32) {
+            if ((moveFrontR & b) != 0) {
               builder.addMove(i.toByte, forwardMoveE(i).toByte)
             }
-            if((moveBackR & b) != 0) {
+            if ((moveBackR & b) != 0) {
               builder.addMove(i.toByte, backMoveE(i).toByte)
             }
-            if((moveFrontL & b) != 0) {
+            if ((moveFrontL & b) != 0) {
               builder.addMove(i.toByte, forwardMoveW(i).toByte)
             }
-            if((moveBackL & b) != 0) {
+            if ((moveBackL & b) != 0) {
               builder.addMove(i.toByte, backMoveW(i).toByte)
             }
             b = b << 1
@@ -197,8 +203,8 @@ class MoveGenerator(rulesSettings: RulesSettings,
 
   def mustJump(boardState: BoardStateRead, turnToMove: Side): Boolean = {
     val dark = turnToMove == DARK
-    val myPieces = if(dark) boardState.darkPieces else boardState.lightPieces
-    val opponentPieces = if(dark) boardState.lightPieces else boardState.darkPieces
+    val myPieces = if (dark) boardState.darkPieces else boardState.lightPieces
+    val opponentPieces = if (dark) boardState.lightPieces else boardState.darkPieces
     val kings = boardState.kings
     val notOccupied = ~(myPieces | opponentPieces)
     val myKings = myPieces & kings
@@ -222,7 +228,7 @@ class MoveGenerator(rulesSettings: RulesSettings,
     var oppFE = 0
     var oppBE = 0
 
-    if(dark) {
+    if (dark) {
       noBW = SHIFTSW(notOccupied)
       noBW2 = SHIFTSW(noBW)
       noBE = SHIFTSE(notOccupied)
@@ -250,7 +256,7 @@ class MoveGenerator(rulesSettings: RulesSettings,
 
     if (myKings != 0) {
 
-      if(dark) {
+      if (dark) {
         noFW = SHIFTNW(notOccupied)
         noFE = SHIFTNE(notOccupied)
 

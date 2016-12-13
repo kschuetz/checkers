@@ -355,6 +355,25 @@ object MoveGeneratorTests extends TestSuiteBase with DefaultGameLogicTestModule 
             ))
             
           }
+
+          'TestCase2 {
+            val board = BoardUtils.parseBoard("""
+               - - l -
+              - - - -
+               - - - -
+              - - - -
+               - - - -
+              - - - -
+               - - - -
+              - - - -
+            """)
+
+            testBoard(board, LIGHT, Set(
+              s(30 -> 26),
+              s(30 -> 27)
+            ))
+
+          }
           
         }
       }

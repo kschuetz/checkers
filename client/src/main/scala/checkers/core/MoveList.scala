@@ -228,6 +228,18 @@ class MoveListBuilder {
     ptr += pathSize
   }
 
+  // use only in tests
+  def addPathFromList(path: List[Int]): Unit = {
+    var p = ptr
+    path.foreach { square =>
+      data(p) = (128 | square).toByte
+      p += 1
+    }
+    data(p) = 0
+    count += 1
+    ptr += pathSize
+  }
+
   def result: MoveList = {
     val retval = new MoveList(data, count)
     data = null

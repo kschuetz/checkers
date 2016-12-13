@@ -45,7 +45,7 @@ trait DefaultGameLogicModule extends GameLogicModule {
 
   lazy val moveExecutor: MoveExecutor = wire[MoveExecutor]
 
-  lazy val moveGenerator: MoveGenerator = wire[MoveGenerator]
+  lazy val moveGenerator: MoveGenerator = wire[DefaultMoveGenerator]
 
   lazy val moveTreeFactory: MoveTreeFactory = wire[MoveTreeFactory]
 

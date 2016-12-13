@@ -16,7 +16,7 @@ object Searcher {
   val Infinity: Int = Int.MaxValue - 1000
 }
 
-class Searcher(moveGenerator: MoveGenerator,
+class Searcher(val moveGenerator: MoveGenerator,
                moveExecutor: MoveExecutor,
                evaluator: Evaluator,
                drawLogic: DrawLogic) {
@@ -26,6 +26,10 @@ class Searcher(moveGenerator: MoveGenerator,
   def create(playInput: PlayInput, incomingPlayerState: ComputerPlayerState, depthLimit: Option[Int],
              cycleLimit: Option[Int], shuffler: Shuffler, transformResult: PlayResult => PlayResult): Search =
     new Search(playInput, incomingPlayerState, depthLimit, cycleLimit, shuffler, transformResult)
+
+  def withMoveGenerator(newMoveGenerator: MoveGenerator): Searcher = {
+    new Searcher(newMoveGenerator, moveExecutor, evaluator, drawLogic)
+  }
 
   def withLogger(logger: Logger): Searcher = {
     new Searcher(moveGenerator, moveExecutor, evaluator, drawLogic) {
@@ -277,7 +281,10 @@ class Searcher(moveGenerator: MoveGenerator,
     override def isReady: Boolean = done
 
     override def result: PlayResult = if (done) {
-      val play = pv.getBestMove(0)
+      val play = {
+        val p = pv.getBestMove(0)
+        if(p == null) NoPlay else p
+      }
       logStats(play)
       transformResult(PlayResult(play, incomingPlayerState))
     } else throw new Exception("No result yet")

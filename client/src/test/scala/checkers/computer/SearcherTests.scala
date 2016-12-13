@@ -2,10 +2,9 @@ package checkers.computer
 
 import checkers.consts._
 import checkers.core._
-import checkers.logger
 import checkers.logger.NullLogger
 import checkers.test.generators.{BoardGenerators, SideGenerator}
-import checkers.test.{BoardUtils, DefaultGameLogicTestModule, TestSuiteBase}
+import checkers.test.{BoardUtils, DefaultGameLogicTestModule, SortingMoveGenerator, TestSuiteBase}
 import nyaya.gen._
 import nyaya.prop._
 import nyaya.test.PropTest._
@@ -18,7 +17,9 @@ object SearcherTests extends TestSuiteBase
   with BoardGenerators {
 
 
-  private lazy val searcher = gameLogicModule.searcher.withLogger(NullLogger)
+  private lazy val searcher = gameLogicModule.searcher
+    .withMoveGenerator(new SortingMoveGenerator(gameLogicModule.moveGenerator))
+    .withLogger(NullLogger)
 
   private lazy val drawLogic = gameLogicModule.drawLogic
 
@@ -70,7 +71,7 @@ object SearcherTests extends TestSuiteBase
 
   override def tests: Tree[Test] = TestSuite {
     'Searcher {
-      //genSameMoveChoiceTestCase.mustSatisfy(sameMoveChoiceBothSides)
+      genSameMoveChoiceTestCase.mustSatisfy(sameMoveChoiceBothSides)
     }
 
   }

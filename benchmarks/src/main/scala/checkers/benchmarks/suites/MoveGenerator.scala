@@ -18,7 +18,7 @@ object MoveGenerator {
 
   lazy val moveExecutor: MoveExecutor = wire[MoveExecutor]
 
-  lazy val moveGenerator: MoveGenerator = wire[MoveGenerator]
+  lazy val moveGenerator: MoveGenerator = wire[DefaultMoveGenerator]
 
   val startingBoard = DefaultBoardInitializer.initialBoard(rulesSettings)
   val startingBoardStack = BoardStack.fromBoard(startingBoard)
