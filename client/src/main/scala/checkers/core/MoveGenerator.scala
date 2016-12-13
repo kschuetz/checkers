@@ -24,78 +24,78 @@ class MoveGenerator(rulesSettings: RulesSettings,
       val notOccupied = ~(myPieces | opponentPieces)
       val myKings = myPiecesOfInterest & kings
 
-      var moveFE = 0
-      var moveFW = 0
-      var moveBE = 0
-      var moveBW = 0
+      var moveFrontR = 0
+      var moveFrontL = 0
+      var moveBackR = 0
+      var moveBackL = 0
 
-      var noBW = 0
-      var noBW2 = 0
-      var noBE = 0
-      var noBE2 = 0
-      var noFW = 0
-      var noFW2 = 0
-      var noFE = 0
-      var noFE2 = 0
+      var noFrontR = 0
+      var noFrontR2 = 0
+      var noFrontL = 0
+      var noFrontL2 = 0
+      var noBackR = 0
+      var noBackR2 = 0
+      var noBackL = 0
+      var noBackL2 = 0
 
-      var oppFW = 0
-      var oppBW = 0
-      var oppFE = 0
-      var oppBE = 0
+      var oppBackR = 0
+      var oppFrontR = 0
+      var oppBackL = 0
+      var oppFrontL = 0
 
       if(dark) {
-        noBW = SHIFTSW(notOccupied)
-        noBW2 = SHIFTSW(noBW)
-        noBE = SHIFTSE(notOccupied)
-        noBE2 = SHIFTSE(noBE)
+        noFrontR = SHIFTSW(notOccupied)
+        noFrontR2 = SHIFTSW(noFrontR)
+        noFrontL = SHIFTSE(notOccupied)
+        noFrontL2 = SHIFTSE(noFrontL)
 
-        oppBW = SHIFTSW(opponentPieces)
-        oppBE = SHIFTSE(opponentPieces)
+        oppFrontR = SHIFTSW(opponentPieces)
+        oppFrontL = SHIFTSE(opponentPieces)
 
       } else {
 
-        noBW = SHIFTNW(notOccupied)
-        noBW2 = SHIFTNW(noBW)
-        noBE = SHIFTNE(notOccupied)
-        noBE2 = SHIFTNE(noBE)
+        noFrontR = SHIFTNW(notOccupied)
+        noFrontR2 = SHIFTNW(noFrontR)
+        noFrontL = SHIFTNE(notOccupied)
+        noFrontL2 = SHIFTNE(noFrontL)
 
-        oppBW = SHIFTNW(opponentPieces)
-        oppBE = SHIFTNE(opponentPieces)
+        oppFrontR = SHIFTNW(opponentPieces)
+        oppFrontL = SHIFTNE(opponentPieces)
       }
 
-      val jumpFE = myPiecesOfInterest & oppBW & noBW2
-      val jumpFW = myPiecesOfInterest & oppBE & noBE2
+      val jumpFrontR = myPiecesOfInterest & oppFrontR & noFrontR2
+      val jumpFrontL = myPiecesOfInterest & oppFrontL & noFrontL2
 
-      var jumpBE = 0
-      var jumpBW = 0
+      var jumpBackR = 0
+      var jumpBackL = 0
 
       if (myKings != 0) {
 
         if(dark) {
-          noFW = SHIFTNW(notOccupied)
-          noFE = SHIFTNE(notOccupied)
+          noBackR = SHIFTNW(notOccupied)
+          noBackL = SHIFTNE(notOccupied)
 
-          noFW2 = SHIFTNW(noFW)
-          noFE2 = SHIFTNE(noFE)
+          noBackR2 = SHIFTNW(noBackR)
+          noBackL2 = SHIFTNE(noBackL)
 
-          oppFW = SHIFTNW(opponentPieces)
-          oppFE = SHIFTNE(opponentPieces)
+          oppBackR = SHIFTNW(opponentPieces)
+          oppBackL = SHIFTNE(opponentPieces)
         } else {
-          noFW = SHIFTSW(notOccupied)
-          noFE = SHIFTSE(notOccupied)
+          noBackR = SHIFTSW(notOccupied)
+          noBackL = SHIFTSE(notOccupied)
 
-          noFW2 = SHIFTSW(noFW)
-          noFE2 = SHIFTSE(noFE)
+          noBackR2 = SHIFTSW(noBackR)
+          noBackL2 = SHIFTSE(noBackL)
 
-          oppFW = SHIFTSW(opponentPieces)
-          oppFE = SHIFTSE(opponentPieces)
+          oppBackR = SHIFTSW(opponentPieces)
+          oppBackL = SHIFTSE(opponentPieces)
         }
 
-        jumpBE = myKings & oppFW & noFW2
-        jumpBW = myKings & oppFE & noFE2
+        jumpBackR = myKings & oppBackR & noBackR2
+        jumpBackL = myKings & oppBackL & noBackL2
       }
 
-      val hasJumps = (jumpFW | jumpFE | jumpBW | jumpBE) != 0
+      val hasJumps = (jumpFrontL | jumpFrontR | jumpBackL | jumpBackR) != 0
       if (hasJumps) {
         // add jumps
 
@@ -131,16 +131,16 @@ class MoveGenerator(rulesSettings: RulesSettings,
         var i = 0
         var b = 1
         while(i < 32) {
-          if((jumpFE & b) != 0) {
+          if((jumpFrontR & b) != 0) {
             followJump(i.toByte, forwardJumpE(i).toByte)
           }
-          if((jumpBE & b) != 0) {
+          if((jumpBackR & b) != 0) {
             followJump(i.toByte, backJumpE(i).toByte)
           }
-          if((jumpFW & b) != 0) {
+          if((jumpFrontL & b) != 0) {
             followJump(i.toByte, forwardJumpW(i).toByte)
           }
-          if((jumpBW & b) != 0) {
+          if((jumpBackL & b) != 0) {
             followJump(i.toByte, backJumpW(i).toByte)
           }
           b = b << 1
@@ -149,15 +149,15 @@ class MoveGenerator(rulesSettings: RulesSettings,
 
       } else if(!jumpsOnly) {
 
-        moveFE = myPiecesOfInterest & noBW
-        moveFW = myPiecesOfInterest & noBE
+        moveFrontR = myPiecesOfInterest & noFrontR
+        moveFrontL = myPiecesOfInterest & noFrontL
 
         if (myKings != 0) {
-          moveBE = myKings & noFW
-          moveBW = myKings & noFE
+          moveBackR = myKings & noBackR
+          moveBackL = myKings & noBackL
         }
 
-        val hasMoves = (moveFE | moveFW | moveBW | moveBW) != 0
+        val hasMoves = (moveFrontR | moveFrontL | moveBackL | moveBackR) != 0
         if (hasMoves) {
           // add moves
 
@@ -170,16 +170,16 @@ class MoveGenerator(rulesSettings: RulesSettings,
           var b = 1
 
           while(i < 32) {
-            if((moveFE & b) != 0) {
+            if((moveFrontR & b) != 0) {
               builder.addMove(i.toByte, forwardMoveE(i).toByte)
             }
-            if((moveBE & b) != 0) {
+            if((moveBackR & b) != 0) {
               builder.addMove(i.toByte, backMoveE(i).toByte)
             }
-            if((moveFW & b) != 0) {
+            if((moveFrontL & b) != 0) {
               builder.addMove(i.toByte, forwardMoveW(i).toByte)
             }
-            if((moveBW & b) != 0) {
+            if((moveBackL & b) != 0) {
               builder.addMove(i.toByte, backMoveW(i).toByte)
             }
             b = b << 1
