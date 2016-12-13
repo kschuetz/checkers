@@ -17,4 +17,9 @@ object ComputerPlayerState {
     val value = Random()
     ComputerPlayerState(value)
   }
+
+  def fromSeed(seed: Long): ComputerPlayerState = {
+    val value = Random(seed)
+    ComputerPlayerState(value)
+  }
 }

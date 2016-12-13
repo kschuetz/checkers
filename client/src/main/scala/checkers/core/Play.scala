@@ -11,6 +11,13 @@ object Play {
   def move(path: List[Int]): Move = Play.Move(path)
 
   def move(fromSquare: Int, toSquare: Int): Move = Play.Move(fromSquare :: toSquare :: Nil)
+
+  def swapSides(play: Play): Play = play match {
+    case NoPlay => NoPlay
+    case move: Move =>
+      val newPath = move.path.map(square => 31 - square)
+      move.copy(path = newPath)
+  }
 }
 
 
