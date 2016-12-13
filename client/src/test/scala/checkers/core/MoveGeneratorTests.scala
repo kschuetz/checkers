@@ -64,6 +64,35 @@ object MoveGeneratorTests extends TestSuiteBase with DefaultGameLogicTestModule 
     case _ => true
   })
 
+  case class SameForBothSidesTestCase(turnToMove: Side,
+                                      board1: BoardState,
+                                      board2: BoardState,
+                                      moves1: Set[List[Int]],
+                                      moves2: Set[List[Int]])
+
+
+  lazy val genSameForBothSidesTestCase: Gen[SameForBothSidesTestCase] = genBoardWithMoves.map { boardWithMoves =>
+    val boardStack = boardWithMoves.board
+    val board1 = boardStack.toImmutable
+    val board2 = BoardUtils.swapSides(board1)
+    boardStack.push()
+    val moves2 = try {
+      boardStack.setBoard(board2)
+      moveGenerator.generateMoves(boardStack, OPPONENT(boardWithMoves.turnToMove))
+    } finally {
+      boardStack.pop()
+    }
+
+    SameForBothSidesTestCase(boardWithMoves.turnToMove, board1, board2, boardWithMoves.legalMoves.toSet, moves2.toSet)
+  }
+
+  lazy val sameForBothSides: Prop[SameForBothSidesTestCase] = Prop.test("sameMovesForBothSides", { input =>
+    val expectedMoves2 = input.moves2.toList.map(MoveList.invertPath).toSet
+
+    input.moves1 == expectedMoves2
+  })
+
+
   // simpleMove
   private def s(pair: (Int, Int)): List[Int] = List(pair._1, pair._2)
 
@@ -79,6 +108,8 @@ object MoveGeneratorTests extends TestSuiteBase with DefaultGameLogicTestModule 
         genBoardWithMoves.mustSatisfy(
           allJumpsOrNoJumps
         )
+
+        genSameForBothSidesTestCase.mustSatisfy(sameForBothSides)
       }
 
       'StaticTests {

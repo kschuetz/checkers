@@ -14,9 +14,7 @@ object Play {
 
   def swapSides(play: Play): Play = play match {
     case NoPlay => NoPlay
-    case move: Move =>
-      val newPath = move.path.map(square => 31 - square)
-      move.copy(path = newPath)
+    case move: Move => move.copy(path = MoveList.invertPath(move.path))
   }
 }
 

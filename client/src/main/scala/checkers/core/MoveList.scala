@@ -254,4 +254,7 @@ object MoveList {
       to += 1
     }
   }
+
+  // used in tests
+  def invertPath(path: List[Int]): List[Int] = path.map(square => 31 - square)
 }
