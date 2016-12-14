@@ -35,11 +35,11 @@ object GameLogDisplay {
   }
 
   case class State(scrollOffset: Double,
-                   scrolledDown: Boolean) {
+                   scrolledUp: Boolean) {
     def shouldUpdate(other: State): Boolean = this != other
   }
 
-  private val defaultState = State(0d, scrolledDown = false)
+  private val defaultState = State(0d, scrolledUp = false)
 
   private val bodyClipPathId = "game-log-display-clip-path"
 }
@@ -66,32 +66,72 @@ class GameLogDisplay(notation: Notation,
       val entryWidth = props.widthPixels
       val halfWidth = entryWidth / 2
 
+      val currentSnapshotCount = if(props.waitingForMove) 1 else 0
+
       val historyEntryCount = props.history.size
+      val entryDisplayCount = historyEntryCount + currentSnapshotCount
+      val totalHeightNeeded = entryDisplayCount * entryHeight
+
+      var scrollUpNextOffset = 0d
+      var scrollDownNextOffset = 0d
+      var skipEntries = 0
+
+      var scrollUpEnabled = false
+      var scrollDownEnabled = false
+
+      val offsetPixels = if(totalHeightNeeded > clientHeight) {
+        val maxOffset = (totalHeightNeeded - clientHeight) / entryHeight
+        val offset = math.min(state.scrollOffset, maxOffset)
+        val offsetFloor = math.floor(offset)
+
+        //println(s"state: ${state.scrollOffset}  max: $maxOffset")
+
+        skipEntries = offsetFloor.toInt
+
+        scrollUpEnabled = offset > 0
+
+        scrollUpNextOffset = math.max(0d, if(offset - offsetFloor < 0.1) math.floor(offset - 1) else offsetFloor)
+
+        //println(s"offset: $offset  skipEntries: $skipEntries")
+
+        val partialEntry = offset - skipEntries
+
+        val bottomCutoff = if(partialEntry > 0) 1 - partialEntry else 0d
+
+        scrollDownNextOffset = math.min(maxOffset, if(bottomCutoff > 0.1) offset + bottomCutoff else offset + 1 + bottomCutoff)
+
+        partialEntry * entryHeight
+      } else 0d
+
+      println(s"offsetPixels: $offsetPixels")
 
       val entries = new js.Array[ReactNode]
 
-      var y = clientTop
+      var y = clientTop - offsetPixels
 
       def addEntryPanel(snapshot: Snapshot, play: Option[Play]): Unit = {
-        var moveDescription = for {
-          p <- play
-          desc <- notation.notationForPlay(p)
-        } yield desc
+        if(skipEntries > 0) {
+          skipEntries -= 1
+        } else {
+          var moveDescription = for {
+            p <- play
+            desc <- notation.notationForPlay(p)
+          } yield desc
 
-        val key = s"${snapshot.turnIndex}"
-        val entryPanelProps = GameLogEntry.Props(
-          widthPixels = entryWidth,
-          heightPixels = entryHeight,
-          turnIndex = snapshot.turnIndex + 1,
-          side = snapshot.turnToMove,
-          moveDescription = moveDescription,
-          upperLeftX = entryLeftX,
-          upperLeftY = y)
+          val key = s"${snapshot.turnIndex}"
+          val entryPanelProps = GameLogEntry.Props(
+            widthPixels = entryWidth,
+            heightPixels = entryHeight,
+            turnIndex = snapshot.turnIndex + 1,
+            side = snapshot.turnToMove,
+            moveDescription = moveDescription,
+            upperLeftX = entryLeftX,
+            upperLeftY = y)
 
-        val element = gameLogEntry.create.withKey(key)(entryPanelProps)
-        entries.push(element)
-
-        y += entryHeight
+          val element = gameLogEntry.create.withKey(key)(entryPanelProps)
+          entries.push(element)
+          y += entryHeight
+        }
       }
 
       if(props.waitingForMove) {
@@ -105,9 +145,7 @@ class GameLogDisplay(notation: Notation,
         historyEntryIndex -= 1
       }
 
-      val scrollUpEnabled = state.scrollOffset > 0
-
-      val scrollDownEnabled = y > clientBottom || historyEntryIndex >= 0
+      scrollDownEnabled = y > clientBottom || historyEntryIndex >= 0
 
       val backdrop = <.svg.rect(
         ^.`class` := "game-log-backdrop",
@@ -144,7 +182,11 @@ class GameLogDisplay(notation: Notation,
           centerY = halfScrollButtonHeight,
           width = scrollButtonWidth,
           height = scrollButtonHeight,
-          up = true
+          up = true,
+          onClick = CallbackTo {
+            println(s"scroll up to $scrollUpNextOffset")
+            $.modState(_.copy(scrollOffset = scrollUpNextOffset, scrolledUp = true))
+          }.flatten
         )
         val button = scrollButton.create(buttonProps)
         Some(button)
@@ -156,7 +198,11 @@ class GameLogDisplay(notation: Notation,
           centerY = totalHeight - halfScrollButtonHeight,
           width = scrollButtonWidth,
           height = scrollButtonHeight,
-          up = false
+          up = false,
+          onClick = CallbackTo {
+            println(s"scroll down to $scrollDownNextOffset")
+            $.modState(_.copy(scrollOffset = scrollDownNextOffset, scrolledUp = false))
+          }.flatten
         )
         val button = scrollButton.create(buttonProps)
         Some(button)
