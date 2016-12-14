@@ -30,6 +30,13 @@ object GameLogDisplay {
     }
   }
 
+  case class State(scrollOffset: Int,
+                   scrolledDown: Boolean) {
+    def shouldUpdate(other: State): Boolean = this != other
+  }
+
+  private val defaultState = State(0, scrolledDown = false)
+
 }
 
 class GameLogDisplay(notation: Notation,
@@ -37,8 +44,8 @@ class GameLogDisplay(notation: Notation,
 
   import GameLogDisplay._
 
-  class Backend($: BackendScope[Props, Unit]) {
-    def render(props: Props): ReactElement = {
+  class Backend($: BackendScope[Props, State]) {
+    def render(props: Props, state: State): ReactElement = {
       val entryHeight = props.entryHeightPixels
       val clientHeight = props.heightPixels
       val entryLeftX = 0
@@ -102,9 +109,10 @@ class GameLogDisplay(notation: Notation,
   }
 
   val create = ReactComponentB[Props]("GameLogDisplay")
+    .initialState[State](defaultState)
     .renderBackend[Backend]
-    .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, _) =>
-      val result = scope.props.shouldUpdate(nextProps)
+    .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, nextState) =>
+      val result = scope.props.shouldUpdate(nextProps) || scope.state.shouldUpdate(nextState)
       CallbackTo.pure(result)
     }
     .build

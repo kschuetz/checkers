@@ -18,12 +18,13 @@ object Button {
                    onClick: Callback = Callback.empty)
 
   case class State(depressed: Boolean)
+
+  private val defaultState = State(depressed = false)
+
 }
 
 class Button extends SvgHelpers with FontHelpers {
   import Button._
-
-  private val defaultState = State(depressed = false)
 
   class Backend($: BackendScope[Props, State]) {
     def handleMouseDown(e: ReactMouseEventI): Callback = {
