@@ -34,12 +34,12 @@ object GameLogDisplay {
     }
   }
 
-  case class State(scrollOffset: Double,
-                   scrolledUp: Boolean) {
+  case class State(scrollOffset: Int,
+                   scrolledDown: Boolean) {
     def shouldUpdate(other: State): Boolean = this != other
   }
 
-  private val defaultState = State(0d, scrolledUp = false)
+  private val defaultState = State(0, scrolledDown = false)
 
   private val bodyClipPathId = "game-log-display-clip-path"
 }
@@ -72,35 +72,42 @@ class GameLogDisplay(notation: Notation,
       val entryDisplayCount = historyEntryCount + currentSnapshotCount
       val totalHeightNeeded = entryDisplayCount * entryHeight
 
-      var scrollUpNextOffset = 0d
-      var scrollDownNextOffset = 0d
+      var scrollUpNextOffset = 0
+      var scrollDownNextOffset = 0
       var skipEntries = 0
 
       var scrollUpEnabled = false
       var scrollDownEnabled = false
 
       val offsetPixels = if(totalHeightNeeded > clientHeight) {
+        val scrollOffset = state.scrollOffset
         val maxOffset = (totalHeightNeeded - clientHeight) / entryHeight
-        val offset = math.min(state.scrollOffset, maxOffset)
-        val offsetFloor = math.floor(offset)
+        val maxOffsetI = maxOffset.toInt
 
-        //println(s"state: ${state.scrollOffset}  max: $maxOffset")
+        println(s"maxOffsetI: $maxOffsetI")
 
-        skipEntries = offsetFloor.toInt
+        val result = if(!state.scrolledDown) {
+          skipEntries = scrollOffset
+          0d
+        } else {
+          val partialEntry = 1 - (maxOffset - maxOffsetI)
+          if(partialEntry > 0.1) {
+            skipEntries = scrollOffset
+            partialEntry * entryHeight
+          } else {
+            skipEntries = scrollOffset
+            0d
+          }
+        }
 
-        scrollUpEnabled = offset > 0
+        skipEntries = math.max(0, math.min(skipEntries, maxOffsetI))
 
-        scrollUpNextOffset = math.max(0d, if(offset - offsetFloor < 0.1) math.floor(offset - 1) else offsetFloor)
+        scrollUpEnabled = scrollOffset > 0
 
-        //println(s"offset: $offset  skipEntries: $skipEntries")
+        scrollDownNextOffset = math.min(scrollOffset + 1, maxOffsetI)
+        scrollUpNextOffset = math.max(scrollOffset - 1, 0)
 
-        val partialEntry = offset - skipEntries
-
-        val bottomCutoff = if(partialEntry > 0) 1 - partialEntry else 0d
-
-        scrollDownNextOffset = math.min(maxOffset, if(bottomCutoff > 0.1) offset + bottomCutoff else offset + 1 + bottomCutoff)
-
-        partialEntry * entryHeight
+        result
       } else 0d
 
       println(s"offsetPixels: $offsetPixels")
@@ -185,7 +192,7 @@ class GameLogDisplay(notation: Notation,
           up = true,
           onClick = CallbackTo {
             println(s"scroll up to $scrollUpNextOffset")
-            $.modState(_.copy(scrollOffset = scrollUpNextOffset, scrolledUp = true))
+            $.modState(_.copy(scrollOffset = scrollUpNextOffset, scrolledDown = false))
           }.flatten
         )
         val button = scrollButton.create(buttonProps)
@@ -201,7 +208,7 @@ class GameLogDisplay(notation: Notation,
           up = false,
           onClick = CallbackTo {
             println(s"scroll down to $scrollDownNextOffset")
-            $.modState(_.copy(scrollOffset = scrollDownNextOffset, scrolledUp = false))
+            $.modState(_.copy(scrollOffset = scrollDownNextOffset, scrolledDown = true))
           }.flatten
         )
         val button = scrollButton.create(buttonProps)
