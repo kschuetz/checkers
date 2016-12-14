@@ -14,6 +14,7 @@ object GameLogDisplay {
                    widthPixels: Double,
                    heightPixels: Double,
                    entryHeightPixels: Double,
+                   scrollButtonHeightPixels: Double,
                    updateId: Int,
                    waitingForMove: Boolean,
                    currentSnapshot: Snapshot,
@@ -26,7 +27,8 @@ object GameLogDisplay {
         (upperLeftY != other.upperLeftY) ||
         (widthPixels != other.widthPixels) ||
         (heightPixels != other.heightPixels) ||
-        (entryHeightPixels != other.entryHeightPixels)
+        (entryHeightPixels != other.entryHeightPixels) ||
+        (scrollButtonHeightPixels != other.scrollButtonHeightPixels)
     }
   }
 
@@ -37,6 +39,7 @@ object GameLogDisplay {
 
   private val defaultState = State(0, scrolledDown = false)
 
+  private val bodyClipPathId = "game-log-display-clip-path"
 }
 
 class GameLogDisplay(notation: Notation,
@@ -47,13 +50,15 @@ class GameLogDisplay(notation: Notation,
   class Backend($: BackendScope[Props, State]) {
     def render(props: Props, state: State): ReactElement = {
       val entryHeight = props.entryHeightPixels
-      val clientHeight = props.heightPixels
+      val scrollButtonHeight = props.scrollButtonHeightPixels + 3
+      val clientTop: Double = scrollButtonHeight
+      val clientHeight = props.heightPixels - 2 * scrollButtonHeight
       val entryLeftX = 0
       val entryWidth = props.widthPixels
 
       val entries = new js.Array[ReactNode]
 
-      var y = 0d
+      var y = clientTop
 
       def addEntryPanel(snapshot: Snapshot, play: Option[Play]): Unit = {
         var moveDescription = for {
@@ -98,11 +103,29 @@ class GameLogDisplay(notation: Notation,
 
       val transform = s"translate(${props.upperLeftX},${props.upperLeftY})"
 
-      <.svg.g(
+      val bodyClipPath = <.svg.defs(
+        <.svg.clipPathTag(
+          ^.id := bodyClipPathId,
+          <.svg.rect(
+            ^.svg.x := 0,
+            ^.svg.y := clientTop,
+            ^.svg.width := props.widthPixels,
+            ^.svg.height := clientHeight
+          )
+        )
+      )
+
+      val logBody = <.svg.g(
         ^.`class` := "game-log-display",
-        ^.svg.transform := transform,
+        clipPathAttr := s"url(#$bodyClipPathId)",
         backdrop,
         entries
+      )
+
+      <.svg.g(
+        ^.svg.transform := transform,
+        bodyClipPath,
+        logBody
       )
 
     }

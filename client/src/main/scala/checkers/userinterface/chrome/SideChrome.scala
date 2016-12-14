@@ -104,8 +104,8 @@ class SideChrome(button: Button,
       val gameLogHeight = gameLogBottom - gameLogTop
       if(gameLogHeight > 0) {
         val gameLogProps = GameLogDisplay.Props(gameLogLeft, gameLogTop, gameLogWidth, gameLogHeight,
-          logEntryHeightPixels, gameModel.gameLogUpdateId, gameModel.inputPhase.waitingForMove,
-          gameModel.currentTurnSnapshot, gameModel.history)
+          logEntryHeightPixels, layoutSettings.GameLogScrollButtonHeightPixels, gameModel.gameLogUpdateId,
+          gameModel.inputPhase.waitingForMove, gameModel.currentTurnSnapshot, gameModel.history)
         val element = gameLogDisplay.create.withKey("game-log")(gameLogProps)
         parts.push(element)
       }

@@ -10,6 +10,8 @@ trait GameLogLayoutSettings {
   def GameLogPaddingPixelsY: Int
 
   def GameLogEntryHeightPixels: Int
+
+  def GameLogScrollButtonHeightPixels: Int
 }
 
 trait SideChromeLayoutSettings extends GameSceneHeight with GameLogLayoutSettings {
@@ -82,4 +84,6 @@ trait DefaultScreenLayoutSettings extends ScreenLayoutSettings {
   override def GameLogPaddingPixelsY: Int = 10
 
   override def GameLogEntryHeightPixels: Int = 40
+
+  override def GameLogScrollButtonHeightPixels: Int = 20
 }
