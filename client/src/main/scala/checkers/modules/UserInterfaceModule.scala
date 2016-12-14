@@ -7,7 +7,7 @@ import checkers.userinterface.chrome._
 import checkers.userinterface.dialog.NewGameDialog
 import checkers.userinterface.gamelog.{GameLogDisplay, GameLogEntry}
 import checkers.userinterface.piece._
-import checkers.userinterface.widgets.{Arrow, Button, DirectedArrow}
+import checkers.userinterface.widgets.{Arrow, Button, DirectedArrow, ScrollButton}
 import checkers.userinterface.{DynamicScene, GameScreen, SceneContainer, SceneFrame}
 import com.softwaremill.macwire.wire
 
@@ -41,6 +41,8 @@ trait UserInterfaceModule {
   lazy val button: Button = wire[Button]
 
   lazy val rushButton: RushButton = wire[RushButton]
+
+  lazy val scrollButton: ScrollButton = wire[ScrollButton]
 
   lazy val pieceAvatar: PieceAvatar = wire[PieceAvatar]
 

@@ -57,11 +57,9 @@ class SideChrome(button: Button,
         currentY,
         buttonWidth,
         buttonHeight,
-        "New Game...",
-        Some("Start a new game"),
-        enabled = true,
-        Map.empty,
-        props.applicationCallbacks.onNewGameButtonClicked))
+        caption = "New Game...",
+        tooltip = Some("Start a new game"),
+        onClick = props.applicationCallbacks.onNewGameButtonClicked))
 
       parts.push(newGameButton)
 
@@ -71,11 +69,9 @@ class SideChrome(button: Button,
         currentY,
         buttonWidth,
         buttonHeight,
-        "Rotate",
-        Some("Rotate the view of the board 180 degrees"),
-        enabled = true,
-        Map.empty,
-        props.applicationCallbacks.onRotateBoardButtonClicked))
+        caption = "Rotate",
+        tooltip = Some("Rotate the view of the board 180 degrees"),
+        onClick = props.applicationCallbacks.onRotateBoardButtonClicked))
 
       parts.push(rotateBoardButton)
 
@@ -86,11 +82,8 @@ class SideChrome(button: Button,
           currentY,
           buttonWidth,
           buttonHeight,
-          "Hint",
-          None,
-          enabled = true,
-          Map.empty,
-          props.applicationCallbacks.onHintButtonClicked))
+          caption = "Hint",
+          onClick = props.applicationCallbacks.onHintButtonClicked))
 
         parts.push(hintButton)
       }

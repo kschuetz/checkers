@@ -11,6 +11,8 @@ object Button {
                    centerY: Double,
                    width: Double,
                    height: Double,
+                   radiusX: Double = 10,
+                   radiusY: Double = 10,
                    caption: String = "",
                    tooltip: Option[String] = None,
                    enabled: Boolean = true,
@@ -82,8 +84,8 @@ class Button extends SvgHelpers with FontHelpers {
             ^.svg.y := -(props.height / 2),
             ^.svg.width := props.width,
             ^.svg.height := props.height,
-            ^.svg.rx := 10,
-            ^.svg.ry := 10
+            ^.svg.rx := props.radiusX,
+            ^.svg.ry := props.radiusY
           )
         ),
         caption,

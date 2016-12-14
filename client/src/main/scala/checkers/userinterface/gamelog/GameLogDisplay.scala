@@ -2,6 +2,7 @@ package checkers.userinterface.gamelog
 
 import checkers.core._
 import checkers.userinterface.mixins.ClipPathHelpers
+import checkers.util.SvgHelpers
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
 
@@ -43,11 +44,12 @@ object GameLogDisplay {
 }
 
 class GameLogDisplay(notation: Notation,
-                     gameLogEntry: GameLogEntry) extends ClipPathHelpers {
+                     gameLogEntry: GameLogEntry) extends ClipPathHelpers with SvgHelpers {
 
   import GameLogDisplay._
 
   class Backend($: BackendScope[Props, State]) {
+
     def render(props: Props, state: State): ReactElement = {
       val entryHeight = props.entryHeightPixels
       val scrollButtonHeight = props.scrollButtonHeightPixels + 3
