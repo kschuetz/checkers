@@ -30,7 +30,7 @@ object Searcher {
     val (shuffler, playerState1) = gameLogicModule.shufflerFactory.createShuffler(playerState0)
     val drawStatus = gameLogicModule.drawLogic.initialDrawStatus
     val board = gameLogicModule.boardInitializer.initialBoard(gameLogicModule.rulesSettings)
-    val playInput = PlayInput(board, 0, gameLogicModule.rulesSettings, DARK, drawStatus, Nil)
+    val playInput = PlayInput(board, 0, gameLogicModule.rulesSettings, DARK, drawStatus, Vector.empty)
     Params(gameLogicModule.searcher, playInput, playerState1, shuffler)
   }
 

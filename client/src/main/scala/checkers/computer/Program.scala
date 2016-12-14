@@ -8,7 +8,7 @@ case class PlayInput(board: BoardState,
                      rulesSettings: RulesSettings,
                      turnToMove: Side,
                      drawStatus: DrawStatus,
-                     history: List[HistoryEntry])
+                     history: Vector[HistoryEntry])
 
 trait Program {
   def initialOpaque: Opaque

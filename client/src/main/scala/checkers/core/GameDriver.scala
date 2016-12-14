@@ -147,7 +147,7 @@ class GameDriver(gameLogicModule: GameLogicModule)
         turnToMove = beginTurnState.turnToMove,
         drawStatus = beginTurnState.drawStatus,
         beginTurnEvaluation = turnEvaluation,
-        history = entry :: gameState.history)
+        history = gameState.history :+ entry)
     } else {
       // partial
       log.debug("partial move, updating tree:")
@@ -155,7 +155,7 @@ class GameDriver(gameLogicModule: GameLogicModule)
       log.debug("----")
 
       val turnEvaluation = CanMove(remainingMoveTree)
-      gameState.copy(board = newBoard, beginTurnEvaluation = turnEvaluation, history = entry :: gameState.history)
+      gameState.copy(board = newBoard, beginTurnEvaluation = turnEvaluation, history = gameState.history :+ entry)
     }
 
     log.info(s"endsTurn: $endsTurn")
@@ -184,7 +184,7 @@ class GameDriver(gameLogicModule: GameLogicModule)
     val beginTurnState = BeginTurnState(boardState, turnToMove, 0, drawLogic.initialDrawStatus)
     val turnEvaluation = evaluateBeginTurn(beginTurnState)
     GameState(rulesSettings, playerConfig, mentorConfig, 0, boardState, turnToMove, 0, darkState, lightState,
-      beginTurnState.drawStatus, turnEvaluation, Nil)
+      beginTurnState.drawStatus, turnEvaluation, Vector.empty)
   }
 
   private def evaluateBeginTurn(beginTurnState: BeginTurnState): BeginTurnEvaluation = {

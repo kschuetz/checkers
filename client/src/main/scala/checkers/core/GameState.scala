@@ -15,7 +15,7 @@ case class GameState(rulesSettings: RulesSettings,
                      lightState: PlayerState,
                      drawStatus: DrawStatus,
                      beginTurnEvaluation: BeginTurnEvaluation,
-                     history: List[HistoryEntry]) {
+                     history: Vector[HistoryEntry]) {
 
   def currentPlayer: PlayerDescription =
     if (turnToMove == DARK) playerConfig.darkPlayer else playerConfig.lightPlayer

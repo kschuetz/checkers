@@ -20,7 +20,7 @@ object GameLogDisplay {
                    updateId: Int,
                    waitingForMove: Boolean,
                    currentSnapshot: Snapshot,
-                   history: List[HistoryEntry]) {
+                   history: Vector[HistoryEntry]) {
 
     def shouldUpdate(other: Props): Boolean = {
       (updateId != other.updateId) ||
@@ -66,6 +66,8 @@ class GameLogDisplay(notation: Notation,
       val entryWidth = props.widthPixels
       val halfWidth = entryWidth / 2
 
+      val historyEntryCount = props.history.size
+
       val entries = new js.Array[ReactNode]
 
       var y = clientTop
@@ -95,17 +97,17 @@ class GameLogDisplay(notation: Notation,
       if(props.waitingForMove) {
         addEntryPanel(props.currentSnapshot, None)
       }
-      var historyEntries = props.history
+      var historyEntryIndex = historyEntryCount - 1
 
-      while (y <= clientBottom && historyEntries.nonEmpty) {
-        val historyEntry :: next = historyEntries
+      while (y <= clientBottom && historyEntryIndex >= 0) {
+        val historyEntry = props.history(historyEntryIndex)
         addEntryPanel(historyEntry.snapshot, Some(historyEntry.play))
-        historyEntries = next
+        historyEntryIndex -= 1
       }
 
       val scrollUpEnabled = state.scrollOffset > 0
 
-      val scrollDownEnabled = y > clientBottom || historyEntries.nonEmpty
+      val scrollDownEnabled = y > clientBottom || historyEntryIndex >= 0
 
       val backdrop = <.svg.rect(
         ^.`class` := "game-log-backdrop",
