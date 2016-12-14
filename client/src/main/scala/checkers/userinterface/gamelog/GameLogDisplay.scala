@@ -2,6 +2,7 @@ package checkers.userinterface.gamelog
 
 import checkers.core._
 import checkers.userinterface.mixins.ClipPathHelpers
+import checkers.userinterface.widgets.ScrollButton
 import checkers.util.SvgHelpers
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.prefix_<^._
@@ -33,18 +34,19 @@ object GameLogDisplay {
     }
   }
 
-  case class State(scrollOffset: Int,
+  case class State(scrollOffset: Double,
                    scrolledDown: Boolean) {
     def shouldUpdate(other: State): Boolean = this != other
   }
 
-  private val defaultState = State(0, scrolledDown = false)
+  private val defaultState = State(0d, scrolledDown = false)
 
   private val bodyClipPathId = "game-log-display-clip-path"
 }
 
 class GameLogDisplay(notation: Notation,
-                     gameLogEntry: GameLogEntry) extends ClipPathHelpers with SvgHelpers {
+                     gameLogEntry: GameLogEntry,
+                     scrollButton: ScrollButton) extends ClipPathHelpers with SvgHelpers {
 
   import GameLogDisplay._
 
@@ -52,11 +54,17 @@ class GameLogDisplay(notation: Notation,
 
     def render(props: Props, state: State): ReactElement = {
       val entryHeight = props.entryHeightPixels
-      val scrollButtonHeight = props.scrollButtonHeightPixels + 3
-      val clientTop: Double = scrollButtonHeight
-      val clientHeight = props.heightPixels - 2 * scrollButtonHeight
+      val scrollButtonWidth = 0.95 * props.widthPixels
+      val scrollButtonHeight = props.scrollButtonHeightPixels
+      val halfScrollButtonHeight = scrollButtonHeight / 2
+      val scrollButtonHeightWidthPadding = scrollButtonHeight + 5
+      val totalHeight = props.heightPixels
+      val clientTop: Double = scrollButtonHeightWidthPadding
+      val clientHeight = totalHeight - 2 * scrollButtonHeightWidthPadding
+      val clientBottom = clientTop + clientHeight
       val entryLeftX = 0
       val entryWidth = props.widthPixels
+      val halfWidth = entryWidth / 2
 
       val entries = new js.Array[ReactNode]
 
@@ -89,11 +97,15 @@ class GameLogDisplay(notation: Notation,
       }
       var historyEntries = props.history
 
-      while (y < clientHeight && historyEntries.nonEmpty) {
+      while (y <= clientBottom && historyEntries.nonEmpty) {
         val historyEntry :: next = historyEntries
         addEntryPanel(historyEntry.snapshot, Some(historyEntry.play))
         historyEntries = next
       }
+
+      val scrollUpEnabled = state.scrollOffset > 0
+
+      val scrollDownEnabled = y > clientBottom || historyEntries.nonEmpty
 
       val backdrop = <.svg.rect(
         ^.`class` := "game-log-backdrop",
@@ -124,10 +136,36 @@ class GameLogDisplay(notation: Notation,
         entries
       )
 
+      val scrollUpButton: Option[ReactElement] = if(scrollUpEnabled) {
+        val buttonProps = ScrollButton.Props(
+          centerX = halfWidth,
+          centerY = halfScrollButtonHeight,
+          width = scrollButtonWidth,
+          height = scrollButtonHeight,
+          up = true
+        )
+        val button = scrollButton.create(buttonProps)
+        Some(button)
+      } else None
+
+      val scrollDownButton: Option[ReactElement] = if(scrollDownEnabled) {
+        val buttonProps = ScrollButton.Props(
+          centerX = halfWidth,
+          centerY = totalHeight - halfScrollButtonHeight,
+          width = scrollButtonWidth,
+          height = scrollButtonHeight,
+          up = false
+        )
+        val button = scrollButton.create(buttonProps)
+        Some(button)
+      } else None
+
       <.svg.g(
         ^.svg.transform := transform,
         bodyClipPath,
-        logBody
+        logBody,
+        scrollUpButton,
+        scrollDownButton
       )
 
     }

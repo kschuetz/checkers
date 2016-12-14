@@ -88,7 +88,7 @@ class SideChrome(button: Button,
         parts.push(hintButton)
       }
 
-      currentY += buttonYSpacing
+      currentY += buttonYSpacing * 2
 
       val gameLogLeft = layoutSettings.GameLogPaddingPixelsX
       val gameLogWidth = widthPixels - (2 * gameLogLeft)

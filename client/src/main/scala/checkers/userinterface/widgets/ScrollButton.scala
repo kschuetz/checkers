@@ -47,7 +47,8 @@ class ScrollButton(button: Button) extends SvgHelpers {
     def render(props: Props): ReactElement = {
 
       val glyphWidth = 0.8 * props.width
-      val glyphHeight  = 0.9 * props.height
+      val glyphHeight  = 0.6 * props.height
+      val radius = 0.25 * math.min(props.width, props.height)
 
       val glyphProps = GlyphProps(glyphWidth, glyphHeight, props.up)
 
@@ -64,8 +65,8 @@ class ScrollButton(button: Button) extends SvgHelpers {
         centerY = props.centerY,
         width = props.width,
         height = props.height,
-        radiusX = 0,
-        radiusY = 0,
+        radiusX = radius,
+        radiusY = radius,
         caption = "",
         tooltip = None,
         enabled = true,
