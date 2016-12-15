@@ -31,7 +31,9 @@ class GameLogEntry(physicalPiece: PhysicalPiece) extends FontHelpers with ClipPa
       val stripe = getStripeClass(props)
       val textHeight = 0.46 * props.heightPixels
 
-      val fontSizeValue = s"${textHeight}px"
+      val fontSizePixels = textHeightPixels(textHeight)
+
+      println(s" fontSizeValue: $fontSizePixels")
 
       val textBottom = 0.7 * props.heightPixels
       val turnIndexLeft = 0.05 * props.widthPixels
@@ -54,12 +56,17 @@ class GameLogEntry(physicalPiece: PhysicalPiece) extends FontHelpers with ClipPa
 
       val turnIndexCaption = s"${props.turnIndex}."
 
+      val turnIndexFontSize = if(props.turnIndex >= 100) {
+        val newHeight = 0.8 * textHeight
+        textHeightPixels(newHeight)
+      } else fontSizePixels
+
       val turnIndexLabel = <.svg.text(
         ^.`class` := "turn-index",
         ^.svg.x := turnIndexRight,
         ^.svg.y := textBottom,
         ^.svg.textAnchor := "end",
-        fontSize := fontSizeValue,
+        fontSize := turnIndexFontSize,
         turnIndexCaption
       )
 
@@ -69,7 +76,7 @@ class GameLogEntry(physicalPiece: PhysicalPiece) extends FontHelpers with ClipPa
           ^.svg.x := descriptionLeft,
           ^.svg.y := textBottom,
           ^.svg.textAnchor := "begin",
-          fontSize := fontSizeValue,
+          fontSize := fontSizePixels,
           caption
         )
       }

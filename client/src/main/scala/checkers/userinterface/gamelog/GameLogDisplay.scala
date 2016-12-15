@@ -84,8 +84,6 @@ class GameLogDisplay(notation: Notation,
         val maxOffset = (totalHeightNeeded - clientHeight) / entryHeight
         val maxOffsetI = maxOffset.toInt
 
-        println(s"maxOffsetI: $maxOffsetI")
-
         val result = if(!state.scrolledDown) {
           skipEntries = scrollOffset
           0d
@@ -110,8 +108,6 @@ class GameLogDisplay(notation: Notation,
         result
       } else 0d
 
-      println(s"offsetPixels: $offsetPixels")
-
       val entries = new js.Array[ReactNode]
 
       var y = clientTop - offsetPixels
@@ -129,7 +125,7 @@ class GameLogDisplay(notation: Notation,
           val entryPanelProps = GameLogEntry.Props(
             widthPixels = entryWidth,
             heightPixels = entryHeight,
-            turnIndex = snapshot.turnIndex + 1,
+            turnIndex = 95 + snapshot.turnIndex + 1,
             side = snapshot.turnToMove,
             moveDescription = moveDescription,
             upperLeftX = entryLeftX,
@@ -190,10 +186,7 @@ class GameLogDisplay(notation: Notation,
           width = scrollButtonWidth,
           height = scrollButtonHeight,
           up = true,
-          onClick = CallbackTo {
-            println(s"scroll up to $scrollUpNextOffset")
-            $.modState(_.copy(scrollOffset = scrollUpNextOffset, scrolledDown = false))
-          }.flatten
+          onClick = $.modState(_.copy(scrollOffset = scrollUpNextOffset, scrolledDown = false))
         )
         val button = scrollButton.create(buttonProps)
         Some(button)
@@ -206,10 +199,7 @@ class GameLogDisplay(notation: Notation,
           width = scrollButtonWidth,
           height = scrollButtonHeight,
           up = false,
-          onClick = CallbackTo {
-            println(s"scroll down to $scrollDownNextOffset")
-            $.modState(_.copy(scrollOffset = scrollDownNextOffset, scrolledDown = true))
-          }.flatten
+          onClick = $.modState(_.copy(scrollOffset = scrollDownNextOffset, scrolledDown = true))
         )
         val button = scrollButton.create(buttonProps)
         Some(button)
