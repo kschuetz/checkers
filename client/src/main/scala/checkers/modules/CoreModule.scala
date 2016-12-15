@@ -40,18 +40,19 @@ trait CoreModule {
 //  lazy val moveSelectionMethodChooser: MoveSelectionMethodChooser = AlwaysSelectBestMove
   // ***
 
-//  lazy val boardInitializer: BoardInitializer = DefaultBoardInitializer
-    lazy val boardInitialized: BoardInitializer = new InitializerFromBoard(BoardUtils.parseBoard(
-      """
-         l l l l
-        - - - -
-         - - - -
-        - l l l
-         - - - -
-        - l l -
-         - D - d
-        - - - -
-      """))
+  lazy val boardInitializer: BoardInitializer = DefaultBoardInitializer
+
+//    lazy val boardInitializer: BoardInitializer = new InitializerFromBoard(BoardUtils.parseBoard(
+//      """
+//         l l l l
+//        - - - -
+//         - - - -
+//        - l l l
+//         - - - -
+//        - l l -
+//         - D - d
+//        - - - -
+//      """))
 
   lazy val shufflerFactory: ShufflerFactory = wire[DefaultShufflerFactory]
 

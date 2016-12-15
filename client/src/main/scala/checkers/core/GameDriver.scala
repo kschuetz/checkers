@@ -125,16 +125,17 @@ class GameDriver(gameLogicModule: GameLogicModule)
     val newBoard = boardState.toImmutable
     val newTurnIndex = gameState.turnIndex + 1
 
-    // partialMovePath is (only) used for properly recording compound human moves in the history
-    val partialMovePath = gameModel.partialMovePath.reverse
-    val historyMove = if(partialMovePath.nonEmpty) {
-      move.copy(path = partialMovePath ++ move.path)
-    } else move
-
     val newDrawStatus = drawLogic.updateDrawStatus(gameState.drawStatus, newTurnIndex, newBoard, eventFlags)
 
-    val entry = HistoryEntry(gameModel.currentTurnSnapshot, historyMove)
     val newGameState = if (endsTurn) {
+      // partialMovePath is (only) used for properly recording compound human moves in the history
+      val partialMovePath = gameModel.partialMovePath.reverse
+      val historyMove = if(partialMovePath.nonEmpty) {
+        move.copy(path = partialMovePath ++ move.path)
+      } else move
+
+      val entry = HistoryEntry(gameModel.currentTurnSnapshot, historyMove)
+
       val beginTurnState = BeginTurnState(board = newBoard,
         turnIndex = newTurnIndex,
         turnToMove = OPPONENT(gameState.turnToMove),
@@ -154,7 +155,7 @@ class GameDriver(gameLogicModule: GameLogicModule)
       log.debug("----")
 
       val turnEvaluation = CanMove(remainingMoveTree)
-      gameState.copy(board = newBoard, beginTurnEvaluation = turnEvaluation, history = gameState.history :+ entry)
+      gameState.copy(board = newBoard, beginTurnEvaluation = turnEvaluation)
     }
 
     log.info(s"endsTurn: $endsTurn")
