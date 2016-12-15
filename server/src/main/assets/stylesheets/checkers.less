@@ -321,3 +321,28 @@
   fill: #bbb;
   pointer-events: none;
 }
+
+.power-meter-backdrop {
+  fill: none;
+  stroke: #bbb;
+  stroke-width: 2px;
+}
+
+.power-meter-side {
+  stroke: none;
+}
+
+.power-meter-side.light {
+  fill: red;
+}
+
+.power-meter-side.dark {
+  fill: #333;
+}
+
+.power-meter-center-mark {
+  stroke: rgba(187, 187, 187, 0.89);
+  stroke-width: 1px;
+  stroke-linecap: round;
+  stroke-dasharray: 1, 3;
+}

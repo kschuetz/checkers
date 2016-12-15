@@ -1,5 +1,6 @@
 package checkers.userinterface.chrome
 
+import checkers.consts._
 import checkers.core.{ApplicationCallbacks, GameModelReader, SideChromeLayoutSettings}
 import checkers.userinterface.gamelog.GameLogDisplay
 import checkers.userinterface.widgets.Button
@@ -18,7 +19,7 @@ object SideChrome {
 }
 
 class SideChrome(button: Button,
-                 powerIndicator: PowerIndicator,
+                 powerMeter: PowerMeter,
                  gameLogDisplay: GameLogDisplay) {
 
   import SideChrome._
@@ -92,23 +93,34 @@ class SideChrome(button: Button,
 
       currentY += buttonYSpacing
 
-      val powerIndicatorHeight = layoutSettings.SideChromePowerIndicatorHeight
+      val powerMeterHeight = layoutSettings.SideChromePowerMeterHeight
 
-      val powerIndicatorElement = {
-        val powerIndicatorProps = PowerIndicator.Props(
+      val powerMeterElement = {
+        val darkScore = props.gameModel.getScore(DARK)
+        val lightScore = props.gameModel.getScore(LIGHT)
+
+        val tooltip = if(darkScore > lightScore)
+          s"Dark advantage ${(darkScore - lightScore) / 2}"
+        else if (lightScore > darkScore)
+          s"Light advantage ${(lightScore - darkScore) / 2}"
+        else "Dark and light equal advantage"
+
+        val position = PowerMeter.getPosition(darkScore, lightScore)
+
+        val powerMeterProps = PowerMeter.Props(
           centerX = halfWidth,
-          centerY = currentY + (0.5 * powerIndicatorHeight),
-          widthPixels = layoutSettings.SideChromePowerIndicatorWidth,
-          heightPixels = powerIndicatorHeight,
-          position = 0,
-          tooltip = None)
+          centerY = currentY + (0.5 * powerMeterHeight),
+          widthPixels = layoutSettings.SideChromePowerMeterWidth,
+          heightPixels = powerMeterHeight,
+          position = position,
+          tooltip = Some(tooltip))
 
-        powerIndicator.create.withKey("power-indicator")(powerIndicatorProps)
+        powerMeter.create.withKey("power-meter")(powerMeterProps)
       }
 
-      parts.push(powerIndicatorElement)
+      parts.push(powerMeterElement)
 
-      currentY += powerIndicatorHeight + layoutSettings.SideChromeButtonPaddingPixelsY
+      currentY += powerMeterHeight + layoutSettings.SideChromeButtonPaddingPixelsY
 
       val gameLogLeft = layoutSettings.GameLogPaddingPixelsX
       val gameLogWidth = widthPixels - (2 * gameLogLeft)

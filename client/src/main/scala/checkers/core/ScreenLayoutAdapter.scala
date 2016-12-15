@@ -33,9 +33,9 @@ class ScreenLayoutAdapter extends ScreenLayoutSettingsProvider {
 
       override def GameLogEntryHeightPixels: Int = 35
 
-      override def SideChromePowerIndicatorHeight: Int = 18
+      override def SideChromePowerMeterHeight: Int = 28
 
-      override def SideChromePowerIndicatorWidth: Int = 180
+      override def SideChromePowerMeterWidth: Int = 172
     },
 
     new DefaultScreenLayoutSettings {
@@ -51,9 +51,9 @@ class ScreenLayoutAdapter extends ScreenLayoutSettingsProvider {
 
       override def GameLogEntryHeightPixels: Int = 30
 
-      override def SideChromePowerIndicatorHeight: Int = 16
+      override def SideChromePowerMeterHeight: Int = 26
 
-      override def SideChromePowerIndicatorWidth: Int = 170
+      override def SideChromePowerMeterWidth: Int = 162
     },
 
     new DefaultScreenLayoutSettings {
@@ -69,9 +69,9 @@ class ScreenLayoutAdapter extends ScreenLayoutSettingsProvider {
 
       override def GameLogEntryHeightPixels: Int = 25
 
-      override def SideChromePowerIndicatorHeight: Int = 13
+      override def SideChromePowerMeterHeight: Int = 23
 
-      override def SideChromePowerIndicatorWidth: Int = 160
+      override def SideChromePowerMeterWidth: Int = 152
     }
   ).lift
 
@@ -88,9 +88,9 @@ class ScreenLayoutAdapter extends ScreenLayoutSettingsProvider {
 
     override def GameLogEntryHeightPixels: Int = 25
 
-    override def SideChromePowerIndicatorHeight: Int = 13
+    override def SideChromePowerMeterHeight: Int = 23
 
-    override def SideChromePowerIndicatorWidth: Int = 150
+    override def SideChromePowerMeterWidth: Int = 144
   }
 
   private def getSettings(width: Int, height: Int): ScreenLayoutSettings = {
