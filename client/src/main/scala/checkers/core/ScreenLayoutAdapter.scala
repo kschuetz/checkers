@@ -32,6 +32,10 @@ class ScreenLayoutAdapter extends ScreenLayoutSettingsProvider {
       override def SideChromeButtonHeightPixels: Int = 42
 
       override def GameLogEntryHeightPixels: Int = 35
+
+      override def SideChromePowerIndicatorHeight: Int = 18
+
+      override def SideChromePowerIndicatorWidth: Int = 180
     },
 
     new DefaultScreenLayoutSettings {
@@ -46,6 +50,10 @@ class ScreenLayoutAdapter extends ScreenLayoutSettingsProvider {
       override def SideChromeButtonHeightPixels: Int = 36
 
       override def GameLogEntryHeightPixels: Int = 30
+
+      override def SideChromePowerIndicatorHeight: Int = 16
+
+      override def SideChromePowerIndicatorWidth: Int = 170
     },
 
     new DefaultScreenLayoutSettings {
@@ -60,6 +68,10 @@ class ScreenLayoutAdapter extends ScreenLayoutSettingsProvider {
       override def SideChromeButtonHeightPixels: Int = 30
 
       override def GameLogEntryHeightPixels: Int = 25
+
+      override def SideChromePowerIndicatorHeight: Int = 13
+
+      override def SideChromePowerIndicatorWidth: Int = 160
     }
   ).lift
 
@@ -75,6 +87,10 @@ class ScreenLayoutAdapter extends ScreenLayoutSettingsProvider {
     override def SideChromeButtonHeightPixels: Int = 24
 
     override def GameLogEntryHeightPixels: Int = 25
+
+    override def SideChromePowerIndicatorHeight: Int = 13
+
+    override def SideChromePowerIndicatorWidth: Int = 150
   }
 
   private def getSettings(width: Int, height: Int): ScreenLayoutSettings = {

@@ -18,6 +18,7 @@ object SideChrome {
 }
 
 class SideChrome(button: Button,
+                 powerIndicator: PowerIndicator,
                  gameLogDisplay: GameLogDisplay) {
 
   import SideChrome._
@@ -41,6 +42,7 @@ class SideChrome(button: Button,
       val layoutSettings = props.layoutSettings
       val widthPixels = layoutSettings.SideChromeWidthPixels
       val heightPixels = layoutSettings.GameSceneHeightPixels
+      val halfWidth = widthPixels / 2
       val buttonX = layoutSettings.SideChromeButtonPaddingPixelsX
       val buttonY = layoutSettings.SideChromeButtonAreaPaddingY
       val buttonWidth = widthPixels - (2 * buttonX)
@@ -88,7 +90,25 @@ class SideChrome(button: Button,
         parts.push(hintButton)
       }
 
-      currentY += buttonYSpacing * 2
+      currentY += buttonYSpacing
+
+      val powerIndicatorHeight = layoutSettings.SideChromePowerIndicatorHeight
+
+      val powerIndicatorElement = {
+        val powerIndicatorProps = PowerIndicator.Props(
+          centerX = halfWidth,
+          centerY = currentY + (0.5 * powerIndicatorHeight),
+          widthPixels = layoutSettings.SideChromePowerIndicatorWidth,
+          heightPixels = powerIndicatorHeight,
+          position = 0,
+          tooltip = None)
+
+        powerIndicator.create.withKey("power-indicator")(powerIndicatorProps)
+      }
+
+      parts.push(powerIndicatorElement)
+
+      currentY += powerIndicatorHeight + layoutSettings.SideChromeButtonPaddingPixelsY
 
       val gameLogLeft = layoutSettings.GameLogPaddingPixelsX
       val gameLogWidth = widthPixels - (2 * gameLogLeft)

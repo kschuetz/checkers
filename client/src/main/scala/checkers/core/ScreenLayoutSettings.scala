@@ -26,6 +26,10 @@ trait SideChromeLayoutSettings extends GameSceneHeight with GameLogLayoutSetting
   def SideChromeButtonAreaPaddingY: Int
 
   def SideChromeButtonHeightPixels: Int
+
+  def SideChromePowerIndicatorHeight: Int
+
+  def SideChromePowerIndicatorWidth: Int
 }
 
 trait GameOverPanelLayoutSettings {
@@ -75,6 +79,10 @@ trait DefaultScreenLayoutSettings extends ScreenLayoutSettings {
 
   override def SideChromeButtonAreaPaddingY: Int = 14
 
+  override def SideChromePowerIndicatorHeight: Int = 20
+
+  override def SideChromePowerIndicatorWidth: Int = 188
+
   override def GameOverPanelWidthPixels: Int = 400
 
   override def GameOverPanelHeightPixels: Int = 200
@@ -86,4 +94,6 @@ trait DefaultScreenLayoutSettings extends ScreenLayoutSettings {
   override def GameLogEntryHeightPixels: Int = 40
 
   override def GameLogScrollButtonHeightPixels: Int = 20
+
+
 }
