@@ -89,14 +89,6 @@ class GameDriver(gameLogicModule: GameLogicModule)
     play match {
       case Play.NoPlay => None
 
-//      case Play.AcceptDraw =>
-//        if (drawLogic.canAcceptDraw(gameState)) {
-//          val newState = gameState.acceptDraw(gameModel.currentTurnSnapshot)
-//          val newModel = gameModel.copy(gameState = newState, inputPhase = InputPhase.GameOver(None))
-//          Some((PlayEvents.acceptedDraw, newModel))
-//
-//        } else None
-
       case move: Play.Move =>
         gameState.moveTree.walk(move.path).map { case (endSquare, newMoveTree) =>
           log.debug(s"walk:  $newMoveTree")
@@ -133,8 +125,7 @@ class GameDriver(gameLogicModule: GameLogicModule)
     val newBoard = boardState.toImmutable
     val newTurnIndex = gameState.turnIndex + 1
 
-    println(s"partialMovePath: ${gameModel.partialMovePath}")
-
+    // partialMovePath is (only) used for properly recording compound human moves in the history
     val partialMovePath = gameModel.partialMovePath.reverse
     val historyMove = if(partialMovePath.nonEmpty) {
       move.copy(path = partialMovePath ++ move.path)
@@ -426,7 +417,8 @@ class GameDriver(gameLogicModule: GameLogicModule)
       else {
         val nextMoveTree = playEvents.remainingMoveTree.next(toSquare)
         val validTargetSquares = nextMoveTree.squares
-        continueTurn(result, toSquare, event.piece, validTargetSquares)
+        val piece = model.pickedUpPiece.fold(EMPTY)(_.piece)
+        continueTurn(result, toSquare, piece, validTargetSquares)
       }
     }
   }

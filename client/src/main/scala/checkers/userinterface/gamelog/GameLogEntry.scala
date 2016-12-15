@@ -33,8 +33,6 @@ class GameLogEntry(physicalPiece: PhysicalPiece) extends FontHelpers with ClipPa
 
       val fontSizePixels = textHeightPixels(textHeight)
 
-      println(s" fontSizeValue: $fontSizePixels")
-
       val textBottom = 0.7 * props.heightPixels
       val turnIndexLeft = 0.05 * props.widthPixels
       val turnIndexRight = 0.23 * props.widthPixels
