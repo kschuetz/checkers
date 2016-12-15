@@ -37,6 +37,7 @@ class GameDriver(gameLogicModule: GameLogicModule)
         inputPhase = GameStart(gameState),
         gameState = gameState,
         currentTurnSnapshot = snapshot,
+        partialMovePath = List.empty,
         hintState = NullHintState,
         boardOrientation = BoardOrientation.Normal,
         pickedUpPiece = None,
@@ -132,9 +133,16 @@ class GameDriver(gameLogicModule: GameLogicModule)
     val newBoard = boardState.toImmutable
     val newTurnIndex = gameState.turnIndex + 1
 
+    println(s"partialMovePath: ${gameModel.partialMovePath}")
+
+    val partialMovePath = gameModel.partialMovePath.reverse
+    val historyMove = if(partialMovePath.nonEmpty) {
+      move.copy(path = partialMovePath ++ move.path)
+    } else move
+
     val newDrawStatus = drawLogic.updateDrawStatus(gameState.drawStatus, newTurnIndex, newBoard, eventFlags)
 
-    val entry = HistoryEntry(gameModel.currentTurnSnapshot, move)
+    val entry = HistoryEntry(gameModel.currentTurnSnapshot, historyMove)
     val newGameState = if (endsTurn) {
       val beginTurnState = BeginTurnState(board = newBoard,
         turnIndex = newTurnIndex,
@@ -275,7 +283,7 @@ class GameDriver(gameLogicModule: GameLogicModule)
     val snapshot = createSnapshot(newState)
 
     gameModel.copy(inputPhase = inputPhase, gameState = newState, currentTurnSnapshot = snapshot,
-      squareAttributesVector = squareAttributesVector, pickedUpPiece = None)
+      partialMovePath = List.empty, squareAttributesVector = squareAttributesVector, pickedUpPiece = None)
   }
 
   private def createSnapshot(gameState: GameState): Snapshot = {
@@ -412,7 +420,8 @@ class GameDriver(gameLogicModule: GameLogicModule)
 
   private def selectMoveTarget(model: Model, event: BoardMouseEvent, fromSquare: Int, toSquare: Int): Option[Model] = {
     val play = Play.move(fromSquare, toSquare)
-    applyPlay(model, play).map { case (playEvents, result) =>
+    applyPlay(model, play).map { case (playEvents, model1) =>
+      val result = model1.copy(partialMovePath = fromSquare :: model1.partialMovePath)
       if (playEvents.endedTurn) endTurn(result, result.gameState)
       else {
         val nextMoveTree = playEvents.remainingMoveTree.next(toSquare)

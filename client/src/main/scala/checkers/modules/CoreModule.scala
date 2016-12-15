@@ -4,6 +4,7 @@ import checkers.computer._
 import checkers.core._
 import checkers.core.tables.TablesModule
 import checkers.persistence.{LocalStorageNewGameSettingsPersister, NewGameSettingsPersister}
+import checkers.test.BoardUtils
 import checkers.userinterface.GameScreen
 import checkers.userinterface.dialog.NewGameDialog
 import com.softwaremill.macwire.wire
@@ -25,8 +26,6 @@ trait CoreModule {
 
   lazy val screenLayoutSettingsProvider: ScreenLayoutSettingsProvider = wire[ScreenLayoutAdapter]
 
-//    ConstantScreenLayoutSettings(DefaultScreenLayoutSettings)
-
   lazy val applicationSettingsProvider: ApplicationSettingsProvider = DefaultApplicationSettingsProvider
 
   lazy val animationSettings: AnimationSettings = wire[DefaultAnimationSettings]
@@ -41,7 +40,18 @@ trait CoreModule {
 //  lazy val moveSelectionMethodChooser: MoveSelectionMethodChooser = AlwaysSelectBestMove
   // ***
 
-  lazy val boardInitializer: BoardInitializer = DefaultBoardInitializer
+//  lazy val boardInitializer: BoardInitializer = DefaultBoardInitializer
+    lazy val boardInitialized: BoardInitializer = new InitializerFromBoard(BoardUtils.parseBoard(
+      """
+         l l l l
+        - - - -
+         - - - -
+        - l l l
+         - - - -
+        - l l -
+         - D - d
+        - - - -
+      """))
 
   lazy val shufflerFactory: ShufflerFactory = wire[DefaultShufflerFactory]
 

@@ -125,7 +125,7 @@ class GameLogDisplay(notation: Notation,
           val entryPanelProps = GameLogEntry.Props(
             widthPixels = entryWidth,
             heightPixels = entryHeight,
-            turnIndex = 95 + snapshot.turnIndex + 1,
+            turnIndex = snapshot.turnIndex + 1,
             side = snapshot.turnToMove,
             moveDescription = moveDescription,
             upperLeftX = entryLeftX,
