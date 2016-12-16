@@ -9,7 +9,7 @@ import japgolly.scalajs.react.vdom.prefix_<^._
 
 import scala.scalajs.js
 
-object PlayerPanel extends FontHelpers {
+object PlayerPanel {
 
   case class Props(widthPixels: Int,
                    heightPixels: Int,

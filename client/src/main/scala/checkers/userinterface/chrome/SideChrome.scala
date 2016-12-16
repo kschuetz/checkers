@@ -20,6 +20,7 @@ object SideChrome {
 
 class SideChrome(button: Button,
                  powerMeter: PowerMeter,
+                 drawCountdownIndicator: DrawCountdownIndicator,
                  gameLogDisplay: GameLogDisplay) {
 
   import SideChrome._
@@ -48,7 +49,8 @@ class SideChrome(button: Button,
       val buttonY = layoutSettings.SideChromeButtonAreaPaddingY
       val buttonWidth = widthPixels - (2 * buttonX)
       val buttonHeight = layoutSettings.SideChromeButtonHeightPixels
-      val buttonYSpacing = buttonHeight + layoutSettings.SideChromeButtonPaddingPixelsY
+      val paddingY = layoutSettings.SideChromeButtonPaddingPixelsY
+      val buttonYSpacing = buttonHeight + paddingY
       val logEntryHeightPixels = layoutSettings.GameLogEntryHeightPixels
 
       val parts = new js.Array[ReactNode]
@@ -93,7 +95,7 @@ class SideChrome(button: Button,
 
       currentY += buttonYSpacing
 
-      val powerMeterHeight = layoutSettings.SideChromePowerMeterHeight
+      val powerMeterHeight = layoutSettings.SideChromePowerMeterHeightPixels
 
       val powerMeterElement = {
         val darkScore = props.gameModel.getScore(DARK)
@@ -110,7 +112,7 @@ class SideChrome(button: Button,
         val powerMeterProps = PowerMeter.Props(
           centerX = halfWidth,
           centerY = currentY + (0.5 * powerMeterHeight),
-          widthPixels = layoutSettings.SideChromePowerMeterWidth,
+          widthPixels = layoutSettings.SideChromePowerMeterWidthPixels,
           heightPixels = powerMeterHeight,
           position = position,
           tooltip = Some(tooltip))
@@ -120,7 +122,26 @@ class SideChrome(button: Button,
 
       parts.push(powerMeterElement)
 
-      currentY += powerMeterHeight + layoutSettings.SideChromeButtonPaddingPixelsY
+      currentY += powerMeterHeight + paddingY
+
+      val drawCountdownIndicatorHeight = layoutSettings.SideChromeDrawCountdownIndicatorHeightPixels
+
+      val movesUntilDraw = Some(99)
+
+      movesUntilDraw.foreach { value =>
+        val drawCountdownProps = DrawCountdownIndicator.Props(
+          centerX = halfWidth,
+          centerY = currentY + (0.5 * drawCountdownIndicatorHeight),
+          widthPixels = layoutSettings.SideChromeDrawCountdownIndicatorWidthPixels,
+          heightPixels = drawCountdownIndicatorHeight,
+          movesUntilDraw = value
+        )
+
+        val element = drawCountdownIndicator.create.withKey("draw-countdown")(drawCountdownProps)
+        parts.push(element)
+      }
+
+      currentY += drawCountdownIndicatorHeight + paddingY
 
       val gameLogLeft = layoutSettings.GameLogPaddingPixelsX
       val gameLogWidth = widthPixels - (2 * gameLogLeft)

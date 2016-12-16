@@ -40,6 +40,8 @@ trait UserInterfaceModule {
 
   lazy val lastMoveIndicator: LastMoveIndicator = wire[LastMoveIndicator]
 
+  lazy val drawCountdownIndicator: DrawCountdownIndicator = wire[DrawCountdownIndicator]
+
   lazy val powerMeter: PowerMeter = wire[PowerMeter]
 
   lazy val button: Button = wire[Button]

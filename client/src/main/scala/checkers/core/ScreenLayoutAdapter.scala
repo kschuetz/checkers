@@ -33,9 +33,13 @@ class ScreenLayoutAdapter extends ScreenLayoutSettingsProvider {
 
       override def GameLogEntryHeightPixels: Int = 35
 
-      override def SideChromePowerMeterHeight: Int = 28
+      override def SideChromePowerMeterHeightPixels: Int = 28
 
-      override def SideChromePowerMeterWidth: Int = 172
+      override def SideChromePowerMeterWidthPixels: Int = 172
+
+      override def SideChromeDrawCountdownIndicatorHeightPixels: Int = 28
+
+      override def SideChromeDrawCountdownIndicatorWidthPixels: Int = 172
     },
 
     new DefaultScreenLayoutSettings {
@@ -51,9 +55,13 @@ class ScreenLayoutAdapter extends ScreenLayoutSettingsProvider {
 
       override def GameLogEntryHeightPixels: Int = 30
 
-      override def SideChromePowerMeterHeight: Int = 26
+      override def SideChromePowerMeterHeightPixels: Int = 26
 
-      override def SideChromePowerMeterWidth: Int = 162
+      override def SideChromePowerMeterWidthPixels: Int = 162
+
+      override def SideChromeDrawCountdownIndicatorHeightPixels: Int = 26
+
+      override def SideChromeDrawCountdownIndicatorWidthPixels: Int = 162
     },
 
     new DefaultScreenLayoutSettings {
@@ -69,9 +77,13 @@ class ScreenLayoutAdapter extends ScreenLayoutSettingsProvider {
 
       override def GameLogEntryHeightPixels: Int = 25
 
-      override def SideChromePowerMeterHeight: Int = 23
+      override def SideChromePowerMeterHeightPixels: Int = 23
 
-      override def SideChromePowerMeterWidth: Int = 152
+      override def SideChromePowerMeterWidthPixels: Int = 152
+
+      override def SideChromeDrawCountdownIndicatorHeightPixels: Int = 23
+
+      override def SideChromeDrawCountdownIndicatorWidthPixels: Int = 152
     }
   ).lift
 
@@ -88,9 +100,13 @@ class ScreenLayoutAdapter extends ScreenLayoutSettingsProvider {
 
     override def GameLogEntryHeightPixels: Int = 25
 
-    override def SideChromePowerMeterHeight: Int = 23
+    override def SideChromePowerMeterHeightPixels: Int = 23
 
-    override def SideChromePowerMeterWidth: Int = 144
+    override def SideChromePowerMeterWidthPixels: Int = 144
+
+    override def SideChromeDrawCountdownIndicatorHeightPixels: Int = 23
+
+    override def SideChromeDrawCountdownIndicatorWidthPixels: Int = 144
   }
 
   private def getSettings(width: Int, height: Int): ScreenLayoutSettings = {

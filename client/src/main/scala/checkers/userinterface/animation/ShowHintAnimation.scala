@@ -2,7 +2,6 @@ package checkers.userinterface.animation
 
 import checkers.core.Board
 import checkers.userinterface.widgets.DirectedArrow
-import checkers.util.Point
 import japgolly.scalajs.react._
 
 object ShowHintAnimation {
