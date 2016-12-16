@@ -54,7 +54,7 @@ object SearcherTests extends TestSuiteBase
   }
 
   private def getBestMove(maxCycles: Int, board: BoardState, turnToMove: Side, shuffler: Shuffler): Play = {
-    val playInput = PlayInput(board, 0, rulesSettings, turnToMove, drawLogic.initialDrawStatus, Nil)
+    val playInput = PlayInput(board, 0, rulesSettings, turnToMove, drawLogic.initialDrawStatus, Vector.empty)
     val search = searcher.create(playInput, initialComputerState, None, Some(maxCycles), shuffler, identity)
     while (!search.isReady) {
       search.run(maxCycles)
