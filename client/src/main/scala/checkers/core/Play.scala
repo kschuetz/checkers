@@ -14,7 +14,7 @@ object Play {
       def go(items: List[Int]): Option[(Int, Int)] = items match {
         case Nil => None
         case _ :: Nil => None
-        case x :: y :: Nil => Some(x, y)
+        case x :: y :: Nil => Some((x, y))
         case x :: xs => go(xs)
       }
       go(path)
