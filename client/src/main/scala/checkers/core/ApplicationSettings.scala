@@ -11,18 +11,25 @@ trait ApplicationSettings {
   // The purpose of this is to prevent unnecessary wasting of power
   // in case the user moves the game to a background tab for a while.
   def PowerSaveIdleThresholdSeconds: Option[Int]
+
+  def ShowEvaluationScoreInTopChrome: Boolean
 }
 
 trait ApplicationSettingsProvider {
   def applicationSettings: ApplicationSettings
 }
 
-object DefaultApplicationSettings extends ApplicationSettings {
+class DefaultApplicationSettings extends ApplicationSettings {
   val ClockUpdateIntervalMillis: Int = 667
 
   val PowerSaveIdleThresholdSeconds: Option[Int] = Some(300)   // 5 minutes
+
+  val ShowEvaluationScoreInTopChrome: Boolean = false
 }
 
-object DefaultApplicationSettingsProvider extends ApplicationSettingsProvider {
-  def applicationSettings: ApplicationSettings = DefaultApplicationSettings
+case class ConstantApplicationSettingsProvider(applicationSettings: ApplicationSettings) extends ApplicationSettingsProvider
+
+object ApplicationSettingsProvider {
+  def apply(applicationSettings: ApplicationSettings): ApplicationSettingsProvider =
+    ConstantApplicationSettingsProvider(applicationSettings)
 }

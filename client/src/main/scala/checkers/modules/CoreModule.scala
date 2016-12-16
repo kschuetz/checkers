@@ -26,7 +26,8 @@ trait CoreModule {
 
   lazy val screenLayoutSettingsProvider: ScreenLayoutSettingsProvider = wire[ScreenLayoutAdapter]
 
-  lazy val applicationSettingsProvider: ApplicationSettingsProvider = DefaultApplicationSettingsProvider
+  lazy val applicationSettingsProvider: ApplicationSettingsProvider =
+    ApplicationSettingsProvider(new DefaultApplicationSettings)
 
   lazy val animationSettings: AnimationSettings = wire[DefaultAnimationSettings]
 

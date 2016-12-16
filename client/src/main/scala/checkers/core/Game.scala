@@ -31,7 +31,7 @@ class Game(gameDriver: GameDriver,
 
   private var model: Model = {
     val nowTime = performance.now()
-    gameDriver.createInitialModel(nowTime)
+    gameDriver.createInitialModel(nowTime, applicationSettings)
   }
 
   private var applicationCallbacks: ApplicationCallbacks = EmptyApplicationCallbacks

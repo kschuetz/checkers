@@ -26,7 +26,7 @@ class GameDriver(gameLogicModule: GameLogicModule)
   private val animationPlanner = gameLogicModule.animationPlanner
   private val evaluator = gameLogicModule.evaluator
 
-  def createInitialModel(nowTime: Double): Model = {
+  def createInitialModel(nowTime: Double, applicationSettings: ApplicationSettings): Model = {
     val gameState = createInitialState
     val snapshot = createSnapshot(gameState)
     val model = {
@@ -42,6 +42,7 @@ class GameDriver(gameLogicModule: GameLogicModule)
         boardOrientation = BoardOrientation.Normal,
         pickedUpPiece = None,
         squareAttributesVector = SquareAttributesVector.default,
+        applicationSettings = applicationSettings,
         gameLogUpdateId = 1,
         animation = AnimationModel.empty)
 

@@ -48,8 +48,6 @@ trait GameModelReader {
 
   def gameOverState: Option[GameOverState]
 
-  def scoreDisplayEnabled: Boolean
-
   def getScore(side: Side): Int
 
   def clockDisplayHash: Int
@@ -57,6 +55,8 @@ trait GameModelReader {
   def hintButtonEnabled: Boolean
 
   def currentTurnSnapshot: Snapshot
+
+  def applicationSettings: ApplicationSettings
 
   def gameLogUpdateId: Int
 }
@@ -72,6 +72,7 @@ case class GameModel(nowTime: Double,
                      boardOrientation: BoardOrientation,
                      pickedUpPiece: Option[PickedUpPiece],
                      squareAttributesVector: SquareAttributesVector,
+                     applicationSettings: ApplicationSettings,
                      gameLogUpdateId: Int,
                      animation: AnimationModel) extends GameModelReader with ComputationProcess {
 
@@ -150,8 +151,6 @@ case class GameModel(nowTime: Double,
   def squareAttributes: Vector[SquareAttributes] = squareAttributesVector.items
 
   def playerMustJump: Boolean = gameState.beginTurnEvaluation.requiresJump
-
-  def scoreDisplayEnabled: Boolean = true
 
   def getScore(side: Side): Int = if(side == DARK) {
     currentTurnSnapshot.darkScore

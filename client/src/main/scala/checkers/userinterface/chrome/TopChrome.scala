@@ -30,7 +30,7 @@ class TopChrome(playerPanel: PlayerPanel) {
         val waitingForMove = model.inputPhase.waitingForMove
         val endingTurn = model.inputPhase.endingTurn
         val jumpIndicator = isPlayerTurn && (!endingTurn) && model.playerMustJump
-        val scoreDisplay = if(model.scoreDisplayEnabled) {
+        val scoreDisplay = if(model.applicationSettings.ShowEvaluationScoreInTopChrome) {
           Some(model.getScore(side).toString)
         } else None
 
