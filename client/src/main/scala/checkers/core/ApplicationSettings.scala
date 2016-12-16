@@ -1,5 +1,7 @@
 package checkers.core
 
+import scala.scalajs.LinkingInfo
+
 trait ApplicationSettings {
   def ClockUpdateIntervalMillis: Int
 
@@ -24,7 +26,7 @@ class DefaultApplicationSettings extends ApplicationSettings {
 
   val PowerSaveIdleThresholdSeconds: Option[Int] = Some(300)   // 5 minutes
 
-  val ShowEvaluationScoreInTopChrome: Boolean = false
+  val ShowEvaluationScoreInTopChrome: Boolean = LinkingInfo.developmentMode
 }
 
 case class ConstantApplicationSettingsProvider(applicationSettings: ApplicationSettings) extends ApplicationSettingsProvider
