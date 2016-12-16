@@ -2,7 +2,7 @@ package checkers.modules
 
 import checkers.core.Notation
 import checkers.userinterface.animation._
-import checkers.userinterface.board.{PhysicalBoard, SquareOverlayButton}
+import checkers.userinterface.board.{LastMoveIndicator, PhysicalBoard, SquareOverlayButton}
 import checkers.userinterface.chrome._
 import checkers.userinterface.dialog.NewGameDialog
 import checkers.userinterface.gamelog.{GameLogDisplay, GameLogEntry}
@@ -37,6 +37,8 @@ trait UserInterfaceModule {
   lazy val turnIndicator: TurnIndicator = wire[TurnIndicator]
 
   lazy val thinkingIndicator: ThinkingIndicator = wire[ThinkingIndicator]
+
+  lazy val lastMoveIndicator: LastMoveIndicator = wire[LastMoveIndicator]
 
   lazy val powerMeter: PowerMeter = wire[PowerMeter]
 

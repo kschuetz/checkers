@@ -1,6 +1,6 @@
 package checkers.userinterface
 
-import checkers.userinterface.board.{PhysicalBoard, SquareOverlayButton}
+import checkers.userinterface.board.{LastMoveIndicator, PhysicalBoard, SquareOverlayButton}
 import checkers.userinterface.piece._
 import checkers.consts._
 import checkers.core.Animation._
@@ -27,6 +27,7 @@ object DynamicScene {
 
 class DynamicScene(physicalPiece: PhysicalPiece,
                    squareOverlayButton: SquareOverlayButton,
+                   lastMoveIndicator: LastMoveIndicator,
                    pickedUpPiece: PickedUpPiece,
                    movingPieceAnimation: MovingPieceAnimation,
                    removingPieceAnimation: RemovingPieceAnimation,
@@ -163,8 +164,19 @@ class DynamicScene(physicalPiece: PhysicalPiece,
         animations.push(component)
       }
 
+      val lastMoveIndicatorElement = if(model.inputPhase.waitingForMove) {
+        for {
+          historyEntry <- model.history.lastOption
+          (fromSquare, toSquare) <- historyEntry.play.getFinalSegment
+        } yield {
+          val props = LastMoveIndicator.Props(fromSquare, toSquare, historyEntry.snapshot.turnToMove)
+          lastMoveIndicator.create(props)
+        }
+      } else None
+
       <.svg.g(
         overlayButtons,
+        lastMoveIndicatorElement,
         staticPiecesLayer,
         animations,
         pickedUpPieceElement

@@ -1,10 +1,25 @@
 package checkers.core
 
-sealed trait Play
+sealed trait Play {
+  def getFinalSegment: Option[(Int, Int)]
+}
 
 object Play {
-  case object NoPlay extends Play
-  case class Move(path: List[Int], proposeDraw: Boolean = false) extends Play
+  case object NoPlay extends Play {
+    def getFinalSegment: Option[(Int, Int)] = None
+  }
+
+  case class Move(path: List[Int], proposeDraw: Boolean = false) extends Play {
+    def getFinalSegment: Option[(Int, Int)] = {
+      def go(items: List[Int]): Option[(Int, Int)] = items match {
+        case Nil => None
+        case _ :: Nil => None
+        case x :: y :: Nil => Some(x, y)
+        case x :: xs => go(xs)
+      }
+      go(path)
+    }
+  }
 
   val empty = NoPlay
 
