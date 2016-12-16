@@ -64,11 +64,15 @@ class RushButton(button: Button) extends SvgHelpers {
         CssHelpers.playerSideClass(props.side) -> true
       )
 
+      val roundness = 0.27 * math.min(props.width, props.height)
+
       val buttonProps = Button.Props(
         centerX = props.centerX,
         centerY = props.centerY,
         width = props.width,
         height = props.height,
+        radiusX = roundness,
+        radiusY = roundness,
         caption = "",
         tooltip = tooltip,
         enabled = true,

@@ -53,6 +53,8 @@ class SideChrome(button: Button,
       val buttonYSpacing = buttonHeight + paddingY
       val logEntryHeightPixels = layoutSettings.GameLogEntryHeightPixels
 
+      val buttonRoundness = 0.2 * math.min(buttonWidth, buttonHeight)
+
       val parts = new js.Array[ReactNode]
 
       val buttonCenterX = buttonX + (buttonWidth / 2)
@@ -62,6 +64,8 @@ class SideChrome(button: Button,
         currentY,
         buttonWidth,
         buttonHeight,
+        radiusX = buttonRoundness,
+        radiusY = buttonRoundness,
         caption = "New Game...",
         tooltip = Some("Start a new game"),
         onClick = props.applicationCallbacks.onNewGameButtonClicked))
@@ -74,6 +78,8 @@ class SideChrome(button: Button,
         currentY,
         buttonWidth,
         buttonHeight,
+        radiusX = buttonRoundness,
+        radiusY = buttonRoundness,
         caption = "Rotate",
         tooltip = Some("Rotate the view of the board 180 degrees"),
         onClick = props.applicationCallbacks.onRotateBoardButtonClicked))
@@ -87,6 +93,8 @@ class SideChrome(button: Button,
           currentY,
           buttonWidth,
           buttonHeight,
+          radiusX = buttonRoundness,
+          radiusY = buttonRoundness,
           caption = "Hint",
           onClick = props.applicationCallbacks.onHintButtonClicked))
 
