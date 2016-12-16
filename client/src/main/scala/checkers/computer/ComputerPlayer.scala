@@ -41,15 +41,17 @@ class ComputerPlayer(moveGenerator: MoveGenerator,
       val state3 = ComputerPlayerState(r)
 
       selectionMethod match {
-        case SelectRandomMove =>
-          log.info("Selecting random move")
-          selectRandomMove(state3, choices)
-        case Blunder =>
+          // Originally, I had planned on distinguishing between SelectRandomMove and Blunder, where
+          // SelectRandomMove would choose any move, and Blunder would search for the best move and then intentionally
+          // choose one of the other moves.
+          // Selecting a random move is probably good enough a blunder, so for now, these two methods will be equivalent.
+
+        case SelectRandomMove | Blunder =>
           log.info("Blunder!")
-          search(state3, playInput, choices, searchParameters, blunder = true)
+          selectRandomMove(state3, choices)
         case _ =>
           log.info("Searching for best move")
-          search(state3, playInput, choices, searchParameters, blunder = false)
+          search(state3, playInput, choices, searchParameters)
       }
     }
   }
@@ -58,11 +60,10 @@ class ComputerPlayer(moveGenerator: MoveGenerator,
     playResult  // TODO: blunder
   }
 
-  private def search(stateIn: ComputerPlayerState, playInput: PlayInput, choices: MoveList, searchParameters: SearchParameters, blunder: Boolean): PlayComputation = {
+  private def search(stateIn: ComputerPlayerState, playInput: PlayInput, choices: MoveList, searchParameters: SearchParameters): PlayComputation = {
     //searcher
-    val transformResult: PlayResult => PlayResult = if(blunder) executeBlunder(choices) else identity
     val (shuffler, state2) = shufflerFactory.createShuffler(stateIn)
-    searcher.create(playInput, state2, searchParameters.depthLimit, searchParameters.cycleLimit, shuffler, transformResult)
+    searcher.create(playInput, state2, searchParameters.depthLimit, searchParameters.cycleLimit, shuffler, identity)
   }
 
   private def selectRandomMove(stateIn: ComputerPlayerState, choices: MoveList): PlayComputation = {
