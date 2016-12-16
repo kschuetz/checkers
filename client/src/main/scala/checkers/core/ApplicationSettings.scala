@@ -15,6 +15,8 @@ trait ApplicationSettings {
   def PowerSaveIdleThresholdSeconds: Option[Int]
 
   def ShowEvaluationScoreInTopChrome: Boolean
+
+  def BoardEditingEnabled: Boolean
 }
 
 trait ApplicationSettingsProvider {
@@ -27,6 +29,8 @@ class DefaultApplicationSettings extends ApplicationSettings {
   val PowerSaveIdleThresholdSeconds: Option[Int] = Some(300)   // 5 minutes
 
   val ShowEvaluationScoreInTopChrome: Boolean = LinkingInfo.developmentMode
+
+  val BoardEditingEnabled: Boolean = LinkingInfo.developmentMode
 }
 
 case class ConstantApplicationSettingsProvider(applicationSettings: ApplicationSettings) extends ApplicationSettingsProvider

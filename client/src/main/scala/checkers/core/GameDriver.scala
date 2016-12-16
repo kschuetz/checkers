@@ -462,6 +462,8 @@ class GameDriver(gameLogicModule: GameLogicModule)
   def cycleOccupant(model: Model, squareIndex: Int, reverse: Boolean = false, clear: Boolean = false): Option[Model] = {
     if(!model.inputPhase.waitingForHuman) return None
 
+    if(!model.applicationSettings.BoardEditingEnabled) return None
+
     val gameState = model.gameState
     val current = gameState.board.getOccupant(squareIndex)
     val next = if (clear) EMPTY
