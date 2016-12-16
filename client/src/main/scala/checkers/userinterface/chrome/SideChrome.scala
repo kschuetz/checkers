@@ -126,7 +126,7 @@ class SideChrome(button: Button,
 
       val drawCountdownIndicatorHeight = layoutSettings.SideChromeDrawCountdownIndicatorHeightPixels
 
-      val movesUntilDraw = Some(99)
+      val movesUntilDraw = gameModel.turnsRemainingUntilDrawHint
 
       movesUntilDraw.foreach { value =>
         val drawCountdownProps = DrawCountdownIndicator.Props(

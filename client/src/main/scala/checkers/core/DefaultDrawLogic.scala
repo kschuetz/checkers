@@ -13,7 +13,7 @@ case class ConcreteDrawStatus(turnOfLastAdvance: Int,
 class DefaultDrawLogic(rulesSettings: RulesSettings) extends DrawLogic {
 
   protected val TurnLimit = 100   // number of moves with no advance or capture
-  protected val TurnsRemainingWarningThreshold = 20
+  protected val TurnsRemainingWarningThreshold = 40
 
   protected val PositionRepeatCountForDraw = 3   // number of times an exact position occurring results in a draw
 

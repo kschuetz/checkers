@@ -48,6 +48,8 @@ trait GameModelReader {
 
   def gameOverState: Option[GameOverState]
 
+  def isGameActive: Boolean
+
   def getScore(side: Side): Int
 
   def clockDisplayHash: Int
@@ -57,6 +59,8 @@ trait GameModelReader {
   def currentTurnSnapshot: Snapshot
 
   def applicationSettings: ApplicationSettings
+
+  def turnsRemainingUntilDrawHint: Option[Int]
 
   def gameLogUpdateId: Int
 }
@@ -168,6 +172,8 @@ case class GameModel(nowTime: Double,
     case _ => None
   }
 
+  def isGameActive: Boolean = gameOverState.isEmpty
+
   def playerClock(side: Side): Double = {
     val base = gameState.clock(side)
     val addCurrentTurn = inputPhase.onTheClock &&
@@ -184,5 +190,9 @@ case class GameModel(nowTime: Double,
   }
 
   def hintButtonEnabled: Boolean = hintState.hintButtonVisible
+
+  def turnsRemainingUntilDrawHint: Option[Int] = if(isGameActive) {
+    gameState.drawStatus.turnsRemainingHint
+  } else None
 }
 
