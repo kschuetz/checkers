@@ -12,17 +12,6 @@ package object masks {
 
   private def squareMask(squares: Int*): Int = squareMaskFromSeq(squares)
 
-//  private val l3 = squareMask(1, 2, 3, 9, 10, 11, 17, 18, 19, 25, 26, 27)
-//  private val l5 = squareMask(4, 5, 6, 12, 13, 14, 20, 21, 22)
-//  private val r3 = squareMask(28, 29, 30, 20, 21, 22, 12, 13, 14, 4, 5, 6)
-//  private val r5 = squareMask(25, 26, 27, 17, 18, 19, 9, 10, 11)
-//  private val top = squareMaskFromSeq(20 to 31)
-//  private val bottom = squareMaskFromSeq(0 to 11)
-//  private val trappedLight = squareMaskFromSeq(0 to 4)
-//  private val trappedDark = squareMaskFromSeq(27 to 31)
-//  private val second = squareMaskFromSeq(4 to 7)
-//  private val seventh = squareMaskFromSeq(24 to 27)
-//  private val edges = squareMask(24, 20, 16, 12, 8, 4, 0, 7, 11, 15, 19, 23, 27, 31)
   private val outer = squareMask(0, 1, 2, 3, 7, 8, 15, 16, 23, 24, 28, 29, 30, 31)
   private val inner = ~outer
   private val nw3 = squareMask(4, 5, 6, 12, 13, 14, 20, 21, 22, 28, 29, 30)
@@ -66,56 +55,86 @@ package object masks {
   private val crownDark = lightBack
 
   def OUTER: Int = macro outerImpl
+
   def INNER: Int = macro innerImpl
 
   def CROWNLIGHT: Int = macro crownLightImpl
+
   def CROWNDARK: Int = macro crownDarkImpl
 
   def DOGHOLEDARK: Int = macro dogHoleDarkImpl
+
   def DOGHOLELIGHT: Int = macro dogHoleLightImpl
+
   def DOGHOLEBLOCKDARK: Int = macro dogHoleBlockDarkImpl
+
   def DOGHOLEBLOCKLIGHT: Int = macro dogHoleBlockLightImpl
 
   def DUSTHOLEDARK: Int = macro dustHoleDarkImpl
-  def DUSTHOLELIGHT: Int = macro dustHoleLightImpl 
+
+  def DUSTHOLELIGHT: Int = macro dustHoleLightImpl
 
   def NW3: Int = macro nw3Impl
+
   def NW4: Int = macro nw4Impl
+
   def NE4: Int = macro ne4Impl
+
   def NE5: Int = macro ne5Impl
+
   def SW4: Int = macro sw4Impl
+
   def SW5: Int = macro sw5Impl
+
   def SE3: Int = macro se3Impl
+
   def SE4: Int = macro se4Impl
+
   def NLE: Int = macro nleImpl
+
   def NRE: Int = macro nreImpl
 
   def LIGHTBACK: Int = macro lightBackImpl
+
   def LIGHTSECOND: Int = macro lightSecondImpl
+
   def LIGHTTHIRD: Int = macro lightThirdImpl
+
   def LIGHTFOURTH: Int = macro lightFourthImpl
 
   def DARKBACK: Int = macro darkBackImpl
+
   def DARKSECOND: Int = macro darkSecondImpl
+
   def DARKTHIRD: Int = macro darkThirdImpl
+
   def DARKFOURTH: Int = macro darkFourthImpl
 
   /**
     * Notice: Some SHIFT macros will evaluate the argument twice.
     */
   def SHIFTN(board: Int): Int = macro shiftNImpl
+
   def SHIFTE(board: Int): Int = macro shiftEImpl
+
   def SHIFTS(board: Int): Int = macro shiftSImpl
+
   def SHIFTW(board: Int): Int = macro shiftWImpl
 
   def SHIFTNW(board: Int): Int = macro shiftNWImpl
+
   def SHIFTNE(board: Int): Int = macro shiftNEImpl
+
   def SHIFTSW(board: Int): Int = macro shiftSWImpl
+
   def SHIFTSE(board: Int): Int = macro shiftSEImpl
 
   def SHIFTNW2(board: Int): Int = macro shiftNW2Impl
+
   def SHIFTNE2(board: Int): Int = macro shiftNE2Impl
+
   def SHIFTSW2(board: Int): Int = macro shiftSW2Impl
+
   def SHIFTSE2(board: Int): Int = macro shiftSE2Impl
 
   def outerImpl(c: blackbox.Context): c.Expr[Int] = {
@@ -317,6 +336,5 @@ package object masks {
     import c.universe._
     c.Expr[Int](q"($board >>> 7) & NLE")
   }
-
 
 }
