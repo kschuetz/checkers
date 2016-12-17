@@ -16,8 +16,15 @@ import scala.collection.immutable.Range.Inclusive
 //         00  01  02  03
 
 case class BoardPosition(row: Int, col: Int) {
+  def offset(rows: Int, cols: Int): BoardPosition =
+    BoardPosition(row + rows, col + cols)
+}
+
+
+object Board {
+
   // returns -1 if illegal
-  def toSquareIndex: Int = {
+  def boardPositionToSquareIndex(row: Int, col: Int): Int = {
     if(row < 0 || row > 7) return -1
     if(col < 0 || col > 7) return -1
     val r = row % 2
@@ -27,12 +34,8 @@ case class BoardPosition(row: Int, col: Int) {
     (4 * (7 - row)) + (col - c) / 2
   }
 
-  def offset(rows: Int, cols: Int): BoardPosition =
-    BoardPosition(row + rows, col + cols)
-}
-
-
-object Board {
+  def boardPositionToSquareIndex(boardPosition: BoardPosition): Int =
+    boardPositionToSquareIndex(boardPosition.row, boardPosition.col)
 
   def isLegalSquareIndex(idx: Int): Boolean =
     idx >= 0 && idx < 32
@@ -56,7 +59,7 @@ object Board {
     col <- 0 to 7
   } yield {
     val boardPos = BoardPosition(row, col)
-    (boardPos, boardPos.toSquareIndex, PhysicalBoard.positionToPoint(boardPos))
+    (boardPos, boardPositionToSquareIndex(boardPos), PhysicalBoard.positionToPoint(boardPos))
   }
 
   val lightStartingSquares: Inclusive = 20 to 31

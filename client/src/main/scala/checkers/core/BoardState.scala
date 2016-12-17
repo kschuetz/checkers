@@ -117,7 +117,7 @@ trait BoardStateReadImpl extends BoardStateRead {
         val cells = for {
           c <- 0 to 7
         } yield {
-          val idx = BoardPosition(rowIndex, c).toSquareIndex
+          val idx = Board.boardPositionToSquareIndex(rowIndex, c)
           if(idx < 0) ' '
           else {
             val occupant = getOccupant(idx)

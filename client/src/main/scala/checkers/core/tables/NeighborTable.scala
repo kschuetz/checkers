@@ -4,7 +4,6 @@ import checkers.consts._
 import checkers.core.Board
 
 import scala.scalajs.js
-import scala.scalajs.js.Array
 
 case class NeighborIndex(forwardMoveW: js.Array[Int],
                          forwardMoveE: js.Array[Int],
@@ -74,7 +73,7 @@ object NeighborTable {
   private[tables] def makeNeighborList(rowOffset: Int, colOffset: Int): js.Array[Int] = {
     val result = new js.Array[Int]
     Board.position.foreach { pos =>
-      val idx = pos.offset(rowOffset, colOffset).toSquareIndex
+      val idx = Board.boardPositionToSquareIndex(pos.offset(rowOffset, colOffset))
       result.push(idx)
     }
     result

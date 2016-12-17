@@ -160,9 +160,9 @@ object ShiftTests extends TestSuiteBase with BoardGenerators {
     val dy = -shift.rowOffset
     val dx = -shift.colOffset
     for (row <- 0 to 7; col <- 0 to 7) {
-      val destSquare = BoardPosition(row, col).toSquareIndex
+      val destSquare = Board.boardPositionToSquareIndex(row, col)
       if (destSquare >= 0) {
-        val sourceSquare = BoardPosition(row + dy, col + dx).toSquareIndex
+        val sourceSquare = Board.boardPositionToSquareIndex(row + dy, col + dx)
         val sourceOccupant = if (sourceSquare >= 0) sourceBoard.getOccupant(sourceSquare) else EMPTY
         boardState.setOccupant(destSquare, sourceOccupant)
       }
