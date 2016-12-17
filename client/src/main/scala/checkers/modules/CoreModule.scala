@@ -4,7 +4,6 @@ import checkers.computer._
 import checkers.core._
 import checkers.core.tables.TablesModule
 import checkers.persistence.{LocalStorageNewGameSettingsPersister, NewGameSettingsPersister}
-import checkers.test.BoardUtils
 import checkers.userinterface.GameScreen
 import checkers.userinterface.dialog.NewGameDialog
 import com.softwaremill.macwire.wire
@@ -36,24 +35,24 @@ trait CoreModule {
   lazy val moveSelectionMethodChooser: MoveSelectionMethodChooser = DefaultMoveSelectionMethodChooser
 
   // *** temporary for balancing  ***
-//  lazy val initialSeedsProvider: InitialSeedsProvider =
-//    StaticInitialSeedsProvider(InitialSeeds.default.copy(darkPlayer = Some(1000), lightPlayer = Some(1000)))
-//  lazy val moveSelectionMethodChooser: MoveSelectionMethodChooser = AlwaysSelectBestMove
+  //  lazy val initialSeedsProvider: InitialSeedsProvider =
+  //    StaticInitialSeedsProvider(InitialSeeds.default.copy(darkPlayer = Some(1000), lightPlayer = Some(1000)))
+  //  lazy val moveSelectionMethodChooser: MoveSelectionMethodChooser = AlwaysSelectBestMove
   // ***
 
   lazy val boardInitializer: BoardInitializer = DefaultBoardInitializer
 
-//    lazy val boardInitializer: BoardInitializer = new InitializerFromBoard(BoardUtils.parseBoard(
-//      """
-//         l l l l
-//        - - - -
-//         - - - -
-//        - l l l
-//         - - - -
-//        - l l -
-//         - D - d
-//        - - - -
-//      """))
+  //    lazy val boardInitializer: BoardInitializer = new InitializerFromBoard(Board.parseBoard(
+  //      """
+  //         l l l l
+  //        - - - -
+  //         - - - -
+  //        - l l l
+  //         - - - -
+  //        - l l -
+  //         - D - d
+  //        - - - -
+  //      """))
 
   lazy val shufflerFactory: ShufflerFactory = wire[DefaultShufflerFactory]
 

@@ -1,11 +1,11 @@
 package checkers.computer
 
 import checkers.consts._
+import checkers.core.Board.BoardStats
 import checkers.core._
 import checkers.core.tables.NeighborIndex
-import checkers.test.BoardUtils.BoardStats
 import checkers.test.generators.{BoardGenerators, SideGenerator}
-import checkers.test.{BoardUtils, DefaultGameLogicTestModule, TestSuiteBase}
+import checkers.test.{DefaultGameLogicTestModule, TestSuiteBase}
 import com.softwaremill.macwire._
 import nyaya.gen._
 import nyaya.prop._
@@ -23,7 +23,7 @@ object EvaluatorTests extends TestSuiteBase
   private lazy val moveDecoder = new MoveDecoder
   private lazy val jumpTable = tablesModule.jumpTable
   private lazy val neighborTable = tablesModule.neighborTable
-  private lazy val innerSquares: Set[Int] = BoardUtils.squareMaskToSet(checkers.masks.INNER)
+  private lazy val innerSquares: Set[Int] = Board.squareMaskToSet(checkers.masks.INNER)
 
   private def getMoveList(boardStack: BoardStack, turnToMove: Side): List[List[Int]] = {
     val moveList = moveGenerator.generateMoves(boardStack, turnToMove)
@@ -145,7 +145,7 @@ object EvaluatorTests extends TestSuiteBase
 
   object ProbeData {
     def fromTestProbe(input: DefaultEvaluatorTestProbe): ProbeData = {
-      import BoardUtils.squareMaskToSet
+      import Board.squareMaskToSet
 
       val dark = ProbeDataSide(input.darkManCount,
         input.darkKingCount,
@@ -193,7 +193,7 @@ object EvaluatorTests extends TestSuiteBase
     val lightMoves = getMoveList(boardStack, LIGHT)
     val expectedAttacks = getExpectedAttacks(board)
     val expectedTrappedKings = getExpectedTrappedKings(board)
-    val boardStats = BoardUtils.getBoardStats(board)
+    val boardStats = Board.getBoardStats(board)
     val testProbe = new DefaultEvaluatorTestProbe
     val evaluationResult = evaluator.evaluate(turnToMove, board, testProbe)
     val probeData = ProbeData.fromTestProbe(testProbe)
@@ -227,7 +227,7 @@ object EvaluatorTests extends TestSuiteBase
     turnToMove <- genSide
     board <- genBoard
   } yield {
-    val swapped = BoardUtils.mirror(board)
+    val swapped = Board.mirror(board)
     EqualSideCheckPropInput(board, swapped, turnToMove)
   }
 

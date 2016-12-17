@@ -4,7 +4,7 @@ import checkers.consts._
 import checkers.core._
 import checkers.logger.NullLogger
 import checkers.test.generators.{BoardGenerators, SideGenerator}
-import checkers.test.{BoardUtils, DefaultGameLogicTestModule, SortingMoveGenerator, TestSuiteBase}
+import checkers.test.{DefaultGameLogicTestModule, SortingMoveGenerator, TestSuiteBase}
 import nyaya.gen._
 import nyaya.prop._
 import nyaya.test.PropTest._
@@ -47,7 +47,7 @@ object SearcherTests extends TestSuiteBase
     val shuffler = NoShuffle
     val play1 = getBestMove(input.maxCycles, input.board, input.turnToMove, shuffler)
 
-    val flippedBoard = BoardUtils.mirror(input.board)
+    val flippedBoard = Board.mirror(input.board)
     val play2 = getBestMove(input.maxCycles, flippedBoard, OPPONENT(input.turnToMove), shuffler)
 
     SameMoveChoiceTestCase(input.turnToMove, input.maxCycles, input.board, flippedBoard, play1, play2)

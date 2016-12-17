@@ -1,9 +1,9 @@
 package checkers.masks
 
 import checkers.consts._
-import checkers.core.{BoardPosition, BoardStack, BoardState, MutableBoardState}
+import checkers.core._
+import checkers.test.TestSuiteBase
 import checkers.test.generators.BoardGenerators
-import checkers.test.{BoardUtils, TestSuiteBase}
 import nyaya.gen._
 import nyaya.prop._
 import nyaya.test.PropTest._
@@ -241,7 +241,7 @@ object ShiftTests extends TestSuiteBase with BoardGenerators {
     Prop.test(name, { input =>
       val board1 = pluckBoard(input.shiftsWithMacros)
       val board2 = pluckBoard(input.alternateShifts)
-      BoardUtils.boardStatesEqual(board1, board2)
+      Board.boardStatesEqual(board1, board2)
     })
 
   private lazy val forward1Equal = boardsEqualProp("forward1Equal", _.forward1)

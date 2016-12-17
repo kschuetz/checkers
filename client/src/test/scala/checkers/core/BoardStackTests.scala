@@ -1,7 +1,7 @@
 package checkers.core
 
+import checkers.test.TestSuiteBase
 import checkers.test.generators.BoardGenerators
-import checkers.test.{BoardUtils, TestSuiteBase}
 import nyaya.gen._
 import nyaya.prop._
 import nyaya.test.PropTest._
@@ -41,7 +41,7 @@ object BoardStackTests extends TestSuiteBase
     stack.setBoard(input.board)
 
     val sample = stack.toImmutable
-    BoardUtils.boardStatesEqual(input.board, sample)
+    Board.boardStatesEqual(input.board, sample)
   })
 
   lazy val pushCopiesCurrentBoard: Prop[PropInput] = Prop.test("pushCopiesCurrentBoard", { input =>
@@ -50,7 +50,7 @@ object BoardStackTests extends TestSuiteBase
     stack.push()
 
     val sample = stack.toImmutable
-    BoardUtils.boardStatesEqual(input.board, sample)
+    Board.boardStatesEqual(input.board, sample)
   })
 
   lazy val popRestoresBoard: Prop[PropInput] = Prop.test("popRestoresBoard", { input =>
@@ -64,7 +64,7 @@ object BoardStackTests extends TestSuiteBase
     val sampleB = stack.toImmutable
     stack.pop()
     val sample = stack.toImmutable
-    BoardUtils.boardStatesEqual(input.board, sample) && BoardUtils.boardStatesEqual(sampleA, sampleB)
+    Board.boardStatesEqual(input.board, sample) && Board.boardStatesEqual(sampleA, sampleB)
   })
 
   lazy val stackLevel: Prop[PropInput] = Prop.test("stackLevel", { input =>

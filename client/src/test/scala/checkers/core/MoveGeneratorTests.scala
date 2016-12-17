@@ -3,10 +3,9 @@ package checkers.core
 import checkers.consts._
 import checkers.core.tables.JumpTable
 import checkers.test.generators.BoardWithMovesGenerators
-import checkers.test.{BoardUtils, DefaultGameLogicTestModule, TestSuiteBase}
+import checkers.test.{DefaultGameLogicTestModule, TestSuiteBase}
 import nyaya.gen._
 import nyaya.prop._
-import nyaya.test._
 import nyaya.test.PropTest._
 import utest._
 import utest.framework._
@@ -74,7 +73,7 @@ object MoveGeneratorTests extends TestSuiteBase with DefaultGameLogicTestModule 
   lazy val genSameForBothSidesTestCase: Gen[SameForBothSidesTestCase] = genBoardWithMoves.map { boardWithMoves =>
     val boardStack = boardWithMoves.board
     val board1 = boardStack.toImmutable
-    val board2 = BoardUtils.mirror(board1)
+    val board2 = Board.mirror(board1)
     boardStack.push()
     val moves2 = try {
       boardStack.setBoard(board2)
@@ -149,7 +148,7 @@ object MoveGeneratorTests extends TestSuiteBase with DefaultGameLogicTestModule 
         }
 
         'SimpleJumps1 {
-          val board = BoardUtils.parseBoard(
+          val board = Board.parseBoard(
             """
               l l - -
              - - - -
@@ -179,7 +178,7 @@ object MoveGeneratorTests extends TestSuiteBase with DefaultGameLogicTestModule 
         }
 
         'SimpleMoves1 {
-          val board = BoardUtils.parseBoard(
+          val board = Board.parseBoard(
             """
               - - - l
              - - - l
@@ -209,7 +208,7 @@ object MoveGeneratorTests extends TestSuiteBase with DefaultGameLogicTestModule 
         }
 
         'SimpleMoves2 {
-          val board = BoardUtils.parseBoard(
+          val board = Board.parseBoard(
             """
               - - - -
              - L - -
@@ -246,7 +245,7 @@ object MoveGeneratorTests extends TestSuiteBase with DefaultGameLogicTestModule 
           }
 
           'SimpleMoves3 {
-            val board = BoardUtils.parseBoard(
+            val board = Board.parseBoard(
               """
                  l l l l
                 l l l l
@@ -271,7 +270,7 @@ object MoveGeneratorTests extends TestSuiteBase with DefaultGameLogicTestModule 
         }
 
         'CompoundJumps1 {
-          val board = BoardUtils.parseBoard(
+          val board = Board.parseBoard(
             """
               l l - -
              - - - -
@@ -304,7 +303,7 @@ object MoveGeneratorTests extends TestSuiteBase with DefaultGameLogicTestModule 
         }
 
         'CompoundJumps2 {
-          val board = BoardUtils.parseBoard(
+          val board = Board.parseBoard(
             """
               - - - -
              - l l l
@@ -339,7 +338,7 @@ object MoveGeneratorTests extends TestSuiteBase with DefaultGameLogicTestModule 
         
         'Other {
           'TestCase1 {
-            val board = BoardUtils.parseBoard("""
+            val board = Board.parseBoard("""
                D - - -
               l - - -
                - - - -
@@ -357,7 +356,7 @@ object MoveGeneratorTests extends TestSuiteBase with DefaultGameLogicTestModule 
           }
 
           'TestCase2 {
-            val board = BoardUtils.parseBoard("""
+            val board = Board.parseBoard("""
                - - l -
               - - - -
                - - - -

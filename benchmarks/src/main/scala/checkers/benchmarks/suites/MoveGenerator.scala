@@ -3,7 +3,6 @@ package checkers.benchmarks.suites
 import checkers.consts._
 import checkers.core._
 import checkers.core.tables.{JumpTable, NeighborTable}
-import checkers.test.BoardUtils
 import japgolly.scalajs.benchmark.gui._
 import japgolly.scalajs.benchmark.{Benchmark, _}
 
@@ -23,7 +22,7 @@ object MoveGenerator {
   val startingBoard = DefaultBoardInitializer.initialBoard(rulesSettings)
   val startingBoardStack = BoardStack.fromBoard(startingBoard)
 
-  val compoundJumpsBoard1 = BoardUtils.parseBoard(
+  val compoundJumpsBoard1 = Board.parseBoard(
     """
         l l - -
        - - - -
@@ -36,7 +35,7 @@ object MoveGenerator {
     """)
   val compoundJumpsBoard1Stack = BoardStack.fromBoard(compoundJumpsBoard1)
 
-  val compoundJumpsBoard2 = BoardUtils.parseBoard(
+  val compoundJumpsBoard2 = Board.parseBoard(
     """
       - - - -
      - l l l

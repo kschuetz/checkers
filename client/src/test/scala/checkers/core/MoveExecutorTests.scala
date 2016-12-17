@@ -3,7 +3,7 @@ package checkers.core
 import checkers.consts._
 import checkers.core.tables.JumpTable
 import checkers.test.generators.{BoardWithMovesGenerators, SideGenerator}
-import checkers.test.{BoardUtils, DefaultGameLogicTestModule, TestSuiteBase}
+import checkers.test.{DefaultGameLogicTestModule, TestSuiteBase}
 import nyaya.gen._
 import nyaya.prop._
 import nyaya.test.PropTest._
@@ -133,7 +133,7 @@ object MoveExecutorTests extends TestSuiteBase
       makeMoveWithExecute(board, turnToMove, path)
       val board3 = board.toImmutable
       board.pop()
-      BoardUtils.boardStatesEqual(board1, board2) && BoardUtils.boardStatesEqual(board2, board3)
+      Board.boardStatesEqual(board1, board2) && Board.boardStatesEqual(board2, board3)
     case _ => true
   })
 
