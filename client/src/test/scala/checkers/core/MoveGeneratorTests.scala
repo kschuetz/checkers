@@ -74,7 +74,7 @@ object MoveGeneratorTests extends TestSuiteBase with DefaultGameLogicTestModule 
   lazy val genSameForBothSidesTestCase: Gen[SameForBothSidesTestCase] = genBoardWithMoves.map { boardWithMoves =>
     val boardStack = boardWithMoves.board
     val board1 = boardStack.toImmutable
-    val board2 = BoardUtils.swapSides(board1)
+    val board2 = BoardUtils.mirror(board1)
     boardStack.push()
     val moves2 = try {
       boardStack.setBoard(board2)

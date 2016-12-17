@@ -227,7 +227,7 @@ object EvaluatorTests extends TestSuiteBase
     turnToMove <- genSide
     board <- genBoard
   } yield {
-    val swapped = BoardUtils.swapSides(board)
+    val swapped = BoardUtils.mirror(board)
     EqualSideCheckPropInput(board, swapped, turnToMove)
   }
 

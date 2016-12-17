@@ -116,7 +116,7 @@ class GameLogDisplay(notation: Notation,
         if(skipEntries > 0) {
           skipEntries -= 1
         } else {
-          var moveDescription = for {
+          val moveDescription = for {
             p <- play
             desc <- notation.notationForPlay(p)
           } yield desc

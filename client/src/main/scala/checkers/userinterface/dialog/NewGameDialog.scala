@@ -98,7 +98,7 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
   }
 
   class PlayerSelectorBackend($: BackendScope[PlayerSelectorProps, Unit]) {
-    def render(props: PlayerSelectorProps) = {
+    def render(props: PlayerSelectorProps): ReactElement = {
       val items = new js.Array[ReactNode]
       props.playerChoices.indices.foreach { i =>
         val item = props.playerChoices(i)
@@ -147,7 +147,7 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
   }
 
   class PlaysFirstCheckboxBackend($: BackendScope[PlaysFirstProps, Unit]) {
-    def render(props: PlaysFirstProps) = {
+    def render(props: PlaysFirstProps): ReactElement = {
       <.div(
         ^.`class` := "plays-first",
         <.label(
@@ -184,7 +184,7 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
                                       callbacks: PlayerPanelCallbacks) extends PlayerSelectorProps with PlaysFirstProps
 
   class PlayerSettingsPanelBackend($: BackendScope[PlayerSettingsPanelProps, Unit]) {
-    def render(props: PlayerSettingsPanelProps) = {
+    def render(props: PlayerSettingsPanelProps): ReactElement = {
       val avatar = PieceAvatar(props.side)
       val playerSelector = PlayerSelector(props)
       val playsFirst = PlaysFirstCheckbox(props)
@@ -215,7 +215,7 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
   }
 
   class VariationSelectorBackend($: BackendScope[VariationSelectorProps, Unit]) {
-    def render(props: VariationSelectorProps) = {
+    def render(props: VariationSelectorProps): ReactElement = {
       val items = new js.Array[ReactNode]
       props.variationChoices.indices.foreach { i =>
         val item = props.variationChoices(i)
@@ -265,7 +265,7 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
                                        callbacks: GeneralSettingsPanelCallbacks) extends VariationSelectorProps
 
   class GeneralSettingsPanelBackend($: BackendScope[GeneralSettingsPanelProps, Unit]) {
-    def render(props: GeneralSettingsPanelProps) = {
+    def render(props: GeneralSettingsPanelProps): ReactElement = {
       val variationSelector = VariationSelector(props)
       <.div(
         ^.`class` := "general-settings",
@@ -286,7 +286,7 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
   }
 
   class DialogButtonsBackend($: BackendScope[DialogButtonsCallbacks, Unit]) {
-    def render(props: DialogButtonsCallbacks) = {
+    def render(props: DialogButtonsCallbacks): ReactElement = {
       <.div(
         <.button(
           ^.onClick --> props.onOkClicked,
@@ -309,7 +309,7 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
     with DialogButtonsCallbacks
     with GeneralSettingsPanelCallbacks {
 
-    def render(props: Props, state: State) = {
+    def render(props: Props, state: State): ReactElement = {
       val darkPlayerProps = PlayerSettingsPanelProps(side = DARK,
         playerChoices = props.playerChoices,
         playerIndex = state.darkPlayerIndex,

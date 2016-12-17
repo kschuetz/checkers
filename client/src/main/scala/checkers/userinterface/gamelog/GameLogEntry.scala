@@ -27,7 +27,7 @@ class GameLogEntry(physicalPiece: PhysicalPiece) extends FontHelpers with ClipPa
 
   class Backend($: BackendScope[Props, Unit]) {
 
-    def render(props: Props) = {
+    def render(props: Props): ReactElement = {
       val stripe = getStripeClass(props)
       val textHeight = 0.46 * props.heightPixels
 

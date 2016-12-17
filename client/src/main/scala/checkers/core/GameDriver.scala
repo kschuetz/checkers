@@ -303,7 +303,7 @@ class GameDriver(gameLogicModule: GameLogicModule)
     if (event.reactEvent.altKey) cycleOccupant(model, event.squareIndex, event.reactEvent.shiftKey, event.reactEvent.ctrlKey)
     else model.inputPhase match {
       case BeginHumanTurn => userSelectPiece(model, event.squareIndex, event.piece, Some(event.boardPoint))
-      case PieceSelected(piece, squareIndex, validTargetSquares, canCancel) =>
+      case PieceSelected(_, squareIndex, validTargetSquares, canCancel) =>
         val targetSquare = event.squareIndex
         if (validTargetSquares.contains(targetSquare)) {
           selectMoveTarget(model, event, squareIndex, targetSquare)
@@ -340,7 +340,7 @@ class GameDriver(gameLogicModule: GameLogicModule)
           val newGameState = model.gameState.withOpaque(model.gameState.turnToMove, newPlayerState)
 
           val newModel = model.copy(gameState = newGameState)
-          applyPlay(newModel, play).map { case (playEvents, result) =>
+          applyPlay(newModel, play).map { case (_, result) =>
             // Computer doesn't make partial moves, so play always ends turn
             endTurn(result, result.gameState)
           }
@@ -426,7 +426,6 @@ class GameDriver(gameLogicModule: GameLogicModule)
   }
 
   private def scheduleMoveAnimations(model: Model, moveInfo: List[MoveInfo], isComputerPlayer: Boolean): Model = {
-    val currentPlayer = model.gameState.currentPlayer
     val input = MoveAnimationPlanInput(nowTime = model.nowTime, animationModel = model.animation,
       isComputerPlayer = isComputerPlayer, moveInfo = moveInfo)
     animationPlanner.scheduleMoveAnimations(input).fold(model)(model.withAnimationModel)

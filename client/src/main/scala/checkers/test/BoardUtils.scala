@@ -48,7 +48,7 @@ object BoardUtils {
 
   }
 
-  def swapSides(input: BoardStateRead): BoardState = {
+  def mirror(input: BoardStateRead): BoardState = {
     var result = BoardState.empty
     var i = 0
     while (i < 32) {

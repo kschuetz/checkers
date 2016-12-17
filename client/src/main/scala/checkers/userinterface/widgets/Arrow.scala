@@ -2,7 +2,9 @@ package checkers.userinterface.widgets
 
 import checkers.util.{Point, SvgHelpers}
 import japgolly.scalajs.react._
+import japgolly.scalajs.react.vdom.ReactTagOf
 import japgolly.scalajs.react.vdom.prefix_<^._
+import org.scalajs.dom.svg.Polygon
 
 object Arrow {
   case class Props(totalLength: Double,
@@ -17,7 +19,7 @@ class Arrow extends SvgHelpers {
   import Arrow._
 
   class Backend($: BackendScope[Props, Unit]) {
-    def render(props: Props) = {
+    def render(props: Props): ReactElement = {
       val yOffset = props.baseOffset
 
       val x0 = 0d

@@ -43,10 +43,10 @@ class SceneFrame(physicalBoard: PhysicalBoard,
       val Props(model, callbacks, sceneContainerContext, widthPixels, heightPixels) = props
       val screenToBoard = makeScreenToBoard(sceneContainerContext)
 
-      val boardRotation = props.gameModel.getBoardRotation
+      val boardRotation = model.getBoardRotation
       val rotateTransform = if (boardRotation != 0) s",rotate($boardRotation)" else ""
 
-      val dynamicSceneProps = DynamicScene.Props(props.gameModel, props.callbacks, props.sceneContainerContext, screenToBoard)
+      val dynamicSceneProps = DynamicScene.Props(model, callbacks, sceneContainerContext, screenToBoard)
 
       val transform = if (widthPixels == heightPixels) {
         val translate = widthPixels / 2.0

@@ -47,7 +47,7 @@ object SearcherTests extends TestSuiteBase
     val shuffler = NoShuffle
     val play1 = getBestMove(input.maxCycles, input.board, input.turnToMove, shuffler)
 
-    val flippedBoard = BoardUtils.swapSides(input.board)
+    val flippedBoard = BoardUtils.mirror(input.board)
     val play2 = getBestMove(input.maxCycles, flippedBoard, OPPONENT(input.turnToMove), shuffler)
 
     SameMoveChoiceTestCase(input.turnToMove, input.maxCycles, input.board, flippedBoard, play1, play2)
@@ -64,7 +64,7 @@ object SearcherTests extends TestSuiteBase
   }
 
   private lazy val sameMoveChoiceBothSides: Prop[SameMoveChoiceTestCase] = Prop.test("sameMoveChoiceBothSides", { input =>
-    val flippedPlay2 = Play.swapSides(input.play2)
+    val flippedPlay2 = Play.mirror(input.play2)
 
     input.play1 == flippedPlay2
   })

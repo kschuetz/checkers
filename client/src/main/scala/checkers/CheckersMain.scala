@@ -32,7 +32,7 @@ object CheckersMain extends js.JSApp {
 
     val session = application.start(host, dialogHost)
 
-    dom.window.onresize = { event: UIEvent =>
+    dom.window.onresize = { _: UIEvent =>
       session.windowResized()
     }
   }

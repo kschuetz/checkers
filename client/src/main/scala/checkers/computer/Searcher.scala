@@ -171,7 +171,6 @@ class Searcher(val moveGenerator: MoveGenerator,
             nextMovePtr += 1
 
             val path = moveDecoder.pathToList
-            val piece = boardStack.getOccupant(path.head)
 
             lastMove = Move(path, proposeDraw = false)
 

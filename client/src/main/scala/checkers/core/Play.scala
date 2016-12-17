@@ -15,7 +15,7 @@ object Play {
         case Nil => None
         case _ :: Nil => None
         case x :: y :: Nil => Some((x, y))
-        case x :: xs => go(xs)
+        case _ :: xs => go(xs)
       }
       go(path)
     }
@@ -27,7 +27,7 @@ object Play {
 
   def move(fromSquare: Int, toSquare: Int): Move = Play.Move(fromSquare :: toSquare :: Nil)
 
-  def swapSides(play: Play): Play = play match {
+  def mirror(play: Play): Play = play match {
     case NoPlay => NoPlay
     case move: Move => move.copy(path = MoveList.invertPath(move.path))
   }

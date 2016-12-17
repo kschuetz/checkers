@@ -209,11 +209,6 @@ class DefaultMoveGenerator(rulesSettings: RulesSettings,
     val notOccupied = ~(myPieces | opponentPieces)
     val myKings = myPieces & kings
 
-    var moveFE = 0
-    var moveFW = 0
-    var moveBE = 0
-    var moveBW = 0
-
     var noBW = 0
     var noBW2 = 0
     var noBE = 0
