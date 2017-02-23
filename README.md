@@ -5,7 +5,7 @@
 - A 100% client-side implementation of Checkers that runs in modern web browsers.
 - Graphics and animations are rendered as SVG elements in the browser DOM.
 - Supports Human vs. Computer, Human vs. Human (hot seat), and Computer vs. Computer games.
-- Written in Scala.js.
+- Written in [Scala.js](https://www.scala-js.org).
 
 ## Rules
 
@@ -49,18 +49,18 @@ To run the development server on a different port (say 8765), use `sbt "devServe
 
 - **server** - The development server (a small Play application)
 - **shared** - Code that is employed by both the client and server projects
-- **benchmarks** - Self-explanatory
+- **benchmarks**
 
 ## Implementation notes
 
 - Most user interface components, including the game elements and the user interface chrome, are composed of SVG elements.  The exception is the new game dialog, which has some HTML 5 elements as well.  [React](https://facebook.github.io/react/) is used throughout the user interface.
 - The board is represented internally using three 32-bit integers: one for dark pieces, one for light pieces, and one for kings.  Thanks to [this article](http://www.3dkingdoms.com/checkers/bitboards.htm) for the idea.
 - Computer players use alpha-beta search combined with iterative deepening.  An endgame tablebase is not employed (yet), as this game is client-side only, and introducing a tablebase would significantly increase resources required of the browser.
-- Everything is done in a single thread.  No web workers are used.  While the computer player is thinking, it is given time slices from the event loop until the computation is complete.
+- Everything is done in a single thread (no web workers are used).  While the computer player is thinking, it is given time slices from the event loop until the computation is complete.
 - The difficulty level of a computer player determines, among other things, the maximum number of evaluations per turn the computer player is allowed before having to yield a move.  While slower computers will take longer to calculate a move, they will ultimately arrive at the same conclusion on a faster computer, all else being equal.
 - The computer doesn't always attempt for a perfect play.  Lower level computer players have a higher chance of making a artificial blunder.
 - In some parts of the search tree, move order is shuffled (for moves other than the move the computer already thinks is best).  This causes the computer to examine the same tree in a different way, so it may come to a different conclusion in situations where each alternatives' value is similar.  This is done to introduce some variety into the computer's play, in the hopes of making it more or less as effective without being as robotic.
-- The computer can be rushed by the user. Shortly after being rushed, it will yield the move it thinks is the best from what it has seen so far.  This is possible to due the computer player keeping track of the "principal variation" (what is thought of as the best sequence of moves), which evolves through the search process.
+- The computer can be rushed by the user. Shortly after being rushed, it will yield the move it thinks is the best from what it has seen so far.  This is possible due to the computer player keeping track of the "principal variation" (what is thought of as the best sequence of moves), which evolves through the search process.
 - As an optimization, macros are used extensively throughout the project.  The implementations of these macros are simple constants or bit-wise expressions.  Since they are used in the same manner as C preprocessor macros, by convention they all have uppercase names (e.g. `DARK`, `LIGHT`, `SHIFTNW`).
 
 
