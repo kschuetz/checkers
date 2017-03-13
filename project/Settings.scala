@@ -24,8 +24,8 @@ object Settings {
   object versions {
     val scala = "2.11.8"
     val scalaDom = "0.9.1"
-    val scalajsReact = "0.11.3"
-    val scalaCSS = "0.5.1"
+    val scalajsReact = "1.0.0-RC1"
+    val scalaCSS = "0.5.3-RC3"
     val log4js = "1.4.13"
     val uTest = "0.4.4"
     val nyaya = "0.8.1"
