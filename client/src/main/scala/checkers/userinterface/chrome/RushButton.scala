@@ -4,7 +4,9 @@ import checkers.consts.Side
 import checkers.userinterface.widgets.Button
 import checkers.util.{CssHelpers, SvgHelpers}
 import japgolly.scalajs.react._
+import japgolly.scalajs.react.raw.JsNumber
 import japgolly.scalajs.react.vdom.html_<^._
+import japgolly.scalajs.react.vdom.{svg_<^ => svg}
 
 object RushButton {
 
@@ -28,24 +30,24 @@ class RushButton(button: Button) extends SvgHelpers {
   private lazy val RushButtonGlyph = ScalaComponent.build[GlyphProps]("RushButtonGlyph")
     .render_P { props =>
 
-      val ring = <.svg.circle(
+      val ring = svg.<.circle(
         ^.`class` := "ring",
-        ^.svg.fill := "none",
-        ^.svg.r := 0.5,
-        ^.svg.strokeWidth := 0.25
+        svg.^.fill := "none",
+        svg.^.r := 0.5.asInstanceOf[JsNumber],
+        svg.^.strokeWidth := 0.25.asInstanceOf[JsNumber]
       )
 
-      val slash = <.svg.rect(
+      val slash = svg.<.rect(
         ^.`class` := "slash",
-        ^.svg.x := -0.125,
-        ^.svg.y := -0.45,
-        ^.svg.width := 0.25,
-        ^.svg.height := 0.9
+        svg.^.x := (-0.125).asInstanceOf[JsNumber],
+        svg.^.y := (-0.45).asInstanceOf[JsNumber],
+        svg.^.width := 0.25.asInstanceOf[JsNumber],
+        svg.^.height := 0.9 .asInstanceOf[JsNumber]
       )
 
-      <.svg.g(
+      svg.<.g(
         ^.`class` := "rush-button-glyph",
-        ^.svg.transform := s"rotate(-45),scale(${props.scale})",
+        svg.^.transform := s"rotate(-45),scale(${props.scale})",
         slash,
         ring
       )
@@ -80,7 +82,7 @@ class RushButton(button: Button) extends SvgHelpers {
         onClick =  props.onClick
       )
 
-      button.create(buttonProps, glyph)
+      button.create(buttonProps)(glyph)
     }
   }
 

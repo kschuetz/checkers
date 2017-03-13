@@ -3,6 +3,7 @@ package checkers.userinterface.widgets
 import checkers.util.{Point, SvgHelpers}
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.html_<^._
+import japgolly.scalajs.react.vdom.{ svg_<^ => svg }
 
 object ScrollButton {
   case class Props(centerX: Double,
@@ -32,11 +33,11 @@ class ScrollButton(button: Button) extends SvgHelpers {
         Point(halfWidth, bottom),
         Point(-halfWidth, bottom))
 
-      val glyph = <.svg.polygon(
-        ^.svg.points := pathString
+      val glyph = svg.<.polygon(
+        svg.^.points := pathString
       )
 
-      <.svg.g(
+      svg.<.g(
         ^.`class` := (if(props.up) "scroll-button-glyph up" else "scroll-button-glyph down"),
         glyph
       )
@@ -74,7 +75,7 @@ class ScrollButton(button: Button) extends SvgHelpers {
         onClick = props.onClick
       )
 
-      button.create(buttonProps, glyph)
+      button.create(buttonProps)(glyph)
     }
   }
 

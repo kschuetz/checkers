@@ -9,6 +9,8 @@ import checkers.userinterface.animation._
 import checkers.util.Point
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.html_<^._
+import japgolly.scalajs.react.vdom.{ svg_<^ => svg }
+import japgolly.scalajs.react.vdom.{ svg_<^ => svg }
 
 import scala.scalajs.js
 
@@ -85,9 +87,9 @@ class DynamicScene(physicalPiece: PhysicalPiece,
         }
       }
 
-      val staticPiecesLayer = <.svg.g(
+      val staticPiecesLayer = svg.<.g(
         ^.classSet("no-pointer-events" -> !model.canClickPieces),
-        staticPieces
+        staticPieces.toVdomArray
       )
 
       val overlayButtons = new js.Array[VdomNode]
@@ -174,12 +176,12 @@ class DynamicScene(physicalPiece: PhysicalPiece,
         }
       } else None
 
-      <.svg.g(
-        overlayButtons,
-        lastMoveIndicatorElement,
+      svg.<.g(
+        overlayButtons.toVdomArray,
+        lastMoveIndicatorElement.whenDefined,
         staticPiecesLayer,
-        animations,
-        pickedUpPieceElement
+        animations.toVdomArray,
+        pickedUpPieceElement.whenDefined
       )
 
     }.build

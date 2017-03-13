@@ -4,6 +4,8 @@ import checkers.consts._
 import checkers.core.Board
 import checkers.userinterface.widgets.DirectedArrow
 import japgolly.scalajs.react._
+import japgolly.scalajs.react.vdom.html_<^._
+import japgolly.scalajs.react.vdom.VdomElement
 
 object LastMoveIndicator {
   case class Props(fromSquare: Int,

@@ -5,7 +5,9 @@ import checkers.userinterface.mixins.ClipPathHelpers
 import checkers.userinterface.widgets.ScrollButton
 import checkers.util.SvgHelpers
 import japgolly.scalajs.react._
+import japgolly.scalajs.react.raw.JsNumber
 import japgolly.scalajs.react.vdom.html_<^._
+import japgolly.scalajs.react.vdom.{svg_<^ => svg}
 
 import scala.scalajs.js
 
@@ -150,33 +152,33 @@ class GameLogDisplay(notation: Notation,
 
       scrollDownEnabled = y > clientBottom || historyEntryIndex >= 0
 
-      val backdrop = <.svg.rect(
+      val backdrop = svg.<.rect(
         ^.`class` := "game-log-backdrop",
-        ^.svg.x := 0,
-        ^.svg.y := 0,
-        ^.svg.width := props.widthPixels,
-        ^.svg.height := props.heightPixels
+        svg.^.x := 0.asInstanceOf[JsNumber],
+        svg.^.y := 0.asInstanceOf[JsNumber],
+        svg.^.width := props.widthPixels.asInstanceOf[JsNumber],
+        svg.^.height := props.heightPixels.asInstanceOf[JsNumber]
       )
 
       val transform = s"translate(${props.upperLeftX},${props.upperLeftY})"
 
-      val bodyClipPath = <.svg.defs(
-        <.svg.clipPathTag(
+      val bodyClipPath = svg.<.defs(
+        svg.<.clipPathTag(
           ^.id := bodyClipPathId,
-          <.svg.rect(
-            ^.svg.x := 0,
-            ^.svg.y := clientTop,
-            ^.svg.width := props.widthPixels,
-            ^.svg.height := clientHeight
+          svg.<.rect(
+            svg.^.x := 0.asInstanceOf[JsNumber],
+            svg.^.y := clientTop.asInstanceOf[JsNumber],
+            svg.^.width := props.widthPixels.asInstanceOf[JsNumber],
+            svg.^.height := clientHeight.asInstanceOf[JsNumber]
           )
         )
       )
 
-      val logBody = <.svg.g(
+      val logBody = svg.<.g(
         ^.`class` := "game-log-display",
         clipPathAttr := s"url(#$bodyClipPathId)",
         backdrop,
-        entries
+        entries.toVdomArray
       )
 
       val scrollUpButton: Option[VdomElement] = if(scrollUpEnabled) {
@@ -205,12 +207,12 @@ class GameLogDisplay(notation: Notation,
         Some(button)
       } else None
 
-      <.svg.g(
-        ^.svg.transform := transform,
+      svg.<.g(
+        svg.^.transform := transform,
         bodyClipPath,
         logBody,
-        scrollUpButton,
-        scrollDownButton
+        scrollUpButton.whenDefined,
+        scrollDownButton.whenDefined
       )
 
     }
@@ -219,9 +221,10 @@ class GameLogDisplay(notation: Notation,
   val create = ScalaComponent.build[Props]("GameLogDisplay")
     .initialState[State](defaultState)
     .renderBackend[Backend]
-    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, nextState) =>
-      val result = scope.props.shouldUpdate(nextProps) || scope.state.shouldUpdate(nextState)
-      CallbackTo.pure(result)
-    }
+    // TODO: shouldComponentUpdateConst
+//    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, nextState) =>
+//      val result = scope.props.shouldUpdate(nextProps) || scope.state.shouldUpdate(nextState)
+//      CallbackTo.pure(result)
+//    }
     .build
 }

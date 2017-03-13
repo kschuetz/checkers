@@ -3,6 +3,8 @@ package checkers.userinterface.chrome
 import checkers.consts._
 import checkers.userinterface.piece.{PhysicalPiece, PhysicalPieceProps}
 import japgolly.scalajs.react._
+import japgolly.scalajs.react.vdom.svg_<^._
+import japgolly.scalajs.react.vdom.{ svg_<^ => svg }
 
 object PieceAvatar {
 

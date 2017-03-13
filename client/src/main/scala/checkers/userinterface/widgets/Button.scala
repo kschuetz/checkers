@@ -3,7 +3,9 @@ package checkers.userinterface.widgets
 import checkers.userinterface.mixins.FontHelpers
 import checkers.util.SvgHelpers
 import japgolly.scalajs.react._
+import japgolly.scalajs.react.raw.JsNumber
 import japgolly.scalajs.react.vdom.html_<^._
+import japgolly.scalajs.react.vdom.{svg_<^ => svg}
 
 object Button {
 
@@ -59,8 +61,8 @@ class Button extends SvgHelpers with FontHelpers {
       }
 
       val caption = if(props.caption.nonEmpty) {
-        Some(<.svg.text(
-          ^.svg.y := textY,
+        Some(svg.<.text(
+          svg.^.y := textY.asInstanceOf[JsNumber],
           fontSize := s"${textHeight}px",
           props.caption
         ))
@@ -68,27 +70,27 @@ class Button extends SvgHelpers with FontHelpers {
 
       val classMap = props.extraClasses + ("enabled" -> props.enabled) + ("disabled" -> !props.enabled)
 
-      <.svg.g(
+      svg.<.g(
         ^.classSet1M("button", classMap),
-        ^.svg.transform := s"translate($centerX,$centerY)",
-        props.enabled ?= (^.onMouseDown ==> handleMouseDown),
-        props.enabled ?= (^.onMouseUp ==> handleMouseUp),
-        props.enabled ?= (^.onMouseOut ==> handleMouseOut),
+        svg.^.transform := s"translate($centerX,$centerY)",
+        (^.onMouseDown ==> handleMouseDown).when(props.enabled),
+        (^.onMouseUp ==> handleMouseUp).when(props.enabled),
+        (^.onMouseOut ==> handleMouseOut).when(props.enabled),
 
-        <.titleTag(props.tooltip),
+        props.tooltip.whenDefined(tt => <.titleTag(tt)),
 
-        <.svg.g(
+        svg.<.g(
           ^.`class` := "button-body",
-          <.svg.rect(
-            ^.svg.x := -(props.width / 2),
-            ^.svg.y := -(props.height / 2),
-            ^.svg.width := props.width,
-            ^.svg.height := props.height,
-            ^.svg.rx := props.radiusX,
-            ^.svg.ry := props.radiusY
+          svg.<.rect(
+            svg.^.x := (-(props.width / 2)).asInstanceOf[JsNumber],
+            svg.^.y := (-(props.height / 2)).asInstanceOf[JsNumber],
+            svg.^.width := props.width.asInstanceOf[JsNumber],
+            svg.^.height := props.height.asInstanceOf[JsNumber],
+            svg.^.rx := props.radiusX.asInstanceOf[JsNumber],
+            svg.^.ry := props.radiusY.asInstanceOf[JsNumber]
           )
         ),
-        caption,
+        caption.whenDefined,
         children
       )
     }
@@ -97,7 +99,7 @@ class Button extends SvgHelpers with FontHelpers {
 
   val create = ScalaComponent.build[Props]("Button")
     .initialState[State](defaultState)
-    .renderBackend[Backend]
+    .renderBackendWithChildren[Backend]
     .build
 
 }

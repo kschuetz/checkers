@@ -4,6 +4,7 @@ import checkers.consts._
 import checkers.util.{Point, SvgHelpers}
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.html_<^._
+import japgolly.scalajs.react.vdom.{ svg_<^ => svg }
 
 object TurnIndicator {
 
@@ -43,13 +44,13 @@ class TurnIndicator extends SvgHelpers {
         Point(x1, -y1),
         Point(x1, -y2))
 
-      val arrow = <.svg.polygon(
+      val arrow = svg.<.polygon(
         ^.classSet1("turn-indicator", "ending-turn" -> props.endingTurn),
-        ^.svg.points := pathString
+        svg.^.points := pathString
       )
 
-      <.svg.g(
-        ^.svg.transform := s"translate(${props.x},${props.y}),scale(${props.scale})",
+      svg.<.g(
+        svg.^.transform := s"translate(${props.x},${props.y}),scale(${props.scale})",
         arrow
       )
 

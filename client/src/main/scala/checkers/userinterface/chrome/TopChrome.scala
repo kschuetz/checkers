@@ -5,6 +5,7 @@ import checkers.core.{ApplicationCallbacks, GameModelReader, PlayerDescription}
 import checkers.util.{ClockUtils, Formatting}
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.html_<^._
+import japgolly.scalajs.react.vdom.{ svg_<^ => svg }
 
 object TopChrome {
 
@@ -58,8 +59,8 @@ class TopChrome(playerPanel: PlayerPanel) {
       }
 
       def makePanel(panelProps: PlayerPanel.Props, translateX: Int, translateY: Int) = {
-        <.svg.g(
-          ^.svg.transform := s"translate($translateX,$translateY)",
+        svg.<.g(
+          svg.^.transform := s"translate($translateX,$translateY)",
           playerPanel.create(panelProps)
         )
       }
@@ -70,10 +71,10 @@ class TopChrome(playerPanel: PlayerPanel) {
       val lightProps = createPanelProps(LIGHT, props.gameModel.lightPlayer)
       val lightPanel = makePanel(lightProps, panelWidth, 0)
 
-      <.svg.svg(
+      svg.<.svg(
         ^.id := "top-chrome",
-        ^.svg.width := s"${props.widthPixels}px",
-        ^.svg.height := s"${props.heightPixels}px",
+        svg.^.width := s"${props.widthPixels}px",
+        svg.^.height := s"${props.heightPixels}px",
         //^.onMouseMove ==> handleMouseMove,
         //SceneFrame((props._1, props._2, state))
         darkPanel,

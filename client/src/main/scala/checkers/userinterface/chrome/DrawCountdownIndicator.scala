@@ -2,7 +2,9 @@ package checkers.userinterface.chrome
 
 import checkers.userinterface.mixins.{ClipPathHelpers, FontHelpers}
 import japgolly.scalajs.react._
+import japgolly.scalajs.react.raw.JsNumber
 import japgolly.scalajs.react.vdom.html_<^._
+import japgolly.scalajs.react.vdom.{svg_<^ => svg}
 
 object DrawCountdownIndicator {
   case class Props(centerX: Double,
@@ -33,58 +35,58 @@ class DrawCountdownIndicator extends FontHelpers with ClipPathHelpers {
 
       val textHeight2 = halfHeight
 
-      val valueLabel = <.svg.text(
+      val valueLabel = svg.<.text(
         ^.`class` := "countdown-value",
-        ^.svg.x := x1,
-        ^.svg.y := textBottom,
-        ^.svg.textAnchor := "end",
+        svg.^.x := x1.asInstanceOf[JsNumber],
+        svg.^.y := textBottom.asInstanceOf[JsNumber],
+        svg.^.textAnchor := "end",
         fontSize := textHeightPixels(textHeight1),
         props.movesUntilDraw.toString
       )
 
       val captionText = if(props.movesUntilDraw == 1) "move until draw" else "moves until draw"
 
-      val caption = <.svg.text(
+      val caption = svg.<.text(
         ^.`class` := "countdown-caption",
-        ^.svg.x := x2,
-        ^.svg.y := textBottom,
+        svg.^.x := x2.asInstanceOf[JsNumber],
+        svg.^.y := textBottom.asInstanceOf[JsNumber],
         fontSize := textHeightPixels(textHeight2),
         captionText
       )
 
-      val textClipPath = <.svg.defs(
-        <.svg.clipPathTag(
+      val textClipPath = svg.<.defs(
+        svg.<.clipPathTag(
           ^.id := clipPathId,
-          <.svg.rect(
-            ^.svg.x := 0,
-            ^.svg.y := 0,
-            ^.svg.width := props.widthPixels,
-            ^.svg.height := props.heightPixels
+          svg.<.rect(
+            svg.^.x := 0.asInstanceOf[JsNumber],
+            svg.^.y := 0.asInstanceOf[JsNumber],
+            svg.^.width := props.widthPixels.asInstanceOf[JsNumber],
+            svg.^.height := props.heightPixels.asInstanceOf[JsNumber]
           )
         )
       )
 
-      val textElements = <.svg.g(
+      val textElements = svg.<.g(
         clipPathAttr := s"url(#$clipPathId)",
         caption,
         valueLabel
       )
 
-      val backdrop =  <.svg.rect(
+      val backdrop =  svg.<.rect(
         ^.`class` := "draw-countdown-indicator-backdrop",
-        ^.svg.x := 0,
-        ^.svg.y := 0,
-        ^.svg.width := props.widthPixels,
-        ^.svg.height := props.heightPixels
+        svg.^.x := 0.asInstanceOf[JsNumber],
+        svg.^.y := 0.asInstanceOf[JsNumber],
+        svg.^.width := props.widthPixels.asInstanceOf[JsNumber],
+        svg.^.height := props.heightPixels.asInstanceOf[JsNumber]
       )
 
       val translateX = props.centerX - halfWidth
       val translateY = props.centerY - halfHeight
       val transform = s"translate($translateX,$translateY)"
 
-     <.svg.g(
+     svg.<.g(
        ^.`class` := "draw-countdown-indicator",
-       ^.svg.transform := transform,
+       svg.^.transform := transform,
        textClipPath,
        backdrop,
        textElements

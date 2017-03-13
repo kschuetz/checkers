@@ -3,7 +3,9 @@ package checkers.userinterface.piece
 import checkers.consts.{DARK, Side}
 import checkers.util.{Point, SvgHelpers}
 import japgolly.scalajs.react.vdom.html_<^._
-import japgolly.scalajs.react.{ReactComponentB, VdomNode}
+import japgolly.scalajs.react.vdom.{svg_<^ => svg}
+import japgolly.scalajs.react._
+import japgolly.scalajs.react.raw.JsNumber
 
 import scala.scalajs.js
 
@@ -86,11 +88,11 @@ class Decorations extends SvgHelpers {
   val Pip = ScalaComponent.build[(Side, Point)]("Pip")
     .render_P { case (side, Point(cx, cy)) =>
       val classes = if(side == DARK) "pip dark" else "pip light"
-      <.svg.circle(
+      svg.<.circle(
         ^.`class` := classes,
-        ^.svg.cx := cx,
-        ^.svg.cy := cy,
-        ^.svg.r := 0.03
+        svg.^.cx := cx.asInstanceOf[JsNumber],
+        svg.^.cy := cy.asInstanceOf[JsNumber],
+        svg.^.r := 0.03.asInstanceOf[JsNumber]
       )
     }.build
 
@@ -98,16 +100,16 @@ class Decorations extends SvgHelpers {
     .render_P { case ((classesA, classesB, classesC), idx) =>
       val Point(cx, cy) = topCrownPoints(idx)
       val cl1 = if (idx > 1) classesA else classesB
-      <.svg.g(
-        <.svg.polygon(
+      svg.<.g(
+        svg.<.polygon(
           ^.`class` := cl1,
-          ^.svg.points := crownPaths(idx)
+          svg.^.points := crownPaths(idx)
         ),
-        <.svg.circle(
+        svg.<.circle(
           ^.`class` := classesC,
-          ^.svg.cx := cx,
-          ^.svg.cy := cy,
-          ^.svg.r := 0.06
+          svg.^.cx := cx.asInstanceOf[JsNumber],
+          svg.^.cy := cy.asInstanceOf[JsNumber],
+          svg.^.r := 0.06.asInstanceOf[JsNumber]
         )
       )
     }.build
@@ -118,13 +120,13 @@ class Decorations extends SvgHelpers {
         else ("crown-a light", "crown-b light", "crown-c light")
       val parts = new js.Array[VdomNode]
       crownPaths.indices.foreach { idx =>
-        parts.push(CrownPart.withKey(idx)((classes, idx)))
+        parts.push(CrownPart.withKey(idx.toString)((classes, idx)))
       }
 
-      <.svg.g(
+      svg.<.g(
         ^.`class` := "crown",
-        ^.svg.transform := s"scale($scale)",
-        parts
+        svg.^.transform := s"scale($scale)",
+        parts.toVdomArray
       )
 
     }.build
@@ -142,28 +144,28 @@ class Decorations extends SvgHelpers {
 
       starPathA.foreach { points =>
         k += 1
-        val part = <.svg.polygon(
+        val part = svg.<.polygon(
           ^.key := k,
           ^.`class` := classesA,
-          ^.svg.points := points
+          svg.^.points := points
         )
         parts.push(part)
       }
 
       starPathB.foreach { points =>
         k += 1
-        val part = <.svg.polygon(
+        val part = svg.<.polygon(
           ^.key := k,
           ^.`class` := classesB,
-          ^.svg.points := points
+          svg.^.points := points
         )
         parts.push(part)
       }
 
-      <.svg.g(
+      svg.<.g(
         ^.`class` := "star",
-        ^.svg.transform := s"scale($scale)",
-        parts
+        svg.^.transform := s"scale($scale)",
+        parts.toVdomArray
       )
 
     }.build

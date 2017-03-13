@@ -25,7 +25,7 @@ object Settings {
     val scala = "2.11.8"
     val scalaDom = "0.9.1"
     val scalajsReact = "1.0.0-RC1"
-    val scalaCSS = "0.5.3-RC3"
+    val scalaCSS = "0.5.3-RC1"
     val log4js = "1.4.13"
     val uTest = "0.4.4"
     val nyaya = "0.8.1"
@@ -33,7 +33,7 @@ object Settings {
     val uPickle = "0.4.4"
     val benchmark = "0.2.4"
 
-    val react = "15.4.0"
+    val react = "15.4.2"
 
     val scalaJsScripts = "1.0.0"
   }

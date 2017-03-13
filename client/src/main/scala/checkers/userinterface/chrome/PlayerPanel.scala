@@ -5,7 +5,9 @@ import checkers.core.ApplicationCallbacks
 import checkers.userinterface.mixins.FontHelpers
 import checkers.util.{CssHelpers, Formatting}
 import japgolly.scalajs.react._
+import japgolly.scalajs.react.raw.JsNumber
 import japgolly.scalajs.react.vdom.html_<^._
+import japgolly.scalajs.react.vdom.{svg_<^ => svg}
 
 import scala.scalajs.js
 
@@ -39,13 +41,13 @@ class PlayerPanel(pieceAvatar: PieceAvatar,
   class Backend($: BackendScope[Props, Unit]) {
 
     def backdrop(props: Props): VdomElement = {
-      <.svg.rect(
+      svg.<.rect(
         ^.key := "backdrop",
         ^.`class` := s"player-panel-backdrop ${CssHelpers.playerSideClass(props.side)}",
-        ^.svg.x := 0,
-        ^.svg.y := 0,
-        ^.svg.width := props.widthPixels,
-        ^.svg.height := props.heightPixels
+        svg.^.x := 0.asInstanceOf[JsNumber],
+        svg.^.y := 0.asInstanceOf[JsNumber],
+        svg.^.width := props.widthPixels.asInstanceOf[JsNumber],
+        svg.^.height := props.heightPixels.asInstanceOf[JsNumber]
       )
     }
 
@@ -107,12 +109,12 @@ class PlayerPanel(pieceAvatar: PieceAvatar,
       //val y = props.heightPixels / 2
       val y = 0.5889 * props.heightPixels
 
-      <.svg.text(
+      svg.<.text(
         ^.key := "player-name",
         ^.`class` := getClasses(props, "player-name-label"),
-        ^.svg.x := x,
-        ^.svg.y := y,
-        ^.svg.textAnchor := "left",
+        svg.^.x := x.asInstanceOf[JsNumber],
+        svg.^.y := y.asInstanceOf[JsNumber],
+        svg.^.textAnchor := "left",
         //props.isPlayerTurn ?= (fontWeight := "bold"),
         fontSize := s"${textHeight}px",
         props.playerName
@@ -125,12 +127,12 @@ class PlayerPanel(pieceAvatar: PieceAvatar,
       val x = props.widthPixels * 0.24
       //val y = props.heightPixels / 2
       val y = 0.86 * props.heightPixels
-      <.svg.text(
+      svg.<.text(
         ^.key := "clock-display",
         ^.`class` := getClasses(props, "clock-display"),
-        ^.svg.x := x,
-        ^.svg.y := y,
-        ^.svg.textAnchor := "left",
+        svg.^.x := x.asInstanceOf[JsNumber],
+        svg.^.y := y.asInstanceOf[JsNumber],
+        svg.^.textAnchor := "left",
         fontSize := s"${textHeight}px",
         clockText
       )
@@ -140,11 +142,11 @@ class PlayerPanel(pieceAvatar: PieceAvatar,
       val displayText = props.scoreDisplay.getOrElse("")
       val x = props.widthPixels - 5
       val y = props.heightPixels - 7
-      <.svg.g(
+      svg.<.g(
         ^.key := "score",
-        ^.svg.textAnchor := "end",
-        ^.svg.transform := s"translate($x,$y)",
-        <.svg.text(displayText)
+        svg.^.textAnchor := "end",
+        svg.^.transform := s"translate($x,$y)",
+        svg.<.text(displayText)
       )
     }
 
@@ -186,8 +188,8 @@ class PlayerPanel(pieceAvatar: PieceAvatar,
       if(props.rushButtonEnabled) {
         parts.push(makeRushButton(props))
       }
-      <.svg.g(
-        parts
+      svg.<.g(
+        parts.toVdomArray
       )
     }
 
@@ -198,10 +200,11 @@ class PlayerPanel(pieceAvatar: PieceAvatar,
 
   val create = ScalaComponent.build[Props]("PlayerPanel")
     .renderBackend[Backend]
-    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, _) =>
-      val result = scope.props != nextProps
-      CallbackTo.pure(result)
-    }
+    // TODO: shouldComponentUpdateConst
+//    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, _) =>
+//      val result = scope.props != nextProps
+//      CallbackTo.pure(result)
+//    }
     .build
 
 }

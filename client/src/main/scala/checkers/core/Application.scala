@@ -34,7 +34,7 @@ class Application(programRegistry: ProgramRegistry,
   }
 
 
-  class Session(gameHost: dom.Node, dialogHost: dom.Node) extends ApplicationCallbacks with NewGameDialogCallbacks {
+  class Session(gameHost: dom.Element, dialogHost: dom.Element) extends ApplicationCallbacks with NewGameDialogCallbacks {
     var game: Option[Game] = None
     var lastUsedSettings: Option[NewGameSettings] = None
 
@@ -124,7 +124,7 @@ class Application(programRegistry: ProgramRegistry,
     }
   }
 
-  def start(gameHost: dom.Node, dialogHost: dom.Node): Session = {
+  def start(gameHost: dom.Element, dialogHost: dom.Element): Session = {
     val session = new Session(gameHost, dialogHost)
     session.run()
     session

@@ -5,8 +5,9 @@ import checkers.core.{ApplicationCallbacks, GameModelReader, SideChromeLayoutSet
 import checkers.userinterface.gamelog.GameLogDisplay
 import checkers.userinterface.widgets.Button
 import japgolly.scalajs.react._
-import japgolly.scalajs.react.vdom.VdomAttr
+import japgolly.scalajs.react.raw.JsNumber
 import japgolly.scalajs.react.vdom.html_<^._
+import japgolly.scalajs.react.vdom.{svg_<^ => svg}
 
 import scala.scalajs.js
 
@@ -27,12 +28,13 @@ class SideChrome(button: Button,
 
   private val Backdrop = ScalaComponent.build[(Int, Int)]("SideChromeBackdrop")
     .render_P { case (width, height) =>
-      <.svg.rect(
-        VdomAttr.ClassName := "side-chrome-backdrop",
-        ^.svg.x := 0,
-        ^.svg.y := 0,
-        ^.svg.width := width,
-        ^.svg.height := height
+      svg.<.rect(
+//        VdomAttr.ClassName := "side-chrome-backdrop",
+        ^.`class` := "side-chrome-backdrop",
+        svg.^.x := 0.asInstanceOf[JsNumber],
+        svg.^.y := 0.asInstanceOf[JsNumber],
+        svg.^.width := width.asInstanceOf[JsNumber],
+        svg.^.height := height.asInstanceOf[JsNumber]
       )
     }
     .build
@@ -68,7 +70,7 @@ class SideChrome(button: Button,
         radiusY = buttonRoundness,
         caption = "New Game...",
         tooltip = Some("Start a new game"),
-        onClick = props.applicationCallbacks.onNewGameButtonClicked))
+        onClick = props.applicationCallbacks.onNewGameButtonClicked))(VdomArray.empty)
 
       parts.push(newGameButton)
 
@@ -82,7 +84,7 @@ class SideChrome(button: Button,
         radiusY = buttonRoundness,
         caption = "Rotate",
         tooltip = Some("Rotate the view of the board 180 degrees"),
-        onClick = props.applicationCallbacks.onRotateBoardButtonClicked))
+        onClick = props.applicationCallbacks.onRotateBoardButtonClicked))(VdomArray.empty)
 
       parts.push(rotateBoardButton)
 
@@ -96,7 +98,7 @@ class SideChrome(button: Button,
           radiusX = buttonRoundness,
           radiusY = buttonRoundness,
           caption = "Hint",
-          onClick = props.applicationCallbacks.onHintButtonClicked))
+          onClick = props.applicationCallbacks.onHintButtonClicked))(VdomArray.empty)
 
         parts.push(hintButton)
       }
@@ -164,10 +166,12 @@ class SideChrome(button: Button,
         parts.push(element)
       }
 
-      <.svg.svg(
+      val backdrop = Backdrop((widthPixels, heightPixels))
+
+      svg.<.svg(
         ^.`class` := "side-chrome",
-        Backdrop((widthPixels, heightPixels)),
-        parts
+        backdrop,
+        parts.toVdomArray
       )
 
     }

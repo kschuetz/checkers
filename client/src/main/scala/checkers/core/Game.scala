@@ -12,7 +12,7 @@ class Game(gameDriver: GameDriver,
            applicationSettingsProvider: ApplicationSettingsProvider,
            screenLayoutSettingsProvider: ScreenLayoutSettingsProvider,
            gameScreen: GameScreen)
-          (val host: dom.Node) {
+          (val host: dom.Element) {
   type Model = GameModel
 
   private var _running = false

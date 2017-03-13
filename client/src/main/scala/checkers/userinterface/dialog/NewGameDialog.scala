@@ -6,6 +6,7 @@ import checkers.core.Variation
 import checkers.util.StringUtils
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.html_<^._
+import japgolly.scalajs.react.vdom.{ svg_<^ => svg }
 
 import scala.scalajs.js
 
@@ -75,9 +76,9 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
         scale = 90
       )
       val component = physicalPiece.create(pieceProps)
-      <.svg.svg(
-        ^.svg.width := 90,
-        ^.svg.height := 90,
+      svg.<.svg(
+        svg.^.width := 90,
+        svg.^.height := 90,
         component
       )
     }
@@ -114,7 +115,7 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
         ^.`class` := "player-selector",
         ^.value := props.playerIndex,
         ^.onChange ==> handleChange,
-        items
+        items.toVdomArray
       )
     }
 
@@ -237,7 +238,7 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
           ^.id := "variation-select",
           ^.value := props.variationIndex,
           ^.onChange ==> handleChange,
-          items
+          items.toVdomArray
         )
       )
 

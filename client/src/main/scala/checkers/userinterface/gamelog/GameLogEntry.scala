@@ -5,7 +5,9 @@ import checkers.userinterface.mixins.{ClipPathHelpers, FontHelpers}
 import checkers.userinterface.piece.{PhysicalPiece, PhysicalPieceProps}
 import checkers.util.CssHelpers
 import japgolly.scalajs.react._
+import japgolly.scalajs.react.raw.JsNumber
 import japgolly.scalajs.react.vdom.html_<^._
+import japgolly.scalajs.react.vdom.{svg_<^ => svg}
 
 object GameLogEntry {
 
@@ -43,13 +45,13 @@ class GameLogEntry(physicalPiece: PhysicalPiece) extends FontHelpers with ClipPa
       val avatarX = (turnIndexRight + descriptionLeft) / 2
       val avatarScale = math.min(0.92 * props.heightPixels, 0.92 * (descriptionLeft - turnIndexRight))
 
-      val backdrop = <.svg.rect(
+      val backdrop = svg.<.rect(
         ^.key := "backdrop",
         ^.`class` := s"game-log-entry-backdrop $stripe ${CssHelpers.playerSideClass(props.side)}",
-        ^.svg.x := 0,
-        ^.svg.y := 0,
-        ^.svg.width := props.widthPixels,
-        ^.svg.height := props.heightPixels
+        svg.^.x := 0.asInstanceOf[JsNumber],
+        svg.^.y := 0.asInstanceOf[JsNumber],
+        svg.^.width := props.widthPixels.asInstanceOf[JsNumber],
+        svg.^.height := props.heightPixels.asInstanceOf[JsNumber]
       )
 
       val turnIndexCaption = s"${props.turnIndex}."
@@ -59,21 +61,21 @@ class GameLogEntry(physicalPiece: PhysicalPiece) extends FontHelpers with ClipPa
         textHeightPixels(newHeight)
       } else fontSizePixels
 
-      val turnIndexLabel = <.svg.text(
+      val turnIndexLabel = svg.<.text(
         ^.`class` := "turn-index",
-        ^.svg.x := turnIndexRight,
-        ^.svg.y := textBottom,
-        ^.svg.textAnchor := "end",
+        svg.^.x := turnIndexRight.asInstanceOf[JsNumber],
+        svg.^.y := textBottom.asInstanceOf[JsNumber],
+        svg.^.textAnchor := "end",
         fontSize := turnIndexFontSize,
         turnIndexCaption
       )
 
       val descriptionLabel = props.moveDescription.map { caption =>
-        <.svg.text(
+        svg.<.text(
           ^.`class` := "description",
-          ^.svg.x := descriptionLeft,
-          ^.svg.y := textBottom,
-          ^.svg.textAnchor := "begin",
+          svg.^.x := descriptionLeft.asInstanceOf[JsNumber],
+          svg.^.y := textBottom.asInstanceOf[JsNumber],
+          svg.^.textAnchor := "begin",
           fontSize := fontSizePixels,
           caption
         )
@@ -82,14 +84,14 @@ class GameLogEntry(physicalPiece: PhysicalPiece) extends FontHelpers with ClipPa
 
       val clipPathId = s"game-log-clip-path-${props.turnIndex}"
 
-      val textClipPath = <.svg.defs(
-        <.svg.clipPathTag(
+      val textClipPath = svg.<.defs(
+        svg.<.clipPathTag(
           ^.id := clipPathId,
-          <.svg.rect(
-            ^.svg.x := turnIndexLeft,
-            ^.svg.y := 0,
-            ^.svg.width := descriptionRight - turnIndexLeft,
-            ^.svg.height := props.heightPixels
+          svg.<.rect(
+            svg.^.x := turnIndexLeft.asInstanceOf[JsNumber],
+            svg.^.y := 0.asInstanceOf[JsNumber],
+            svg.^.width := (descriptionRight - turnIndexLeft).asInstanceOf[JsNumber],
+            svg.^.height := props.heightPixels.asInstanceOf[JsNumber]
           )
         )
       )
@@ -105,17 +107,17 @@ class GameLogEntry(physicalPiece: PhysicalPiece) extends FontHelpers with ClipPa
         physicalPiece.create(avatarProps)
       }
 
-      val textElements = <.svg.g(
+      val textElements = svg.<.g(
         clipPathAttr := s"url(#$clipPathId)",
         turnIndexLabel,
-        descriptionLabel
+        descriptionLabel.whenDefined
       )
 
       val transform = s"translate(${props.upperLeftX},${props.upperLeftY})"
 
-      <.svg.g(
+      svg.<.g(
         ^.`class` := "game-log-entry",
-        ^.svg.transform := transform,
+        svg.^.transform := transform,
         textClipPath,
         backdrop,
         textElements,
@@ -126,9 +128,10 @@ class GameLogEntry(physicalPiece: PhysicalPiece) extends FontHelpers with ClipPa
 
   val create = ScalaComponent.build[Props]("GameLogEntry")
     .renderBackend[Backend]
-    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, _) =>
-      val result = scope.props != nextProps
-      CallbackTo.pure(result)
-    }
+    // TODO: shouldComponentUpdateConst
+//    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, _) =>
+//      val result = scope.props != nextProps
+//      CallbackTo.pure(result)
+//    }
     .build
 }

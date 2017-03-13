@@ -3,6 +3,7 @@ package checkers.userinterface.widgets
 import checkers.util.{Point, SvgHelpers}
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.html_<^._
+import japgolly.scalajs.react.vdom.{ svg_<^ => svg }
 
 object DirectedArrow {
   case class Props(source: Point,
@@ -38,8 +39,8 @@ class DirectedArrow(arrow: Arrow) extends SvgHelpers {
         baseOffset = -props.sourceMargin,
         extraClasses = props.extraClasses)
       val arrowElement = arrow.create(arrowProps)
-      <.svg.g(
-        ^.svg.transform := s"translate(${props.source.x},${props.source.y}),rotate($angle)",
+      svg.<.g(
+        svg.^.transform := s"translate(${props.source.x},${props.source.y}),rotate($angle)",
         arrowElement
       )
     }
@@ -47,9 +48,10 @@ class DirectedArrow(arrow: Arrow) extends SvgHelpers {
 
   val create = ScalaComponent.build[Props]("DirectedArrow")
     .renderBackend[Backend]
-    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, _) =>
-      val result = scope.props != nextProps
-      CallbackTo.pure(result)
-    }
+    // TODO: shouldComponentUpdate
+//    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, _) =>
+//      val result = scope.props != nextProps
+//      CallbackTo.pure(result)
+//    }
     .build
 }

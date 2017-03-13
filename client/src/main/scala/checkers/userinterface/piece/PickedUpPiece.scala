@@ -4,6 +4,7 @@ import checkers.consts._
 import checkers.util.SvgHelpers
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.html_<^._
+import japgolly.scalajs.react.vdom.{ svg_<^ => svg }
 
 object PickedUpPiece extends SvgHelpers {
 
@@ -33,7 +34,7 @@ class PickedUpPiece(physicalPiece: PhysicalPiece) {
       val side = SIDE(model.piece)
       val classes = if(side == DARK) "picked-up-piece dark" else "picked-up-piece light"
 
-      <.svg.g(
+      svg.<.g(
         ^.`class` := classes,
         pieceElement
       )

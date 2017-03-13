@@ -5,6 +5,7 @@ import checkers.userinterface.piece.{PhysicalPiece, PhysicalPieceProps}
 import checkers.util.{CssHelpers, SvgHelpers}
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.html_<^._
+import japgolly.scalajs.react.vdom.{ svg_<^ => svg }
 
 object JumpIndicator extends SvgHelpers {
 
@@ -30,10 +31,10 @@ class JumpIndicator(physicalPiece: PhysicalPiece) {
   private val JumpArrow = ScalaComponent.build[Side]("JumpIndicatorArrow")
     .render_P { oppositeSide =>
       val classes = s"jump-indicator-arrow ${CssHelpers.playerSideClass(oppositeSide)}"
-      <.svg.g(
-        <.svg.path(
+      svg.<.g(
+        svg.<.path(
           ^.`class` := classes,
-          ^.svg.d := jumpArrowPath
+          svg.^.d := jumpArrowPath
         )
       )
     }
@@ -58,12 +59,12 @@ class JumpIndicator(physicalPiece: PhysicalPiece) {
       val opponentAvatar = OpponentAvatar(props.oppositeSide)
       val jumpArrow = JumpArrow(props.oppositeSide)
 
-      <.svg.g(
-        ^.svg.transform := s"translate(${props.x},${props.y}),scale(${props.scale})",
+      svg.<.g(
+        svg.^.transform := s"translate(${props.x},${props.y}),scale(${props.scale})",
         <.titleTag("You are required to jump on this move"),
         opponentAvatar,
-        <.svg.g(
-          ^.svg.transform := "translate(0,-0.61)",
+        svg.<.g(
+          svg.^.transform := "translate(0,-0.61)",
           jumpArrow
         )
       )

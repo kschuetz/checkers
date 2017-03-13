@@ -4,7 +4,9 @@ import checkers.userinterface.BoardMouseEvent
 import checkers.consts._
 import checkers.util.{Point, SvgHelpers}
 import japgolly.scalajs.react._
+import japgolly.scalajs.react.raw.JsNumber
 import japgolly.scalajs.react.vdom.html_<^._
+import japgolly.scalajs.react.vdom.{svg_<^ => svg}
 
 import scala.scalajs.js
 
@@ -27,9 +29,9 @@ class PhysicalPiece(decorations: Decorations) {
   private val Disk = ScalaComponent.build[(Side, Double)]("Disk")
     .render_P { case (side, radius) =>
       val classes = if (side == DARK) "disk dark" else "disk light"
-      <.svg.circle(
+      svg.<.circle(
         ^.`class` := classes,
-        ^.svg.r := radius
+        svg.^.r := radius.asInstanceOf[JsNumber]
       )
     }.build
 
@@ -46,7 +48,7 @@ class PhysicalPiece(decorations: Decorations) {
       if(showPips) {
         (0 to 11).foreach { pipIndex =>
           val pt = decorations.pipCoordinates(pipIndex)
-          pips.push(decorations.Pip.withKey(pipIndex)((side, pt)))
+          pips.push(decorations.Pip.withKey(pipIndex.toString)((side, pt)))
         }
       }
 
@@ -55,11 +57,13 @@ class PhysicalPiece(decorations: Decorations) {
         translate.fold(rotate)(s => s"$rotate,$s")
       } else translate.getOrElse("")
 
-      <.svg.g(
+      val disk = Disk((side, pieceRadius))
+
+      svg.<.g(
         ^.`class` := classes,
-        transform.nonEmpty ?= (^.svg.transform := transform),
-        Disk((side, pieceRadius)),
-        pips,
+        (svg.^.transform := transform).when(transform.nonEmpty),
+        disk,
+        pips.toVdomArray,
         decorations.PieceDecoration((side, decoration))
       )
 
@@ -70,20 +74,21 @@ class PhysicalPiece(decorations: Decorations) {
   private val PieceBody = ScalaComponent.build[RenderProps]("PieceBody")
     .renderBackend[PieceBodyBackend]
     //    .shouldComponentUpdateConst(_ => CallbackTo.pure(false))
-    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, _) =>
-    val result = scope.props.pieceProps.rotationDegrees != nextProps.pieceProps.rotationDegrees
-    CallbackTo.pure(result)
-  }
-    .shouldComponentUpdateConst(_ => CallbackTo.pure(false))
+    // TODO: shouldComponentUpdateConst
+//    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, _) =>
+//    val result = scope.props.pieceProps.rotationDegrees != nextProps.pieceProps.rotationDegrees
+//    CallbackTo.pure(result)
+//  }
+//    .shouldComponentUpdateConst(_ => CallbackTo.pure(false))
     .build
 
   private val PieceOverlayButton = ScalaComponent.build[PhysicalPieceProps]("PieceOverlayButton")
     .render_P { props =>
-      <.svg.circle(
+      svg.<.circle(
         ^.classSet1("piece-button-layer", "welcome" -> props.clickable),
-        ^.svg.cx := 0,
-        ^.svg.cy := 0,
-        ^.svg.r := pieceOverlayRadius,
+        svg.^.cx := 0.asInstanceOf[JsNumber],
+        svg.^.cy := 0.asInstanceOf[JsNumber],
+        svg.^.r := pieceOverlayRadius.asInstanceOf[JsNumber],
         ^.onMouseDown ==>? handlePieceMouseDown(props)
       )
     }.build
@@ -93,18 +98,19 @@ class PhysicalPiece(decorations: Decorations) {
       val side = SIDE(props.piece)
       val baseClasses = if (side == DARK) "piece man dark" else "piece man light"
       val scale = props.scale
-      <.svg.g(
+      svg.<.g(
         ^.classSet1(baseClasses, "ghost-piece" -> props.ghost),
         //        ^.`class` := baseClasses,
-        ^.svg.transform := s"translate(${props.x},${props.y}),scale($scale)",
+        svg.^.transform := s"translate(${props.x},${props.y}),scale($scale)",
         PieceBody(RenderProps(props, Decoration.Star)),
         PieceOverlayButton(props)
       )
     }
-    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, _) =>
-      val result = comparePhysicalPieceProps(scope.props, nextProps)
-      CallbackTo.pure(result)
-    }
+    // TODO: shouldComponentUpdateConst
+//    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, _) =>
+//      val result = comparePhysicalPieceProps(scope.props, nextProps)
+//      CallbackTo.pure(result)
+//    }
     .build
 
   private val PieceKing = ScalaComponent.build[PhysicalPieceProps]("King")
@@ -115,12 +121,12 @@ class PhysicalPiece(decorations: Decorations) {
 
       val topPieceTranslate = "translate(0.07,-0.11)"
 
-      <.svg.g(
+      svg.<.g(
         ^.classSet1(baseClasses, "ghost-piece" -> props.ghost),
-        ^.svg.transform := s"translate(${props.x},${props.y}),scale($scale)",
+        svg.^.transform := s"translate(${props.x},${props.y}),scale($scale)",
         Disk((side, pieceRadius)),
-        <.svg.g(
-          ^.svg.transform := s"scale($kingScaleAdjustment)",
+        svg.<.g(
+          svg.^.transform := s"scale($kingScaleAdjustment)",
           PieceBody(RenderProps(props, Decoration.Crown, Some(topPieceTranslate)))
         ),
         PieceOverlayButton(props)

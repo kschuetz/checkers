@@ -5,6 +5,8 @@ import checkers.core.Board
 import checkers.userinterface.piece.{PhysicalPiece, PhysicalPieceProps}
 import checkers.util.{Easing, Point}
 import japgolly.scalajs.react._
+import japgolly.scalajs.react.vdom.html_<^._
+import japgolly.scalajs.react.vdom.VdomElement
 
 object RemovingPieceAnimation {
 
@@ -45,10 +47,11 @@ class RemovingPieceAnimation(physicalPiece: PhysicalPiece,
 
   val create = ScalaComponent.build[Props]("RemovingPieceAnimation")
     .renderBackend[Backend]
-    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, _) =>
-      val result = scope.props != nextProps
-      CallbackTo.pure(result)
-    }
+       // TODO: shouldComponentUpdateConst
+//    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, _) =>
+//      val result = scope.props != nextProps
+//      CallbackTo.pure(result)
+//    }
     .build
 
   private def startingPoint(piece: Occupant, fromSquare: Int): Point = {

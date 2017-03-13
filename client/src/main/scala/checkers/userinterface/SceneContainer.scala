@@ -3,6 +3,7 @@ package checkers.userinterface
 import checkers.core.{GameModelReader, ScreenLayoutSettings}
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.html_<^._
+import japgolly.scalajs.react.vdom.{ svg_<^ => svg }
 import org.scalajs.dom.raw.SVGSVGElement
 
 
@@ -32,10 +33,10 @@ class SceneContainer(sceneFrame: SceneFrame) {
       val gameSceneWidth = props.screenLayoutSettings.GameSceneWidthPixels
       val gameSceneHeight = props.screenLayoutSettings.GameSceneHeightPixels
       val sceneFrameProps = SceneFrame.Props(props.gameModel, props.callbacks, state, gameSceneWidth, gameSceneHeight)
-      <.svg.svg(
+      svg.<.svg(
         ^.id := "game-scene",
-        ^.svg.width := s"${gameSceneWidth}px",
-        ^.svg.height := s"${gameSceneHeight}px",
+        svg.^.width := s"${gameSceneWidth}px",
+        svg.^.height := s"${gameSceneHeight}px",
         //^.onMouseMove ==> handleMouseMove,
         sceneFrame.create(sceneFrameProps)
       )

@@ -5,6 +5,8 @@ import checkers.core.Board
 import checkers.userinterface.piece.{PhysicalPiece, PhysicalPieceProps}
 import checkers.util.Easing
 import japgolly.scalajs.react._
+import japgolly.scalajs.react.vdom.html_<^._
+import japgolly.scalajs.react.vdom.VdomElement
 
 object JumpingPieceAnimation {
 
@@ -52,10 +54,11 @@ class JumpingPieceAnimation(physicalPiece: PhysicalPiece) {
 
   val create = ScalaComponent.build[Props]("JumpingPieceAnimation")
     .renderBackend[Backend]
-    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, _) =>
-      val result = scope.props != nextProps
-      CallbackTo.pure(result)
-    }
+    // TODO: shouldComponentUpdate
+//    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, _) =>
+//      val result = scope.props != nextProps
+//      CallbackTo.pure(result)
+//    }
     .build
 
 }

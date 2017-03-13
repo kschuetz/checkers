@@ -4,7 +4,9 @@ import checkers.userinterface._
 import checkers.consts.Occupant
 import checkers.util.Point
 import japgolly.scalajs.react._
+import japgolly.scalajs.react.raw.JsNumber
 import japgolly.scalajs.react.vdom.html_<^._
+import japgolly.scalajs.react.vdom.{svg_<^ => svg}
 
 object SquareOverlayButton {
 
@@ -24,12 +26,12 @@ class SquareOverlayButton {
 
   val create = ScalaComponent.build[Props]("SquareOverlayButton")
     .render_P { props =>
-      <.svg.rect(
+      svg.<.rect(
         ^.classSet1("square-button-layer", "welcome" -> props.clickable),
-        ^.svg.x := props.x - PhysicalBoard.squareCenterOffset,
-        ^.svg.y := props.y - PhysicalBoard.squareCenterOffset,
-        ^.svg.width := PhysicalBoard.squareSize,
-        ^.svg.height := PhysicalBoard.squareSize,
+        svg.^.x := (props.x - PhysicalBoard.squareCenterOffset).asInstanceOf[JsNumber],
+        svg.^.y := (props.y - PhysicalBoard.squareCenterOffset).asInstanceOf[JsNumber],
+        svg.^.width := PhysicalBoard.squareSize.asInstanceOf[JsNumber],
+        svg.^.height := PhysicalBoard.squareSize.asInstanceOf[JsNumber],
         ^.onMouseDown ==>? handleMouseDown(props),
         ^.onMouseMove ==>? handleMouseMove(props)
       )

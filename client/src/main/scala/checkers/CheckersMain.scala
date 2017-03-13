@@ -26,7 +26,7 @@ object CheckersMain extends js.JSApp {
     bootstrap(host, dialogHost)
   }
 
-  private def bootstrap(host: dom.Node, dialogHost: dom.Node): Unit = {
+  private def bootstrap(host: dom.Element, dialogHost: dom.Element): Unit = {
     val module = new BasicsModule with CoreModule with UserInterfaceModule { }
     val application = module.application
 

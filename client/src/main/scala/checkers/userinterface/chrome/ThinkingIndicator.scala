@@ -4,8 +4,9 @@ import checkers.consts._
 import checkers.userinterface.mixins.ClipPathHelpers
 import checkers.util.{CssHelpers, SvgHelpers}
 import japgolly.scalajs.react._
-import japgolly.scalajs.react.vdom.VdomAttr
+import japgolly.scalajs.react.raw.JsNumber
 import japgolly.scalajs.react.vdom.html_<^._
+import japgolly.scalajs.react.vdom.{svg_<^ => svg}
 
 import scala.scalajs.js
 
@@ -43,36 +44,37 @@ class ThinkingIndicator extends SvgHelpers with ClipPathHelpers {
       var i = 0
       val segments = new js.Array[VdomNode]
       while(i < segmentCount) {
-        val even = <.svg.rect(
+        val even = svg.<.rect(
           ^.key := 2 * i,
           ^.`class` := "segment even",
-          ^.svg.x := x,
-          ^.svg.y := y,
-          ^.svg.width := halfSegmentWidth,
-          ^.svg.height := height
+          svg.^.x := x.asInstanceOf[JsNumber],
+          svg.^.y := y.asInstanceOf[JsNumber],
+          svg.^.width := halfSegmentWidth.asInstanceOf[JsNumber],
+          svg.^.height := height.asInstanceOf[JsNumber]
         )
         segments.push(even)
-        val odd = <.svg.rect(
+        val odd = svg.<.rect(
           ^.key := 2 * i + 1,
           ^.`class` := "segment odd",
-          ^.svg.x := x + halfSegmentWidth,
-          ^.svg.y := y,
-          ^.svg.width := halfSegmentWidth,
-          ^.svg.height := height
+          svg.^.x := (x + halfSegmentWidth).asInstanceOf[JsNumber],
+          svg.^.y := y.asInstanceOf[JsNumber],
+          svg.^.width := halfSegmentWidth.asInstanceOf[JsNumber],
+          svg.^.height := height.asInstanceOf[JsNumber]
         )
         segments.push(odd)
         x += segmentWidth
         i += 1
       }
-      <.svg.g(
+      svg.<.g(
         ^.`class` := "segment-group",
-        ^.svg.transform := "skewX(-45)",
-        segments
+        svg.^.transform := "skewX(-45)",
+        segments.toVdomArray
       )
     }
-    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, _) =>
-      CallbackTo.pure(scope.props != nextProps)
-    }
+    // TODO: shouldComponentUpdateConst
+//    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, _) =>
+//      CallbackTo.pure(scope.props != nextProps)
+//    }
     .build
 
   class Backend($: BackendScope[Props, Unit]) {
@@ -86,47 +88,47 @@ class ThinkingIndicator extends SvgHelpers with ClipPathHelpers {
 
       val r = math.floor(Roundness * props.heightPixels).toInt
 
-      val clipPath = <.svg.defs(
-        <.svg.clipPathTag(
+      val clipPath = svg.<.defs(
+        svg.<.clipPathTag(
           ^.id := clipPathId,
-          <.svg.rect(
-            ^.svg.x := left,
-            ^.svg.y := top,
-            ^.svg.width := totalWidth,
-            ^.svg.height := props.heightPixels,
-            ^.svg.rx := r,
-            ^.svg.ry := r
+          svg.<.rect(
+            svg.^.x := left.asInstanceOf[JsNumber],
+            svg.^.y := top.asInstanceOf[JsNumber],
+            svg.^.width := totalWidth.asInstanceOf[JsNumber],
+            svg.^.height := props.heightPixels.asInstanceOf[JsNumber],
+            svg.^.rx := r.asInstanceOf[JsNumber],
+            svg.^.ry := r.asInstanceOf[JsNumber]
           )
         )
       )
 
-      val border = <.svg.rect(
+      val border = svg.<.rect(
         ^.`class` := "border",
-        ^.svg.x := left,
-        ^.svg.y := top,
-        ^.svg.width := totalWidth,
-        ^.svg.height := props.heightPixels,
-        ^.svg.rx := r,
-        ^.svg.ry := r
+        svg.^.x := left.asInstanceOf[JsNumber],
+        svg.^.y := top.asInstanceOf[JsNumber],
+        svg.^.width := totalWidth.asInstanceOf[JsNumber],
+        svg.^.height := props.heightPixels.asInstanceOf[JsNumber],
+        svg.^.rx := r.asInstanceOf[JsNumber],
+        svg.^.ry := r.asInstanceOf[JsNumber]
       )
 
       val segmentGroup = {
         val offsetPixels = props.segmentOffset * props.segmentWidthPixels
         val sgProps = SegmentGroupProps(props.heightPixels, props.segmentWidthPixels, props.segmentCount)
-        <.svg.g(
-          ^.svg.transform := s"translate($offsetPixels, 0)",
+        svg.<.g(
+          svg.^.transform := s"translate($offsetPixels, 0)",
           SegmentGroup(sgProps)
         )
       }
 
-      val clippedGroup = <.svg.g(
+      val clippedGroup = svg.<.g(
         clipPathAttr := s"url(#$clipPathId)",
         segmentGroup
       )
 
-      <.svg.g(
+      svg.<.g(
         ^.`class` := s"thinking-indicator ${CssHelpers.playerSideClass(props.side)}",
-        ^.svg.transform := s"translate(${props.centerX},${props.centerY})",
+        svg.^.transform := s"translate(${props.centerX},${props.centerY})",
         clipPath,
         border,
         clippedGroup

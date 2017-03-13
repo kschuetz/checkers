@@ -4,6 +4,7 @@ import checkers.userinterface.chrome.{GameOverPanel, SideChrome, TopChrome}
 import checkers.core.{ApplicationCallbacks, GameModelReader, ScreenLayoutSettings}
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.html_<^._
+import japgolly.scalajs.react.vdom.{ svg_<^ => svg }
 
 object GameScreen {
 
@@ -52,8 +53,8 @@ class GameScreen(sceneContainer: SceneContainer,
         val translateX = (sceneWidth - width) / 2
         val translateY = gameSceneY + (sceneHeight - height) / 2
         val transform = s"translate($translateX,$translateY)"
-        <.svg.g(
-          ^.svg.transform := transform,
+        svg.<.g(
+          svg.^.transform := transform,
           panel
         )
       }
@@ -62,22 +63,22 @@ class GameScreen(sceneContainer: SceneContainer,
       val sideChromeElement = sideChrome.create(sideChromeProps)
       val sceneContainerElement = sceneContainer.create(sceneContainerProps)
 
-      <.svg.svg(
+      svg.<.svg(
         ^.id := "game-screen",
-        ^.svg.width := s"${totalWidth}px",
-        ^.svg.height := s"${totalHeight}px",
-        <.svg.g(
+        svg.^.width := s"${totalWidth}px",
+        svg.^.height := s"${totalHeight}px",
+        svg.<.g(
           topChromeElement
         ),
-        <.svg.g(
+        svg.<.g(
           sceneContainerElement,
-          ^.svg.transform := sceneContainerTransform
+          svg.^.transform := sceneContainerTransform
         ),
-        <.svg.g(
+        svg.<.g(
           sideChromeElement,
-          ^.svg.transform := sideChromeTransform
+          svg.^.transform := sideChromeTransform
         ),
-        gameOverPanelElement
+        gameOverPanelElement.whenDefined
       )
 
     }.build

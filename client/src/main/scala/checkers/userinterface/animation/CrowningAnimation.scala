@@ -6,6 +6,7 @@ import checkers.userinterface.piece.{PhysicalPiece, PhysicalPieceProps}
 import checkers.util.Easing
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.html_<^._
+import japgolly.scalajs.react.vdom.{ svg_<^ => svg }
 
 object CrowningAnimation {
 
@@ -46,7 +47,7 @@ class CrowningAnimation(physicalPiece: PhysicalPiece,
 
       val bottomPiece = physicalPiece.create(bottomProps)
 
-      <.svg.g(
+      svg.<.g(
         bottomPiece,
         topPiece
       )
@@ -56,10 +57,11 @@ class CrowningAnimation(physicalPiece: PhysicalPiece,
 
   val create = ScalaComponent.build[Props]("CrowningAnimation")
     .renderBackend[Backend]
-    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, _) =>
-      val result = scope.props != nextProps
-      CallbackTo.pure(result)
-    }
+    // TODO: shouldComponentUpdate
+//    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, _) =>
+//      val result = scope.props != nextProps
+//      CallbackTo.pure(result)
+//    }
     .build
 
 }

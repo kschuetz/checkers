@@ -5,7 +5,9 @@ import checkers.core.Board
 import checkers.userinterface.piece.{PhysicalPiece, PhysicalPieceProps}
 import checkers.util.CssHelpers
 import japgolly.scalajs.react._
+import japgolly.scalajs.react.raw.JsNumber
 import japgolly.scalajs.react.vdom.html_<^._
+import japgolly.scalajs.react.vdom.{svg_<^ => svg}
 
 object IllegalPieceSelectionAnimation {
 
@@ -23,12 +25,12 @@ class IllegalPieceSelectionAnimation(physicalPiece: PhysicalPiece) {
 
   private val NoSymbolLeg = ScalaComponent.build[String]("NoSymbolLeg")
     .render_P { transform =>
-      <.svg.rect(
-        ^.svg.x := -0.17,
-        ^.svg.y := -0.5,
-        ^.svg.width := 0.34,
-        ^.svg.height := 1,
-        ^.svg.transform := transform
+      svg.<.rect(
+        svg.^.x := (-0.17).asInstanceOf[JsNumber],
+        svg.^.y := (-0.5).asInstanceOf[JsNumber],
+        svg.^.width := 0.34.asInstanceOf[JsNumber],
+        svg.^.height := 1.asInstanceOf[JsNumber],
+        svg.^.transform := transform
       )
     }
     .build
@@ -36,11 +38,11 @@ class IllegalPieceSelectionAnimation(physicalPiece: PhysicalPiece) {
   private val NoSymbol = ScalaComponent.build[Side]("NoSymbol")
     .render_P { side =>
       val classes = s"no-symbol ${CssHelpers.playerSideClass(side)}"
-      <.svg.g(
+      svg.<.g(
         ^.`class` := classes,
         NoSymbolLeg("skewX(45)"),
         NoSymbolLeg("skewX(-45)"),
-        ^.svg.transform := "scale(0.63)"
+        svg.^.transform := "scale(0.63)"
       )
     }
     .build
@@ -62,10 +64,10 @@ class IllegalPieceSelectionAnimation(physicalPiece: PhysicalPiece) {
 
       val noSymbolShowing = (t >= 0.1 && t <= 0.3) || (t >= 0.5 && t <= 0.7)
 
-      <.svg.g(
+      svg.<.g(
         pieceElement,
         if (noSymbolShowing) NoSymbol(SIDE(props.piece)) else EmptyVdom,
-        ^.svg.transform := s"translate(${pt.x},${pt.y})"
+        svg.^.transform := s"translate(${pt.x},${pt.y})"
       )
 
     }
@@ -74,10 +76,11 @@ class IllegalPieceSelectionAnimation(physicalPiece: PhysicalPiece) {
 
   val create = ScalaComponent.build[Props]("IllegalPieceSelectionAnimation")
     .renderBackend[Backend]
-    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, _) =>
-      val result = scope.props != nextProps
-      CallbackTo.pure(result)
-    }
+    // TODO: shouldComponentUpdate
+//    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, _) =>
+//      val result = scope.props != nextProps
+//      CallbackTo.pure(result)
+//    }
     .build
 
 }

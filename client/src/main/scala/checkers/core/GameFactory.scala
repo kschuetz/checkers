@@ -12,7 +12,7 @@ class GameFactory(programRegistry: ProgramRegistry,
                   screenLayoutSettingsProvider: ScreenLayoutSettingsProvider,
                   gameScreen: GameScreen) {
 
-  def create(settings: NewGameSettings, initialSeeds: InitialSeeds, host: dom.Node): Game = {
+  def create(settings: NewGameSettings, initialSeeds: InitialSeeds, host: dom.Element): Game = {
     val darkEntry = for {
       id <- settings.darkProgramId
       entry <- programRegistry.findEntry(id)
@@ -53,7 +53,7 @@ class GameFactory(programRegistry: ProgramRegistry,
     }
   }
 
-  private def createGame(gameLogicModule: GameLogicModule, gameConfig: GameConfig, host: dom.Node): Game = {
+  private def createGame(gameLogicModule: GameLogicModule, gameConfig: GameConfig, host: dom.Element): Game = {
     val driver = new GameDriver(gameLogicModule)(gameConfig.playerConfig, gameConfig.mentorConfig)
     new Game(driver, scheduler, applicationSettingsProvider, screenLayoutSettingsProvider, gameScreen)(host)
   }

@@ -1,7 +1,9 @@
 package checkers.userinterface.chrome
 
 import japgolly.scalajs.react._
+import japgolly.scalajs.react.raw.JsNumber
 import japgolly.scalajs.react.vdom.html_<^._
+import japgolly.scalajs.react.vdom.{svg_<^ => svg}
 
 object PowerMeter {
 
@@ -37,51 +39,51 @@ class PowerMeter {
       val splitX = props.centerX + position * halfWidth
 
       val darkSide: Option[VdomElement] = if(position > -1) {
-        Some(<.svg.rect(
+        Some(svg.<.rect(
           ^.`class` := "power-meter-side dark",
-          ^.svg.x := left,
-          ^.svg.y := top,
-          ^.svg.width := splitX - left,
-          ^.svg.height := height
+          svg.^.x := left.asInstanceOf[JsNumber],
+          svg.^.y := top.asInstanceOf[JsNumber],
+          svg.^.width := (splitX - left).asInstanceOf[JsNumber],
+          svg.^.height := height.asInstanceOf[JsNumber]
         ))
       } else None
 
       val lightSide: Option[VdomElement] = if(position < 1) {
-        Some(<.svg.rect(
+        Some(svg.<.rect(
           ^.`class` := "power-meter-side light",
-          ^.svg.x := splitX,
-          ^.svg.y := top,
-          ^.svg.width := right - splitX,
-          ^.svg.height := height
+          svg.^.x := splitX.asInstanceOf[JsNumber],
+          svg.^.y := top.asInstanceOf[JsNumber],
+          svg.^.width := (right - splitX).asInstanceOf[JsNumber],
+          svg.^.height := height.asInstanceOf[JsNumber]
         ))
       } else None
 
-      val backdrop = <.svg.rect(
+      val backdrop = svg.<.rect(
         ^.`class` := "power-meter-backdrop",
-        ^.svg.x := left,
-        ^.svg.y := top,
-        ^.svg.width := width,
-        ^.svg.height := height
+        svg.^.x := left.asInstanceOf[JsNumber],
+        svg.^.y := top.asInstanceOf[JsNumber],
+        svg.^.width := width.asInstanceOf[JsNumber],
+        svg.^.height := height.asInstanceOf[JsNumber]
       )
 
-      val centerMark = <.svg.line(
+      val centerMark = svg.<.line(
         ^.`class` := "power-meter-center-mark",
-        ^.svg.x1 := props.centerX,
-        ^.svg.y1 := top,
-        ^.svg.x2 := props.centerX,
-        ^.svg.y2 := top + height
+        svg.^.x1 := props.centerX.asInstanceOf[JsNumber],
+        svg.^.y1 := top.asInstanceOf[JsNumber],
+        svg.^.x2 := props.centerX.asInstanceOf[JsNumber],
+        svg.^.y2 := (top + height).asInstanceOf[JsNumber]
       )
 
       val tooltipElement = props.tooltip.map { text =>
         <.titleTag(text)
       }
 
-      <.svg.g(
+      svg.<.g(
         ^.`class` := "power-meter",
-        tooltipElement,
+        tooltipElement.whenDefined,
         backdrop,
-        darkSide,
-        lightSide,
+        darkSide.whenDefined,
+        lightSide.whenDefined,
         centerMark
       )
     }

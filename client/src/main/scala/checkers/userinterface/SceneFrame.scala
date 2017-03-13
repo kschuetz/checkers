@@ -1,11 +1,12 @@
 package checkers.userinterface
 
-import checkers.userinterface.board.PhysicalBoard
 import checkers.core.GameModelReader
+import checkers.userinterface.board.PhysicalBoard
 import checkers.util.Point
 import japgolly.scalajs.react._
-import japgolly.scalajs.react.vdom.VdomAttr
+import japgolly.scalajs.react.raw.JsNumber
 import japgolly.scalajs.react.vdom.html_<^._
+import japgolly.scalajs.react.vdom.{svg_<^ => svg}
 import org.scalajs.dom.raw.{SVGGElement, SVGLocatable}
 
 object SceneFrame {
@@ -27,17 +28,19 @@ class SceneFrame(physicalBoard: PhysicalBoard,
 
   private val Backdrop = ScalaComponent.build[(Int, Int)]("Backdrop")
     .render_P { case (width, height) =>
-      <.svg.rect(
-        VdomAttr.ClassName := "backdrop",
-        ^.svg.x := 0,
-        ^.svg.y := 0,
-        ^.svg.width := width,
-        ^.svg.height := height
+      svg.<.rect(
+//        VdomAttr.ClassName := "backdrop",
+        ^.`class` := "backdrop",
+        svg.^.x := 0.asInstanceOf[JsNumber],
+        svg.^.y := 0.asInstanceOf[JsNumber],
+        svg.^.width := width.asInstanceOf[JsNumber],
+        svg.^.height := height.asInstanceOf[JsNumber]
       )
     }.build
 
   class Backend($: BackendScope[Props, Unit]) {
-    val playfieldRef = Ref[SVGGElement]("playfield")
+//    val playfieldRef = Ref[SVGGElement]("playfield")
+    private var playfieldRef: SVGGElement = _
 
     def render(props: Props): VdomElement = {
       val Props(model, callbacks, sceneContainerContext, widthPixels, heightPixels) = props
@@ -62,11 +65,10 @@ class SceneFrame(physicalBoard: PhysicalBoard,
 
       val physicalBoardElement = physicalBoard.create()
       val dynamicSceneElement = dynamicScene.create(dynamicSceneProps)
-      <.svg.g(
+      svg.<.g(
         Backdrop((widthPixels, heightPixels)),
-        <.svg.g(
-          ^.ref := playfieldRef,
-          ^.svg.transform := transform,
+        svg.<.g.ref(playfieldRef = _)(
+          svg.^.transform := transform,
           physicalBoardElement,
           dynamicSceneElement
         )
@@ -75,10 +77,13 @@ class SceneFrame(physicalBoard: PhysicalBoard,
 
     def makeScreenToBoard(sceneContext: SceneContainerContext): Point => Point = { screen: Point =>
       var result = screen
-      $.refs(playfieldRef.name).foreach { node =>
-        val target = node.getDOMNode.asInstanceOf[SVGLocatable]
-        result = sceneContext.screenToLocal(target)(screen)
-      }
+      val target = playfieldRef.asInstanceOf[SVGLocatable]
+      result = sceneContext.screenToLocal(target)(screen)
+      // TODO: remove old:
+//      $.refs(playfieldRef.name).foreach { node =>
+//        val target = node.getDOMNode.asInstanceOf[SVGLocatable]
+//        result = sceneContext.screenToLocal(target)(screen)
+//      }
       result
     }
 
