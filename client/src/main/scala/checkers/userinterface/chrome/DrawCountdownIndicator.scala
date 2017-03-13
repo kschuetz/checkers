@@ -2,7 +2,7 @@ package checkers.userinterface.chrome
 
 import checkers.userinterface.mixins.{ClipPathHelpers, FontHelpers}
 import japgolly.scalajs.react._
-import japgolly.scalajs.react.vdom.prefix_<^._
+import japgolly.scalajs.react.vdom.html_<^._
 
 object DrawCountdownIndicator {
   case class Props(centerX: Double,
@@ -20,7 +20,7 @@ class DrawCountdownIndicator extends FontHelpers with ClipPathHelpers {
   import DrawCountdownIndicator._
 
   class Backend($: BackendScope[Props, Unit]) {
-    def render(props: Props): ReactElement = {
+    def render(props: Props): VdomElement = {
       val halfWidth = 0.5 * props.widthPixels
       val halfHeight = 0.5 * props.heightPixels
 
@@ -92,7 +92,7 @@ class DrawCountdownIndicator extends FontHelpers with ClipPathHelpers {
     }
   }
 
-  val create = ReactComponentB[Props]("DrawCountdownIndicator")
+  val create = ScalaComponent.build[Props]("DrawCountdownIndicator")
     .renderBackend[Backend]
     .build
 }

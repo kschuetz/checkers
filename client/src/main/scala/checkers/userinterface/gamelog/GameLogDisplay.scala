@@ -5,7 +5,7 @@ import checkers.userinterface.mixins.ClipPathHelpers
 import checkers.userinterface.widgets.ScrollButton
 import checkers.util.SvgHelpers
 import japgolly.scalajs.react._
-import japgolly.scalajs.react.vdom.prefix_<^._
+import japgolly.scalajs.react.vdom.html_<^._
 
 import scala.scalajs.js
 
@@ -52,7 +52,7 @@ class GameLogDisplay(notation: Notation,
 
   class Backend($: BackendScope[Props, State]) {
 
-    def render(props: Props, state: State): ReactElement = {
+    def render(props: Props, state: State): VdomElement = {
       val entryHeight = props.entryHeightPixels
       val scrollButtonWidth = 0.95 * props.widthPixels
       val scrollButtonHeight = props.scrollButtonHeightPixels
@@ -108,7 +108,7 @@ class GameLogDisplay(notation: Notation,
         result
       } else 0d
 
-      val entries = new js.Array[ReactNode]
+      val entries = new js.Array[VdomNode]
 
       var y = clientTop - offsetPixels
 
@@ -179,7 +179,7 @@ class GameLogDisplay(notation: Notation,
         entries
       )
 
-      val scrollUpButton: Option[ReactElement] = if(scrollUpEnabled) {
+      val scrollUpButton: Option[VdomElement] = if(scrollUpEnabled) {
         val buttonProps = ScrollButton.Props(
           centerX = halfWidth,
           centerY = halfScrollButtonHeight,
@@ -192,7 +192,7 @@ class GameLogDisplay(notation: Notation,
         Some(button)
       } else None
 
-      val scrollDownButton: Option[ReactElement] = if(scrollDownEnabled) {
+      val scrollDownButton: Option[VdomElement] = if(scrollDownEnabled) {
         val buttonProps = ScrollButton.Props(
           centerX = halfWidth,
           centerY = totalHeight - halfScrollButtonHeight,
@@ -216,10 +216,10 @@ class GameLogDisplay(notation: Notation,
     }
   }
 
-  val create = ReactComponentB[Props]("GameLogDisplay")
+  val create = ScalaComponent.build[Props]("GameLogDisplay")
     .initialState[State](defaultState)
     .renderBackend[Backend]
-    .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, nextState) =>
+    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, nextState) =>
       val result = scope.props.shouldUpdate(nextProps) || scope.state.shouldUpdate(nextState)
       CallbackTo.pure(result)
     }

@@ -3,7 +3,7 @@ package checkers.userinterface.chrome
 import checkers.consts._
 import checkers.util.{Point, SvgHelpers}
 import japgolly.scalajs.react._
-import japgolly.scalajs.react.vdom.prefix_<^._
+import japgolly.scalajs.react.vdom.html_<^._
 
 object TurnIndicator {
 
@@ -22,7 +22,7 @@ object TurnIndicator {
 class TurnIndicator extends SvgHelpers {
   import TurnIndicator._
 
-  val create = ReactComponentB[Props]("TurnIndicator")
+  val create = ScalaComponent.build[Props]("TurnIndicator")
     .render_P { props =>
       val x0 = 0d
       val (x1, x2) = if(props.pointsRight) {

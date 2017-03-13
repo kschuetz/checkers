@@ -8,7 +8,7 @@ import checkers.core.{Board, GameModelReader, SquareAttributes}
 import checkers.userinterface.animation._
 import checkers.util.Point
 import japgolly.scalajs.react._
-import japgolly.scalajs.react.vdom.prefix_<^._
+import japgolly.scalajs.react.vdom.html_<^._
 
 import scala.scalajs.js
 
@@ -39,7 +39,7 @@ class DynamicScene(physicalPiece: PhysicalPiece,
 
   import DynamicScene._
 
-  val create = ReactComponentB[Props]("DynamicScene")
+  val create = ScalaComponent.build[Props]("DynamicScene")
     .render_P { case Props(model, callbacks, sceneContainerContext, screenToBoard) =>
 
       val boardRotation = model.getBoardRotation
@@ -54,7 +54,7 @@ class DynamicScene(physicalPiece: PhysicalPiece,
 
       val boardState = model.board
 
-      val staticPieces = new js.Array[ReactNode]
+      val staticPieces = new js.Array[VdomNode]
 
       Board.playableSquares.filterNot(piecesToHide.contains).foreach { squareIndex =>
         val occupant = boardState.getOccupant(squareIndex)
@@ -90,7 +90,7 @@ class DynamicScene(physicalPiece: PhysicalPiece,
         staticPieces
       )
 
-      val overlayButtons = new js.Array[ReactNode]
+      val overlayButtons = new js.Array[VdomNode]
       Board.allSquares.foreach { case (boardPos, squareIndex, pt) =>
         val k = s"s-${boardPos.row}-${boardPos.col}"
         val squareAttributes = if (squareIndex >= 0) model.squareAttributes(squareIndex)
@@ -108,7 +108,7 @@ class DynamicScene(physicalPiece: PhysicalPiece,
         pickedUpPiece.create(props)
       }
 
-      val animations = new js.Array[ReactNode]
+      val animations = new js.Array[VdomNode]
       val nowTime = model.nowTime
       model.animation.play.foreach {
         case rp: RemovingPiece =>

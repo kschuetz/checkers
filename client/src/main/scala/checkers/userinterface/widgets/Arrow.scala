@@ -2,8 +2,8 @@ package checkers.userinterface.widgets
 
 import checkers.util.{Point, SvgHelpers}
 import japgolly.scalajs.react._
-import japgolly.scalajs.react.vdom.ReactTagOf
-import japgolly.scalajs.react.vdom.prefix_<^._
+import japgolly.scalajs.react.vdom.VdomTagOf
+import japgolly.scalajs.react.vdom.html_<^._
 import org.scalajs.dom.svg.Polygon
 
 object Arrow {
@@ -19,7 +19,7 @@ class Arrow extends SvgHelpers {
   import Arrow._
 
   class Backend($: BackendScope[Props, Unit]) {
-    def render(props: Props): ReactElement = {
+    def render(props: Props): VdomElement = {
       val yOffset = props.baseOffset
 
       val x0 = 0d
@@ -45,9 +45,9 @@ class Arrow extends SvgHelpers {
     }
   }
 
-  val create = ReactComponentB[Props]("ArrowWidget")
+  val create = ScalaComponent.build[Props]("ArrowWidget")
     .renderBackend[Backend]
-    .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, _) =>
+    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, _) =>
       val result = scope.props != nextProps
       CallbackTo.pure(result)
     }

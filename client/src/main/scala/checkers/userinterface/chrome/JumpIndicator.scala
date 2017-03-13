@@ -4,7 +4,7 @@ import checkers.consts._
 import checkers.userinterface.piece.{PhysicalPiece, PhysicalPieceProps}
 import checkers.util.{CssHelpers, SvgHelpers}
 import japgolly.scalajs.react._
-import japgolly.scalajs.react.vdom.prefix_<^._
+import japgolly.scalajs.react.vdom.html_<^._
 
 object JumpIndicator extends SvgHelpers {
 
@@ -27,7 +27,7 @@ object JumpIndicator extends SvgHelpers {
 class JumpIndicator(physicalPiece: PhysicalPiece) {
   import JumpIndicator._
 
-  private val JumpArrow = ReactComponentB[Side]("JumpIndicatorArrow")
+  private val JumpArrow = ScalaComponent.build[Side]("JumpIndicatorArrow")
     .render_P { oppositeSide =>
       val classes = s"jump-indicator-arrow ${CssHelpers.playerSideClass(oppositeSide)}"
       <.svg.g(
@@ -39,7 +39,7 @@ class JumpIndicator(physicalPiece: PhysicalPiece) {
     }
     .build
 
-  private val OpponentAvatar = ReactComponentB[Side]("JumpIndicatorOpponentAvatar")
+  private val OpponentAvatar = ScalaComponent.build[Side]("JumpIndicatorOpponentAvatar")
     .render_P { side =>
       val pieceProps = PhysicalPieceProps.default.copy(
         piece = if (side == DARK) DARKMAN else LIGHTMAN,
@@ -52,7 +52,7 @@ class JumpIndicator(physicalPiece: PhysicalPiece) {
     }
     .build
 
-  val create = ReactComponentB[Props]("JumpIndicator")
+  val create = ScalaComponent.build[Props]("JumpIndicator")
     .render_P { props =>
 
       val opponentAvatar = OpponentAvatar(props.oppositeSide)

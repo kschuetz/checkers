@@ -5,7 +5,7 @@ import checkers.core.Board
 import checkers.userinterface.piece.{PhysicalPiece, PhysicalPieceProps}
 import checkers.util.Easing
 import japgolly.scalajs.react._
-import japgolly.scalajs.react.vdom.prefix_<^._
+import japgolly.scalajs.react.vdom.html_<^._
 
 object CrowningAnimation {
 
@@ -22,7 +22,7 @@ class CrowningAnimation(physicalPiece: PhysicalPiece,
   import CrowningAnimation._
 
   class Backend($: BackendScope[Props, Unit]) {
-    def render(props: Props): ReactElement = {
+    def render(props: Props): VdomElement = {
       val piece = if (props.side == DARK) DARKMAN else LIGHTMAN
 
       val entryPoint = animationEntryPoints.exitPoint(piece, props.square)
@@ -54,9 +54,9 @@ class CrowningAnimation(physicalPiece: PhysicalPiece,
   }
 
 
-  val create = ReactComponentB[Props]("CrowningAnimation")
+  val create = ScalaComponent.build[Props]("CrowningAnimation")
     .renderBackend[Backend]
-    .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, _) =>
+    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, _) =>
       val result = scope.props != nextProps
       CallbackTo.pure(result)
     }

@@ -4,7 +4,7 @@ import checkers.userinterface.BoardMouseEvent
 import checkers.consts._
 import checkers.util.{Point, SvgHelpers}
 import japgolly.scalajs.react._
-import japgolly.scalajs.react.vdom.prefix_<^._
+import japgolly.scalajs.react.vdom.html_<^._
 
 import scala.scalajs.js
 
@@ -24,7 +24,7 @@ class PhysicalPiece(decorations: Decorations) {
 
   import PhysicalPiece._
 
-  private val Disk = ReactComponentB[(Side, Double)]("Disk")
+  private val Disk = ScalaComponent.build[(Side, Double)]("Disk")
     .render_P { case (side, radius) =>
       val classes = if (side == DARK) "disk dark" else "disk light"
       <.svg.circle(
@@ -34,7 +34,7 @@ class PhysicalPiece(decorations: Decorations) {
     }.build
 
   class PieceBodyBackend($: BackendScope[RenderProps, Unit]) {
-    def render(renderProps: RenderProps): ReactElement = {
+    def render(renderProps: RenderProps): VdomElement = {
       val RenderProps(props, decoration, translate) = renderProps
       val side = SIDE(props.piece)
       val classes =
@@ -42,7 +42,7 @@ class PhysicalPiece(decorations: Decorations) {
 
       val showPips = !props.simplified
 
-      val pips = new js.Array[ReactNode]
+      val pips = new js.Array[VdomNode]
       if(showPips) {
         (0 to 11).foreach { pipIndex =>
           val pt = decorations.pipCoordinates(pipIndex)
@@ -67,17 +67,17 @@ class PhysicalPiece(decorations: Decorations) {
 
   }
 
-  private val PieceBody = ReactComponentB[RenderProps]("PieceBody")
+  private val PieceBody = ScalaComponent.build[RenderProps]("PieceBody")
     .renderBackend[PieceBodyBackend]
-    //    .shouldComponentUpdateCB(_ => CallbackTo.pure(false))
-    .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, _) =>
+    //    .shouldComponentUpdateConst(_ => CallbackTo.pure(false))
+    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, _) =>
     val result = scope.props.pieceProps.rotationDegrees != nextProps.pieceProps.rotationDegrees
     CallbackTo.pure(result)
   }
-    .shouldComponentUpdateCB(_ => CallbackTo.pure(false))
+    .shouldComponentUpdateConst(_ => CallbackTo.pure(false))
     .build
 
-  private val PieceOverlayButton = ReactComponentB[PhysicalPieceProps]("PieceOverlayButton")
+  private val PieceOverlayButton = ScalaComponent.build[PhysicalPieceProps]("PieceOverlayButton")
     .render_P { props =>
       <.svg.circle(
         ^.classSet1("piece-button-layer", "welcome" -> props.clickable),
@@ -88,7 +88,7 @@ class PhysicalPiece(decorations: Decorations) {
       )
     }.build
 
-  private val PieceMan = ReactComponentB[PhysicalPieceProps]("Man")
+  private val PieceMan = ScalaComponent.build[PhysicalPieceProps]("Man")
     .render_P { props =>
       val side = SIDE(props.piece)
       val baseClasses = if (side == DARK) "piece man dark" else "piece man light"
@@ -101,13 +101,13 @@ class PhysicalPiece(decorations: Decorations) {
         PieceOverlayButton(props)
       )
     }
-    .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, _) =>
+    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, _) =>
       val result = comparePhysicalPieceProps(scope.props, nextProps)
       CallbackTo.pure(result)
     }
     .build
 
-  private val PieceKing = ReactComponentB[PhysicalPieceProps]("King")
+  private val PieceKing = ScalaComponent.build[PhysicalPieceProps]("King")
     .render_P { props =>
       val side = SIDE(props.piece)
       val baseClasses = if (side == DARK) "piece king dark" else "piece king light"
@@ -128,7 +128,7 @@ class PhysicalPiece(decorations: Decorations) {
     }.build
 
 
-  val create = ReactComponentB[PhysicalPieceProps]("PhysicalPiece")
+  val create = ScalaComponent.build[PhysicalPieceProps]("PhysicalPiece")
     .render_P { props =>
       if (PIECETYPE(props.piece) == MAN) PieceMan(props) else PieceKing(props)
     }.build

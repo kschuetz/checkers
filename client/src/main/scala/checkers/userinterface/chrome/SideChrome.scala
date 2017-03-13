@@ -5,8 +5,8 @@ import checkers.core.{ApplicationCallbacks, GameModelReader, SideChromeLayoutSet
 import checkers.userinterface.gamelog.GameLogDisplay
 import checkers.userinterface.widgets.Button
 import japgolly.scalajs.react._
-import japgolly.scalajs.react.vdom.ReactAttr
-import japgolly.scalajs.react.vdom.prefix_<^._
+import japgolly.scalajs.react.vdom.VdomAttr
+import japgolly.scalajs.react.vdom.html_<^._
 
 import scala.scalajs.js
 
@@ -25,10 +25,10 @@ class SideChrome(button: Button,
 
   import SideChrome._
 
-  private val Backdrop = ReactComponentB[(Int, Int)]("SideChromeBackdrop")
+  private val Backdrop = ScalaComponent.build[(Int, Int)]("SideChromeBackdrop")
     .render_P { case (width, height) =>
       <.svg.rect(
-        ReactAttr.ClassName := "side-chrome-backdrop",
+        VdomAttr.ClassName := "side-chrome-backdrop",
         ^.svg.x := 0,
         ^.svg.y := 0,
         ^.svg.width := width,
@@ -39,7 +39,7 @@ class SideChrome(button: Button,
 
   class Backend($: BackendScope[Props, Unit]) {
 
-    def render(props: Props): ReactElement = {
+    def render(props: Props): VdomElement = {
       val gameModel = props.gameModel
       val layoutSettings = props.layoutSettings
       val widthPixels = layoutSettings.SideChromeWidthPixels
@@ -55,7 +55,7 @@ class SideChrome(button: Button,
 
       val buttonRoundness = 0.2 * math.min(buttonWidth, buttonHeight)
 
-      val parts = new js.Array[ReactNode]
+      val parts = new js.Array[VdomNode]
 
       val buttonCenterX = buttonX + (buttonWidth / 2)
       var currentY = buttonY + (buttonHeight / 2)
@@ -174,9 +174,9 @@ class SideChrome(button: Button,
 
   }
 
-  val create = ReactComponentB[Props]("SideChrome")
+  val create = ScalaComponent.build[Props]("SideChrome")
     .renderBackend[Backend]
-    //    .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, _) =>
+    //    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, _) =>
     //      val result = scope.props != nextProps
     //      CallbackTo.pure(result)
     //    }

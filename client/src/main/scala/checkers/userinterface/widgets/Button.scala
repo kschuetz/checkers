@@ -3,7 +3,7 @@ package checkers.userinterface.widgets
 import checkers.userinterface.mixins.FontHelpers
 import checkers.util.SvgHelpers
 import japgolly.scalajs.react._
-import japgolly.scalajs.react.vdom.prefix_<^._
+import japgolly.scalajs.react.vdom.html_<^._
 
 object Button {
 
@@ -29,12 +29,12 @@ class Button extends SvgHelpers with FontHelpers {
   import Button._
 
   class Backend($: BackendScope[Props, State]) {
-    def handleMouseDown(e: ReactMouseEventI): Callback = {
+    def handleMouseDown(e: ReactMouseEventFromInput): Callback = {
       if(e.button != 0) Callback.empty  // ignore all but left-click
       else $.modState(_.copy(depressed = true))
     }
 
-    def handleMouseUp(e: ReactMouseEventI): Callback = {
+    def handleMouseUp(e: ReactMouseEventFromInput): Callback = {
       if(e.button != 0) Callback.empty    // ignore all but left-click
       else for {
         state <- $.state
@@ -44,11 +44,11 @@ class Button extends SvgHelpers with FontHelpers {
       } yield cb
     }
 
-    def handleMouseOut(e: ReactEventI): Callback = {
+    def handleMouseOut(e: ReactEventFromInput): Callback = {
       $.modState(_.copy(depressed = false))
     }
 
-    def render(props: Props, state: State, children: PropsChildren): ReactElement = {
+    def render(props: Props, state: State, children: PropsChildren): VdomElement = {
       val textHeight = math.round(3 * props.height / 5)
       val textY = 2 + (props.height - textHeight) / 2
 
@@ -95,7 +95,7 @@ class Button extends SvgHelpers with FontHelpers {
 
   }
 
-  val create = ReactComponentB[Props]("Button")
+  val create = ScalaComponent.build[Props]("Button")
     .initialState[State](defaultState)
     .renderBackend[Backend]
     .build

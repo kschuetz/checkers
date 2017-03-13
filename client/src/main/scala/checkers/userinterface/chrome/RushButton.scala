@@ -4,7 +4,7 @@ import checkers.consts.Side
 import checkers.userinterface.widgets.Button
 import checkers.util.{CssHelpers, SvgHelpers}
 import japgolly.scalajs.react._
-import japgolly.scalajs.react.vdom.prefix_<^._
+import japgolly.scalajs.react.vdom.html_<^._
 
 object RushButton {
 
@@ -25,7 +25,7 @@ class RushButton(button: Button) extends SvgHelpers {
 
   private case class GlyphProps(scale: Double)
 
-  private lazy val RushButtonGlyph = ReactComponentB[GlyphProps]("RushButtonGlyph")
+  private lazy val RushButtonGlyph = ScalaComponent.build[GlyphProps]("RushButtonGlyph")
     .render_P { props =>
 
       val ring = <.svg.circle(
@@ -53,7 +53,7 @@ class RushButton(button: Button) extends SvgHelpers {
     .build
 
   class Backend($: BackendScope[Props, Unit]) {
-    def render(props: Props): ReactElement = {
+    def render(props: Props): VdomElement = {
 
       val glyphSize = props.height / 2
 
@@ -84,7 +84,7 @@ class RushButton(button: Button) extends SvgHelpers {
     }
   }
 
-  val create = ReactComponentB[Props]("RushButton")
+  val create = ScalaComponent.build[Props]("RushButton")
     .renderBackend[Backend]
     .build
 

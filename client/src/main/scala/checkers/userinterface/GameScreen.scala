@@ -3,7 +3,7 @@ package checkers.userinterface
 import checkers.userinterface.chrome.{GameOverPanel, SideChrome, TopChrome}
 import checkers.core.{ApplicationCallbacks, GameModelReader, ScreenLayoutSettings}
 import japgolly.scalajs.react._
-import japgolly.scalajs.react.vdom.prefix_<^._
+import japgolly.scalajs.react.vdom.html_<^._
 
 object GameScreen {
 
@@ -22,7 +22,7 @@ class GameScreen(sceneContainer: SceneContainer,
                  gameOverPanel: GameOverPanel) {
   import GameScreen._
 
-  val create = ReactComponentB[Props]("GameScreen")
+  val create = ScalaComponent.build[Props]("GameScreen")
     .render_P { case Props(gameModel, layoutSettings, callbacks, applicationCallbacks) =>
       val sceneWidth = layoutSettings.GameSceneWidthPixels
       val sceneHeight = layoutSettings.GameSceneHeightPixels

@@ -25,7 +25,7 @@ class ShowHintAnimation(directedArrow: DirectedArrow) {
   import ShowHintAnimation._
 
   class Backend($: BackendScope[Props, Unit]) {
-    def render(props: Props): ReactElement = {
+    def render(props: Props): VdomElement = {
       val t = props.timeSinceStart / props.flashDuration
       val phase = t - t.toInt
       val classes = if(phase <= 0.5) classesHi else classesLo
@@ -40,7 +40,7 @@ class ShowHintAnimation(directedArrow: DirectedArrow) {
     }
   }
 
-  val create = ReactComponentB[Props]("ShowHintAnimation")
+  val create = ScalaComponent.build[Props]("ShowHintAnimation")
     .renderBackend[Backend]
     .build
 

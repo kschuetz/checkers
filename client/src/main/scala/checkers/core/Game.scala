@@ -137,7 +137,7 @@ class Game(gameDriver: GameDriver,
     val screenLayoutSettings = screenLayoutSettingsProvider.getScreenLayoutSettings(environment)
     val props = GameScreen.Props(model, screenLayoutSettings, Callbacks, applicationCallbacks)
     val screen = gameScreen.create(props)
-    ReactDOM.render(screen, host)
+    screen.renderIntoDOM(host)
   }
 
   private def userReplaceModel(newModel: Model): Unit = {

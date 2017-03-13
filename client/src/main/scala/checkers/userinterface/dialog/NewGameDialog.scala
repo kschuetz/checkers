@@ -5,7 +5,7 @@ import checkers.consts._
 import checkers.core.Variation
 import checkers.util.StringUtils
 import japgolly.scalajs.react._
-import japgolly.scalajs.react.vdom.prefix_<^._
+import japgolly.scalajs.react.vdom.html_<^._
 
 import scala.scalajs.js
 
@@ -66,7 +66,7 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
 
   import NewGameDialog._
 
-  private val PieceAvatar = ReactComponentB[Side]("NewGameDialogPieceAvatar")
+  private val PieceAvatar = ScalaComponent.build[Side]("NewGameDialogPieceAvatar")
     .render_P { side =>
       val pieceProps = PhysicalPieceProps.default.copy(
         piece = if (side == DARK) DARKMAN else LIGHTMAN,
@@ -98,8 +98,8 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
   }
 
   class PlayerSelectorBackend($: BackendScope[PlayerSelectorProps, Unit]) {
-    def render(props: PlayerSelectorProps): ReactElement = {
-      val items = new js.Array[ReactNode]
+    def render(props: PlayerSelectorProps): VdomElement = {
+      val items = new js.Array[VdomNode]
       props.playerChoices.indices.foreach { i =>
         val item = props.playerChoices(i)
         val option = <.option(
@@ -118,7 +118,7 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
       )
     }
 
-    private def handleChange(event: ReactEventI): Callback = {
+    private def handleChange(event: ReactEventFromInput): Callback = {
       val newValue = StringUtils.safeStringToInt(event.target.value, -1)
       if (newValue < 0) Callback.empty
       else for {
@@ -129,7 +129,7 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
     }
   }
 
-  private val PlayerSelector = ReactComponentB[PlayerSelectorProps]("PlayerSelector")
+  private val PlayerSelector = ScalaComponent.build[PlayerSelectorProps]("PlayerSelector")
     .renderBackend[PlayerSelectorBackend]
     .build
 
@@ -147,7 +147,7 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
   }
 
   class PlaysFirstCheckboxBackend($: BackendScope[PlaysFirstProps, Unit]) {
-    def render(props: PlaysFirstProps): ReactElement = {
+    def render(props: PlaysFirstProps): VdomElement = {
       <.div(
         ^.`class` := "plays-first",
         <.label(
@@ -161,7 +161,7 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
       )
     }
 
-    private def handleChange(event: ReactEventI): Callback = {
+    private def handleChange(event: ReactEventFromInput): Callback = {
       val checked = event.target.checked
       for {
         props <- $.props
@@ -171,7 +171,7 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
     }
   }
 
-  private val PlaysFirstCheckbox = ReactComponentB[PlaysFirstProps]("PlaysFirstCheckbox")
+  private val PlaysFirstCheckbox = ScalaComponent.build[PlaysFirstProps]("PlaysFirstCheckbox")
     .renderBackend[PlaysFirstCheckboxBackend]
     .build
 
@@ -184,7 +184,7 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
                                       callbacks: PlayerPanelCallbacks) extends PlayerSelectorProps with PlaysFirstProps
 
   class PlayerSettingsPanelBackend($: BackendScope[PlayerSettingsPanelProps, Unit]) {
-    def render(props: PlayerSettingsPanelProps): ReactElement = {
+    def render(props: PlayerSettingsPanelProps): VdomElement = {
       val avatar = PieceAvatar(props.side)
       val playerSelector = PlayerSelector(props)
       val playsFirst = PlaysFirstCheckbox(props)
@@ -197,7 +197,7 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
     }
   }
 
-  private val PlayerSettingsPanel = ReactComponentB[PlayerSettingsPanelProps]("PlayerSettingsPanel")
+  private val PlayerSettingsPanel = ScalaComponent.build[PlayerSettingsPanelProps]("PlayerSettingsPanel")
     .renderBackend[PlayerSettingsPanelBackend]
     .build
 
@@ -215,8 +215,8 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
   }
 
   class VariationSelectorBackend($: BackendScope[VariationSelectorProps, Unit]) {
-    def render(props: VariationSelectorProps): ReactElement = {
-      val items = new js.Array[ReactNode]
+    def render(props: VariationSelectorProps): VdomElement = {
+      val items = new js.Array[VdomNode]
       props.variationChoices.indices.foreach { i =>
         val item = props.variationChoices(i)
         val option = <.option(
@@ -243,7 +243,7 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
 
     }
 
-    private def handleChange(event: ReactEventI): Callback = {
+    private def handleChange(event: ReactEventFromInput): Callback = {
       val newValue = StringUtils.safeStringToInt(event.target.value, -1)
       if (newValue < 0) Callback.empty
       else for {
@@ -254,7 +254,7 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
     }
   }
 
-  private val VariationSelector = ReactComponentB[VariationSelectorProps]("VariationSelector")
+  private val VariationSelector = ScalaComponent.build[VariationSelectorProps]("VariationSelector")
     .renderBackend[VariationSelectorBackend]
     .build
 
@@ -265,7 +265,7 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
                                        callbacks: GeneralSettingsPanelCallbacks) extends VariationSelectorProps
 
   class GeneralSettingsPanelBackend($: BackendScope[GeneralSettingsPanelProps, Unit]) {
-    def render(props: GeneralSettingsPanelProps): ReactElement = {
+    def render(props: GeneralSettingsPanelProps): VdomElement = {
       val variationSelector = VariationSelector(props)
       <.div(
         ^.`class` := "general-settings",
@@ -274,7 +274,7 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
     }
   }
 
-  private val GeneralSettingsPanel = ReactComponentB[GeneralSettingsPanelProps]("GeneralSettingsPanel")
+  private val GeneralSettingsPanel = ScalaComponent.build[GeneralSettingsPanelProps]("GeneralSettingsPanel")
     .renderBackend[GeneralSettingsPanelBackend]
     .build
 
@@ -286,7 +286,7 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
   }
 
   class DialogButtonsBackend($: BackendScope[DialogButtonsCallbacks, Unit]) {
-    def render(props: DialogButtonsCallbacks): ReactElement = {
+    def render(props: DialogButtonsCallbacks): VdomElement = {
       <.div(
         <.button(
           ^.onClick --> props.onOkClicked,
@@ -300,7 +300,7 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
     }
   }
 
-  private val DialogButtons = ReactComponentB[DialogButtonsCallbacks]("DialogButtons")
+  private val DialogButtons = ScalaComponent.build[DialogButtonsCallbacks]("DialogButtons")
     .renderBackend[DialogButtonsBackend]
     .build
 
@@ -309,7 +309,7 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
     with DialogButtonsCallbacks
     with GeneralSettingsPanelCallbacks {
 
-    def render(props: Props, state: State): ReactElement = {
+    def render(props: Props, state: State): VdomElement = {
       val darkPlayerProps = PlayerSettingsPanelProps(side = DARK,
         playerChoices = props.playerChoices,
         playerIndex = state.darkPlayerIndex,
@@ -391,7 +391,7 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
 
   }
 
-  val create = ReactComponentB[Props]("NewGameDialog")
+  val create = ScalaComponent.build[Props]("NewGameDialog")
     .initialState_P[State](_.initialState)
     .renderBackend[NewGameDialogBackend]
     .build

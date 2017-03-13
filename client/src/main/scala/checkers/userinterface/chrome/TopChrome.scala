@@ -4,7 +4,7 @@ import checkers.consts._
 import checkers.core.{ApplicationCallbacks, GameModelReader, PlayerDescription}
 import checkers.util.{ClockUtils, Formatting}
 import japgolly.scalajs.react._
-import japgolly.scalajs.react.vdom.prefix_<^._
+import japgolly.scalajs.react.vdom.html_<^._
 
 object TopChrome {
 
@@ -20,7 +20,7 @@ class TopChrome(playerPanel: PlayerPanel) {
 
   class Backend($: BackendScope[Props, Unit]) {
 
-    def render(props: Props): ReactElement = {
+    def render(props: Props): VdomElement = {
       val panelWidth = props.widthPixels / 2
       val panelHeight = props.heightPixels
 
@@ -82,9 +82,9 @@ class TopChrome(playerPanel: PlayerPanel) {
     }
   }
 
-  val create = ReactComponentB[Props]("TopChrome")
+  val create = ScalaComponent.build[Props]("TopChrome")
     .renderBackend[Backend]
-    //    .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, _) =>
+    //    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, _) =>
     //      val result = scope.props != nextProps
     //      CallbackTo.pure(result)
     //    }

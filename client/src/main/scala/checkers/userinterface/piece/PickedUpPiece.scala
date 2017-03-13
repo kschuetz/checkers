@@ -3,7 +3,7 @@ package checkers.userinterface.piece
 import checkers.consts._
 import checkers.util.SvgHelpers
 import japgolly.scalajs.react._
-import japgolly.scalajs.react.vdom.prefix_<^._
+import japgolly.scalajs.react.vdom.html_<^._
 
 object PickedUpPiece extends SvgHelpers {
 
@@ -18,7 +18,7 @@ class PickedUpPiece(physicalPiece: PhysicalPiece) {
   import PickedUpPiece._
 
   class Backend($: BackendScope[Props, Unit]) {
-    def render(props: Props): ReactElement = {
+    def render(props: Props): VdomElement = {
       val model = props.model
       val center = model.movePos // + model.grabOffset
 
@@ -41,7 +41,7 @@ class PickedUpPiece(physicalPiece: PhysicalPiece) {
     }
   }
 
-  val create = ReactComponentB[Props]("PickedUpPiece")
+  val create = ScalaComponent.build[Props]("PickedUpPiece")
     .renderBackend[Backend]
     .build
 

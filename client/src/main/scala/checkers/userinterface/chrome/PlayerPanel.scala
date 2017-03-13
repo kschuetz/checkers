@@ -5,7 +5,7 @@ import checkers.core.ApplicationCallbacks
 import checkers.userinterface.mixins.FontHelpers
 import checkers.util.{CssHelpers, Formatting}
 import japgolly.scalajs.react._
-import japgolly.scalajs.react.vdom.prefix_<^._
+import japgolly.scalajs.react.vdom.html_<^._
 
 import scala.scalajs.js
 
@@ -38,7 +38,7 @@ class PlayerPanel(pieceAvatar: PieceAvatar,
 
   class Backend($: BackendScope[Props, Unit]) {
 
-    def backdrop(props: Props): ReactElement = {
+    def backdrop(props: Props): VdomElement = {
       <.svg.rect(
         ^.key := "backdrop",
         ^.`class` := s"player-panel-backdrop ${CssHelpers.playerSideClass(props.side)}",
@@ -49,7 +49,7 @@ class PlayerPanel(pieceAvatar: PieceAvatar,
       )
     }
 
-    def makePieceAvatar(props: Props): ReactElement = {
+    def makePieceAvatar(props: Props): VdomElement = {
       val scale = 0.8 * props.heightPixels
       val avatarProps = PieceAvatar.Props(
         side = props.side,
@@ -62,7 +62,7 @@ class PlayerPanel(pieceAvatar: PieceAvatar,
       pieceAvatar.create.withKey("avatar")(avatarProps)
     }
 
-    def makeTurnIndicator(props: Props): ReactElement = {
+    def makeTurnIndicator(props: Props): VdomElement = {
       val y = props.heightPixels / 2
       val x = 0.1 * props.widthPixels
       val scale = 0.2 * props.heightPixels
@@ -71,7 +71,7 @@ class PlayerPanel(pieceAvatar: PieceAvatar,
       turnIndicator.create.withKey("turn-indicator")(turnIndicatorProps)
     }
 
-    def makeJumpIndicator(props: Props): ReactElement = {
+    def makeJumpIndicator(props: Props): VdomElement = {
       val x = 0.875 * props.widthPixels
       val y = 0.35 * props.heightPixels
       val jumpIndicatorProps = JumpIndicator.Props(oppositeSide = OPPONENT(props.side),
@@ -82,7 +82,7 @@ class PlayerPanel(pieceAvatar: PieceAvatar,
       jumpIndicator.create.withKey("jump-indicator")(jumpIndicatorProps)
     }
 
-    def makeThinkingIndicator(props: Props): ReactElement = {
+    def makeThinkingIndicator(props: Props): VdomElement = {
       val centerX = 0.575 * props.widthPixels
       val totalWidth = 0.45 * props.widthPixels
       val centerY = 0.8 * props.heightPixels
@@ -101,7 +101,7 @@ class PlayerPanel(pieceAvatar: PieceAvatar,
       thinkingIndicator.create.withKey("thinking-indicator")(thinkingIndicatorProps)
     }
 
-    def playerNameDisplay(props: Props): ReactElement = {
+    def playerNameDisplay(props: Props): VdomElement = {
       val textHeight = 0.27 * props.heightPixels
       val x = props.widthPixels * 0.24
       //val y = props.heightPixels / 2
@@ -119,7 +119,7 @@ class PlayerPanel(pieceAvatar: PieceAvatar,
       )
     }
 
-    def clockDisplay(props: Props): ReactElement = {
+    def clockDisplay(props: Props): VdomElement = {
       val clockText = Formatting.clockDisplay(props.clockSeconds)
       val textHeight = 0.17 * props.heightPixels
       val x = props.widthPixels * 0.24
@@ -136,7 +136,7 @@ class PlayerPanel(pieceAvatar: PieceAvatar,
       )
     }
 
-    def scoreDisplay(props: Props): ReactElement = {
+    def scoreDisplay(props: Props): VdomElement = {
       val displayText = props.scoreDisplay.getOrElse("")
       val x = props.widthPixels - 5
       val y = props.heightPixels - 7
@@ -148,7 +148,7 @@ class PlayerPanel(pieceAvatar: PieceAvatar,
       )
     }
 
-    def makeRushButton(props: Props): ReactElement = {
+    def makeRushButton(props: Props): VdomElement = {
       val x = 0.875 * props.widthPixels
       val y = 0.75 * props.heightPixels
       val size = 0.37 * props.heightPixels
@@ -163,8 +163,8 @@ class PlayerPanel(pieceAvatar: PieceAvatar,
       rushButton.create.withKey("rush-button")(rushButtonProps)
     }
 
-    def render(props: Props): ReactElement = {
-      val parts = new js.Array[ReactNode]
+    def render(props: Props): VdomElement = {
+      val parts = new js.Array[VdomNode]
       parts.push(backdrop(props))
       parts.push(makePieceAvatar(props))
       parts.push(playerNameDisplay(props))
@@ -196,9 +196,9 @@ class PlayerPanel(pieceAvatar: PieceAvatar,
     }
   }
 
-  val create = ReactComponentB[Props]("PlayerPanel")
+  val create = ScalaComponent.build[Props]("PlayerPanel")
     .renderBackend[Backend]
-    .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, _) =>
+    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, _) =>
       val result = scope.props != nextProps
       CallbackTo.pure(result)
     }

@@ -21,7 +21,7 @@ class MovingPieceAnimation(physicalPiece: PhysicalPiece) {
   import MovingPieceAnimation._
 
   class Backend($: BackendScope[Props, Unit]) {
-    def render(props: Props): ReactElement = {
+    def render(props: Props): VdomElement = {
       val t = Easing.easeInOutQuart(props.progress)
       val ptA = Board.squareCenter(props.fromSquare)
       val ptB = Board.squareCenter(props.toSquare)
@@ -43,9 +43,9 @@ class MovingPieceAnimation(physicalPiece: PhysicalPiece) {
     }
   }
 
-  val create = ReactComponentB[Props]("MovingPieceAnimation")
+  val create = ScalaComponent.build[Props]("MovingPieceAnimation")
     .renderBackend[Backend]
-    .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, _) =>
+    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, _) =>
       val result = scope.props != nextProps
       CallbackTo.pure(result)
     }

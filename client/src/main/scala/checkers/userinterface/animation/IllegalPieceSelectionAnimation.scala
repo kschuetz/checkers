@@ -5,7 +5,7 @@ import checkers.core.Board
 import checkers.userinterface.piece.{PhysicalPiece, PhysicalPieceProps}
 import checkers.util.CssHelpers
 import japgolly.scalajs.react._
-import japgolly.scalajs.react.vdom.prefix_<^._
+import japgolly.scalajs.react.vdom.html_<^._
 
 object IllegalPieceSelectionAnimation {
 
@@ -21,7 +21,7 @@ class IllegalPieceSelectionAnimation(physicalPiece: PhysicalPiece) {
   import IllegalPieceSelectionAnimation._
 
 
-  private val NoSymbolLeg = ReactComponentB[String]("NoSymbolLeg")
+  private val NoSymbolLeg = ScalaComponent.build[String]("NoSymbolLeg")
     .render_P { transform =>
       <.svg.rect(
         ^.svg.x := -0.17,
@@ -33,7 +33,7 @@ class IllegalPieceSelectionAnimation(physicalPiece: PhysicalPiece) {
     }
     .build
 
-  private val NoSymbol = ReactComponentB[Side]("NoSymbol")
+  private val NoSymbol = ScalaComponent.build[Side]("NoSymbol")
     .render_P { side =>
       val classes = s"no-symbol ${CssHelpers.playerSideClass(side)}"
       <.svg.g(
@@ -47,7 +47,7 @@ class IllegalPieceSelectionAnimation(physicalPiece: PhysicalPiece) {
 
 
   class Backend($: BackendScope[Props, Unit]) {
-    def render(props: Props): ReactElement = {
+    def render(props: Props): VdomElement = {
       val t = props.progress
       val xoffset = 0.07 * (1 - t) * math.sin(40.5 * t)
       val yoffset = 0
@@ -64,7 +64,7 @@ class IllegalPieceSelectionAnimation(physicalPiece: PhysicalPiece) {
 
       <.svg.g(
         pieceElement,
-        if (noSymbolShowing) NoSymbol(SIDE(props.piece)) else EmptyTag,
+        if (noSymbolShowing) NoSymbol(SIDE(props.piece)) else EmptyVdom,
         ^.svg.transform := s"translate(${pt.x},${pt.y})"
       )
 
@@ -72,9 +72,9 @@ class IllegalPieceSelectionAnimation(physicalPiece: PhysicalPiece) {
   }
 
 
-  val create = ReactComponentB[Props]("IllegalPieceSelectionAnimation")
+  val create = ScalaComponent.build[Props]("IllegalPieceSelectionAnimation")
     .renderBackend[Backend]
-    .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, _) =>
+    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, _) =>
       val result = scope.props != nextProps
       CallbackTo.pure(result)
     }

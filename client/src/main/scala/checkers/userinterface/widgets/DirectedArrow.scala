@@ -2,7 +2,7 @@ package checkers.userinterface.widgets
 
 import checkers.util.{Point, SvgHelpers}
 import japgolly.scalajs.react._
-import japgolly.scalajs.react.vdom.prefix_<^._
+import japgolly.scalajs.react.vdom.html_<^._
 
 object DirectedArrow {
   case class Props(source: Point,
@@ -21,7 +21,7 @@ class DirectedArrow(arrow: Arrow) extends SvgHelpers {
   import DirectedArrow._
 
   class Backend($: BackendScope[Props, Unit]) {
-    def render(props: Props): ReactElement = {
+    def render(props: Props): VdomElement = {
       val center = props.dest - props.source
       val length = center.magnitude
       val dir = center / length
@@ -45,9 +45,9 @@ class DirectedArrow(arrow: Arrow) extends SvgHelpers {
     }
   }
 
-  val create = ReactComponentB[Props]("DirectedArrow")
+  val create = ScalaComponent.build[Props]("DirectedArrow")
     .renderBackend[Backend]
-    .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, _) =>
+    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, _) =>
       val result = scope.props != nextProps
       CallbackTo.pure(result)
     }

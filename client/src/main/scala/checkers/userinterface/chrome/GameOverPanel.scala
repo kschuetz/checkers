@@ -5,7 +5,7 @@ import checkers.core.{ApplicationCallbacks, GameOverState}
 import checkers.userinterface.mixins.FontHelpers
 import checkers.userinterface.piece.{PhysicalPiece, PhysicalPieceProps}
 import japgolly.scalajs.react._
-import japgolly.scalajs.react.vdom.prefix_<^._
+import japgolly.scalajs.react.vdom.html_<^._
 
 import scala.scalajs.js
 
@@ -29,7 +29,7 @@ class GameOverPanel(physicalPiece: PhysicalPiece) extends FontHelpers {
   class Backend($: BackendScope[Props, Unit]) {
 
 
-    private def handleClick(event: ReactEventI): Callback = {
+    private def handleClick(event: ReactEventFromInput): Callback = {
       $.props.flatMap(props => props.applicationCallbacks.onNewGameButtonClicked)
     }
 
@@ -70,7 +70,7 @@ class GameOverPanel(physicalPiece: PhysicalPiece) extends FontHelpers {
     private def pieceRow(centerX: Int, centerY: Int, pieceSize: Int, pieces: Vector[Occupant]) = {
       val left = centerX - 3 * pieceSize / 2
       val scaledSize = 0.95 * pieceSize
-      val items = new js.Array[ReactNode]
+      val items = new js.Array[VdomNode]
       (0 to 3).foreach { index =>
         val pieceType = pieces(index)
         val x = left + index * pieceSize
@@ -84,7 +84,7 @@ class GameOverPanel(physicalPiece: PhysicalPiece) extends FontHelpers {
     }
 
 
-    def render(props: Props): ReactElement = {
+    def render(props: Props): VdomElement = {
       val centerX = props.widthPixels / 2
       val height = props.heightPixels
       val textHeight = {
@@ -94,7 +94,7 @@ class GameOverPanel(physicalPiece: PhysicalPiece) extends FontHelpers {
       val pieceSize = height / 3
       val pieceRowY = 11 * height / 24
 
-      val parts = new js.Array[ReactNode]
+      val parts = new js.Array[VdomNode]
       parts.push(backdrop(props))
       parts.push(textLine(centerX, 2 * height / 9, textHeight, "GAME OVER", "t1"))
       props.gameOverState match {
@@ -115,9 +115,9 @@ class GameOverPanel(physicalPiece: PhysicalPiece) extends FontHelpers {
 
   }
 
-  val create = ReactComponentB[Props]("GameOverPanel")
+  val create = ScalaComponent.build[Props]("GameOverPanel")
     .renderBackend[Backend]
-    .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, _) =>
+    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, _) =>
       val result = scope.props != nextProps
       CallbackTo.pure(result)
     }

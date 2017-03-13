@@ -2,7 +2,7 @@ package checkers.userinterface.widgets
 
 import checkers.util.{Point, SvgHelpers}
 import japgolly.scalajs.react._
-import japgolly.scalajs.react.vdom.prefix_<^._
+import japgolly.scalajs.react.vdom.html_<^._
 
 object ScrollButton {
   case class Props(centerX: Double,
@@ -18,7 +18,7 @@ class ScrollButton(button: Button) extends SvgHelpers {
 
   private case class GlyphProps(width: Double, height: Double, up: Boolean)
 
-  private lazy val ScrollButtonGlyph = ReactComponentB[GlyphProps]("ScrollButtonGlyph")
+  private lazy val ScrollButtonGlyph = ScalaComponent.build[GlyphProps]("ScrollButtonGlyph")
     .render_P { props =>
 
       val halfHeight = props.height / 2
@@ -44,7 +44,7 @@ class ScrollButton(button: Button) extends SvgHelpers {
     .build
 
   class Backend($: BackendScope[Props, Unit]) {
-    def render(props: Props): ReactElement = {
+    def render(props: Props): VdomElement = {
 
       val glyphWidth = 0.8 * props.width
       val glyphHeight  = 0.6 * props.height
@@ -78,7 +78,7 @@ class ScrollButton(button: Button) extends SvgHelpers {
     }
   }
 
-  val create = ReactComponentB[Props]("ScrollButton")
+  val create = ScalaComponent.build[Props]("ScrollButton")
     .renderBackend[Backend]
     .build
 

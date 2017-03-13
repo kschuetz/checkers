@@ -4,8 +4,8 @@ import checkers.consts._
 import checkers.userinterface.mixins.ClipPathHelpers
 import checkers.util.{CssHelpers, SvgHelpers}
 import japgolly.scalajs.react._
-import japgolly.scalajs.react.vdom.ReactAttr
-import japgolly.scalajs.react.vdom.prefix_<^._
+import japgolly.scalajs.react.vdom.VdomAttr
+import japgolly.scalajs.react.vdom.html_<^._
 
 import scala.scalajs.js
 
@@ -32,7 +32,7 @@ class ThinkingIndicator extends SvgHelpers with ClipPathHelpers {
                                        segmentWidth: Double,
                                        segmentCount: Int)
 
-  private val SegmentGroup = ReactComponentB[SegmentGroupProps]("ThinkingIndicatorSegmentGroup")
+  private val SegmentGroup = ScalaComponent.build[SegmentGroupProps]("ThinkingIndicatorSegmentGroup")
     .render_P { props =>
       val height = props.height
       val y = -height / 2
@@ -41,7 +41,7 @@ class ThinkingIndicator extends SvgHelpers with ClipPathHelpers {
       val halfSegmentWidth = segmentWidth / 2
       var x = -(segmentCount * halfSegmentWidth)
       var i = 0
-      val segments = new js.Array[ReactNode]
+      val segments = new js.Array[VdomNode]
       while(i < segmentCount) {
         val even = <.svg.rect(
           ^.key := 2 * i,
@@ -70,14 +70,14 @@ class ThinkingIndicator extends SvgHelpers with ClipPathHelpers {
         segments
       )
     }
-    .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, _) =>
+    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, _) =>
       CallbackTo.pure(scope.props != nextProps)
     }
     .build
 
   class Backend($: BackendScope[Props, Unit]) {
 
-    def render(props: Props): ReactElement = {
+    def render(props: Props): VdomElement = {
       val totalWidth = props.segmentCount * props.segmentWidthPixels
       val left = -totalWidth / 2
       val top = -props.heightPixels / 2
@@ -135,7 +135,7 @@ class ThinkingIndicator extends SvgHelpers with ClipPathHelpers {
 
   }
 
-  val create = ReactComponentB[Props]("ThinkingIndicator")
+  val create = ScalaComponent.build[Props]("ThinkingIndicator")
     .renderBackend[Backend]
     .build
 }

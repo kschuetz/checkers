@@ -2,7 +2,7 @@ package checkers.userinterface
 
 import checkers.core.{GameModelReader, ScreenLayoutSettings}
 import japgolly.scalajs.react._
-import japgolly.scalajs.react.vdom.prefix_<^._
+import japgolly.scalajs.react.vdom.html_<^._
 import org.scalajs.dom.raw.SVGSVGElement
 
 
@@ -23,12 +23,12 @@ class SceneContainer(sceneFrame: SceneFrame) {
   class Backend($: BackendScope[Props, SceneContainerContext]) {
 
     def start: Callback = {
-      val target = $.getDOMNode()
+      val target = $.getDOMNode
       val sceneContainerContext = new MountedSceneContainerContext(target.asInstanceOf[SVGSVGElement])
       $.setState(sceneContainerContext)
     }
 
-    def render(props: Props, state: SceneContainerContext): ReactElement = {
+    def render(props: Props, state: SceneContainerContext): VdomElement = {
       val gameSceneWidth = props.screenLayoutSettings.GameSceneWidthPixels
       val gameSceneHeight = props.screenLayoutSettings.GameSceneHeightPixels
       val sceneFrameProps = SceneFrame.Props(props.gameModel, props.callbacks, state, gameSceneWidth, gameSceneHeight)
@@ -42,7 +42,7 @@ class SceneContainer(sceneFrame: SceneFrame) {
     }
   }
 
-  val create = ReactComponentB[Props]("SceneContainer")
+  val create = ScalaComponent.build[Props]("SceneContainer")
     .initialState[SceneContainerContext](NullSceneContainerContext)
     .renderBackend[Backend]
     .componentDidMount(_.backend.start)

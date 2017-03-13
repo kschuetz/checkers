@@ -116,7 +116,7 @@ class Application(programRegistry: ProgramRegistry,
 
       val dialog = newGameDialog.create(props)
 
-      ReactDOM.render(dialog, dialogHost)
+      dialog.renderIntoDOM(dialogHost)
     }
 
     private def closeNewGameDialog(): Unit = {

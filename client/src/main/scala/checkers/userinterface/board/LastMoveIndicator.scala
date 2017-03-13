@@ -23,7 +23,7 @@ class LastMoveIndicator(directedArrow: DirectedArrow) {
   import LastMoveIndicator._
 
   class Backend($: BackendScope[Props, Unit]) {
-    def render(props: Props): ReactElement = {
+    def render(props: Props): VdomElement = {
       val classes = if(props.side == DARK) classesDark else classesLight
 
       val ptA = Board.squareCenter(props.fromSquare)
@@ -36,7 +36,7 @@ class LastMoveIndicator(directedArrow: DirectedArrow) {
     }
   }
 
-  val create = ReactComponentB[Props]("LastMoveIndicator")
+  val create = ScalaComponent.build[Props]("LastMoveIndicator")
     .renderBackend[Backend]
     .build
 }

@@ -2,8 +2,8 @@ package checkers.userinterface.piece
 
 import checkers.consts.{DARK, Side}
 import checkers.util.{Point, SvgHelpers}
-import japgolly.scalajs.react.vdom.prefix_<^._
-import japgolly.scalajs.react.{ReactComponentB, ReactNode}
+import japgolly.scalajs.react.vdom.html_<^._
+import japgolly.scalajs.react.{ReactComponentB, VdomNode}
 
 import scala.scalajs.js
 
@@ -83,7 +83,7 @@ class Decorations extends SvgHelpers {
     }
   }
 
-  val Pip = ReactComponentB[(Side, Point)]("Pip")
+  val Pip = ScalaComponent.build[(Side, Point)]("Pip")
     .render_P { case (side, Point(cx, cy)) =>
       val classes = if(side == DARK) "pip dark" else "pip light"
       <.svg.circle(
@@ -94,7 +94,7 @@ class Decorations extends SvgHelpers {
       )
     }.build
 
-  private val CrownPart = ReactComponentB[((String, String, String), Int)]("CrownPart")
+  private val CrownPart = ScalaComponent.build[((String, String, String), Int)]("CrownPart")
     .render_P { case ((classesA, classesB, classesC), idx) =>
       val Point(cx, cy) = topCrownPoints(idx)
       val cl1 = if (idx > 1) classesA else classesB
@@ -112,11 +112,11 @@ class Decorations extends SvgHelpers {
       )
     }.build
 
-  val Crown = ReactComponentB[(Side, Double)]("Crown")
+  val Crown = ScalaComponent.build[(Side, Double)]("Crown")
     .render_P { case (side, scale) =>
       val classes = if (side == DARK) ("crown-a dark", "crown-b dark", "crown-c dark")
         else ("crown-a light", "crown-b light", "crown-c light")
-      val parts = new js.Array[ReactNode]
+      val parts = new js.Array[VdomNode]
       crownPaths.indices.foreach { idx =>
         parts.push(CrownPart.withKey(idx)((classes, idx)))
       }
@@ -130,7 +130,7 @@ class Decorations extends SvgHelpers {
     }.build
 
 
-  val Star = ReactComponentB[(Side, Double)]("Star")
+  val Star = ScalaComponent.build[(Side, Double)]("Star")
     .render_P { case (side, scale) =>
       val (classesA, classesB) =
         if(side == DARK) ("star-a dark", "star-b dark")
@@ -138,7 +138,7 @@ class Decorations extends SvgHelpers {
 
 
       var k = 0
-      val parts = new js.Array[ReactNode]
+      val parts = new js.Array[VdomNode]
 
       starPathA.foreach { points =>
         k += 1
@@ -168,7 +168,7 @@ class Decorations extends SvgHelpers {
 
     }.build
 
-  val PieceDecoration = ReactComponentB[(Side, Decoration)]("PieceDecoration")
+  val PieceDecoration = ScalaComponent.build[(Side, Decoration)]("PieceDecoration")
     .render_P {
       case (side, Decoration.Star) => Star((side, 0.55))
       case (side, Decoration.Crown) => Crown((side, 0.55))

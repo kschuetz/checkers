@@ -21,7 +21,7 @@ class RemovingPieceAnimation(physicalPiece: PhysicalPiece,
   import RemovingPieceAnimation._
 
   class Backend($: BackendScope[Props, Unit]) {
-    def render(props: Props): ReactElement = {
+    def render(props: Props): VdomElement = {
       val t = Easing.easeInQuad(props.progress)
       val ptA = startingPoint(props.piece, props.fromSquare)
       val ptB = animationEntryPoints.exitPoint(props.piece, props.fromSquare)
@@ -43,9 +43,9 @@ class RemovingPieceAnimation(physicalPiece: PhysicalPiece,
     }
   }
 
-  val create = ReactComponentB[Props]("RemovingPieceAnimation")
+  val create = ScalaComponent.build[Props]("RemovingPieceAnimation")
     .renderBackend[Backend]
-    .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, _) =>
+    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, _) =>
       val result = scope.props != nextProps
       CallbackTo.pure(result)
     }

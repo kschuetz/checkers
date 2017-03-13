@@ -4,7 +4,7 @@ import checkers.userinterface._
 import checkers.consts.Occupant
 import checkers.util.Point
 import japgolly.scalajs.react._
-import japgolly.scalajs.react.vdom.prefix_<^._
+import japgolly.scalajs.react.vdom.html_<^._
 
 object SquareOverlayButton {
 
@@ -22,7 +22,7 @@ class SquareOverlayButton {
 
   import SquareOverlayButton._
 
-  val create = ReactComponentB[Props]("SquareOverlayButton")
+  val create = ScalaComponent.build[Props]("SquareOverlayButton")
     .render_P { props =>
       <.svg.rect(
         ^.classSet1("square-button-layer", "welcome" -> props.clickable),

@@ -1,7 +1,7 @@
 package checkers.userinterface.chrome
 
 import japgolly.scalajs.react._
-import japgolly.scalajs.react.vdom.prefix_<^._
+import japgolly.scalajs.react.vdom.html_<^._
 
 object PowerMeter {
 
@@ -25,7 +25,7 @@ class PowerMeter {
   import PowerMeter._
 
   class Backend($: BackendScope[Props, Unit]) {
-    def render(props: Props): ReactElement = {
+    def render(props: Props): VdomElement = {
       val width = props.widthPixels
       val height = props.heightPixels
       val halfWidth = 0.5 * width
@@ -36,7 +36,7 @@ class PowerMeter {
       val top = props.centerY - 0.5 * height
       val splitX = props.centerX + position * halfWidth
 
-      val darkSide: Option[ReactElement] = if(position > -1) {
+      val darkSide: Option[VdomElement] = if(position > -1) {
         Some(<.svg.rect(
           ^.`class` := "power-meter-side dark",
           ^.svg.x := left,
@@ -46,7 +46,7 @@ class PowerMeter {
         ))
       } else None
 
-      val lightSide: Option[ReactElement] = if(position < 1) {
+      val lightSide: Option[VdomElement] = if(position < 1) {
         Some(<.svg.rect(
           ^.`class` := "power-meter-side light",
           ^.svg.x := splitX,
@@ -87,7 +87,7 @@ class PowerMeter {
     }
   }
 
-  val create = ReactComponentB[Props]("PowerMeter")
+  val create = ScalaComponent.build[Props]("PowerMeter")
     .renderBackend[Backend]
     .build
 }

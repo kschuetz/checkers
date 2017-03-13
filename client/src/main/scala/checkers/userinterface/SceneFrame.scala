@@ -4,8 +4,8 @@ import checkers.userinterface.board.PhysicalBoard
 import checkers.core.GameModelReader
 import checkers.util.Point
 import japgolly.scalajs.react._
-import japgolly.scalajs.react.vdom.ReactAttr
-import japgolly.scalajs.react.vdom.prefix_<^._
+import japgolly.scalajs.react.vdom.VdomAttr
+import japgolly.scalajs.react.vdom.html_<^._
 import org.scalajs.dom.raw.{SVGGElement, SVGLocatable}
 
 object SceneFrame {
@@ -25,10 +25,10 @@ class SceneFrame(physicalBoard: PhysicalBoard,
 
   import SceneFrame._
 
-  private val Backdrop = ReactComponentB[(Int, Int)]("Backdrop")
+  private val Backdrop = ScalaComponent.build[(Int, Int)]("Backdrop")
     .render_P { case (width, height) =>
       <.svg.rect(
-        ReactAttr.ClassName := "backdrop",
+        VdomAttr.ClassName := "backdrop",
         ^.svg.x := 0,
         ^.svg.y := 0,
         ^.svg.width := width,
@@ -39,7 +39,7 @@ class SceneFrame(physicalBoard: PhysicalBoard,
   class Backend($: BackendScope[Props, Unit]) {
     val playfieldRef = Ref[SVGGElement]("playfield")
 
-    def render(props: Props): ReactElement = {
+    def render(props: Props): VdomElement = {
       val Props(model, callbacks, sceneContainerContext, widthPixels, heightPixels) = props
       val screenToBoard = makeScreenToBoard(sceneContainerContext)
 
@@ -76,7 +76,7 @@ class SceneFrame(physicalBoard: PhysicalBoard,
     def makeScreenToBoard(sceneContext: SceneContainerContext): Point => Point = { screen: Point =>
       var result = screen
       $.refs(playfieldRef.name).foreach { node =>
-        val target = node.getDOMNode().asInstanceOf[SVGLocatable]
+        val target = node.getDOMNode.asInstanceOf[SVGLocatable]
         result = sceneContext.screenToLocal(target)(screen)
       }
       result
@@ -84,7 +84,7 @@ class SceneFrame(physicalBoard: PhysicalBoard,
 
   }
 
-  val create = ReactComponentB[Props]("SceneFrame")
+  val create = ScalaComponent.build[Props]("SceneFrame")
     .renderBackend[Backend]
     .build
 

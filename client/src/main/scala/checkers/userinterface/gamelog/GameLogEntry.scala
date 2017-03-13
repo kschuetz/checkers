@@ -5,7 +5,7 @@ import checkers.userinterface.mixins.{ClipPathHelpers, FontHelpers}
 import checkers.userinterface.piece.{PhysicalPiece, PhysicalPieceProps}
 import checkers.util.CssHelpers
 import japgolly.scalajs.react._
-import japgolly.scalajs.react.vdom.prefix_<^._
+import japgolly.scalajs.react.vdom.html_<^._
 
 object GameLogEntry {
 
@@ -27,7 +27,7 @@ class GameLogEntry(physicalPiece: PhysicalPiece) extends FontHelpers with ClipPa
 
   class Backend($: BackendScope[Props, Unit]) {
 
-    def render(props: Props): ReactElement = {
+    def render(props: Props): VdomElement = {
       val stripe = getStripeClass(props)
       val textHeight = 0.46 * props.heightPixels
 
@@ -124,9 +124,9 @@ class GameLogEntry(physicalPiece: PhysicalPiece) extends FontHelpers with ClipPa
     }
   }
 
-  val create = ReactComponentB[Props]("GameLogEntry")
+  val create = ScalaComponent.build[Props]("GameLogEntry")
     .renderBackend[Backend]
-    .shouldComponentUpdateCB { case ShouldComponentUpdate(scope, nextProps, _) =>
+    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, _) =>
       val result = scope.props != nextProps
       CallbackTo.pure(result)
     }
