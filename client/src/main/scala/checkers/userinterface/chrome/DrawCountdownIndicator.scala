@@ -55,7 +55,7 @@ class DrawCountdownIndicator extends FontHelpers with ClipPathHelpers {
       )
 
       val textClipPath = svg.<.defs(
-        svg.<.clipPathTag(
+        clipPathTag(
           ^.id := clipPathId,
           svg.<.rect(
             svg.^.x := 0.asInstanceOf[JsNumber],

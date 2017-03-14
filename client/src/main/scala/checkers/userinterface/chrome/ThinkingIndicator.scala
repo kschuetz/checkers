@@ -86,7 +86,7 @@ class ThinkingIndicator extends SvgHelpers with ClipPathHelpers {
       val r = math.floor(Roundness * props.heightPixels).toInt
 
       val clipPath = svg.<.defs(
-        svg.<.clipPathTag(
+        clipPathTag(
           ^.id := clipPathId,
           svg.<.rect(
             svg.^.x := left.asInstanceOf[JsNumber],

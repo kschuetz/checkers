@@ -163,7 +163,7 @@ class GameLogDisplay(notation: Notation,
       val transform = s"translate(${props.upperLeftX},${props.upperLeftY})"
 
       val bodyClipPath = svg.<.defs(
-        svg.<.clipPathTag(
+        clipPathTag(
           ^.id := bodyClipPathId,
           svg.<.rect(
             svg.^.x := 0.asInstanceOf[JsNumber],

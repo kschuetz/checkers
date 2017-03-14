@@ -85,7 +85,7 @@ class GameLogEntry(physicalPiece: PhysicalPiece) extends FontHelpers with ClipPa
       val clipPathId = s"game-log-clip-path-${props.turnIndex}"
 
       val textClipPath = svg.<.defs(
-        svg.<.clipPathTag(
+        clipPathTag(
           ^.id := clipPathId,
           svg.<.rect(
             svg.^.x := turnIndexLeft.asInstanceOf[JsNumber],
