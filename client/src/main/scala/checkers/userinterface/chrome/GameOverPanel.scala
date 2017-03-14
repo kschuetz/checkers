@@ -9,8 +9,6 @@ import japgolly.scalajs.react.raw.JsNumber
 import japgolly.scalajs.react.vdom.html_<^._
 import japgolly.scalajs.react.vdom.{svg_<^ => svg}
 
-import scala.scalajs.js
-
 object GameOverPanel {
 
   private val darkWinPieces = Vector(DARKKING, DARKKING, DARKKING, DARKKING)
@@ -72,16 +70,16 @@ class GameOverPanel(physicalPiece: PhysicalPiece) extends FontHelpers {
     private def pieceRow(centerX: Int, centerY: Int, pieceSize: Int, pieces: Vector[Occupant]) = {
       val left = centerX - 3 * pieceSize / 2
       val scaledSize = 0.95 * pieceSize
-      val items = new js.Array[VdomNode]
+      val items = VdomArray.empty
       (0 to 3).foreach { index =>
         val pieceType = pieces(index)
         val x = left + index * pieceSize
         val item = piece(index.toString, x, centerY, scaledSize, pieceType)
-        items.push(item)
+        items += item
       }
       svg.<.g(
         ^.key := "piece-row",
-        items.toVdomArray
+        items
       )
     }
 
@@ -96,22 +94,22 @@ class GameOverPanel(physicalPiece: PhysicalPiece) extends FontHelpers {
       val pieceSize = height / 3
       val pieceRowY = 11 * height / 24
 
-      val parts = new js.Array[VdomNode]
-      parts.push(backdrop(props))
-      parts.push(textLine(centerX, 2 * height / 9, textHeight, "GAME OVER", "t1"))
+      val parts = VdomArray.empty
+      parts += backdrop(props)
+      parts += textLine(centerX, 2 * height / 9, textHeight, "GAME OVER", "t1")
       props.gameOverState match {
         case GameOverState.Winner(side, player) =>
           val pieces = if (side == DARK) darkWinPieces else lightWinPieces
-          parts.push(pieceRow(centerX, pieceRowY, pieceSize, pieces))
-          parts.push(textLine(centerX, 37 * height / 48, textHeight, player.displayName, "t2"))
-          parts.push(textLine(centerX, 11 * height / 12, textHeight, "WINS", "t3"))
+          parts += pieceRow(centerX, pieceRowY, pieceSize, pieces)
+          parts += textLine(centerX, 37 * height / 48, textHeight, player.displayName, "t2")
+          parts += textLine(centerX, 11 * height / 12, textHeight, "WINS", "t3")
         case GameOverState.Draw =>
-          parts.push(pieceRow(centerX, pieceRowY, pieceSize, drawPieces))
-          parts.push(textLine(centerX, 19 * height / 24, textHeight, "DRAW", "t4"))
+          parts += pieceRow(centerX, pieceRowY, pieceSize, drawPieces)
+          parts += textLine(centerX, 19 * height / 24, textHeight, "DRAW", "t4")
       }
       svg.<.g(
         ^.`class` := s"game-over-panel",
-        parts.toVdomArray
+        parts
       )
     }
 

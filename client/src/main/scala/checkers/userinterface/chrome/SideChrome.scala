@@ -9,8 +9,6 @@ import japgolly.scalajs.react.raw.JsNumber
 import japgolly.scalajs.react.vdom.html_<^._
 import japgolly.scalajs.react.vdom.{svg_<^ => svg}
 
-import scala.scalajs.js
-
 object SideChrome {
 
   case class Props(gameModel: GameModelReader,
@@ -57,7 +55,7 @@ class SideChrome(button: Button,
 
       val buttonRoundness = 0.2 * math.min(buttonWidth, buttonHeight)
 
-      val parts = new js.Array[VdomNode]
+      val parts = VdomArray.empty
 
       val buttonCenterX = buttonX + (buttonWidth / 2)
       var currentY = buttonY + (buttonHeight / 2)
@@ -72,7 +70,7 @@ class SideChrome(button: Button,
         tooltip = Some("Start a new game"),
         onClick = props.applicationCallbacks.onNewGameButtonClicked))(VdomArray.empty)
 
-      parts.push(newGameButton)
+      parts += newGameButton
 
       currentY += buttonYSpacing
 
@@ -86,7 +84,7 @@ class SideChrome(button: Button,
         tooltip = Some("Rotate the view of the board 180 degrees"),
         onClick = props.applicationCallbacks.onRotateBoardButtonClicked))(VdomArray.empty)
 
-      parts.push(rotateBoardButton)
+      parts += rotateBoardButton
 
       currentY += buttonYSpacing
 
@@ -100,7 +98,7 @@ class SideChrome(button: Button,
           caption = "Hint",
           onClick = props.applicationCallbacks.onHintButtonClicked))(VdomArray.empty)
 
-        parts.push(hintButton)
+        parts += hintButton
       }
 
       currentY += buttonYSpacing
@@ -130,7 +128,7 @@ class SideChrome(button: Button,
         powerMeter.create.withKey("power-meter")(powerMeterProps)
       }
 
-      parts.push(powerMeterElement)
+      parts += powerMeterElement
 
       currentY += powerMeterHeight + paddingY
 
@@ -148,7 +146,7 @@ class SideChrome(button: Button,
         )
 
         val element = drawCountdownIndicator.create.withKey("draw-countdown")(drawCountdownProps)
-        parts.push(element)
+        parts += element
       }
 
       currentY += drawCountdownIndicatorHeight + paddingY
@@ -163,7 +161,7 @@ class SideChrome(button: Button,
           logEntryHeightPixels, layoutSettings.GameLogScrollButtonHeightPixels, gameModel.gameLogUpdateId,
           gameModel.inputPhase.waitingForMove, gameModel.currentTurnSnapshot, gameModel.history)
         val element = gameLogDisplay.create.withKey("game-log")(gameLogProps)
-        parts.push(element)
+        parts += element
       }
 
       val backdrop = Backdrop((widthPixels, heightPixels))
@@ -171,7 +169,7 @@ class SideChrome(button: Button,
       svg.<.svg(
         ^.`class` := "side-chrome",
         backdrop,
-        parts.toVdomArray
+        parts
       )
 
     }

@@ -8,8 +8,6 @@ import japgolly.scalajs.react.raw.JsNumber
 import japgolly.scalajs.react.vdom.html_<^._
 import japgolly.scalajs.react.vdom.{svg_<^ => svg}
 
-import scala.scalajs.js
-
 object ThinkingIndicator {
 
   case class Props(side: Side,
@@ -42,7 +40,7 @@ class ThinkingIndicator extends SvgHelpers with ClipPathHelpers {
       val halfSegmentWidth = segmentWidth / 2
       var x = -(segmentCount * halfSegmentWidth)
       var i = 0
-      val segments = new js.Array[VdomNode]
+      val segments = VdomArray.empty
       while(i < segmentCount) {
         val even = svg.<.rect(
           ^.key := 2 * i,
@@ -52,7 +50,7 @@ class ThinkingIndicator extends SvgHelpers with ClipPathHelpers {
           svg.^.width := halfSegmentWidth.asInstanceOf[JsNumber],
           svg.^.height := height.asInstanceOf[JsNumber]
         )
-        segments.push(even)
+        segments += even
         val odd = svg.<.rect(
           ^.key := 2 * i + 1,
           ^.`class` := "segment odd",
@@ -61,14 +59,14 @@ class ThinkingIndicator extends SvgHelpers with ClipPathHelpers {
           svg.^.width := halfSegmentWidth.asInstanceOf[JsNumber],
           svg.^.height := height.asInstanceOf[JsNumber]
         )
-        segments.push(odd)
+        segments += odd
         x += segmentWidth
         i += 1
       }
       svg.<.g(
         ^.`class` := "segment-group",
         svg.^.transform := "skewX(-45)",
-        segments.toVdomArray
+        segments
       )
     }
     .shouldComponentUpdate { x => CallbackTo.pure(x.cmpProps(_ != _)) }

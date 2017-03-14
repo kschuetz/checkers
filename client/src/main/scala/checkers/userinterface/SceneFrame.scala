@@ -39,7 +39,6 @@ class SceneFrame(physicalBoard: PhysicalBoard,
     }.build
 
   class Backend($: BackendScope[Props, Unit]) {
-//    val playfieldRef = Ref[SVGGElement]("playfield")
     private var playfieldRef: SVGGElement = _
 
     def render(props: Props): VdomElement = {

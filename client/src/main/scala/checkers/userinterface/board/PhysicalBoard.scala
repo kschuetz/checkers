@@ -8,8 +8,6 @@ import japgolly.scalajs.react.raw.JsNumber
 import japgolly.scalajs.react.vdom.html_<^._
 import japgolly.scalajs.react.vdom.{svg_<^ => svg}
 
-import scala.scalajs.js
-
 object PhysicalBoard {
 
   val squareSize: Double = 1.0
@@ -52,15 +50,15 @@ class PhysicalBoard {
 
   private val BoardRow = ScalaComponent.build[(Double, Side)]("BoardRow")
     .render_P { case (centerY, sideOfFirst) =>
-      val squares = new js.Array[VdomNode]
+      val squares = VdomArray.empty
       (0 to 7).foldLeft(sideOfFirst) { case (side, idx) =>
         val square: VdomNode = Square.withKey(idx.toString)((idx - boardCenterOffset, 0.0, side))
-        squares.push(square)
+        squares += square
         if(side == DARK) LIGHT else DARK
       }
       svg.<.g(
         svg.^.transform := s"translate(0,$centerY)",
-        squares.toVdomArray
+        squares
       )
     }.build
 
@@ -80,16 +78,16 @@ class PhysicalBoard {
   private val Board = ScalaComponent.build[Unit]("Board")
     .render_P { _ =>
       val upperLeftSide: Side = LIGHT
-      val rows = new js.Array[VdomNode]
+      val rows = VdomArray.empty
       (0 to 7).foldLeft(upperLeftSide) { case (side, idx) =>
         val row: VdomNode = BoardRow.withKey(idx.toString)((idx - boardCenterOffset, side))
-        rows.push(row)
+        rows += row
         if(side == DARK) LIGHT else DARK
       }
       val border = BoardBorder(0.3)
       svg.<.g(
         border,
-        rows.toVdomArray
+        rows
       )
     }
     .shouldComponentUpdateConst(false)

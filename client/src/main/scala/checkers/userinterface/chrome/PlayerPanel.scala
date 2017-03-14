@@ -9,8 +9,6 @@ import japgolly.scalajs.react.raw.JsNumber
 import japgolly.scalajs.react.vdom.html_<^._
 import japgolly.scalajs.react.vdom.{svg_<^ => svg}
 
-import scala.scalajs.js
-
 object PlayerPanel {
 
   case class Props(widthPixels: Int,
@@ -166,30 +164,30 @@ class PlayerPanel(pieceAvatar: PieceAvatar,
     }
 
     def render(props: Props): VdomElement = {
-      val parts = new js.Array[VdomNode]
-      parts.push(backdrop(props))
-      parts.push(makePieceAvatar(props))
-      parts.push(playerNameDisplay(props))
+      val parts = VdomArray.empty
+      parts += backdrop(props)
+      parts += makePieceAvatar(props)
+      parts += playerNameDisplay(props)
       if(props.isPlayerTurn) {
-        parts.push(makeTurnIndicator(props))
+        parts += makeTurnIndicator(props)
       }
       if(props.jumpIndicator) {
-        parts.push(makeJumpIndicator(props))
+        parts += makeJumpIndicator(props)
       }
       if(props.thinkingIndicator) {
-        parts.push(makeThinkingIndicator(props))
+        parts += makeThinkingIndicator(props)
       }
       if(props.scoreDisplay.nonEmpty) {
-        parts.push(scoreDisplay(props))
+        parts += scoreDisplay(props)
       }
       if(props.clockVisible) {
-        parts.push(clockDisplay(props))
+        parts += clockDisplay(props)
       }
       if(props.rushButtonEnabled) {
-        parts.push(makeRushButton(props))
+        parts += makeRushButton(props)
       }
       svg.<.g(
-        parts.toVdomArray
+        parts
       )
     }
 

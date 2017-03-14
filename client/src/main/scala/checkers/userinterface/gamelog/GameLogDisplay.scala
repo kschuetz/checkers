@@ -9,8 +9,6 @@ import japgolly.scalajs.react.raw.JsNumber
 import japgolly.scalajs.react.vdom.html_<^._
 import japgolly.scalajs.react.vdom.{svg_<^ => svg}
 
-import scala.scalajs.js
-
 object GameLogDisplay {
 
   case class Props(upperLeftX: Double,
@@ -110,7 +108,7 @@ class GameLogDisplay(notation: Notation,
         result
       } else 0d
 
-      val entries = new js.Array[VdomNode]
+      val entries = VdomArray.empty
 
       var y = clientTop - offsetPixels
 
@@ -134,7 +132,7 @@ class GameLogDisplay(notation: Notation,
             upperLeftY = y)
 
           val element = gameLogEntry.create.withKey(key)(entryPanelProps)
-          entries.push(element)
+          entries += element
           y += entryHeight
         }
       }
@@ -178,7 +176,7 @@ class GameLogDisplay(notation: Notation,
         ^.`class` := "game-log-display",
         clipPathAttr := s"url(#$bodyClipPathId)",
         backdrop,
-        entries.toVdomArray
+        entries
       )
 
       val scrollUpButton: Option[VdomElement] = if(scrollUpEnabled) {

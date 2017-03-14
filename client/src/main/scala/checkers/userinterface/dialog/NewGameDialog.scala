@@ -1,14 +1,12 @@
 package checkers.userinterface.dialog
 
-import checkers.userinterface.piece.{PhysicalPiece, PhysicalPieceProps}
 import checkers.consts._
 import checkers.core.Variation
+import checkers.userinterface.piece.{PhysicalPiece, PhysicalPieceProps}
 import checkers.util.StringUtils
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.html_<^._
-import japgolly.scalajs.react.vdom.{ svg_<^ => svg }
-
-import scala.scalajs.js
+import japgolly.scalajs.react.vdom.{svg_<^ => svg}
 
 
 object NewGameDialog {
@@ -100,7 +98,7 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
 
   class PlayerSelectorBackend($: BackendScope[PlayerSelectorProps, Unit]) {
     def render(props: PlayerSelectorProps): VdomElement = {
-      val items = new js.Array[VdomNode]
+      val items = VdomArray.empty
       props.playerChoices.indices.foreach { i =>
         val item = props.playerChoices(i)
         val option = <.option(
@@ -108,14 +106,14 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
           ^.value := i,
           item.displayName
         )
-        items.push(option)
+        items += option
       }
 
       <.select(
         ^.`class` := "player-selector",
         ^.value := props.playerIndex,
         ^.onChange ==> handleChange,
-        items.toVdomArray
+        items
       )
     }
 
@@ -217,7 +215,7 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
 
   class VariationSelectorBackend($: BackendScope[VariationSelectorProps, Unit]) {
     def render(props: VariationSelectorProps): VdomElement = {
-      val items = new js.Array[VdomNode]
+      val items = VdomArray.empty
       props.variationChoices.indices.foreach { i =>
         val item = props.variationChoices(i)
         val option = <.option(
@@ -225,7 +223,7 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
           ^.value := i,
           item.displayName
         )
-        items.push(option)
+        items += option
       }
 
       <.div(
@@ -238,7 +236,7 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
           ^.id := "variation-select",
           ^.value := props.variationIndex,
           ^.onChange ==> handleChange,
-          items.toVdomArray
+          items
         )
       )
 

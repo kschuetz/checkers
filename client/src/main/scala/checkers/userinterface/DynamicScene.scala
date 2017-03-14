@@ -1,18 +1,15 @@
 package checkers.userinterface
 
-import checkers.userinterface.board.{LastMoveIndicator, PhysicalBoard, SquareOverlayButton}
-import checkers.userinterface.piece._
 import checkers.consts._
 import checkers.core.Animation._
 import checkers.core.{Board, GameModelReader, SquareAttributes}
 import checkers.userinterface.animation._
+import checkers.userinterface.board.{LastMoveIndicator, PhysicalBoard, SquareOverlayButton}
+import checkers.userinterface.piece._
 import checkers.util.Point
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.html_<^._
-import japgolly.scalajs.react.vdom.{ svg_<^ => svg }
-import japgolly.scalajs.react.vdom.{ svg_<^ => svg }
-
-import scala.scalajs.js
+import japgolly.scalajs.react.vdom.{svg_<^ => svg}
 
 object DynamicScene {
 
@@ -56,7 +53,7 @@ class DynamicScene(physicalPiece: PhysicalPiece,
 
       val boardState = model.board
 
-      val staticPieces = new js.Array[VdomNode]
+      val staticPieces = VdomArray.empty
 
       Board.playableSquares.filterNot(piecesToHide.contains).foreach { squareIndex =>
         val occupant = boardState.getOccupant(squareIndex)
@@ -83,16 +80,16 @@ class DynamicScene(physicalPiece: PhysicalPiece,
             callbacks = callbacks)
 
           val pieceElement = physicalPiece.create.withKey(k)(pieceProps)
-          staticPieces.push(pieceElement)
+          staticPieces += pieceElement
         }
       }
 
       val staticPiecesLayer = svg.<.g(
-        ^.classSet("no-pointer-events" -> !model.canClickPieces),
-        staticPieces.toVdomArray
+        (^.`class` := "no-pointer-events").unless(model.canClickPieces),
+        staticPieces
       )
 
-      val overlayButtons = new js.Array[VdomNode]
+      val overlayButtons = VdomArray.empty
       Board.allSquares.foreach { case (boardPos, squareIndex, pt) =>
         val k = s"s-${boardPos.row}-${boardPos.col}"
         val squareAttributes = if (squareIndex >= 0) model.squareAttributes(squareIndex)
@@ -102,7 +99,7 @@ class DynamicScene(physicalPiece: PhysicalPiece,
         val props = SquareOverlayButton.Props(squareIndex, occupant, pt.x, pt.y, squareAttributes.clickable,
           screenToBoard = screenToBoard, callbacks = callbacks)
         val button = squareOverlayButton.create.withKey(k)(props)
-        overlayButtons.push(button)
+        overlayButtons += button
       }
 
       val pickedUpPieceElement = model.pickedUpPiece.map { p =>
@@ -110,7 +107,7 @@ class DynamicScene(physicalPiece: PhysicalPiece,
         pickedUpPiece.create(props)
       }
 
-      val animations = new js.Array[VdomNode]
+      val animations = VdomArray.empty
       val nowTime = model.nowTime
       model.animation.play.foreach {
         case rp: RemovingPiece =>
@@ -118,28 +115,28 @@ class DynamicScene(physicalPiece: PhysicalPiece,
           val progress = rp.linearProgress(nowTime)
           val props = RemovingPieceAnimation.Props(rp.piece, rp.fromSquare, progress, pieceRotation)
           val component = removingPieceAnimation.create.withKey(k)(props)
-          animations.push(component)
+          animations += component
 
         case pp: PlacingPiece =>
           val k = s"place-${pp.toSquare}"
           val progress = pp.linearProgress(nowTime)
           val props = PlacingPieceAnimation.Props(pp.piece, pp.toSquare, progress, pieceRotation)
           val component = placingPieceAnimation.create.withKey(k)(props)
-          animations.push(component)
+          animations += component
 
         case mp: MovingPiece =>
           val k = s"move-${mp.fromSquare}-${mp.toSquare}"
           val progress = mp.linearProgress(nowTime)
           val props = MovingPieceAnimation.Props(mp.piece, mp.fromSquare, mp.toSquare, progress, pieceRotation)
           val component = movingPieceAnimation.create.withKey(k)(props)
-          animations.push(component)
+          animations += component
 
         case jp: JumpingPiece if jp.isPieceVisible(nowTime) =>
           val k = s"jump-${jp.fromSquare}-${jp.toSquare}"
           val progress = jp.linearProgress(nowTime)
           val props = JumpingPieceAnimation.Props(jp.piece, jp.fromSquare, jp.toSquare, progress, pieceRotation)
           val component = jumpingPieceAnimation.create.withKey(k)(props)
-          animations.push(component)
+          animations += component
 
         case cp: CrowningPiece =>
           val k = s"crown-${cp.squareIndex}"
@@ -147,7 +144,7 @@ class DynamicScene(physicalPiece: PhysicalPiece,
           if (progress > 0) {
             val props = CrowningAnimation.Props(cp.side, cp.squareIndex, progress, pieceRotation)
             val component = crowningAnimation.create.withKey(k)(props)
-            animations.push(component)
+            animations += component
           }
 
         case ips: IllegalPieceSelection =>
@@ -155,7 +152,7 @@ class DynamicScene(physicalPiece: PhysicalPiece,
           val progress = ips.linearProgress(nowTime)
           val props = IllegalPieceSelectionAnimation.Props(ips.piece, ips.squareIndex, progress, pieceRotation)
           val component = illegalPieceSelectionAnimation.create.withKey(k)(props)
-          animations.push(component)
+          animations += component
 
         case _ => ()
       }
@@ -163,7 +160,7 @@ class DynamicScene(physicalPiece: PhysicalPiece,
       model.animation.hint.foreach { ha =>
         val props = ShowHintAnimation.Props(ha.fromSquare, ha.toSquare, ha.flashDuration, ha.duration, nowTime - ha.startTime)
         val component = showHintAnimation.create.withKey("hint")(props)
-        animations.push(component)
+        animations += component
       }
 
       val lastMoveIndicatorElement = if(model.inputPhase.waitingForMove) {
@@ -177,10 +174,10 @@ class DynamicScene(physicalPiece: PhysicalPiece,
       } else None
 
       svg.<.g(
-        overlayButtons.toVdomArray,
+        overlayButtons,
         lastMoveIndicatorElement.whenDefined,
         staticPiecesLayer,
-        animations.toVdomArray,
+        animations,
         pickedUpPieceElement.whenDefined
       )
 

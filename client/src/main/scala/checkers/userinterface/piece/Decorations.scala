@@ -2,12 +2,10 @@ package checkers.userinterface.piece
 
 import checkers.consts.{DARK, Side}
 import checkers.util.{Point, SvgHelpers}
-import japgolly.scalajs.react.vdom.html_<^._
-import japgolly.scalajs.react.vdom.{svg_<^ => svg}
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.raw.JsNumber
-
-import scala.scalajs.js
+import japgolly.scalajs.react.vdom.html_<^._
+import japgolly.scalajs.react.vdom.{svg_<^ => svg}
 
 sealed trait Decoration
 
@@ -118,15 +116,15 @@ class Decorations extends SvgHelpers {
     .render_P { case (side, scale) =>
       val classes = if (side == DARK) ("crown-a dark", "crown-b dark", "crown-c dark")
         else ("crown-a light", "crown-b light", "crown-c light")
-      val parts = new js.Array[VdomNode]
+      val parts = VdomArray.empty
       crownPaths.indices.foreach { idx =>
-        parts.push(CrownPart.withKey(idx.toString)((classes, idx)))
+        parts += CrownPart.withKey(idx.toString)((classes, idx))
       }
 
       svg.<.g(
         ^.`class` := "crown",
         svg.^.transform := s"scale($scale)",
-        parts.toVdomArray
+        parts
       )
 
     }.build
@@ -140,7 +138,7 @@ class Decorations extends SvgHelpers {
 
 
       var k = 0
-      val parts = new js.Array[VdomNode]
+      val parts = VdomArray.empty
 
       starPathA.foreach { points =>
         k += 1
@@ -149,7 +147,7 @@ class Decorations extends SvgHelpers {
           ^.`class` := classesA,
           svg.^.points := points
         )
-        parts.push(part)
+        parts += part
       }
 
       starPathB.foreach { points =>
@@ -159,13 +157,13 @@ class Decorations extends SvgHelpers {
           ^.`class` := classesB,
           svg.^.points := points
         )
-        parts.push(part)
+        parts += part
       }
 
       svg.<.g(
         ^.`class` := "star",
         svg.^.transform := s"scale($scale)",
-        parts.toVdomArray
+        parts
       )
 
     }.build

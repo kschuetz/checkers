@@ -1,14 +1,12 @@
 package checkers.userinterface.piece
 
-import checkers.userinterface.BoardMouseEvent
 import checkers.consts._
+import checkers.userinterface.BoardMouseEvent
 import checkers.util.{Point, SvgHelpers}
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.raw.JsNumber
 import japgolly.scalajs.react.vdom.html_<^._
 import japgolly.scalajs.react.vdom.{svg_<^ => svg}
-
-import scala.scalajs.js
 
 object PhysicalPiece extends SvgHelpers {
 
@@ -44,11 +42,11 @@ class PhysicalPiece(decorations: Decorations) {
 
       val showPips = !props.simplified
 
-      val pips = new js.Array[VdomNode]
-      if(showPips) {
+      val pips = VdomArray.empty
+      if (showPips) {
         (0 to 11).foreach { pipIndex =>
           val pt = decorations.pipCoordinates(pipIndex)
-          pips.push(decorations.Pip.withKey(pipIndex.toString)((side, pt)))
+          pips += decorations.Pip.withKey(pipIndex.toString)((side, pt))
         }
       }
 
@@ -63,7 +61,7 @@ class PhysicalPiece(decorations: Decorations) {
         ^.`class` := classes,
         (svg.^.transform := transform).when(transform.nonEmpty),
         disk,
-        pips.toVdomArray,
+        pips,
         decorations.PieceDecoration((side, decoration))
       )
 
@@ -73,11 +71,7 @@ class PhysicalPiece(decorations: Decorations) {
 
   private val PieceBody = ScalaComponent.build[RenderProps]("PieceBody")
     .renderBackend[PieceBodyBackend]
-    .shouldComponentUpdateConst(false)
-//    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, _) =>
-//    val result = scope.props.pieceProps.rotationDegrees != nextProps.pieceProps.rotationDegrees
-//    CallbackTo.pure(result)
-//  }
+    .shouldComponentUpdate(x => CallbackTo.pure(x.cmpProps(_.pieceProps.rotationDegrees != _.pieceProps.rotationDegrees)))
     .build
 
   private val PieceOverlayButton = ScalaComponent.build[PhysicalPieceProps]("PieceOverlayButton")
@@ -104,10 +98,10 @@ class PhysicalPiece(decorations: Decorations) {
         PieceOverlayButton(props)
       )
     }
-      .shouldComponentUpdate { x =>
-        val result = comparePhysicalPieceProps(x.currentProps, x.nextProps)
-        CallbackTo.pure(result)
-      }
+    .shouldComponentUpdate { x =>
+      val result = comparePhysicalPieceProps(x.currentProps, x.nextProps)
+      CallbackTo.pure(result)
+    }
     .build
 
   private val PieceKing = ScalaComponent.build[PhysicalPieceProps]("King")
