@@ -221,10 +221,9 @@ class GameLogDisplay(notation: Notation,
   val create = ScalaComponent.build[Props]("GameLogDisplay")
     .initialState[State](defaultState)
     .renderBackend[Backend]
-    // TODO: shouldComponentUpdateConst
-//    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, nextState) =>
-//      val result = scope.props.shouldUpdate(nextProps) || scope.state.shouldUpdate(nextState)
-//      CallbackTo.pure(result)
-//    }
+      .shouldComponentUpdate { x =>
+        val result = x.currentProps.shouldUpdate(x.nextProps) || x.currentState.shouldUpdate(x.nextState)
+        CallbackTo.pure(result)
+      }
     .build
 }

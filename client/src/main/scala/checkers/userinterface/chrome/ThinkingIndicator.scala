@@ -71,10 +71,7 @@ class ThinkingIndicator extends SvgHelpers with ClipPathHelpers {
         segments.toVdomArray
       )
     }
-    // TODO: shouldComponentUpdateConst
-//    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, _) =>
-//      CallbackTo.pure(scope.props != nextProps)
-//    }
+    .shouldComponentUpdate { x => CallbackTo.pure(x.cmpProps(_ != _)) }
     .build
 
   class Backend($: BackendScope[Props, Unit]) {

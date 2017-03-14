@@ -79,11 +79,6 @@ class SceneFrame(physicalBoard: PhysicalBoard,
       var result = screen
       val target = playfieldRef.asInstanceOf[SVGLocatable]
       result = sceneContext.screenToLocal(target)(screen)
-      // TODO: remove old:
-//      $.refs(playfieldRef.name).foreach { node =>
-//        val target = node.getDOMNode.asInstanceOf[SVGLocatable]
-//        result = sceneContext.screenToLocal(target)(screen)
-//      }
       result
     }
 

@@ -2,19 +2,23 @@ package checkers.userinterface.widgets
 
 import checkers.util.{Point, SvgHelpers}
 import japgolly.scalajs.react._
+import japgolly.scalajs.react.extra.Reusability.ShouldComponentUpdateResult
 import japgolly.scalajs.react.vdom.html_<^._
 import japgolly.scalajs.react.vdom.{svg_<^ => svg}
 
 object Arrow {
+
   case class Props(totalLength: Double,
                    headLength: Double,
                    headWidth: Double,
                    baseWidth: Double,
                    baseOffset: Double = 0,
                    extraClasses: Map[String, Boolean] = Map.empty)
+
 }
 
 class Arrow extends SvgHelpers {
+
   import Arrow._
 
   class Backend($: BackendScope[Props, Unit]) {
@@ -46,10 +50,6 @@ class Arrow extends SvgHelpers {
 
   val create = ScalaComponent.build[Props]("ArrowWidget")
     .renderBackend[Backend]
-    // TODO: shouldComponentUpdate
-//    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, _) =>
-//      val result = scope.props != nextProps
-//      CallbackTo.pure(result)
-//    }
+    .shouldComponentUpdate { x => CallbackTo.pure(x.currentProps != x.nextProps) }
     .build
 }

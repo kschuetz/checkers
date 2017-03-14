@@ -200,11 +200,7 @@ class PlayerPanel(pieceAvatar: PieceAvatar,
 
   val create = ScalaComponent.build[Props]("PlayerPanel")
     .renderBackend[Backend]
-    // TODO: shouldComponentUpdateConst
-//    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, _) =>
-//      val result = scope.props != nextProps
-//      CallbackTo.pure(result)
-//    }
+    .shouldComponentUpdate { x => CallbackTo.pure(x.cmpProps(_ != _)) }
     .build
 
 }

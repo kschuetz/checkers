@@ -73,13 +73,11 @@ class PhysicalPiece(decorations: Decorations) {
 
   private val PieceBody = ScalaComponent.build[RenderProps]("PieceBody")
     .renderBackend[PieceBodyBackend]
-    //    .shouldComponentUpdateConst(_ => CallbackTo.pure(false))
-    // TODO: shouldComponentUpdateConst
+    .shouldComponentUpdateConst(false)
 //    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, _) =>
 //    val result = scope.props.pieceProps.rotationDegrees != nextProps.pieceProps.rotationDegrees
 //    CallbackTo.pure(result)
 //  }
-//    .shouldComponentUpdateConst(_ => CallbackTo.pure(false))
     .build
 
   private val PieceOverlayButton = ScalaComponent.build[PhysicalPieceProps]("PieceOverlayButton")
@@ -106,11 +104,10 @@ class PhysicalPiece(decorations: Decorations) {
         PieceOverlayButton(props)
       )
     }
-    // TODO: shouldComponentUpdateConst
-//    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, _) =>
-//      val result = comparePhysicalPieceProps(scope.props, nextProps)
-//      CallbackTo.pure(result)
-//    }
+      .shouldComponentUpdate { x =>
+        val result = comparePhysicalPieceProps(x.currentProps, x.nextProps)
+        CallbackTo.pure(result)
+      }
     .build
 
   private val PieceKing = ScalaComponent.build[PhysicalPieceProps]("King")

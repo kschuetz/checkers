@@ -119,11 +119,7 @@ class GameOverPanel(physicalPiece: PhysicalPiece) extends FontHelpers {
 
   val create = ScalaComponent.build[Props]("GameOverPanel")
     .renderBackend[Backend]
-    // TODO: shouldComponentUpdateConst
-//    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, _) =>
-//      val result = scope.props != nextProps
-//      CallbackTo.pure(result)
-//    }
+    .shouldComponentUpdate { x => CallbackTo.pure(x.cmpProps(_ != _)) }
     .build
 
 

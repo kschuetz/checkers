@@ -48,11 +48,7 @@ class PlacingPieceAnimation(physicalPiece: PhysicalPiece,
 
   val create = ScalaComponent.build[Props]("PlacingPieceAnimation")
     .renderBackend[Backend]
-    // TODO:  shouldComponentUpdateConst
-//    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, _) =>
-//      val result = scope.props != nextProps
-//      CallbackTo.pure(result)
-//    }
+    .shouldComponentUpdate { x => CallbackTo.pure(x.cmpProps(_ != _)) }
     .build
 
   private def endingPoint(piece: Occupant, fromSquare: Int): Point = {
