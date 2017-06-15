@@ -7,11 +7,11 @@ import org.scalajs.dom
 import org.scalajs.dom.UIEvent
 
 import scala.scalajs.js
-import scala.scalajs.js.annotation.JSExport
+import scala.scalajs.js.annotation.{JSExport, JSExportTopLevel}
 import scalacss.Defaults._
 import scalacss.ScalaCssReact._
 
-@JSExport("CheckersMain")
+@JSExportTopLevel("CheckersMain")
 object CheckersMain extends js.JSApp {
 
   @JSExport
