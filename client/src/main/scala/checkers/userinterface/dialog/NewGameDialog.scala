@@ -391,7 +391,7 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
   }
 
   val create = ScalaComponent.builder[Props]("NewGameDialog")
-    .initialState_P[State](_.initialState)
+    .initialStateFromProps[State](_.initialState)
     .renderBackend[NewGameDialogBackend]
     .build
 
