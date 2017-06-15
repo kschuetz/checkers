@@ -126,7 +126,7 @@ class GameLogEntry(physicalPiece: PhysicalPiece) extends FontHelpers with ClipPa
     }
   }
 
-  val create = ScalaComponent.build[Props]("GameLogEntry")
+  val create = ScalaComponent.builder[Props]("GameLogEntry")
     .renderBackend[Backend]
     .shouldComponentUpdate { x => CallbackTo.pure(x.cmpProps(_ != _)) }
     .build

@@ -27,7 +27,7 @@ class RushButton(button: Button) extends SvgHelpers {
 
   private case class GlyphProps(scale: Double)
 
-  private lazy val RushButtonGlyph = ScalaComponent.build[GlyphProps]("RushButtonGlyph")
+  private lazy val RushButtonGlyph = ScalaComponent.builder[GlyphProps]("RushButtonGlyph")
     .render_P { props =>
 
       val ring = svg.<.circle(
@@ -86,7 +86,7 @@ class RushButton(button: Button) extends SvgHelpers {
     }
   }
 
-  val create = ScalaComponent.build[Props]("RushButton")
+  val create = ScalaComponent.builder[Props]("RushButton")
     .renderBackend[Backend]
     .build
 

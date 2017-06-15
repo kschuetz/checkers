@@ -38,7 +38,7 @@ class LastMoveIndicator(directedArrow: DirectedArrow) {
     }
   }
 
-  val create = ScalaComponent.build[Props]("LastMoveIndicator")
+  val create = ScalaComponent.builder[Props]("LastMoveIndicator")
     .renderBackend[Backend]
     .build
 }

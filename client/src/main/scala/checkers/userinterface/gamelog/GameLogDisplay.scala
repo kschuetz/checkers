@@ -216,7 +216,7 @@ class GameLogDisplay(notation: Notation,
     }
   }
 
-  val create = ScalaComponent.build[Props]("GameLogDisplay")
+  val create = ScalaComponent.builder[Props]("GameLogDisplay")
     .initialState[State](defaultState)
     .renderBackend[Backend]
       .shouldComponentUpdate { x =>

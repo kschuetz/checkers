@@ -31,7 +31,7 @@ class ThinkingIndicator extends SvgHelpers with ClipPathHelpers {
                                        segmentWidth: Double,
                                        segmentCount: Int)
 
-  private val SegmentGroup = ScalaComponent.build[SegmentGroupProps]("ThinkingIndicatorSegmentGroup")
+  private val SegmentGroup = ScalaComponent.builder[SegmentGroupProps]("ThinkingIndicatorSegmentGroup")
     .render_P { props =>
       val height = props.height
       val y = -height / 2
@@ -132,7 +132,7 @@ class ThinkingIndicator extends SvgHelpers with ClipPathHelpers {
 
   }
 
-  val create = ScalaComponent.build[Props]("ThinkingIndicator")
+  val create = ScalaComponent.builder[Props]("ThinkingIndicator")
     .renderBackend[Backend]
     .build
 }

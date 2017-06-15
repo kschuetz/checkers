@@ -42,7 +42,7 @@ class PickedUpPiece(physicalPiece: PhysicalPiece) {
     }
   }
 
-  val create = ScalaComponent.build[Props]("PickedUpPiece")
+  val create = ScalaComponent.builder[Props]("PickedUpPiece")
     .renderBackend[Backend]
     .build
 

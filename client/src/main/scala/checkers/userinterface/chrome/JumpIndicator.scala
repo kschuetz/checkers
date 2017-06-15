@@ -28,7 +28,7 @@ object JumpIndicator extends SvgHelpers {
 class JumpIndicator(physicalPiece: PhysicalPiece) {
   import JumpIndicator._
 
-  private val JumpArrow = ScalaComponent.build[Side]("JumpIndicatorArrow")
+  private val JumpArrow = ScalaComponent.builder[Side]("JumpIndicatorArrow")
     .render_P { oppositeSide =>
       val classes = s"jump-indicator-arrow ${CssHelpers.playerSideClass(oppositeSide)}"
       svg.<.g(
@@ -40,7 +40,7 @@ class JumpIndicator(physicalPiece: PhysicalPiece) {
     }
     .build
 
-  private val OpponentAvatar = ScalaComponent.build[Side]("JumpIndicatorOpponentAvatar")
+  private val OpponentAvatar = ScalaComponent.builder[Side]("JumpIndicatorOpponentAvatar")
     .render_P { side =>
       val pieceProps = PhysicalPieceProps.default.copy(
         piece = if (side == DARK) DARKMAN else LIGHTMAN,
@@ -53,7 +53,7 @@ class JumpIndicator(physicalPiece: PhysicalPiece) {
     }
     .build
 
-  val create = ScalaComponent.build[Props]("JumpIndicator")
+  val create = ScalaComponent.builder[Props]("JumpIndicator")
     .render_P { props =>
 
       val opponentAvatar = OpponentAvatar(props.oppositeSide)

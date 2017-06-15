@@ -20,7 +20,7 @@ class PieceAvatar(physicalPiece: PhysicalPiece) {
 
   import PieceAvatar._
 
-  val create = ScalaComponent.build[Props]("PieceAvatar")
+  val create = ScalaComponent.builder[Props]("PieceAvatar")
     .render_P { props =>
       val pieceProps = PhysicalPieceProps.default.copy(
         piece = if (props.side == DARK) DARKMAN else LIGHTMAN,

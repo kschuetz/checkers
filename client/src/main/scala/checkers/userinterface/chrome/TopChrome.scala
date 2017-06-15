@@ -83,7 +83,7 @@ class TopChrome(playerPanel: PlayerPanel) {
     }
   }
 
-  val create = ScalaComponent.build[Props]("TopChrome")
+  val create = ScalaComponent.builder[Props]("TopChrome")
     .renderBackend[Backend]
     //    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, _) =>
     //      val result = scope.props != nextProps

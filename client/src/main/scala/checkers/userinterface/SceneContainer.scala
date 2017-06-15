@@ -46,7 +46,7 @@ class SceneContainer(sceneFrame: SceneFrame) {
     }
   }
 
-  val create = ScalaComponent.build[Props]("SceneContainer")
+  val create = ScalaComponent.builder[Props]("SceneContainer")
     .initialState[SceneContainerContext](NullSceneContainerContext)
     .renderBackend[Backend]
     .componentDidMount(_.backend.start)

@@ -55,7 +55,7 @@ class CrowningAnimation(physicalPiece: PhysicalPiece,
   }
 
 
-  val create = ScalaComponent.build[Props]("CrowningAnimation")
+  val create = ScalaComponent.builder[Props]("CrowningAnimation")
     .renderBackend[Backend]
     .shouldComponentUpdate { x => CallbackTo.pure(x.cmpProps(_ != _)) }
     .build

@@ -45,7 +45,7 @@ class RemovingPieceAnimation(physicalPiece: PhysicalPiece,
     }
   }
 
-  val create = ScalaComponent.build[Props]("RemovingPieceAnimation")
+  val create = ScalaComponent.builder[Props]("RemovingPieceAnimation")
     .renderBackend[Backend]
     .shouldComponentUpdate { x => CallbackTo.pure(x.cmpProps(_ != _)) }
     .build

@@ -42,7 +42,7 @@ class ShowHintAnimation(directedArrow: DirectedArrow) {
     }
   }
 
-  val create = ScalaComponent.build[Props]("ShowHintAnimation")
+  val create = ScalaComponent.builder[Props]("ShowHintAnimation")
     .renderBackend[Backend]
     .build
 

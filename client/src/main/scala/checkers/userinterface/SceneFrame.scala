@@ -26,7 +26,7 @@ class SceneFrame(physicalBoard: PhysicalBoard,
 
   import SceneFrame._
 
-  private val Backdrop = ScalaComponent.build[(Int, Int)]("Backdrop")
+  private val Backdrop = ScalaComponent.builder[(Int, Int)]("Backdrop")
     .render_P { case (width, height) =>
       svg.<.rect(
 //        VdomAttr.ClassName := "backdrop",
@@ -83,7 +83,7 @@ class SceneFrame(physicalBoard: PhysicalBoard,
 
   }
 
-  val create = ScalaComponent.build[Props]("SceneFrame")
+  val create = ScalaComponent.builder[Props]("SceneFrame")
     .renderBackend[Backend]
     .build
 

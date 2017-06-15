@@ -45,7 +45,7 @@ class MovingPieceAnimation(physicalPiece: PhysicalPiece) {
     }
   }
 
-  val create = ScalaComponent.build[Props]("MovingPieceAnimation")
+  val create = ScalaComponent.builder[Props]("MovingPieceAnimation")
     .renderBackend[Backend]
     .shouldComponentUpdate { x => CallbackTo.pure(x.cmpProps(_ != _)) }
     .build

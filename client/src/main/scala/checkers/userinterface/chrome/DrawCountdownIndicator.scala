@@ -94,7 +94,7 @@ class DrawCountdownIndicator extends FontHelpers with ClipPathHelpers {
     }
   }
 
-  val create = ScalaComponent.build[Props]("DrawCountdownIndicator")
+  val create = ScalaComponent.builder[Props]("DrawCountdownIndicator")
     .renderBackend[Backend]
     .build
 }

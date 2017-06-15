@@ -196,7 +196,7 @@ class PlayerPanel(pieceAvatar: PieceAvatar,
     }
   }
 
-  val create = ScalaComponent.build[Props]("PlayerPanel")
+  val create = ScalaComponent.builder[Props]("PlayerPanel")
     .renderBackend[Backend]
     .shouldComponentUpdate { x => CallbackTo.pure(x.cmpProps(_ != _)) }
     .build

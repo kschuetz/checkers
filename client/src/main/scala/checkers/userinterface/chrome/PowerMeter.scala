@@ -89,7 +89,7 @@ class PowerMeter {
     }
   }
 
-  val create = ScalaComponent.build[Props]("PowerMeter")
+  val create = ScalaComponent.builder[Props]("PowerMeter")
     .renderBackend[Backend]
     .build
 }

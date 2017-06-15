@@ -24,7 +24,7 @@ class PhysicalPiece(decorations: Decorations) {
 
   import PhysicalPiece._
 
-  private val Disk = ScalaComponent.build[(Side, Double)]("Disk")
+  private val Disk = ScalaComponent.builder[(Side, Double)]("Disk")
     .render_P { case (side, radius) =>
       val classes = if (side == DARK) "disk dark" else "disk light"
       svg.<.circle(
@@ -69,12 +69,12 @@ class PhysicalPiece(decorations: Decorations) {
 
   }
 
-  private val PieceBody = ScalaComponent.build[RenderProps]("PieceBody")
+  private val PieceBody = ScalaComponent.builder[RenderProps]("PieceBody")
     .renderBackend[PieceBodyBackend]
     .shouldComponentUpdate(x => CallbackTo.pure(x.cmpProps(_.pieceProps.rotationDegrees != _.pieceProps.rotationDegrees)))
     .build
 
-  private val PieceOverlayButton = ScalaComponent.build[PhysicalPieceProps]("PieceOverlayButton")
+  private val PieceOverlayButton = ScalaComponent.builder[PhysicalPieceProps]("PieceOverlayButton")
     .render_P { props =>
       svg.<.circle(
         ^.classSet1("piece-button-layer", "welcome" -> props.clickable),
@@ -85,7 +85,7 @@ class PhysicalPiece(decorations: Decorations) {
       )
     }.build
 
-  private val PieceMan = ScalaComponent.build[PhysicalPieceProps]("Man")
+  private val PieceMan = ScalaComponent.builder[PhysicalPieceProps]("Man")
     .render_P { props =>
       val side = SIDE(props.piece)
       val baseClasses = if (side == DARK) "piece man dark" else "piece man light"
@@ -104,7 +104,7 @@ class PhysicalPiece(decorations: Decorations) {
     }
     .build
 
-  private val PieceKing = ScalaComponent.build[PhysicalPieceProps]("King")
+  private val PieceKing = ScalaComponent.builder[PhysicalPieceProps]("King")
     .render_P { props =>
       val side = SIDE(props.piece)
       val baseClasses = if (side == DARK) "piece king dark" else "piece king light"
@@ -125,7 +125,7 @@ class PhysicalPiece(decorations: Decorations) {
     }.build
 
 
-  val create = ScalaComponent.build[PhysicalPieceProps]("PhysicalPiece")
+  val create = ScalaComponent.builder[PhysicalPieceProps]("PhysicalPiece")
     .render_P { props =>
       if (PIECETYPE(props.piece) == MAN) PieceMan(props) else PieceKing(props)
     }.build

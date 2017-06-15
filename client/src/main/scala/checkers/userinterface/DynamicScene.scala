@@ -38,7 +38,7 @@ class DynamicScene(physicalPiece: PhysicalPiece,
 
   import DynamicScene._
 
-  val create = ScalaComponent.build[Props]("DynamicScene")
+  val create = ScalaComponent.builder[Props]("DynamicScene")
     .render_P { case Props(model, callbacks, sceneContainerContext, screenToBoard) =>
 
       val boardRotation = model.getBoardRotation

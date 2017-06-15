@@ -19,7 +19,7 @@ class ScrollButton(button: Button) extends SvgHelpers {
 
   private case class GlyphProps(width: Double, height: Double, up: Boolean)
 
-  private lazy val ScrollButtonGlyph = ScalaComponent.build[GlyphProps]("ScrollButtonGlyph")
+  private lazy val ScrollButtonGlyph = ScalaComponent.builder[GlyphProps]("ScrollButtonGlyph")
     .render_P { props =>
 
       val halfHeight = props.height / 2
@@ -79,7 +79,7 @@ class ScrollButton(button: Button) extends SvgHelpers {
     }
   }
 
-  val create = ScalaComponent.build[Props]("ScrollButton")
+  val create = ScalaComponent.builder[Props]("ScrollButton")
     .renderBackend[Backend]
     .build
 

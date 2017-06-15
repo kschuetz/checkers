@@ -24,7 +24,7 @@ class SquareOverlayButton {
 
   import SquareOverlayButton._
 
-  val create = ScalaComponent.build[Props]("SquareOverlayButton")
+  val create = ScalaComponent.builder[Props]("SquareOverlayButton")
     .render_P { props =>
       svg.<.rect(
         ^.classSet1("square-button-layer", "welcome" -> props.clickable),

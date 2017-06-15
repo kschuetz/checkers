@@ -23,7 +23,7 @@ class GameScreen(sceneContainer: SceneContainer,
                  gameOverPanel: GameOverPanel) {
   import GameScreen._
 
-  val create = ScalaComponent.build[Props]("GameScreen")
+  val create = ScalaComponent.builder[Props]("GameScreen")
     .render_P { case Props(gameModel, layoutSettings, callbacks, applicationCallbacks) =>
       val sceneWidth = layoutSettings.GameSceneWidthPixels
       val sceneHeight = layoutSettings.GameSceneHeightPixels

@@ -46,7 +46,7 @@ class DirectedArrow(arrow: Arrow) extends SvgHelpers {
     }
   }
 
-  val create = ScalaComponent.build[Props]("DirectedArrow")
+  val create = ScalaComponent.builder[Props]("DirectedArrow")
     .renderBackend[Backend]
     .shouldComponentUpdate { x => CallbackTo.pure(x.currentProps != x.nextProps) }
     .build

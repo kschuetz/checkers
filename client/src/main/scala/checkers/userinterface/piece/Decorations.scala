@@ -83,7 +83,7 @@ class Decorations extends SvgHelpers {
     }
   }
 
-  val Pip = ScalaComponent.build[(Side, Point)]("Pip")
+  val Pip = ScalaComponent.builder[(Side, Point)]("Pip")
     .render_P { case (side, Point(cx, cy)) =>
       val classes = if(side == DARK) "pip dark" else "pip light"
       svg.<.circle(
@@ -94,7 +94,7 @@ class Decorations extends SvgHelpers {
       )
     }.build
 
-  private val CrownPart = ScalaComponent.build[((String, String, String), Int)]("CrownPart")
+  private val CrownPart = ScalaComponent.builder[((String, String, String), Int)]("CrownPart")
     .render_P { case ((classesA, classesB, classesC), idx) =>
       val Point(cx, cy) = topCrownPoints(idx)
       val cl1 = if (idx > 1) classesA else classesB
@@ -112,7 +112,7 @@ class Decorations extends SvgHelpers {
       )
     }.build
 
-  val Crown = ScalaComponent.build[(Side, Double)]("Crown")
+  val Crown = ScalaComponent.builder[(Side, Double)]("Crown")
     .render_P { case (side, scale) =>
       val classes = if (side == DARK) ("crown-a dark", "crown-b dark", "crown-c dark")
         else ("crown-a light", "crown-b light", "crown-c light")
@@ -130,7 +130,7 @@ class Decorations extends SvgHelpers {
     }.build
 
 
-  val Star = ScalaComponent.build[(Side, Double)]("Star")
+  val Star = ScalaComponent.builder[(Side, Double)]("Star")
     .render_P { case (side, scale) =>
       val (classesA, classesB) =
         if(side == DARK) ("star-a dark", "star-b dark")
@@ -168,7 +168,7 @@ class Decorations extends SvgHelpers {
 
     }.build
 
-  val PieceDecoration = ScalaComponent.build[(Side, Decoration)]("PieceDecoration")
+  val PieceDecoration = ScalaComponent.builder[(Side, Decoration)]("PieceDecoration")
     .render_P {
       case (side, Decoration.Star) => Star((side, 0.55))
       case (side, Decoration.Crown) => Crown((side, 0.55))

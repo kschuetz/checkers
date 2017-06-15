@@ -65,7 +65,7 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
 
   import NewGameDialog._
 
-  private val PieceAvatar = ScalaComponent.build[Side]("NewGameDialogPieceAvatar")
+  private val PieceAvatar = ScalaComponent.builder[Side]("NewGameDialogPieceAvatar")
     .render_P { side =>
       val pieceProps = PhysicalPieceProps.default.copy(
         piece = if (side == DARK) DARKMAN else LIGHTMAN,
@@ -128,7 +128,7 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
     }
   }
 
-  private val PlayerSelector = ScalaComponent.build[PlayerSelectorProps]("PlayerSelector")
+  private val PlayerSelector = ScalaComponent.builder[PlayerSelectorProps]("PlayerSelector")
     .renderBackend[PlayerSelectorBackend]
     .build
 
@@ -170,7 +170,7 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
     }
   }
 
-  private val PlaysFirstCheckbox = ScalaComponent.build[PlaysFirstProps]("PlaysFirstCheckbox")
+  private val PlaysFirstCheckbox = ScalaComponent.builder[PlaysFirstProps]("PlaysFirstCheckbox")
     .renderBackend[PlaysFirstCheckboxBackend]
     .build
 
@@ -196,7 +196,7 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
     }
   }
 
-  private val PlayerSettingsPanel = ScalaComponent.build[PlayerSettingsPanelProps]("PlayerSettingsPanel")
+  private val PlayerSettingsPanel = ScalaComponent.builder[PlayerSettingsPanelProps]("PlayerSettingsPanel")
     .renderBackend[PlayerSettingsPanelBackend]
     .build
 
@@ -253,7 +253,7 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
     }
   }
 
-  private val VariationSelector = ScalaComponent.build[VariationSelectorProps]("VariationSelector")
+  private val VariationSelector = ScalaComponent.builder[VariationSelectorProps]("VariationSelector")
     .renderBackend[VariationSelectorBackend]
     .build
 
@@ -273,7 +273,7 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
     }
   }
 
-  private val GeneralSettingsPanel = ScalaComponent.build[GeneralSettingsPanelProps]("GeneralSettingsPanel")
+  private val GeneralSettingsPanel = ScalaComponent.builder[GeneralSettingsPanelProps]("GeneralSettingsPanel")
     .renderBackend[GeneralSettingsPanelBackend]
     .build
 
@@ -299,7 +299,7 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
     }
   }
 
-  private val DialogButtons = ScalaComponent.build[DialogButtonsCallbacks]("DialogButtons")
+  private val DialogButtons = ScalaComponent.builder[DialogButtonsCallbacks]("DialogButtons")
     .renderBackend[DialogButtonsBackend]
     .build
 
@@ -390,7 +390,7 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
 
   }
 
-  val create = ScalaComponent.build[Props]("NewGameDialog")
+  val create = ScalaComponent.builder[Props]("NewGameDialog")
     .initialState_P[State](_.initialState)
     .renderBackend[NewGameDialogBackend]
     .build

@@ -23,7 +23,7 @@ class IllegalPieceSelectionAnimation(physicalPiece: PhysicalPiece) {
   import IllegalPieceSelectionAnimation._
 
 
-  private val NoSymbolLeg = ScalaComponent.build[String]("NoSymbolLeg")
+  private val NoSymbolLeg = ScalaComponent.builder[String]("NoSymbolLeg")
     .render_P { transform =>
       svg.<.rect(
         svg.^.x := (-0.17).asInstanceOf[JsNumber],
@@ -35,7 +35,7 @@ class IllegalPieceSelectionAnimation(physicalPiece: PhysicalPiece) {
     }
     .build
 
-  private val NoSymbol = ScalaComponent.build[Side]("NoSymbol")
+  private val NoSymbol = ScalaComponent.builder[Side]("NoSymbol")
     .render_P { side =>
       val classes = s"no-symbol ${CssHelpers.playerSideClass(side)}"
       svg.<.g(
@@ -74,7 +74,7 @@ class IllegalPieceSelectionAnimation(physicalPiece: PhysicalPiece) {
   }
 
 
-  val create = ScalaComponent.build[Props]("IllegalPieceSelectionAnimation")
+  val create = ScalaComponent.builder[Props]("IllegalPieceSelectionAnimation")
     .renderBackend[Backend]
     .shouldComponentUpdate { x => CallbackTo.pure(x.cmpProps(_ != _)) }
     .build

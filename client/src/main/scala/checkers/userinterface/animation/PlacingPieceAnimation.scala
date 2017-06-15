@@ -46,7 +46,7 @@ class PlacingPieceAnimation(physicalPiece: PhysicalPiece,
   }
 
 
-  val create = ScalaComponent.build[Props]("PlacingPieceAnimation")
+  val create = ScalaComponent.builder[Props]("PlacingPieceAnimation")
     .renderBackend[Backend]
     .shouldComponentUpdate { x => CallbackTo.pure(x.cmpProps(_ != _)) }
     .build

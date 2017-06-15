@@ -23,7 +23,7 @@ object TurnIndicator {
 class TurnIndicator extends SvgHelpers {
   import TurnIndicator._
 
-  val create = ScalaComponent.build[Props]("TurnIndicator")
+  val create = ScalaComponent.builder[Props]("TurnIndicator")
     .render_P { props =>
       val x0 = 0d
       val (x1, x2) = if(props.pointsRight) {

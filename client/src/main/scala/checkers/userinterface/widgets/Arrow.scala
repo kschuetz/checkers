@@ -48,7 +48,7 @@ class Arrow extends SvgHelpers {
     }
   }
 
-  val create = ScalaComponent.build[Props]("ArrowWidget")
+  val create = ScalaComponent.builder[Props]("ArrowWidget")
     .renderBackend[Backend]
     .shouldComponentUpdate { x => CallbackTo.pure(x.currentProps != x.nextProps) }
     .build

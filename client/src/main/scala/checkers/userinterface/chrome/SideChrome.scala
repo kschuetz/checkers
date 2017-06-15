@@ -24,7 +24,7 @@ class SideChrome(button: Button,
 
   import SideChrome._
 
-  private val Backdrop = ScalaComponent.build[(Int, Int)]("SideChromeBackdrop")
+  private val Backdrop = ScalaComponent.builder[(Int, Int)]("SideChromeBackdrop")
     .render_P { case (width, height) =>
       svg.<.rect(
 //        VdomAttr.ClassName := "side-chrome-backdrop",
@@ -176,7 +176,7 @@ class SideChrome(button: Button,
 
   }
 
-  val create = ScalaComponent.build[Props]("SideChrome")
+  val create = ScalaComponent.builder[Props]("SideChrome")
     .renderBackend[Backend]
     //    .shouldComponentUpdateConst { case ShouldComponentUpdate(scope, nextProps, _) =>
     //      val result = scope.props != nextProps

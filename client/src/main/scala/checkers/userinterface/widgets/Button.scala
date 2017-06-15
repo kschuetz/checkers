@@ -97,7 +97,7 @@ class Button extends SvgHelpers with FontHelpers {
 
   }
 
-  val create = ScalaComponent.build[Props]("Button")
+  val create = ScalaComponent.builder[Props]("Button")
     .initialState[State](defaultState)
     .renderBackendWithChildren[Backend]
     .build
