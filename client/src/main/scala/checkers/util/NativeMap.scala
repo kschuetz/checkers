@@ -2,9 +2,9 @@ package checkers.util
 
 import scala.scalajs.js
 import scala.scalajs.js.UndefOr
-import scala.scalajs.js.annotation.JSName
+import scala.scalajs.js.annotation.JSGlobal
 
-@JSName("Map")
+@JSGlobal("Map")
 @js.native
 class NativeMap[K, V] extends js.Object {
   def get(key: K): UndefOr[V] = js.native
