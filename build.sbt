@@ -41,7 +41,7 @@ lazy val client: Project = (project in file("client"))
     // yes, we want to package JS dependencies
     skip in packageJSDependencies := false,
     scalaJSUseMainModuleInitializer := true,
-    scalaJSUseMainModuleInitializer in Test := true,
+
     // use uTest framework for tests
     testFrameworks += new TestFramework("utest.runner.Framework"),
     
@@ -69,7 +69,6 @@ lazy val benchmarks: Project = (project in file("benchmarks"))
     skip in packageJSDependencies := false,
     // use Scala.js provided launcher code to start the client app
     scalaJSUseMainModuleInitializer := true,
-    scalaJSUseMainModuleInitializer in Test := true,
     // use uTest framework for tests
     testFrameworks += new TestFramework("utest.runner.Framework")
   )
