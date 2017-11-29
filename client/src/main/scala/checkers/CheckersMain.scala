@@ -8,7 +8,7 @@ import org.scalajs.dom.UIEvent
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.{JSExport, JSExportTopLevel}
-import scalacss.Defaults._
+import scalacss.ProdDefaults._
 import scalacss.ScalaCssReact._
 
 @JSExportTopLevel("CheckersMain")
