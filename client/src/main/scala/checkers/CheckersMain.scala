@@ -12,10 +12,10 @@ import scalacss.Defaults._
 import scalacss.ScalaCssReact._
 
 @JSExportTopLevel("CheckersMain")
-object CheckersMain extends js.JSApp {
+object CheckersMain {
 
   @JSExport
-  def main(): Unit = {
+  def main(args: Array[String]): Unit = {
     log.warn("Application starting")
 
     // create stylesheet

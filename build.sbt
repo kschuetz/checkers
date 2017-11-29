@@ -40,13 +40,11 @@ lazy val client: Project = (project in file("client"))
     jsDependencies += RuntimeDOM % "test",
     // yes, we want to package JS dependencies
     skip in packageJSDependencies := false,
-    // use Scala.js provided launcher code to start the client app
-    persistLauncher := true,
-    persistLauncher in Test := false,
+    scalaJSUseMainModuleInitializer := true,
+    scalaJSUseMainModuleInitializer in Test := true,
     // use uTest framework for tests
     testFrameworks += new TestFramework("utest.runner.Framework"),
-
-    scalaJSUseRhino in Global := true,
+    
     jsEnv := PhantomJSEnv().value
   )
 //  .enablePlugins(ScalaJSPlugin, ScalaJSPlay)
@@ -125,7 +123,7 @@ lazy val root = (project in file(".")).settings(
     IO.copyFile(indexHtmlSource, file("dist/index.html"))
     IO.copyFile(mainJsSource, file("dist/scripts/main.js"))
     IO.copyFile(depsJsSource, file("dist/scripts/deps.js"))
-    IO.copyFile(launcherJsSource, file("dist/scripts/launcher.js"))
+//    IO.copyFile(launcherJsSource, file("dist/scripts/launcher.js"))
   },
 
   cleanDist := {
