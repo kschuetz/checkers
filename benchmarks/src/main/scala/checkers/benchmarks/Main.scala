@@ -4,12 +4,13 @@ import checkers.benchmarks.suites.{Evaluator, MoveGenerator, Searcher}
 import japgolly.scalajs.benchmark.gui.BenchmarkGUI
 import org.scalajs.dom.document
 
-import scala.scalajs.js.annotation.JSExport
+import scala.scalajs.js.annotation.{JSExport, JSExportTopLevel}
 
-@JSExport("BenchmarksMain")
-object Main extends scalajs.js.JSApp {
+@JSExportTopLevel("BenchmarksMain")
+object Main {
 
-  def main(): Unit = {
+  @JSExport
+  def main(args: Array[String]): Unit = {
     val tgt = document.getElementById("body")
 
     BenchmarkGUI.renderMenu(tgt)(Evaluator.suite,

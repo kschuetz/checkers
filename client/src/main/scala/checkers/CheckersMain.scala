@@ -6,7 +6,6 @@ import checkers.style.GlobalStyles
 import org.scalajs.dom
 import org.scalajs.dom.UIEvent
 
-import scala.scalajs.js
 import scala.scalajs.js.annotation.{JSExport, JSExportTopLevel}
 import scalacss.ProdDefaults._
 import scalacss.ScalaCssReact._

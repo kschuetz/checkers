@@ -31,7 +31,7 @@ object Settings {
     val nyaya = "0.8.1"
     val macwire = "2.2.5"
     val uPickle = "0.4.4"
-    val benchmark = "0.2.4"
+    val benchmark = "0.2.5"
 
     val react = "15.6.1"
 

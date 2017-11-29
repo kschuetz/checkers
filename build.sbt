@@ -52,35 +52,35 @@ lazy val client: Project = (project in file("client"))
   .dependsOn(sharedJS)
   .dependsOn(macros)
 
-//lazy val benchmarks: Project = (project in file("benchmarks"))
-//  .settings(
-//    name := "benchmarks",
-//    version := Settings.version,
-//    scalaVersion := Settings.versions.scala,
-//    scalacOptions ++= Settings.scalacOptions,
-//    libraryDependencies ++= Settings.scalajsDependencies.value ++ Settings.benchmarkjsDependencies.value,
-//    // by default we do development build, no eliding
-//    elideOptions := Seq(),
-//    scalacOptions ++= elideOptions.value,
-//    jsDependencies ++= Settings.jsDependencies.value,
-//    // RuntimeDOM is needed for tests
-//    jsDependencies += RuntimeDOM % "test",
-//    // yes, we want to package JS dependencies
-//    skip in packageJSDependencies := false,
-//    // use Scala.js provided launcher code to start the client app
-//    persistLauncher := true,
-//    persistLauncher in Test := false,
-//    // use uTest framework for tests
-//    testFrameworks += new TestFramework("utest.runner.Framework")
-//  )
-//  .enablePlugins(ScalaJSPlugin, ScalaJSWeb)
-//  .dependsOn(client)
-//  .dependsOn(sharedJS)
-//  .dependsOn(macros)
+lazy val benchmarks: Project = (project in file("benchmarks"))
+  .settings(
+    name := "benchmarks",
+    version := Settings.version,
+    scalaVersion := Settings.versions.scala,
+    scalacOptions ++= Settings.scalacOptions,
+    libraryDependencies ++= Settings.scalajsDependencies.value ++ Settings.benchmarkjsDependencies.value,
+    // by default we do development build, no eliding
+    elideOptions := Seq(),
+    scalacOptions ++= elideOptions.value,
+    jsDependencies ++= Settings.jsDependencies.value,
+    // RuntimeDOM is needed for tests
+    jsDependencies += RuntimeDOM % "test",
+    // yes, we want to package JS dependencies
+    skip in packageJSDependencies := false,
+    // use Scala.js provided launcher code to start the client app
+    scalaJSUseMainModuleInitializer := true,
+    scalaJSUseMainModuleInitializer in Test := true,
+    // use uTest framework for tests
+    testFrameworks += new TestFramework("utest.runner.Framework")
+  )
+  .enablePlugins(ScalaJSPlugin, ScalaJSWeb)
+  .dependsOn(client)
+  .dependsOn(sharedJS)
+  .dependsOn(macros)
 
 
 // Client projects (just one in this case)
-lazy val clients = Seq(client) //, benchmarks)
+lazy val clients = Seq(client, benchmarks)
 
 // instantiate the JVM project for SBT with some additional settings
 lazy val server = (project in file("server"))
@@ -123,7 +123,6 @@ lazy val root = (project in file(".")).settings(
     IO.copyFile(indexHtmlSource, file("dist/index.html"))
     IO.copyFile(mainJsSource, file("dist/scripts/main.js"))
     IO.copyFile(depsJsSource, file("dist/scripts/deps.js"))
-//    IO.copyFile(launcherJsSource, file("dist/scripts/launcher.js"))
   },
 
   cleanDist := {
