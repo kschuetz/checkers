@@ -79,7 +79,7 @@ class Game(gameDriver: GameDriver,
     }
 
     if(resizeTimeoutHandle != 0) dom.window.clearTimeout(resizeTimeoutHandle)
-    resizeTimeoutHandle = dom.window.setTimeout(update _, 100)
+    resizeTimeoutHandle = dom.window.setTimeout(() => update(), 100)
   }
 
   object Callbacks extends BoardCallbacks {
@@ -168,7 +168,7 @@ class Game(gameDriver: GameDriver,
 
   private def scheduleTick(): Unit = {
     if (stopped) return
-    dom.window.setTimeout(tick _, 1)
+    dom.window.setTimeout(() => tick(), 1)
   }
 
   private def updateNowTime(): Unit = {
@@ -178,7 +178,7 @@ class Game(gameDriver: GameDriver,
 
   private def scheduleClockTick(millis: Double): Unit = {
     cancelClockTick()
-    clockTimeoutHandle = dom.window.setTimeout(clockTick _, millis)
+    clockTimeoutHandle = dom.window.setTimeout(() => clockTick(), millis)
   }
 
   private def cancelClockTick(): Unit = {
