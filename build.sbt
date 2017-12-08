@@ -90,6 +90,7 @@ lazy val server = (project in file("server"))
     scalaVersion := Settings.versions.scala,
     scalacOptions ++= Settings.scalacOptions,
     libraryDependencies ++= Settings.jvmDependencies.value,
+    libraryDependencies += guice,
     // connect to the client project
     scalaJSProjects := clients,
     compile in Compile := ((compile in Compile) dependsOn scalaJSPipeline).value,

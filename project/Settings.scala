@@ -35,7 +35,7 @@ object Settings {
 
     val react = "15.6.1"
 
-    val scalaJsScripts = "1.0.0"
+    val scalaJsScripts = "1.1.1"
   }
 
   /**
