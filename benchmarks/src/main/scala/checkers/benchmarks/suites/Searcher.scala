@@ -3,6 +3,7 @@ package checkers.benchmarks.suites
 import checkers.consts._
 import checkers.core._
 import checkers.computer._
+import checkers.util.{NullPerformanceClock, PerformanceClock}
 import com.softwaremill.macwire._
 import japgolly.scalajs.benchmark.gui._
 import japgolly.scalajs.benchmark.{Benchmark, _}
@@ -24,6 +25,8 @@ object Searcher {
       override lazy val shufflerFactory: ShufflerFactory = if (shufflerEnabled) {
         wire[DefaultShufflerFactory]
       } else NoShuffleFactory
+
+      def performanceClock: PerformanceClock = NullPerformanceClock
     }
 
     val playerState0 = ComputerPlayerState.createRandom

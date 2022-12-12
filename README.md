@@ -27,29 +27,36 @@
 
 - JDK 1.8+
 - [SBT](http://www.scala-sbt.org "SBT")
+- [Node.js](https://nodejs.org "Node.js")
+- [pnpm](https://pnpm.io "pnpm")
 
 ### Development
 
-`sbt devServer` - Runs the development server (a Play application) on port 9000.  While the development server is running, you can browse to http://localhost:9000 to run the game in development mode.  (It will take several minutes the first time it is run to compile all of the source files).
+#### Initial setup
 
-To run the development server on a different port (say 8765), use `sbt "devServer 8765"`.
+`cd checkers`
+`pnpm install`
+
+#### Development session 
+              
+In one terminal:
+`pnpm run dev`
+
+Once the development server is up and running, you can optionally support live reloading while editing the Scala code. To do so, open a second terminal and run:
+`sbt ~fastLinkJS`
 
 ### Release
+                 
+To build the finished product for production (in the `dist` directory):
+`pnpm run build` 
 
-`sbt release` - Builds the finished product, and copies it and all assets into the `dist` directory.
+To preview the production build:
+`pnpm run preview`
 
 ## Subprojects
 
-### Production
-
-- **client** - Most of the application code resides here
 - **macros** - Since Scala requires separation compilation of macros, all macro definitions go here
-
-### Development
-
-- **server** - The development server (a small Play application)
-- **shared** - Code that is employed by both the client and server projects
-- **benchmarks**
+- **benchmarks** - Build and run them using `pnpm run benchmark` 
 
 ## Implementation notes
 

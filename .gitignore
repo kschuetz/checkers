@@ -1,35 +1,54 @@
-*.class
-*.log
-sandbox/*
-node_modules/*
-
-# sbt specific
-.cache
-.history
-.lib/
-dist/*
-production/*
 target/
-lib_managed/
-src_managed/
-project/boot/
-project/plugins/project/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+.local
+dist
 
-# Scala-IDE specific
-.scala_dependencies
-.worksheet
-.cache*
-.settings
-.project
-.classpath
-*/bin
+### Node ###
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+node_modules
 
-# IntelliJ IDEA
+### IntelliJ IDEA ###
 .idea
+*.iws
 *.iml
-out
-*.sc
+*.ipr
 
-# GitBook
-doc/_book
-/_book
+### Eclipse ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+!.vscode/extensions.json
+
+### Mac OS ###
+.DS_Store
+
+### Other ###
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.bsp
