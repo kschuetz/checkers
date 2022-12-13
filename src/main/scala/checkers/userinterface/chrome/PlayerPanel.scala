@@ -34,6 +34,7 @@ class PlayerPanel(pieceAvatar: PieceAvatar,
                   turnIndicator: TurnIndicator,
                   thinkingIndicator: ThinkingIndicator,
                   rushButton: RushButton) extends FontHelpers {
+
   import PlayerPanel._
 
   class Backend($: BackendScope[Props, Unit]) {
@@ -164,26 +165,26 @@ class PlayerPanel(pieceAvatar: PieceAvatar,
     }
 
     def render(props: Props): VdomElement = {
-      val parts = VdomArray.empty
+      val parts = VdomArray.empty()
       parts += backdrop(props)
       parts += makePieceAvatar(props)
       parts += playerNameDisplay(props)
-      if(props.isPlayerTurn) {
+      if (props.isPlayerTurn) {
         parts += makeTurnIndicator(props)
       }
-      if(props.jumpIndicator) {
+      if (props.jumpIndicator) {
         parts += makeJumpIndicator(props)
       }
-      if(props.thinkingIndicator) {
+      if (props.thinkingIndicator) {
         parts += makeThinkingIndicator(props)
       }
-      if(props.scoreDisplay.nonEmpty) {
+      if (props.scoreDisplay.nonEmpty) {
         parts += scoreDisplay(props)
       }
-      if(props.clockVisible) {
+      if (props.clockVisible) {
         parts += clockDisplay(props)
       }
-      if(props.rushButtonEnabled) {
+      if (props.rushButtonEnabled) {
         parts += makeRushButton(props)
       }
       svg.<.g(

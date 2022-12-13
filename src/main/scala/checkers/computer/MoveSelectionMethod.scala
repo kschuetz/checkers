@@ -1,7 +1,5 @@
 package checkers.computer
 
-import checkers.util.Random
-
 sealed trait MoveSelectionMethod
 case object SelectBestMove extends MoveSelectionMethod
 case object SelectRandomMove extends MoveSelectionMethod
@@ -20,6 +18,5 @@ case class MoveSelectionMethodWeights(selectBestMove: Int,
 }
 
 object MoveSelectionMethodWeights {
-  val alwaysBestMove = MoveSelectionMethodWeights(selectBestMove = 1, selectRandomMove = 0, blunder = 0)
+  val alwaysBestMove: MoveSelectionMethodWeights = MoveSelectionMethodWeights(selectBestMove = 1, selectRandomMove = 0, blunder = 0)
 }
-

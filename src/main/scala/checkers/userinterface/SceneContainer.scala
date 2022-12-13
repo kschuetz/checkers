@@ -4,10 +4,7 @@ import checkers.core.{GameModelReader, ScreenLayoutSettings}
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.html_<^._
 import japgolly.scalajs.react.vdom.{svg_<^ => svg}
-import org.scalajs.dom
 import org.scalajs.dom.raw.SVGSVGElement
-
-import scala.scalajs.js
 
 
 object SceneContainer {

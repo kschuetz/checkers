@@ -12,7 +12,7 @@ object Settings {
   )
 
   object versions {
-    val scala = "2.12.17"
+    val scala = "2.13.10"
     val scalajsReact = "1.7.7"
     val scalaCSS = "0.7.0"
     val uTest = "0.8.1"

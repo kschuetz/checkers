@@ -53,7 +53,7 @@ class DynamicScene(physicalPiece: PhysicalPiece,
 
       val boardState = model.board
 
-      val staticPieces = VdomArray.empty
+      val staticPieces = VdomArray.empty()
 
       Board.playableSquares.filterNot(piecesToHide.contains).foreach { squareIndex =>
         val occupant = boardState.getOccupant(squareIndex)
@@ -89,7 +89,7 @@ class DynamicScene(physicalPiece: PhysicalPiece,
         staticPieces
       )
 
-      val overlayButtons = VdomArray.empty
+      val overlayButtons = VdomArray.empty()
       Board.allSquares.foreach { case (boardPos, squareIndex, pt) =>
         val k = s"s-${boardPos.row}-${boardPos.col}"
         val squareAttributes = if (squareIndex >= 0) model.squareAttributes(squareIndex)
@@ -107,7 +107,7 @@ class DynamicScene(physicalPiece: PhysicalPiece,
         pickedUpPiece.create(props)
       }
 
-      val animations = VdomArray.empty
+      val animations = VdomArray.empty()
       val nowTime = model.nowTime
       model.animation.play.foreach {
         case rp: RemovingPiece =>

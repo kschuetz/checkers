@@ -108,7 +108,7 @@ class GameLogDisplay(notation: Notation,
         result
       } else 0d
 
-      val entries = VdomArray.empty
+      val entries = VdomArray.empty()
 
       var y = clientTop - offsetPixels
 

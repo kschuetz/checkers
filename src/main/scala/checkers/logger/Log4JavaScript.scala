@@ -1,7 +1,9 @@
 package checkers.logger
 
+import scala.annotation.elidable
+import scala.annotation.elidable._
 import scala.scalajs.js
-import js.annotation._
+import scala.scalajs.js.annotation._
 
 /**
   * Facade for functions in log4javascript that we need
@@ -123,29 +125,29 @@ class L4JSLogger(jsLogger: JSLogger) extends Logger {
       e.asInstanceOf[js.Error]
   }
 
-  override def trace(msg: String, e: Exception): Unit = jsLogger.trace(msg, undefOrError(e))
+  @elidable(FINEST) def trace(msg: String, e: Exception): Unit = jsLogger.trace(msg, undefOrError(e))
 
-  override def trace(msg: String): Unit = jsLogger.trace(msg)
+  @elidable(FINEST) def trace(msg: String): Unit = jsLogger.trace(msg)
 
-  override def debug(msg: String, e: Exception): Unit = jsLogger.debug(msg, undefOrError(e))
+  @elidable(FINE) def debug(msg: String, e: Exception): Unit = jsLogger.debug(msg, undefOrError(e))
 
-  override def debug(msg: String): Unit = jsLogger.debug(msg)
+  @elidable(FINE) def debug(msg: String): Unit = jsLogger.debug(msg)
 
-  override def info(msg: String, e: Exception): Unit = jsLogger.info(msg, undefOrError(e))
+  @elidable(INFO) def info(msg: String, e: Exception): Unit = jsLogger.info(msg, undefOrError(e))
 
-  override def info(msg: String): Unit = jsLogger.info(msg)
+  @elidable(INFO) def info(msg: String): Unit = jsLogger.info(msg)
 
-  override def warn(msg: String, e: Exception): Unit = jsLogger.warn(msg, undefOrError(e))
+  @elidable(WARNING) def warn(msg: String, e: Exception): Unit = jsLogger.warn(msg, undefOrError(e))
 
-  override def warn(msg: String): Unit = jsLogger.warn(msg)
+  @elidable(WARNING) def warn(msg: String): Unit = jsLogger.warn(msg)
 
-  override def error(msg: String, e: Exception): Unit = jsLogger.error(msg, undefOrError(e))
+  @elidable(SEVERE) def error(msg: String, e: Exception): Unit = jsLogger.error(msg, undefOrError(e))
 
-  override def error(msg: String): Unit = jsLogger.error(msg)
+  @elidable(SEVERE) def error(msg: String): Unit = jsLogger.error(msg)
 
-  override def fatal(msg: String, e: Exception): Unit = jsLogger.fatal(msg, undefOrError(e))
+  @elidable(SEVERE) def fatal(msg: String, e: Exception): Unit = jsLogger.fatal(msg, undefOrError(e))
 
-  override def fatal(msg: String): Unit = jsLogger.fatal(msg)
+  @elidable(SEVERE) def fatal(msg: String): Unit = jsLogger.fatal(msg)
 
   def setLevel(level: Level): Unit = jsLogger.setLevel(level)
 

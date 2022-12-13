@@ -55,7 +55,7 @@ class SideChrome(button: Button,
 
       val buttonRoundness = 0.2 * math.min(buttonWidth, buttonHeight)
 
-      val parts = VdomArray.empty
+      val parts = VdomArray.empty()
 
       val buttonCenterX = buttonX + (buttonWidth / 2)
       var currentY = buttonY + (buttonHeight / 2)
@@ -68,7 +68,7 @@ class SideChrome(button: Button,
         radiusY = buttonRoundness,
         caption = "New Game...",
         tooltip = Some("Start a new game"),
-        onClick = props.applicationCallbacks.onNewGameButtonClicked))(VdomArray.empty)
+        onClick = props.applicationCallbacks.onNewGameButtonClicked))(VdomArray.empty())
 
       parts += newGameButton
 
@@ -82,7 +82,7 @@ class SideChrome(button: Button,
         radiusY = buttonRoundness,
         caption = "Rotate",
         tooltip = Some("Rotate the view of the board 180 degrees"),
-        onClick = props.applicationCallbacks.onRotateBoardButtonClicked))(VdomArray.empty)
+        onClick = props.applicationCallbacks.onRotateBoardButtonClicked))(VdomArray.empty())
 
       parts += rotateBoardButton
 
@@ -96,7 +96,7 @@ class SideChrome(button: Button,
           radiusX = buttonRoundness,
           radiusY = buttonRoundness,
           caption = "Hint",
-          onClick = props.applicationCallbacks.onHintButtonClicked))(VdomArray.empty)
+          onClick = props.applicationCallbacks.onHintButtonClicked))(VdomArray.empty())
 
         parts += hintButton
       }

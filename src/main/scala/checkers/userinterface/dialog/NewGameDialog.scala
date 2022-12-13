@@ -98,7 +98,7 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
 
   class PlayerSelectorBackend($: BackendScope[PlayerSelectorProps, Unit]) {
     def render(props: PlayerSelectorProps): VdomElement = {
-      val items = VdomArray.empty
+      val items = VdomArray.empty()
       props.playerChoices.indices.foreach { i =>
         val item = props.playerChoices(i)
         val option = <.option(
@@ -215,7 +215,7 @@ class NewGameDialog(physicalPiece: PhysicalPiece) {
 
   class VariationSelectorBackend($: BackendScope[VariationSelectorProps, Unit]) {
     def render(props: VariationSelectorProps): VdomElement = {
-      val items = VdomArray.empty
+      val items = VdomArray.empty()
       props.variationChoices.indices.foreach { i =>
         val item = props.variationChoices(i)
         val option = <.option(

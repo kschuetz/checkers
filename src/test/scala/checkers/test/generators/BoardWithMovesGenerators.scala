@@ -1,7 +1,6 @@
 package checkers.test.generators
 
 import checkers.consts._
-import checkers.core.MoveExecutorTests._
 import checkers.core.{BoardStack, MoveDecoder, MoveGenerator, MoveList}
 import nyaya.gen.Gen
 

@@ -72,13 +72,13 @@ object MoveListTests extends TestSuiteBase
   private lazy val moveToFrontIfExistsProps = moveFirstToFrontProp & moveSecondToFrontProp & moveThirdToFrontProp & moveIllegalToFrontProp
 
   val tests: Tests = Tests {
-    'MoveExecutor {
-      'Properties {
-        'indexOf {
+    test("MoveExecutor") {
+      test("Properties") {
+        test("indexOf") {
           genInput.mustSatisfy(indexOfProps)
         }
 
-        'moveToFrontIfExists {
+        test("moveToFrontIfExists") {
           genInput.mustSatisfy(moveToFrontIfExistsProps)
         }
       }

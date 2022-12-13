@@ -72,7 +72,7 @@ class MoveTreeFactory(jumpTable: JumpTable) {
             m + (square -> (paths :+ path))
         }
       }
-      MoveTree(pathMap.mapValues(makeTree), requiresJump)
+      MoveTree(pathMap.view.mapValues(makeTree).toMap, requiresJump)
     }
   }
 }

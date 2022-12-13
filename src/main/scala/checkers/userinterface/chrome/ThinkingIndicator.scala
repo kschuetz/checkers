@@ -40,7 +40,7 @@ class ThinkingIndicator extends SvgHelpers with ClipPathHelpers {
       val halfSegmentWidth = segmentWidth / 2
       var x = -(segmentCount * halfSegmentWidth)
       var i = 0
-      val segments = VdomArray.empty
+      val segments = VdomArray.empty()
       while(i < segmentCount) {
         val even = svg.<.rect(
           ^.key := 2 * i,

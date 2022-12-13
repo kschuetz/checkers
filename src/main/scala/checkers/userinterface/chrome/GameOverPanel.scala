@@ -28,7 +28,6 @@ class GameOverPanel(physicalPiece: PhysicalPiece) extends FontHelpers {
 
   class Backend($: BackendScope[Props, Unit]) {
 
-
     private def handleClick(event: ReactEventFromInput): Callback = {
       $.props.flatMap(props => props.applicationCallbacks.onNewGameButtonClicked)
     }
@@ -70,7 +69,7 @@ class GameOverPanel(physicalPiece: PhysicalPiece) extends FontHelpers {
     private def pieceRow(centerX: Int, centerY: Int, pieceSize: Int, pieces: Vector[Occupant]) = {
       val left = centerX - 3 * pieceSize / 2
       val scaledSize = 0.95 * pieceSize
-      val items = VdomArray.empty
+      val items = VdomArray.empty()
       (0 to 3).foreach { index =>
         val pieceType = pieces(index)
         val x = left + index * pieceSize
@@ -94,7 +93,7 @@ class GameOverPanel(physicalPiece: PhysicalPiece) extends FontHelpers {
       val pieceSize = height / 3
       val pieceRowY = 11 * height / 24
 
-      val parts = VdomArray.empty
+      val parts = VdomArray.empty()
       parts += backdrop(props)
       parts += textLine(centerX, 2 * height / 9, textHeight, "GAME OVER", "t1")
       props.gameOverState match {

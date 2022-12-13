@@ -35,6 +35,7 @@
 #### Initial setup
 
 `cd checkers`
+
 `pnpm install`
 
 #### Development session 

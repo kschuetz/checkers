@@ -2,10 +2,10 @@ package checkers.userinterface.chrome
 
 import checkers.consts._
 import checkers.core.{ApplicationCallbacks, GameModelReader, PlayerDescription}
-import checkers.util.{ClockUtils, Formatting}
+import checkers.util.ClockUtils
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.html_<^._
-import japgolly.scalajs.react.vdom.{ svg_<^ => svg }
+import japgolly.scalajs.react.vdom.{svg_<^ => svg}
 
 object TopChrome {
 
@@ -17,6 +17,7 @@ object TopChrome {
 }
 
 class TopChrome(playerPanel: PlayerPanel) {
+
   import TopChrome._
 
   class Backend($: BackendScope[Props, Unit]) {
@@ -31,7 +32,7 @@ class TopChrome(playerPanel: PlayerPanel) {
         val waitingForMove = model.inputPhase.waitingForMove
         val endingTurn = model.inputPhase.endingTurn
         val jumpIndicator = isPlayerTurn && (!endingTurn) && model.playerMustJump
-        val scoreDisplay = if(model.applicationSettings.ShowEvaluationScoreInTopChrome) {
+        val scoreDisplay = if (model.applicationSettings.ShowEvaluationScoreInTopChrome) {
           Some(model.getScore(side).toString)
         } else None
 

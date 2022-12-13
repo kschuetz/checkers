@@ -115,8 +115,8 @@ class Decorations extends SvgHelpers {
   val Crown = ScalaComponent.builder[(Side, Double)]("Crown")
     .render_P { case (side, scale) =>
       val classes = if (side == DARK) ("crown-a dark", "crown-b dark", "crown-c dark")
-        else ("crown-a light", "crown-b light", "crown-c light")
-      val parts = VdomArray.empty
+      else ("crown-a light", "crown-b light", "crown-c light")
+      val parts = VdomArray.empty()
       crownPaths.indices.foreach { idx =>
         parts += CrownPart.withKey(idx.toString)((classes, idx))
       }
@@ -138,7 +138,7 @@ class Decorations extends SvgHelpers {
 
 
       var k = 0
-      val parts = VdomArray.empty
+      val parts = VdomArray.empty()
 
       starPathA.foreach { points =>
         k += 1

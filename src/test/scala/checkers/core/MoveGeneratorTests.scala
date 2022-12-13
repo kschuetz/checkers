@@ -93,8 +93,8 @@ object MoveGeneratorTests extends TestSuiteBase with DefaultGameLogicTestModule 
   private def s(pair: (Int, Int)): List[Int] = List(pair._1, pair._2)
 
   val tests: Tests = Tests {
-    'MoveGenerator {
-      'Properties {
+    test("MoveGenerator") {
+      test("Properties") {
         genBoardWithMove.mustSatisfy(
           movePathUnobstructed &
             moveStartOccupiedByCurrentPlayer &
@@ -107,20 +107,20 @@ object MoveGeneratorTests extends TestSuiteBase with DefaultGameLogicTestModule 
         genSameForBothSidesTestCase.mustSatisfy(sameForBothSides)
       }
 
-      'StaticTests {
-        'EmptyBoard {
-          'Dark {
+      test("StaticTests") {
+        test("EmptyBoard") {
+          test("Dark") {
             testBoard(BoardState.empty, DARK, Set.empty)
           }
-          'Light {
+          test("Light") {
             testBoard(BoardState.empty, LIGHT, Set.empty)
           }
         }
 
-        'OpeningBoard {
+        test("OpeningBoard") {
           val board = BoardState.create(DARKMAN -> (0 to 11), LIGHTMAN -> (20 to 31))
 
-          'Dark {
+          test("Dark") {
             testBoard(board, DARK, Set(
               s(8 -> 12),
               s(9 -> 12),
@@ -131,7 +131,7 @@ object MoveGeneratorTests extends TestSuiteBase with DefaultGameLogicTestModule 
               s(11 -> 15)))
           }
 
-          'Light {
+          test("Light") {
             testBoard(board, LIGHT, Set(
               s(20 -> 16),
               s(20 -> 17),
@@ -143,7 +143,7 @@ object MoveGeneratorTests extends TestSuiteBase with DefaultGameLogicTestModule 
           }
         }
 
-        'SimpleJumps1 {
+        test("SimpleJumps1") {
           val board = Board.parseBoard(
             """
               l l - -
@@ -156,7 +156,7 @@ object MoveGeneratorTests extends TestSuiteBase with DefaultGameLogicTestModule 
              - - - -
           """)
 
-          'Dark {
+          test("Dark") {
             testBoard(board, DARK, Set(
               s(9 -> 18),
               s(10 -> 19),
@@ -164,7 +164,7 @@ object MoveGeneratorTests extends TestSuiteBase with DefaultGameLogicTestModule 
             ))
           }
 
-          'Light {
+          test("Light") {
             testBoard(board, LIGHT, Set(
               s(13 -> 6),
               s(14 -> 5),
@@ -173,7 +173,7 @@ object MoveGeneratorTests extends TestSuiteBase with DefaultGameLogicTestModule 
           }
         }
 
-        'SimpleMoves1 {
+        test("SimpleMoves1") {
           val board = Board.parseBoard(
             """
               - - - l
@@ -186,13 +186,13 @@ object MoveGeneratorTests extends TestSuiteBase with DefaultGameLogicTestModule 
              - - - -
           """)
 
-          'Dark {
+          test("Dark") {
             testBoard(board, DARK, Set(
               s(22 -> 26)
             ))
           }
 
-          'Light {
+          test("Light") {
             testBoard(board, LIGHT, Set(
               s(18 -> 14),
               s(18 -> 13),
@@ -203,7 +203,7 @@ object MoveGeneratorTests extends TestSuiteBase with DefaultGameLogicTestModule 
           }
         }
 
-        'SimpleMoves2 {
+        test("SimpleMoves2") {
           val board = Board.parseBoard(
             """
               - - - -
@@ -216,7 +216,7 @@ object MoveGeneratorTests extends TestSuiteBase with DefaultGameLogicTestModule 
              - D - -
           """)
 
-          'Dark {
+          test("Dark") {
             testBoard(board, DARK, Set(
               s(1 -> 4),
               s(1 -> 5),
@@ -227,7 +227,7 @@ object MoveGeneratorTests extends TestSuiteBase with DefaultGameLogicTestModule 
             ))
           }
 
-          'Light {
+          test("Light") {
             testBoard(board, LIGHT, Set(
               s(18 -> 14),
               s(18 -> 13),
@@ -240,7 +240,7 @@ object MoveGeneratorTests extends TestSuiteBase with DefaultGameLogicTestModule 
             ))
           }
 
-          'SimpleMoves3 {
+          test("SimpleMoves3") {
             val board = Board.parseBoard(
               """
                  l l l l
@@ -265,7 +265,7 @@ object MoveGeneratorTests extends TestSuiteBase with DefaultGameLogicTestModule 
           }
         }
 
-        'CompoundJumps1 {
+        test("CompoundJumps1") {
           val board = Board.parseBoard(
             """
               l l - -
@@ -278,7 +278,7 @@ object MoveGeneratorTests extends TestSuiteBase with DefaultGameLogicTestModule 
              - - - -
           """)
 
-          'Dark {
+          test("Dark") {
             testBoard(board, DARK, Set(
               s(8 -> 1),
               List(9, 18, 27),
@@ -289,7 +289,7 @@ object MoveGeneratorTests extends TestSuiteBase with DefaultGameLogicTestModule 
             ))
           }
 
-          'Light {
+          test("Light") {
             testBoard(board, LIGHT, Set(
               s(13 -> 6),
               s(14 -> 7),
@@ -298,7 +298,7 @@ object MoveGeneratorTests extends TestSuiteBase with DefaultGameLogicTestModule 
           }
         }
 
-        'CompoundJumps2 {
+        test("CompoundJumps2") {
           val board = Board.parseBoard(
             """
               - - - -
@@ -311,7 +311,7 @@ object MoveGeneratorTests extends TestSuiteBase with DefaultGameLogicTestModule 
              - - - -
           """)
 
-          'Dark {
+          test("Dark") {
             testBoard(board, DARK, Set(
               s(6 -> 15),
               s(22 -> 29), // terminated by crowning
@@ -319,7 +319,7 @@ object MoveGeneratorTests extends TestSuiteBase with DefaultGameLogicTestModule 
             ))
           }
 
-          'Light {
+          test("Light") {
             testBoard(board, LIGHT, Set(
               List(27, 18, 9, 2),
               List(26, 19, 10, 1),
@@ -331,10 +331,11 @@ object MoveGeneratorTests extends TestSuiteBase with DefaultGameLogicTestModule 
             ))
           }
         }
-        
-        'Other {
-          'TestCase1 {
-            val board = Board.parseBoard("""
+
+        test("Other") {
+          test("TestCase1") {
+            val board = Board.parseBoard(
+              """
                D - - -
               l - - -
                - - - -
@@ -348,11 +349,12 @@ object MoveGeneratorTests extends TestSuiteBase with DefaultGameLogicTestModule 
             testBoard(board, DARK, Set(
               s(28 -> 25)
             ))
-            
+
           }
 
-          'TestCase2 {
-            val board = Board.parseBoard("""
+          test("TestCase2") {
+            val board = Board.parseBoard(
+              """
                - - l -
               - - - -
                - - - -

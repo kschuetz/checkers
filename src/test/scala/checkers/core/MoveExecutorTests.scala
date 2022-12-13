@@ -139,18 +139,18 @@ object MoveExecutorTests extends TestSuiteBase
   private lazy val executeMoveProps = startSquareCorrectState & endSquareCorrectState & crownedAppropriately & jumpedOverSquaresEmpty
 
   val tests: Tests = Tests {
-    'MoveExecutor {
-      'Properties {
-        'executeFromMoveDecoder {
+    test("MoveExecutor") {
+      test("Properties") {
+        test("executeFromMoveDecoder") {
           genInputWithMoveDecoder.mustSatisfy(executeMoveProps)
         }
-        'fastExecute {
+        test("fastExecute") {
           genInputWithFastExecute.mustSatisfy(executeMoveProps)
         }
-        'execute {
+        test("execute") {
           genInputWithExecute.mustSatisfy(executeMoveProps)
         }
-        'allMethodsSameOutcome {
+        test("allMethodsSameOutcome") {
           genBoardWithMove.mustSatisfy(allMethodsSameOutcome)
         }
       }

@@ -31,6 +31,7 @@ object PhysicalBoard {
 }
 
 class PhysicalBoard {
+
   import PhysicalBoard._
 
   private val Square = ScalaComponent.builder[(Double, Double, Side)]("Square")
@@ -50,11 +51,11 @@ class PhysicalBoard {
 
   private val BoardRow = ScalaComponent.builder[(Double, Side)]("BoardRow")
     .render_P { case (centerY, sideOfFirst) =>
-      val squares = VdomArray.empty
+      val squares = VdomArray.empty()
       (0 to 7).foldLeft(sideOfFirst) { case (side, idx) =>
         val square: VdomNode = Square.withKey(idx.toString)((idx - boardCenterOffset, 0.0, side))
         squares += square
-        if(side == DARK) LIGHT else DARK
+        if (side == DARK) LIGHT else DARK
       }
       svg.<.g(
         svg.^.transform := s"translate(0,$centerY)",
@@ -78,11 +79,11 @@ class PhysicalBoard {
   private val Board = ScalaComponent.builder[Unit]("Board")
     .render_P { _ =>
       val upperLeftSide: Side = LIGHT
-      val rows = VdomArray.empty
+      val rows = VdomArray.empty()
       (0 to 7).foldLeft(upperLeftSide) { case (side, idx) =>
         val row: VdomNode = BoardRow.withKey(idx.toString)((idx - boardCenterOffset, side))
         rows += row
-        if(side == DARK) LIGHT else DARK
+        if (side == DARK) LIGHT else DARK
       }
       val border = BoardBorder(0.3)
       svg.<.g(

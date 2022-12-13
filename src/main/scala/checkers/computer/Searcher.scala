@@ -3,7 +3,7 @@ package checkers.computer
 import checkers.consts._
 import checkers.core.Play.{Move, NoPlay}
 import checkers.core._
-import checkers.logger.{Logger, NullLogger}
+import checkers.logger.Logger
 import checkers.util.PerformanceClock
 
 import scala.annotation.elidable

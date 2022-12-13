@@ -74,18 +74,18 @@ object BoardStackTests extends TestSuiteBase
   })
 
   val tests: Tests = Tests {
-    'BoardStack {
-      'Properties {
-        'setBoardWorks {
+    test("BoardStack") {
+      test("Properties") {
+        test("setBoardWorks") {
           genInput.mustSatisfy(setBoardWorks)
         }
-        'pushCopiesCurrentBoard {
+        test("pushCopiesCurrentBoard") {
           genInput.mustSatisfy(pushCopiesCurrentBoard)
         }
-        'popRestoresBoard {
+        test("popRestoresBoard") {
           genInput.mustSatisfy(popRestoresBoard)
         }
-        'stackLevel {
+        test("stackLevel") {
           genInput.mustSatisfy(stackLevel)
         }
       }

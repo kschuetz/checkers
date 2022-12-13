@@ -240,7 +240,7 @@ object EvaluatorTests extends TestSuiteBase
 
 
   val tests: Tests = Tests {
-    'Evaluator {
+    test("Evaluator") {
       genEvaluatorPropInput.mustSatisfy(evaluatorPropInputProps)
       genEqualSideCheckPropInput.mustSatisfy(sidesEvaluatedEqually)
     }

@@ -31,7 +31,7 @@ object PrincipalVariationTests extends TestSuiteBase {
   })
 
   val tests: Tests = Tests {
-    'PrincipalVariation {
+    test("PrincipalVariation") {
       genTestCase.mustSatisfy(works)
     }
 

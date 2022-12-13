@@ -50,7 +50,7 @@ object ShufflerTests extends TestSuiteBase with ComputerPlayerStateGenerator {
 
 
   val tests: Tests = Tests {
-    'Shuffler {
+    test("Shuffler") {
       genTestCase.mustSatisfy(allIndicesPresent)
       genTestCase.mustSatisfy(respectPvMove)
     }

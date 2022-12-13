@@ -2,7 +2,7 @@ package checkers.core
 
 import checkers.computer._
 import checkers.core.tables.TablesModule
-import checkers.util.{DomPerformanceClock, PerformanceClock}
+import checkers.util.PerformanceClock
 import com.softwaremill.macwire._
 
 trait GameLogicModule {

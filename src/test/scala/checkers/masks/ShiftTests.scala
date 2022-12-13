@@ -32,7 +32,7 @@ object ShiftTests extends TestSuiteBase with BoardGenerators {
 
     def colOffset: Int = -1
 
-    def applyShift(x: Int) = SHIFTNW(x)
+    def applyShift(x: Int): Int = SHIFTNW(x)
   }
 
   case object ShiftNE extends Shift {
@@ -42,7 +42,7 @@ object ShiftTests extends TestSuiteBase with BoardGenerators {
 
     def colOffset: Int = 1
 
-    def applyShift(x: Int) = SHIFTNE(x)
+    def applyShift(x: Int): Int = SHIFTNE(x)
   }
 
   case object ShiftSW extends Shift {
@@ -52,7 +52,7 @@ object ShiftTests extends TestSuiteBase with BoardGenerators {
 
     def colOffset: Int = -1
 
-    def applyShift(x: Int) = SHIFTSW(x)
+    def applyShift(x: Int): Int = SHIFTSW(x)
   }
 
   case object ShiftSE extends Shift {
@@ -62,7 +62,7 @@ object ShiftTests extends TestSuiteBase with BoardGenerators {
 
     def colOffset: Int = 1
 
-    def applyShift(x: Int) = SHIFTSE(x)
+    def applyShift(x: Int): Int = SHIFTSE(x)
   }
 
   case object ShiftN extends Shift {
@@ -72,7 +72,7 @@ object ShiftTests extends TestSuiteBase with BoardGenerators {
 
     def colOffset: Int = 0
 
-    def applyShift(x: Int) = SHIFTN(x)
+    def applyShift(x: Int): Int = SHIFTN(x)
   }
 
   case object ShiftS extends Shift {
@@ -82,7 +82,7 @@ object ShiftTests extends TestSuiteBase with BoardGenerators {
 
     def colOffset: Int = 0
 
-    def applyShift(x: Int) = SHIFTS(x)
+    def applyShift(x: Int): Int = SHIFTS(x)
   }
 
   case object ShiftE extends Shift {
@@ -92,7 +92,7 @@ object ShiftTests extends TestSuiteBase with BoardGenerators {
 
     def colOffset: Int = 2
 
-    def applyShift(x: Int) = SHIFTE(x)
+    def applyShift(x: Int): Int = SHIFTE(x)
   }
 
   case object ShiftW extends Shift {
@@ -102,7 +102,7 @@ object ShiftTests extends TestSuiteBase with BoardGenerators {
 
     def colOffset: Int = -2
 
-    def applyShift(x: Int) = SHIFTW(x)
+    def applyShift(x: Int): Int = SHIFTW(x)
   }
 
   case object ShiftNW2 extends Shift {
@@ -112,7 +112,7 @@ object ShiftTests extends TestSuiteBase with BoardGenerators {
 
     def colOffset: Int = -2
 
-    def applyShift(x: Int) = SHIFTNW2(x)
+    def applyShift(x: Int): Int = SHIFTNW2(x)
   }
 
   case object ShiftNE2 extends Shift {
@@ -122,7 +122,7 @@ object ShiftTests extends TestSuiteBase with BoardGenerators {
 
     def colOffset: Int = 2
 
-    def applyShift(x: Int) = SHIFTNE2(x)
+    def applyShift(x: Int): Int = SHIFTNE2(x)
   }
 
   case object ShiftSW2 extends Shift {
@@ -132,7 +132,7 @@ object ShiftTests extends TestSuiteBase with BoardGenerators {
 
     def colOffset: Int = -2
 
-    def applyShift(x: Int) = SHIFTSW2(x)
+    def applyShift(x: Int): Int = SHIFTSW2(x)
   }
 
   case object ShiftSE2 extends Shift {
@@ -142,7 +142,7 @@ object ShiftTests extends TestSuiteBase with BoardGenerators {
 
     def colOffset: Int = 2
 
-    def applyShift(x: Int) = SHIFTSE2(x)
+    def applyShift(x: Int): Int = SHIFTSE2(x)
   }
 
   private def applyShiftMacro(boardState: MutableBoardState, shift: Shift): Unit = {
@@ -252,7 +252,7 @@ object ShiftTests extends TestSuiteBase with BoardGenerators {
   private lazy val props = forward1Equal & forward1back1Equal & forward2Equal & forward2back1Equal & forward2back2Equal
 
   val tests: Tests = Tests {
-    'ShiftMacros {
+    test("ShiftMacros") {
       genTestInput.mustSatisfy(props)
     }
   }

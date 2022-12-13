@@ -17,11 +17,11 @@ object BoardStateTests extends TestSuiteBase {
 
 
   val tests: Tests = Tests {
-    'BoardState {
-      'PlacePieces {
+    test("BoardState") {
+      test("PlacePieces") {
         val squares = randomSquares(4)
         val placements = squares.zip(allPieces)
-        val bs = placements.foldLeft(BoardState.empty){
+        val bs = placements.foldLeft(BoardState.empty) {
           case (result, (square, piece)) => result.updated(square, piece)
         }
 

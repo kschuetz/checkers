@@ -42,7 +42,7 @@ class PhysicalPiece(decorations: Decorations) {
 
       val showPips = !props.simplified
 
-      val pips = VdomArray.empty
+      val pips = VdomArray.empty()
       if (showPips) {
         (0 to 11).foreach { pipIndex =>
           val pt = decorations.pipCoordinates(pipIndex)

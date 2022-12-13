@@ -67,7 +67,7 @@ object SearcherTests extends TestSuiteBase
   })
 
   val tests: Tests = Tests {
-    'Searcher {
+    test("Searcher") {
       genSameMoveChoiceTestCase.mustSatisfy(sameMoveChoiceBothSides)
     }
 
